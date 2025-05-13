@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { useDispatch } from 'react-redux'
 import { useEffect, useRef, useState } from 'react'

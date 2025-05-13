@@ -32,6 +32,7 @@ type FormState = {
   updateDetails: (parentKey: string, fieldId: string, dataId: string, newStyle: Partial<any>) => void
   updateFieldHeight: (parentKey: string, fieldId: string, newHeight: number) => void
   updatePadding: (parentKey: string, boxId: string, newPadding: Partial<{ top: number; bottom: number; left: number; right: number, allPadding: string }>) => void
+  updateFormMeta: (meta: Partial<{ name: string; version: string }>) => void
   createForm: (name: string, version: string) => void
   addDefaultForm: () => void
   clearForm: () => void
@@ -82,6 +83,13 @@ export const useFormStore = create<FormState>()(
           form: {
             ...state.form,
             form_details: [...state.form.form_details, newForm]
+          }
+        })),
+      updateFormMeta: (meta) =>
+        set((state) => ({
+          form: {
+            ...state.form,
+            ...meta
           }
         })),
       updateFormByKey: (parentKey: string, newFields: any[]) =>

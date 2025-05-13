@@ -19,17 +19,23 @@ const FormNavbarContent = () => {
   const form = useFormStore(state => state.form)
   const clearForm = useFormStore(state => state.clearForm)
   const [title, setTitle] = useState(form?.name)
+  const [versionText, setVersionText] = useState(form?.version)
   const { mutateAsync, isPending } = useCreateFormQueryOption()
+  const updateFormMeta = useFormStore(state => state.updateFormMeta)
 
   const handleInputChange = (e: any) => {
     setTitle(e.target.value)
+    updateFormMeta({ name: e.target.value })
+  }
+
+  const handleInputVersion = (e: any) => {
+    setVersionText(e.target.value)
+    updateFormMeta({ version: e.target.value })
   }
 
   const handleShowPreview = () => {
     window.open(`/draftform`, '_blank')
   }
-
-  console.log('form?.form_details ', form?.form_details)
 
   const handleClickSave = async () => {
     try {
@@ -70,9 +76,8 @@ const FormNavbarContent = () => {
         </div>
         <div className='flex gap-2 items-center'>
           <Typography>version :</Typography>
-          <Typography className='font-medium' color='text.primary'>
-            {form?.version}
-          </Typography>
+
+          <TextField value={versionText} onChange={handleInputVersion} variant='standard' />
         </div>
       </div>
       <div className='flex items-center gap-2'>
