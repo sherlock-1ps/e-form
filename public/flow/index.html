@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+  <body>
+    <script src="go.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/create-gojs-kit@3.0.13/dist/extensions/DataInspector.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+
+    <div id="allSampleContent" class="p-4 w-full">
+      <script src="https://cdn.jsdelivr.net/npm/create-gojs-kit@3.0.13/dist/extensions/Figures.js"></script>
+      <script id="code">
+        var myDiagram
+        function init() {
+          myDiagram = new go.Diagram('myDiagramDiv', {
+            // must name or refer to the DIV HTML element
+            // multipleSelection:false,
+            // allowMultipleSelection: false,
+            ChangedSelection: onSelectionChanged,
+            grid: new go.Panel('Grid').add(
+              new go.Shape('LineH', { stroke: 'lightgray', strokeWidth: 0.5 }),
+              new go.Shape('LineH', { stroke: 'gray', strokeWidth: 0.5, interval: 10 }),
+              new go.Shape('LineV', { stroke: 'lightgray', strokeWidth: 0.5 }),
+              new go.Shape('LineV', { stroke: 'gray', strokeWidth: 0.5, interval: 10 })
+            ),
+            // 'draggingTool.dragsLink': true,
+            // 'draggingTool.multipleSelection': true,
+            'draggingTool.isGridSnapEnabled': true,
+            'linkingTool.isUnconnectedLinkValid': true,
+            'linkingTool.portGravity': 20,
+            'relinkingTool.isUnconnectedLinkValid': true,
+            'relinkingTool.portGravity': 20,
+            'relinkingTool.fromHandleArchetype': new go.Shape('Diamond', {
+              segmentIndex: 0,
+              cursor: 'pointer',
+              desiredSize: new go.Size(8, 8),
+              fill: 'tomato',
+              stroke: 'darkred'
+            }),
+            'relinkingTool.toHandleArchetype': new go.Shape('Diamond', {
+              segmentIndex: -1,
+              cursor: 'pointer',
+              desiredSize: new go.Size(8, 8),
+              fill: 'darkred',
+              stroke: 'tomato'
+            }),
+            'linkReshapingTool.handleArchetype': new go.Shape('Diamond', {
+              desiredSize: new go.Size(7, 7),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            'rotatingTool.handleAngle': 270,
+            'rotatingTool.handleDistance': 30,
+            'rotatingTool.snapAngleMultiple': 15,
+            'rotatingTool.snapAngleEpsilon': 15,
+            'undoManager.isEnabled': true
+          })
+
+          // when the document is modified, add a "*" to the title and enable the "Save" button
+          myDiagram.addDiagramListener('Modified', e => {
+            var button = document.getElementById('SaveButton')
+            if (button) button.disabled = !myDiagram.isModified
+            var idx = document.title.indexOf('*')
+            if (myDiagram.isModified) {
+              if (idx < 0) document.title += '*'
+            } else {
+              if (idx >= 0) document.title = document.title.slice(0, idx)
+            }
+          })
+
+          /* add event ChangedSelection
+        myDiagram.addDiagramListener("ChangedSelection", function (e) {
+          return
+          var node = myDiagram.selection.first();
+          if (!(node instanceof go.Node)) return;
+          var data = node.data;
+
+          console.log(" myDiagram.model.linkDataArray", myDiagram.model.linkDataArray)
+          console.log("ChangedSelection", data)
+
+          let selectedOutCome = []
+          node.linksConnected.map(a => {
+            if (a.data.from == node.key) {
+              selectedOutCome.push(a.data)
+            }
+          })
+
+          $("#myExInspectorDiv").html(`<input value='${JSON.stringify(selectedOutCome)}'  />`)
+
+          console.log("selectedOutCome", selectedOutCome)
+
+          return;
+
+          const selectedNode = myDiagram.selection.first(); // Get the selected node
+          if (selectedNode) {
+            const newLink = myDiagram.model.linkDataArray.length + 1; // Create a unique ID for the new link
+
+            var model = myDiagram.model;
+            var location = selectedNode.data.location.split(' ')
+
+            let linkCount = selectedNode.linksConnected.count
+
+
+
+            location[1] = String(parseInt(location[1]) + 120)
+
+            if (linkCount > 0) {
+              // selectedNode.linksConnected.map(link=>{
+              //   console.log(link)
+              // })
+
+              if (linkCount % 2 == 0) {
+                location[0] = String(parseInt(location[0]) + (Math.ceil(linkCount / 2) * 150))
+              } else {
+                location[0] = String(parseInt(location[0]) - (Math.ceil(linkCount / 2) * 150))
+              }
+
+            }
+            var newPart = {
+              key: generateUniqueKey(),
+              text: 'Activity', figure: 'Rectangle', category: "activity",
+              components: JSON.stringify(["1", "2"]),
+              location: location.join(' ')
+            }
+            model.addNodeData(newPart);
+
+            // newnode = myDiagram.findNodeForData(newPart);
+            // if (newnode) newnode.location = selectedNode.location;
+
+            const newLinkData = {
+              key: newLink,
+              toPort: "T",
+              fromPort: "B",
+              from: selectedNode.data.key,
+              to: newPart.key
+            };
+            // Add the new link to the diagram's model
+            myDiagram.model.addLinkData(newLinkData);
+            // myDiagram.commandHandler.scrollToPart(newnode);
+          } else {
+            console.log("No node is selected.");
+          }
+
+
+
+          console.log("ChangedSelection", data)
+        });
+*/
+
+          // Define a function for creating a "port" that is normally transparent.
+          // The "name" is used as the GraphObject.portId, the "spot" is used to control how links connect
+          // and where the port is positioned on the node, and the boolean "output" and "input" arguments
+          // control whether the user can draw links from or to the port.
+          // function makePort(name, spot, output, input) {
+          function makePort(name, spot, option) {
+            // function makePort(name, spot) {
+            // the port is basically just a small transparent circle
+
+            return new go.Shape('Circle', {
+              fill: null, // not seen, by default; set to a translucent gray by showSmallPorts, defined below
+              stroke: null,
+              desiredSize: new go.Size(15, 15),
+              alignment: spot, // align the port on the main Shape
+              alignmentFocus: spot, // just inside the Shape
+              portId: name, // declare this object to be a "port"
+              fromSpot: spot,
+              toSpot: spot, // declare where links may connect at this port
+              // fromLinkable: output,
+              // toLinkable: input, // declare whether the user may draw links to/from here
+              cursor: 'pointer', // show a different cursor to indicate potential link point
+
+              fromLinkable: true,
+              toLinkable: true,
+              fromLinkableDuplicates: true,
+              toLinkableDuplicates: true,
+              fromLinkableSelfNode: true,
+              toLinkableSelfNode: true,
+
+              ...option
+            })
+          }
+
+          var nodeSelectionAdornmentTemplate = new go.Adornment('Auto').add(
+            new go.Shape({ fill: null, stroke: 'deepskyblue', strokeWidth: 1.5, strokeDashArray: [4, 2] }),
+            new go.Placeholder()
+          )
+
+          var nodeResizeAdornmentTemplate = new go.Adornment('Spot', { locationSpot: go.Spot.Right }).add(
+            new go.Placeholder(),
+            new go.Shape({
+              alignment: go.Spot.TopLeft,
+              cursor: 'nw-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              alignment: go.Spot.Top,
+              cursor: 'n-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              alignment: go.Spot.TopRight,
+              cursor: 'ne-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              alignment: go.Spot.Left,
+              cursor: 'w-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              alignment: go.Spot.Right,
+              cursor: 'e-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              alignment: go.Spot.BottomLeft,
+              cursor: 'se-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              alignment: go.Spot.Bottom,
+              cursor: 's-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              alignment: go.Spot.BottomRight,
+              cursor: 'sw-resize',
+              desiredSize: new go.Size(6, 6),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            })
+          )
+
+          var nodeRotateAdornmentTemplate = new go.Adornment({
+            locationSpot: go.Spot.Center,
+            locationObjectName: 'ELLIPSE'
+          }).add(
+            new go.Shape('Ellipse', {
+              name: 'ELLIPSE',
+              cursor: 'pointer',
+              desiredSize: new go.Size(7, 7),
+              fill: 'lightblue',
+              stroke: 'deepskyblue'
+            }),
+            new go.Shape({
+              geometryString: 'M3.5 7 L3.5 30',
+              isGeometryPositioned: true,
+              stroke: 'deepskyblue',
+              strokeWidth: 1.5,
+              strokeDashArray: [4, 2]
+            })
+          )
+
+          function findImgPath(pic) {
+            // console.log("pic",pic)
+            return `./img/${pic}.svg`
+          }
+
+          function jsonParse(data) {
+            // console.log("data",data)
+            return JSON.parse(data)
+          }
+
+          const nodeTemplatePanel = (option, isEdit = true) => {
+            return new go.Node('Spot', {
+              locationSpot: go.Spot.Center,
+              selectable: true,
+              // resizable: true,
+              // rotatable: true,
+              selectionAdornmentTemplate: nodeSelectionAdornmentTemplate,
+              resizeObjectName: 'PANEL',
+              resizeAdornmentTemplate: nodeResizeAdornmentTemplate,
+              rotateAdornmentTemplate: nodeRotateAdornmentTemplate,
+              mouseEnter: (e, node) => showSmallPorts(node, true),
+              mouseLeave: (e, node) => showSmallPorts(node, false)
+            })
+              .bindTwoWay('location', 'location', go.Point.parse, go.Point.stringify)
+              .bindTwoWay('angle')
+              .add(
+                new go.Panel('Auto', { name: 'PANEL' })
+                  .bindTwoWay('desiredSize', 'size', go.Size.parse, go.Size.stringify)
+                  .add(
+                    new go.Shape('Rectangle', {
+                      portId: '', // the default port: if no spot on link data, use closest side
+                      cursor: 'pointer',
+                      fill: 'white',
+                      strokeWidth: 2
+
+                      // fromLinkable: true,
+                      // toLinkable: true,
+
+                      // fromLinkableDuplicates: true,
+                      // toLinkableDuplicates: true,
+                      // fromLinkableSelfNode: true,
+                      // toLinkableSelfNode: true,
+
+                      // ...option
+                    })
+                      .bind('figure')
+                      .bind('fill'),
+                    new go.TextBlock({
+                      font: 'bold 10pt Helvetica, Arial, sans-serif',
+                      margin: 8,
+                      maxSize: new go.Size(160, NaN),
+                      wrap: go.Wrap.Fit,
+                      editable: isEdit
+                    }).bindTwoWay('text')
+                  ),
+                makePort('T', go.Spot.Top, option),
+                makePort('L', go.Spot.Left, option),
+                makePort('R', go.Spot.Right, option),
+                makePort('B', go.Spot.Bottom, option)
+              )
+          }
+
+          const imgDisplay = new go.Panel(go.Panel.Table, {
+            background: 'transparent',
+            cursor: 'Pointer',
+            column: 0,
+            height: 18,
+            alignment: go.Spot.TopLeft
+          }).add(
+            new go.Panel(go.Panel.Horizontal).add(
+              new go.Picture({
+                alignment: go.Spot.TopLeft,
+                name: 'PICTURE',
+                source: './img/3.png',
+                desiredSize: new go.Size(18, 18)
+              }).bind('source', findImgPath)
+              // .bind('source', 'pic', findImgPath)
+            )
+          )
+
+          const nodeTemplatePanelActivity = (option, isEdit = true) => {
+            return new go.Node('Spot', {
+              locationSpot: go.Spot.Center,
+              alignment: go.Spot.TopLeft,
+              selectable: true,
+              // resizable: true,
+              // rotatable: true,
+              selectionAdornmentTemplate: nodeSelectionAdornmentTemplate,
+              resizeObjectName: 'PANEL',
+              resizeAdornmentTemplate: nodeResizeAdornmentTemplate,
+              rotateAdornmentTemplate: nodeRotateAdornmentTemplate,
+              mouseEnter: (e, node) => showSmallPorts(node, true),
+              mouseLeave: (e, node) => showSmallPorts(node, false)
+            })
+              .bindTwoWay('location', 'location', go.Point.parse, go.Point.stringify)
+              .bindTwoWay('angle')
+              .add(
+                new go.Panel('Auto', { name: 'PANEL' })
+                  .bindTwoWay('desiredSize', 'size', go.Size.parse, go.Size.stringify)
+                  .add(
+                    new go.Shape('Rectangle', {
+                      alignment: go.Spot.TopLeft,
+                      portId: '', // the default port: if no spot on link data, use closest side
+                      cursor: 'pointer',
+                      fill: 'white',
+
+                      // fromLinkable: true,
+                      // toLinkable: true,
+                      // toLinkableDuplicates: true,
+
+                      // fromLinkableDuplicates: true,
+                      // fromLinkableSelfNode: true,
+                      // toLinkableSelfNode: true,
+
+                      strokeWidth: 2
+                    })
+                      // .theme('fill', 'background')
+                      .bind('figure')
+                      .bind('fill'),
+                    new go.Panel(go.Panel.Table, { margin: 0.5, defaultRowSeparatorStrokeWidth: 0.5 })
+                      // .theme('defaultRowSeparatorStroke', 'divider')
+                      .add(
+                        new go.Panel(go.Panel.Table, {
+                          padding: new go.Margin(15, 18, 15, 18),
+                          minSize: new go.Size(100, NaN)
+                        })
+
+                          //  .addColumnDefinition(0, { width: 120 })
+                          .add(
+                            new go.Panel(go.Panel.Table, {
+                              column: 0,
+
+                              stretch: go.Stretch.Vertical,
+                              defaultAlignment: go.Spot.Left
+                            }).add(
+                              new go.Panel(go.Panel.Horizontal, { row: 0 }).add(
+                                new go.TextBlock({ editable: true, minSize: new go.Size(10, 14) }).bindTwoWay('text')
+                                // .theme('stroke', 'text')
+                                // .theme('font', 'name'),
+                              )
+                            )
+                          ),
+                        new go.Panel(go.Panel.Table, {
+                          row: 1,
+                          padding: 1,
+                          alignment: go.Spot.TopLeft,
+
+                          // stretch: go.Stretch.Fill,
+                          // defaultStretch: go.Stretch.Fill,
+                          // stretch: go.Stretch.Horizontal,
+                          defaultColumnSeparatorStrokeWidth: 0.5
+                        }).add(
+                          new go.Panel('Horizontal', {
+                            row: 5,
+                            itemTemplate: imgDisplay
+                          }).bind('itemArray', 'components', jsonParse)
+                        )
+                      )
+                  ),
+                makePort('T', go.Spot.Top, option),
+                makePort('L', go.Spot.Left, option),
+                makePort('R', go.Spot.Right, option),
+                makePort('B', go.Spot.Bottom, option)
+              )
+          }
+
+          const templmap = new go.Map()
+          templmap.add(
+            'start',
+            nodeTemplatePanel(
+              {
+                fromLinkableDuplicates: false,
+                toLinkableDuplicates: false,
+                fromLinkableSelfNode: false,
+                toLinkableSelfNode: false
+              },
+              false
+            )
+          )
+          templmap.add(
+            'condition',
+            nodeTemplatePanel({
+              fromLinkableDuplicates: false,
+              toLinkableDuplicates: false,
+              fromLinkableSelfNode: false,
+              toLinkableSelfNode: false
+            })
+          )
+          templmap.add(
+            'end',
+            nodeTemplatePanel(
+              {
+                fromLinkableDuplicates: false,
+                toLinkableDuplicates: false,
+                fromLinkableSelfNode: false,
+                toLinkableSelfNode: false
+              },
+              false
+            )
+          )
+          templmap.add('comment', nodeTemplatePanel({}))
+          templmap.add('activity', nodeTemplatePanelActivity({}))
+
+          // templmap.add("", diagram.nodeTemplate);
+
+          myDiagram.nodeTemplateMap = templmap
+
+          function showSmallPorts(node, show) {
+            node.ports.each(port => {
+              if (port.portId !== '') {
+                // don't change the default port, which is the big shape
+                port.fill = show ? 'rgba(0,0,0,.3)' : null
+              }
+            })
+          }
+
+          var linkSelectionAdornmentTemplate = new go.Adornment('Link').add(
+            new go.Shape({
+              isPanelMain: true, // isPanelMain declares that this Shape shares the Link.geometry
+              fill: null,
+              stroke: 'deepskyblue',
+              strokeWidth: 0 // use selection object's strokeWidth
+            })
+          )
+
+          myDiagram.linkTemplate = new go.Link({
+            // the whole link panel
+            toShortLength: 4,
+            relinkableTo: true,
+            // selectable: true,
+            //  selectionAdornmentTemplate: linkSelectionAdornmentTemplate,
+            // relinkableFrom: true,
+            reshapable: true,
+            routing: go.Routing.AvoidsNodes,
+            curve: go.Curve.JumpOver,
+            corner: 5
+            // toShorten: 5
+            // routing: go.Routing.AvoidsNodes,
+            // fromSpot: go.Spot.Bottom,
+            // toSpot: go.Spot.Top,
+            // fromEndSegmentLength: 4,
+            // toEndSegmentLength: 4
+          })
+            .bindTwoWay('points')
+            .add(
+              new go.Shape('Rectangle', { stroke: 'black', strokeWidth: 1.5 }),
+              new go.Shape({ toArrow: 'OpenTriangle', stroke: 'black' }),
+              new go.TextBlock({
+                font: '400 9pt Source Sans Pro, sans-serif',
+                // segmentIndex: -1
+                segmentOffset: new go.Point(NaN, 10),
+                isMultiline: false,
+                editable: true
+              }).bindTwoWay('text')
+              // new go.Binding("segmentOffset", function (pos) {
+              //   console.log("pos", pos)
+              //   return new go.Point(0, pos); // Use dynamic Y offset from your data
+              // })
+            )
+
+          var inspector = new Inspector('myInspectorDiv', myDiagram, {
+            // uncomment this line to only inspect the named properties below instead of all properties on each object:
+            // includesOwnProperties: false,
+            properties: {
+              figure: { show: false },
+              key: { show: false },
+              fill: { show: false },
+              category: { show: false },
+              components: { show: false },
+              // key: { readOnly: true, show: Inspector.showIfPresent },
+              text: {}
+              // key would be automatically added for nodes, but we want to declare it read-only also:
+
+              // color would be automatically added for nodes, but we want to declare it a color also:
+              // color: { type: 'color' },
+            },
+            propertyModified: onSelectionChanged
+          })
+
+          load() // load an initial diagram from some JSON text
+
+          // initialize the Palette that is on the left side of the page
+          myPalette = new go.Palette('myPaletteDiv', {
+            maxSelectionCount: 1,
+            nodeTemplateMap: myDiagram.nodeTemplateMap, // share the templates used by myDiagram
+            // simplify the link template, just in this Palette
+            linkTemplate: new go.Link({
+              // because the GridLayout.alignment is Location and the nodes have locationSpot == Spot.Center,
+              // to line up the Link in the same manner we have to pretend the Link has the same location spot
+              locationSpot: go.Spot.Center,
+              selectionAdornmentTemplate: new go.Adornment('Link', {
+                locationSpot: go.Spot.Center
+              }).add(
+                new go.Shape({
+                  isPanelMain: true,
+                  fill: null,
+                  stroke: 'deepskyblue',
+                  strokeWidth: 0
+                }),
+                new go.Shape({
+                  // the arrowhead
+                  toArrow: 'Standard',
+                  stroke: null
+                })
+              ),
+              routing: go.Routing.AvoidsNodes,
+              curve: go.Curve.JumpOver,
+              corner: 5,
+              toShortLength: 4
+            })
+              .bind('points')
+              .add(
+                new go.Shape({
+                  // the link path shape
+                  isPanelMain: true,
+                  strokeWidth: 2
+                }),
+                new go.Shape({
+                  // the arrowhead
+                  toArrow: 'Standard',
+                  stroke: null
+                })
+              ),
+            model: new go.GraphLinksModel([
+              // specify the contents of the Palette "start" "condition" "end" "comment" "activity"
+              { text: 'Start', figure: 'Capsule', size: '170 70', fill: '#00AD5F', category: 'start' },
+              {
+                text: 'Activity',
+                figure: 'Rectangle',
+                category: 'activity',
+                size: '170 70',
+                components: JSON.stringify(['1', '2'])
+                // components: JSON.stringify([{ pic: "1" }, { pic: "2" }])
+              },
+              { text: 'Condition', figure: 'Diamond', size: '170 70', fill: 'lightskyblue', category: 'condition' },
+              { text: 'End', figure: 'Capsule', size: '170 70', fill: '#CE0620', category: 'end' },
+              { text: 'Comment', figure: 'RoundedRectangle', size: '170 70', fill: 'lightyellow', category: 'comment' }
+            ])
+          })
+
+          myOverview = new go.Overview('myOverviewDiv', {
+            observed: myDiagram, // tell it which Diagram to show and pan
+            contentAlignment: go.Spot.Center
+          })
+
+          function removeNodeWithoutRemovingLinks(node) {
+            // console.log(node)
+            if (node) {
+              // Get all links connected to the node
+              const links = node.linksConnected
+
+              let retryCount = 0
+
+              if (links.count > 0) {
+                const changeNodes = () => {
+                  try {
+                    links.map(link => {
+                      link.toNode = null
+                    })
+                  } catch (error) {
+                    retryCount++
+                    if (retryCount <= links.count) console.log(retryCount, links.count)
+                    changeNodes()
+                  }
+                }
+
+                changeNodes()
+              }
+
+              myDiagram.remove(node)
+            }
+          }
+
+          function onSelectionChanged() {
+            var node = myDiagram.selection.first()
+            if (!(node instanceof go.Node)) return
+            var data = node.data
+
+            console.log(' myDiagram.model.linkDataArray', myDiagram.model.linkDataArray)
+            console.log('ChangedSelection', data)
+
+            let selectedOutCome = []
+            node.linksConnected.map(a => {
+              if (a.data.from == node.key) {
+                selectedOutCome.push(a.data)
+              }
+            })
+
+            $('#myExInspectorDiv').html(`<input value='${JSON.stringify(selectedOutCome)}'  />`)
+
+            console.log('selectedOutCome', selectedOutCome)
+          }
+
+          myDiagram.commandHandler.deleteSelection = function () {
+            const selectedParts = this.diagram.selection
+            const me = this
+            if (selectedParts.count >= 2) {
+              go.CommandHandler.prototype.deleteSelection.call(this)
+            } else {
+              selectedParts.each(function (part) {
+                console.log(part.data)
+
+                switch (part.data.category) {
+                  case 'activity':
+                    removeNodeWithoutRemovingLinks(part)
+                    break
+
+                  default:
+                    go.CommandHandler.prototype.deleteSelection.call(me)
+                    break
+                }
+              })
+            }
+          }
+        }
+
+        // Show the diagram's model in JSON format that the user may edit
+        function save() {
+          saveDiagramProperties() // do this first, before writing to JSON
+          document.getElementById('mySavedModel').value = myDiagram.model.toJson()
+          myDiagram.isModified = false
+        }
+        function load() {
+          myDiagram.model = go.Model.fromJson(document.getElementById('mySavedModel').value)
+          loadDiagramProperties() // do this after the Model.modelData has been brought into memory
+        }
+
+        function saveDiagramProperties() {
+          myDiagram.model.modelData.position = go.Point.stringify(myDiagram.position)
+        }
+        function loadDiagramProperties(e) {
+          // set Diagram.initialPosition, not Diagram.position, to handle initialization side-effects
+          var pos = myDiagram.model.modelData.position
+          if (pos) myDiagram.initialPosition = go.Point.parse(pos)
+        }
+        window.addEventListener('DOMContentLoaded', init)
+
+        function generateUniqueKey() {
+          return Date.now() + Math.floor(Math.random() * 1000)
+        }
+
+        function addLinkToCurrentNode() {
+          const selectedNode = myDiagram.selection.first() // Get the selected node
+          if (selectedNode) {
+            const newLink = Date.now() // Create a unique ID for the new link
+
+            var model = myDiagram.model
+            var location = selectedNode.data.location.split(' ')
+
+            // myDiagram.model.linkDataArray.length + 1
+            // let linkCount = selectedNode.linksConnected.count
+
+            let linkCount = 0
+            selectedNode.linksConnected.map(a => {
+              if (a.data.from == selectedNode.key) {
+                linkCount++
+              }
+            })
+
+            location[1] = String(parseInt(location[1]) + 120)
+
+            if (linkCount > 0) {
+              // selectedNode.linksConnected.map(link=>{
+              //   console.log(link)
+              // })
+
+              if (linkCount % 2 == 0) {
+                location[0] = String(parseInt(location[0]) + Math.ceil(linkCount / 2) * 150)
+              } else {
+                location[0] = String(parseInt(location[0]) - Math.ceil(linkCount / 2) * 150)
+              }
+            }
+            var newPart = {
+              key: generateUniqueKey(),
+              text: 'Activity',
+              figure: 'Rectangle',
+              category: 'activity',
+              components: JSON.stringify(['1', '2']),
+              location: location.join(' ')
+            }
+            model.addNodeData(newPart)
+
+            // newnode = myDiagram.findNodeForData(newPart);
+            // if (newnode) newnode.location = selectedNode.location;
+
+            const newLinkData = {
+              key: newLink,
+              toPort: 'T',
+              fromPort: 'B',
+              from: selectedNode.data.key,
+              to: newPart.key
+            }
+            // Add the new link to the diagram's model
+            myDiagram.model.addLinkData(newLinkData)
+            // myDiagram.commandHandler.scrollToPart(newnode);
+          } else {
+            console.log('No node is selected.')
+          }
+        }
+      </script>
+
+      <div id="sample">
+        <div style="width: 100%; display: flex; justify-content: space-between">
+          <span style="display: inline-block; vertical-align: top; padding-right: 2px; width: 200px">
+            <div id="myOverviewDiv" style="border: solid 1px black; height: 100px"></div>
+            <div id="myPaletteDiv" style="background-color: whitesmoke; border: solid 1px black; height: 518px"></div>
+          </span>
+          <div id="myDiagramDiv" style="flex-grow: 1; height: 620px; border: solid 1px black"></div>
+          <span style="display: inline-block; vertical-align: top; padding-right: 2px; width: 200px">
+            <div id="myInspectorDiv" class="inspector"></div>
+            <div id="myExInspectorDiv" class="inspector"></div>
+          </span>
+        </div>
+
+        <div style="display: none">
+          <button onclick="addLinkToCurrentNode()">add Link</button>
+          <div>
+            <button id="SaveButton" onclick="save()">Save</button>
+            <button onclick="load()">Load</button>
+            Diagram Model saved in JSON format:
+          </div>
+          <textarea id="mySavedModel" style="width: 100%; height: 300px">
+{ "class": "go.GraphLinksModel",
+  "linkFromPortIdProperty": "fromPort",
+  "linkToPortIdProperty": "toPort",
+  "pointsDigits": 1,
+  "nodeDataArray": [
+ ],
+  "linkDataArray": [
+ ]}
+    </textarea
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
