@@ -46,9 +46,7 @@ const AdminDashboardComponent = () => {
               icon: <Edit />,
               menuItemProps: {
                 className: ' text-secondary',
-                onClick: () => {
-                  onDelete(data?.id)
-                }
+                onClick: () => {}
               }
             },
             {
