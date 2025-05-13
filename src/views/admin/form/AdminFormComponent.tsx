@@ -2,7 +2,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-import HeadForm from '@components/e-form/form/HeadForm'
 import { useFormStore } from '@/store/useFormStore'
 import { Card, CardContent, Grid } from '@mui/material'
 import FormNavbarContent from '@/components/layout/vertical/navbar/FormNavbarContent'
@@ -37,9 +36,6 @@ const AdminFormComponent = () => {
         </Card>
       )}
 
-      {/* <section className='w-full '>
-        <HeadForm />
-      </section> */}
       {activeTab == 'document' && <NewFormContainer formElements={formData} />}
       {activeTab == 'appState' && <VariableFormComponent />}
       {activeTab == 'apiCall' && <ApiCallFormComponent />}

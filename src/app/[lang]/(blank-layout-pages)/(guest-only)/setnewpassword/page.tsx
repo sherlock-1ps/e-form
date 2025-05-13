@@ -3,7 +3,9 @@ import { getServerMode } from '@core/utils/serverHelpers'
 
 const SetNewPasswordPage = () => {
   const mode = getServerMode()
+
   return null
+
   return <SetNewPasswordComponent mode={mode} />
 }
 

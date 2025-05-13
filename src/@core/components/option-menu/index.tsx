@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import type { ReactElement, ReactNode, SyntheticEvent } from 'react'
 
 // Next Imports

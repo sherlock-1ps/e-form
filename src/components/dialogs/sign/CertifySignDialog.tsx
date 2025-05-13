@@ -18,6 +18,7 @@ const CertifySignDialog = ({ id, onClick }: signProps) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false)
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
+
   return (
     <Grid container spacing={4}>
       <Grid item xs={12}>

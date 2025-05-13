@@ -1,7 +1,7 @@
 // src/context/DictionaryContext.tsx
 'use client'
 
-import { createContext, useContext } from 'react'
+import React, { createContext, useContext } from 'react'
 
 type DictionaryContextType = {
   dictionary: Record<string, any>

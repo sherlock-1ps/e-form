@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 const LoginPage = () => {
   // Vars
   const mode = getServerMode()
+
   return null
 
   return <Login mode={mode} />

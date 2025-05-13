@@ -230,7 +230,7 @@ const SubMenu: ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (props, r
     if (openSubmenusRef?.current && openSubmenusRef?.current.length > 0) openSubmenusRef.current = []
   }
 
-  const handleOnClick = (event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) => {
+  const handleOnClick = (event: MouseEvent<HTMLAnchorElement, any>) => {
     onClick?.(event)
     handleSlideToggle()
   }

@@ -17,6 +17,7 @@ import ProfileComponent from '@/views/profile/ProfileComponent'
 const ProfilePage = async () => {
   // Vars
   const data = await getProfileData()
+
   return null
 
   return <ProfileComponent data={data} />

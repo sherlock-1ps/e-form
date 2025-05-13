@@ -45,6 +45,7 @@ export const CreateApiCallFormComponent = ({ onStateCreateChange }: any) => {
   const handleCallTestApi = async () => {
     if (!methodType || !apiUrl) {
       alert('โปรดกรอก method และ API Url')
+
       return
     }
 

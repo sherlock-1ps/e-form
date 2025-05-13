@@ -9,7 +9,6 @@ const Axios: AxiosInstance = axios.create({
 
 
 let failedQueue: any[] = []
-let cachedIP: string | null = null
 
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach(prom => {

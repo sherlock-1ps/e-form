@@ -2,6 +2,7 @@ import CreateAccountComponent from '@/views/account/create/CreateAccountComponen
 
 const CreateAccountPage = async () => {
   return null
+
   return <CreateAccountComponent />
 }
 

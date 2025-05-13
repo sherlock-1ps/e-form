@@ -6,8 +6,6 @@ import { MAX_FILE_IMAGE_SIZE_MB } from '@/data/toolbox/toolboxMenu'
 
 const ImageForm = item => {
   const fileInputRef = useRef(null)
-  const updateValue = useFormStore(state => state.updateValue)
-  const selectedField = useFormStore(state => state.selectedField)
 
   const handleDivClick = () => {
     fileInputRef.current?.click()

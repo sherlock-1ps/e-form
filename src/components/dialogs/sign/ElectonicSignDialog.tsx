@@ -51,6 +51,7 @@ const ElectonicSignDialog = ({ id, onClick }: signProps) => {
     }
 
     window.addEventListener('resize', handleResize)
+
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 

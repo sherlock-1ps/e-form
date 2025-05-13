@@ -243,7 +243,7 @@ const SubMenu: ForwardRefRenderFunction<HTMLLIElement, SubMenuProps> = (props, r
   // Merge all the interactions into prop getters
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([hover, click, dismiss, role])
 
-  const handleOnClick = (event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) => {
+  const handleOnClick = (event: MouseEvent<HTMLAnchorElement, any>) => {
     onClick?.(event)
     triggerPopout === 'click' && setOpen(!open)
   }

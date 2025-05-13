@@ -661,6 +661,7 @@ const MediaFormComponent = () => {
       const maxSize = 20 * 1024 * 1024 // 20MB
       if (file.size > maxSize) {
         alert('ขนาดไฟล์ต้องไม่เกิน 20 MB')
+
         return
       }
 
