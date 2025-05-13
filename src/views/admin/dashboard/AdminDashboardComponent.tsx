@@ -113,9 +113,15 @@ const AdminDashboardComponent = () => {
           ]}
         />
       </div>
-      <Typography className='w-full text-start italic' variant='body2'>
-        {version}
-      </Typography>
+      <div className='flex justify-between'>
+        <Typography className='w-full text-start italic' variant='body2'>
+          เวอร์ชั่น
+        </Typography>
+        <Typography className='w-full text-end italic' variant='body2'>
+          {version}
+        </Typography>
+      </div>
+
       <Button className='p-0' color='secondary'>
         <img src={image} alt={title} className='w-full h-auto rounded-md' />
       </Button>
