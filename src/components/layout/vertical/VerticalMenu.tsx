@@ -142,7 +142,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           >
             จัดการแบบฟอร์ม
           </MenuItem>
-          <MenuItem href='/workflow' icon={<AccountTree style={{ width: '20px', height: '20px' }} />}>
+          <MenuItem href={`/${locale}/workflow`} icon={<AccountTree style={{ width: '20px', height: '20px' }} />}>
             จัดการเวิร์กโฟลว์
           </MenuItem>
           {/* <MenuItem href='/workflow' icon={<SmsFailed style={{ width: '20px', height: '20px' }} />}>

@@ -11,7 +11,7 @@ interface NavbarProps {
 }
 
 const Navbar: FC<NavbarProps> = () => {
-  const hideNavbarPages = ['/user', '/admin', '/draftform']
+  const hideNavbarPages = ['/user', '/admin', '/draftform', '/workflow']
   const pathname = usePathname()
 
   const shouldHideNavbar = hideNavbarPages.some(path => pathname.includes(path))

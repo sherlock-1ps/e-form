@@ -144,8 +144,6 @@ const Navigation = (props: Props) => {
   const renderNavigationContent = useMemo(() => {
     if (pathname.includes('/admin/form')) {
       return <ToolboxFormNavigation />
-    } else if (pathname.includes('/workflow')) {
-      return null
     } else {
       return <VerticalMenu scrollMenu={scrollMenu} dictionary={dictionary} />
     }
