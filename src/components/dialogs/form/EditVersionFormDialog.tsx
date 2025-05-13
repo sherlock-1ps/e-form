@@ -8,16 +8,96 @@ import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useState } from 'react'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
+import { useCreateNewVersionFormQueryOption, useGetFormQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { toast } from 'react-toastify'
 
 interface EditVersionProps {
   id: string
   onClick: () => void
+  onCreateNewVersion: any
+  data: any
 }
 
-const EditVersionFormDialog = ({ id, onClick }: EditVersionProps) => {
+const EditVersionFormDialog = ({ id, onClick, data, onCreateNewVersion }: EditVersionProps) => {
   const { closeDialog } = useDialog()
   const [time, setTime] = useState<Date | null | undefined>(null)
   const [date, setDate] = useState<Date | null | undefined>(null)
+  const [version, setVersion] = useState<Date | null | undefined>(data?.version[0]?.version)
+
+  const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
+
+  const { mutateAsync: createNewVersion } = useCreateNewVersionFormQueryOption()
+
+  console.log('data', data)
+
+  const handleGetForm = async (id: number) => {
+    const request = {
+      id: id
+    }
+
+    try {
+      const response = await getForm(request)
+      if (response?.code == 'SUCCESS') {
+        console.log('response', response)
+      }
+    } catch (error) {
+      toast.error('เรียกฟอร์มล้มเหลว!', { autoClose: 3000 })
+    }
+  }
+
+  const handleCreateNewVersion = async (id: number) => {
+    try {
+      const resultForm = await handleGetForm(id)
+      // if (resultForm?.code == 'SUCCESS') {
+      // }
+
+      const request = {
+        name: '',
+        versions: [
+          {
+            version: '',
+            form_details: [{ detail: { data: '' } }]
+          }
+        ]
+      }
+
+      // const response = await createNewVersion(request)
+      // if (response?.code == 'SUCCESS') {
+      //   console.log('response', response)
+      //   toast.success('สร้างเวอร์ชั่นใหม่สำเร็จ!', { autoClose: 3000 })
+      // }
+    } catch (error) {
+      toast.error('สร้างเวอร์ชั่นใหม่ล้มเหลว!', { autoClose: 3000 })
+    }
+  }
+
+  const handleClick = () => {
+    try {
+      // const resultForm = await handleGetForm(id)
+      // if (resultForm?.code == 'SUCCESS') {
+      // }
+
+      const request = {
+        name: '',
+        versions: [
+          {
+            version: '',
+            form_details: [{ detail: { data: '' } }]
+          }
+        ]
+      }
+
+      closeDialog(id), onClick()
+
+      // const response = await createNewVersion(request)
+      // if (response?.code == 'SUCCESS') {
+      //   console.log('response', response)
+      //   toast.success('สร้างเวอร์ชั่นใหม่สำเร็จ!', { autoClose: 3000 })
+      // }
+    } catch (error) {
+      toast.error('สร้างเวอร์ชั่นใหม่ล้มเหลว!', { autoClose: 3000 })
+    }
+  }
 
   return (
     <Grid container className='flex flex-col' spacing={2}>
@@ -34,7 +114,7 @@ const EditVersionFormDialog = ({ id, onClick }: EditVersionProps) => {
           dateFormat='dd/MM/yyyy'
           onChange={(date: Date | null) => setDate(date)}
           placeholderText='ว/ ด/ ป'
-          customInput={<CustomTextField label='Basic' fullWidth />}
+          customInput={<CustomTextField label='กำหนดวันเริ่มใช้งาน' fullWidth />}
         />
       </Grid>
       <Grid item xs={12}>
@@ -62,12 +142,7 @@ const EditVersionFormDialog = ({ id, onClick }: EditVersionProps) => {
         >
           ยกเลิก
         </Button>
-        <Button
-          variant='contained'
-          onClick={() => {
-            closeDialog(id), onClick()
-          }}
-        >
+        <Button variant='contained' onClick={handleClick}>
           ยืนยัน
         </Button>
       </Grid>

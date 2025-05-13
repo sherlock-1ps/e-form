@@ -37,6 +37,22 @@ export const fetchForm = async ({ page, pageSize }: { page: number; pageSize: nu
 
 };
 
+export const getForm = async ({ id }: { id: any }) => {
+  try {
+    const response = await Axios.post("/forms/getForm", { id });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error get form:", error);
+
+    const e = axiosErrorHandler(error, '/forms/getForm')
+    throw e;
+
+  }
+
+};
+
 
 export const createForm = async ({ request }: { request: any }) => {
   try {
@@ -48,6 +64,22 @@ export const createForm = async ({ request }: { request: any }) => {
     console.error("Error create form:", error);
 
     const e = axiosErrorHandler(error, '/forms/createNewForm')
+    throw e;
+
+  }
+
+};
+
+export const createNewVersionForm = async ({ request }: { request: any }) => {
+  try {
+    const response = await Axios.post("/forms/createNewVersion", request);
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error create new version form:", error);
+
+    const e = axiosErrorHandler(error, '/forms/createNewVersion')
     throw e;
 
   }

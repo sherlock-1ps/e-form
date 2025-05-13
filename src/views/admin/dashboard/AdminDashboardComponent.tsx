@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, CardContent, Card } from '@mui/material'
+import { Grid, Typography, Button, CardContent, Card, CircularProgress } from '@mui/material'
 
 import AddIcon from '@mui/icons-material/Add'
 import { useDispatch } from 'react-redux'
@@ -15,7 +15,12 @@ import { Edit, FileCopy, EditCalendar, Delete, CreateNewFolder, AccountTreeOutli
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import EditVersionFormDialog from '@/components/dialogs/form/EditVersionFormDialog'
 import DateUseFormDialog from '@/components/dialogs/form/DateUseFormDialog'
-import { useDeleteFormQueryOption, useFetchFormQueryOption } from '@/queryOptions/form/formQueryOptions'
+import {
+  useCreateNewVersionFormQueryOption,
+  useDeleteFormQueryOption,
+  useFetchFormQueryOption,
+  useGetFormQueryOption
+} from '@/queryOptions/form/formQueryOptions'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -29,7 +34,11 @@ const AdminDashboardComponent = () => {
 
   const { mutateAsync: deleteForm } = useDeleteFormQueryOption()
 
-  const ImageCard = ({ title, image, date, status, version, onDelete, data }: any) => (
+  const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
+
+  const { mutateAsync: createNewVersion } = useCreateNewVersionFormQueryOption()
+
+  const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm, onCreateNewVersion }: any) => (
     <div className=' p-4 bg-white  rounded-md  max-w-[200px] h-[262px] max-h-[262px] border shadow-md'>
       <div className='flex items-center justify-between'>
         <Typography variant='h6' className='text-start overflow-hidden text-ellipsis whitespace-nowrap'>
@@ -43,10 +52,13 @@ const AdminDashboardComponent = () => {
           options={[
             {
               text: 'แก้ไข',
-              icon: <Edit />,
+              icon: pendingGetForm ? <CircularProgress size={20} /> : <Edit />,
               menuItemProps: {
+                disabled: pendingGetForm,
                 className: ' text-secondary',
-                onClick: () => {}
+                onClick: () => {
+                  onGetForm(data?.version[0]?.id)
+                }
               }
             },
             {
@@ -57,7 +69,14 @@ const AdminDashboardComponent = () => {
                 onClick: () => {
                   showDialog({
                     id: 'alertEditVersionFormDialog',
-                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' onClick={() => {}} />,
+                    component: (
+                      <EditVersionFormDialog
+                        id='alertEditVersionFormDialog'
+                        data={data}
+                        onCreateNewVersion={onCreateNewVersion}
+                        onClick={() => {}}
+                      />
+                    ),
                     size: 'sm'
                   })
                 }
@@ -124,8 +143,6 @@ const AdminDashboardComponent = () => {
     </div>
   )
 
-  console.log('data', data)
-
   const handleDeleteForm = async (id: number) => {
     const request = {
       id: id
@@ -138,6 +155,47 @@ const AdminDashboardComponent = () => {
       }
     } catch (error) {
       toast.error('ลบฟอร์มล้มเหลว!', { autoClose: 3000 })
+    }
+  }
+
+  const handleGetForm = async (id: number) => {
+    const request = {
+      id: id
+    }
+
+    try {
+      const response = await getForm(request)
+      if (response?.code == 'SUCCESS') {
+        console.log('response', response)
+      }
+    } catch (error) {
+      toast.error('เรียกฟอร์มล้มเหลว!', { autoClose: 3000 })
+    }
+  }
+
+  const handleCreateNewVersion = async (id: number) => {
+    try {
+      const resultForm = await handleGetForm(id)
+      if (resultForm?.code == 'SUCCESS') {
+      }
+
+      const request = {
+        name: '',
+        versions: [
+          {
+            version: '',
+            form_details: [{ detail: { data: '' } }]
+          }
+        ]
+      }
+
+      const response = await createNewVersion(request)
+      if (response?.code == 'SUCCESS') {
+        console.log('response', response)
+        toast.success('สร้างเวอร์ชั่นใหม่สำเร็จ!', { autoClose: 3000 })
+      }
+    } catch (error) {
+      toast.error('สร้างเวอร์ชั่นใหม่ล้มเหลว!', { autoClose: 3000 })
     }
   }
 
@@ -178,6 +236,8 @@ const AdminDashboardComponent = () => {
                       date='แก้ไขล่าสุด 31 ธ.ค. 2567'
                       status={'ใช้งานอยู่'}
                       onDelete={handleDeleteForm}
+                      onGetForm={handleGetForm}
+                      onCreateNewVersion={handleCreateNewVersion}
                     />
                   )
                 })}

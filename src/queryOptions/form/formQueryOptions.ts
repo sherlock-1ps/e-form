@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { createForm, createVariable, deleteForm, deleteVariable, editVariable, fetchForm, fetchVariable } from '@/app/sevices/form/formServices';
+import { createForm, createNewVersionForm, createVariable, deleteForm, deleteVariable, editVariable, fetchForm, fetchVariable, getForm } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
@@ -12,6 +12,34 @@ export function useFetchFormQueryOption(page: number, pageSize: number) {
     queryFn: () => fetchForm({ page, pageSize }),
   });
 }
+
+export const useGetFormQueryOption = () => {
+
+  return useMutation({
+    mutationFn: getForm,
+    onError: (error) => {
+      console.error("Error get form:", error);
+    },
+
+
+  });
+};
+
+export const useCreateNewVersionFormQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createNewVersionForm,
+    onError: (error) => {
+      console.error("Error create new version form:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["form"] });
+    },
+
+
+  });
+};
 
 export const useCreateFormQueryOption = () => {
 
