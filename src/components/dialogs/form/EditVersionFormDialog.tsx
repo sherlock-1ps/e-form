@@ -14,11 +14,10 @@ import { toast } from 'react-toastify'
 interface EditVersionProps {
   id: string
   onClick: () => void
-  onCreateNewVersion: any
   data: any
 }
 
-const EditVersionFormDialog = ({ id, onClick, data, onCreateNewVersion }: EditVersionProps) => {
+const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
   const { closeDialog } = useDialog()
   const [time, setTime] = useState<Date | null | undefined>(null)
   const [date, setDate] = useState<Date | null | undefined>(null)

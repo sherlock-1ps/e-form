@@ -38,7 +38,7 @@ const AdminDashboardComponent = () => {
 
   const { mutateAsync: createNewVersion } = useCreateNewVersionFormQueryOption()
 
-  const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm, onCreateNewVersion }: any) => (
+  const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
     <div className=' p-4 bg-white  rounded-md  max-w-[200px] h-[262px] max-h-[262px] border shadow-md'>
       <div className='flex items-center justify-between'>
         <Typography variant='h6' className='text-start overflow-hidden text-ellipsis whitespace-nowrap'>
@@ -69,14 +69,7 @@ const AdminDashboardComponent = () => {
                 onClick: () => {
                   showDialog({
                     id: 'alertEditVersionFormDialog',
-                    component: (
-                      <EditVersionFormDialog
-                        id='alertEditVersionFormDialog'
-                        data={data}
-                        onCreateNewVersion={onCreateNewVersion}
-                        onClick={() => {}}
-                      />
-                    ),
+                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => {}} />,
                     size: 'sm'
                   })
                 }
@@ -173,32 +166,6 @@ const AdminDashboardComponent = () => {
     }
   }
 
-  const handleCreateNewVersion = async (id: number) => {
-    try {
-      const resultForm = await handleGetForm(id)
-      if (resultForm?.code == 'SUCCESS') {
-      }
-
-      const request = {
-        name: '',
-        versions: [
-          {
-            version: '',
-            form_details: [{ detail: { data: '' } }]
-          }
-        ]
-      }
-
-      const response = await createNewVersion(request)
-      if (response?.code == 'SUCCESS') {
-        console.log('response', response)
-        toast.success('สร้างเวอร์ชั่นใหม่สำเร็จ!', { autoClose: 3000 })
-      }
-    } catch (error) {
-      toast.error('สร้างเวอร์ชั่นใหม่ล้มเหลว!', { autoClose: 3000 })
-    }
-  }
-
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
@@ -237,7 +204,6 @@ const AdminDashboardComponent = () => {
                       status={'ใช้งานอยู่'}
                       onDelete={handleDeleteForm}
                       onGetForm={handleGetForm}
-                      onCreateNewVersion={handleCreateNewVersion}
                     />
                   )
                 })}
