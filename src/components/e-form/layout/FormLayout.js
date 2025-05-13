@@ -4,9 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { useSelector, useDispatch } from 'react-redux'
 
-import { FormContainer } from '../form/formContainer'
 import { NewFormContainer } from '../form/NewFormContainer'
-import HeadForm from '@components/e-form/form/HeadForm'
 import 'react-resizable/css/styles.css'
 import { useFormStore } from '@/store/useFormStore'
 
@@ -23,9 +21,7 @@ const LayoutForm = () => {
 
   return (
     <main className='flex flex-col items-center justify-center gap-6 relative'>
-      <section className='w-full '>
-        <HeadForm />
-      </section>
+      <section className='w-full '></section>
       <NewFormContainer formElements={formData} />
     </main>
   )
