@@ -107,18 +107,18 @@ export const toolboxDocumentBaseMenu = [
       }
     }
   },
-  {
-    id: 2,
-    icon: <ArticleOutlined />,
-    config: {
-      style: {},
-      details: {
-        type: 'editor',
-        label: 'WYSIWYG Editor',
-        value: ''
-      }
-    }
-  },
+  // {
+  //   id: 2,
+  //   icon: <ArticleOutlined />,
+  //   config: {
+  //     style: {},
+  //     details: {
+  //       type: 'editor',
+  //       label: 'WYSIWYG Editor',
+  //       value: ''
+  //     }
+  //   }
+  // },
   {
     id: 3,
     icon: <ImageOutlined />,

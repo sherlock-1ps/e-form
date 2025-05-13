@@ -70,6 +70,23 @@ export const createForm = async ({ request }: { request: any }) => {
 
 };
 
+export const updateForm = async ({ request }: { request: any }) => {
+  try {
+    const response = await Axios.post("/forms/updateForm", request);
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error update form:", error);
+
+    const e = axiosErrorHandler(error, '/forms/updateForm')
+    throw e;
+
+  }
+
+};
+
+
 export const createNewVersionForm = async ({ request }: { request: any }) => {
   try {
     const response = await Axios.post("/forms/createNewVersion", request);

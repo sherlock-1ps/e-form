@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { createForm, createNewVersionForm, createVariable, deleteForm, deleteVariable, editVariable, fetchForm, fetchVariable, getForm } from '@/app/sevices/form/formServices';
+import { createForm, createNewVersionForm, createVariable, deleteForm, deleteVariable, editVariable, fetchForm, fetchVariable, getForm, updateForm } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
@@ -47,6 +47,17 @@ export const useCreateFormQueryOption = () => {
     mutationFn: createForm,
     onError: (error) => {
       console.error("Error create form:", error);
+    },
+
+  });
+};
+
+export const useUpdateFormQueryOption = () => {
+
+  return useMutation({
+    mutationFn: updateForm,
+    onError: (error) => {
+      console.error("Error update form:", error);
     },
 
   });

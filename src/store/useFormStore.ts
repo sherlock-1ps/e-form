@@ -18,6 +18,10 @@ type FormObject = {
 type FormVersion = {
   name: string
   version: string
+  newVersion: string
+  isContinue: boolean
+  formId: string | number
+  versionId: string | number
   form_details: FormObject[]
 }
 
@@ -34,6 +38,7 @@ type FormState = {
   updatePadding: (parentKey: string, boxId: string, newPadding: Partial<{ top: number; bottom: number; left: number; right: number, allPadding: string }>) => void
   updateFormMeta: (meta: Partial<{ name: string; version: string }>) => void
   createForm: (name: string, version: string) => void
+  setFullForm: (payload: FormVersion) => void
   addDefaultForm: () => void
   clearForm: () => void
   getSelectedDataItem: () => any | null
@@ -76,7 +81,7 @@ const createField = (index: number) => {
 export const useFormStore = create<FormState>()(
   persist(
     (set, get) => ({
-      form: { name: "", version: "", form_details: [] },
+      form: { name: "", version: "", newVersion: "", formId: "", versionId: "", isContinue: false, form_details: [] },
       selectedField: null,
       setForm: (newForm) =>
         set((state) => ({
@@ -350,6 +355,10 @@ export const useFormStore = create<FormState>()(
           form: {
             name,
             version,
+            newVersion: "",
+            isContinue: false,
+            formId: "",
+            versionId: "",
             form_details: []
           },
           selectedField: {
@@ -392,6 +401,18 @@ export const useFormStore = create<FormState>()(
 
         return field?.data?.find((d: any) => d.id === selectedField?.fieldId?.id) ?? null
       },
+      setFullForm: (payload: FormVersion) =>
+        set(() => ({
+          form: {
+            isContinue: true,
+            formId: payload.formId,
+            versionId: payload.versionId,
+            name: payload.name,
+            version: payload.version,
+            newVersion: payload.newVersion,
+            form_details: payload.form_details
+          }
+        })),
       addFieldToForm: () =>
         set((state) => {
           const parentKey = state.selectedField?.parentKey
@@ -513,8 +534,12 @@ export const useFormStore = create<FormState>()(
       clearForm: () =>
         set(() => ({
           form: {
+            isContinue: false,
+            formId: "",
+            versionId: "",
             name: "",
             version: '',
+            newVersion: "",
             form_details: []
           }
         })),

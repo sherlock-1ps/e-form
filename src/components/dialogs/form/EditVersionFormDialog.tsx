@@ -10,6 +10,8 @@ import { useState } from 'react'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { useCreateNewVersionFormQueryOption, useGetFormQueryOption } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
+import { useFormStore } from '@/store/useFormStore'
+import { useParams, useRouter } from 'next/navigation'
 
 interface EditVersionProps {
   id: string
@@ -18,16 +20,15 @@ interface EditVersionProps {
 }
 
 const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
+  const router = useRouter()
+  const { lang: locale } = useParams()
   const { closeDialog } = useDialog()
+  const setFullForm = useFormStore(state => state.setFullForm)
   const [time, setTime] = useState<Date | null | undefined>(null)
   const [date, setDate] = useState<Date | null | undefined>(null)
-  const [version, setVersion] = useState<Date | null | undefined>(data?.version[0]?.version)
+  const [version, setVersion] = useState<string>('')
 
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
-
-  const { mutateAsync: createNewVersion } = useCreateNewVersionFormQueryOption()
-
-  console.log('data', data)
 
   const handleGetForm = async (id: number) => {
     const request = {
@@ -37,62 +38,62 @@ const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
     try {
       const response = await getForm(request)
       if (response?.code == 'SUCCESS') {
-        console.log('response', response)
       }
+
+      return response
     } catch (error) {
       toast.error('เรียกฟอร์มล้มเหลว!', { autoClose: 3000 })
     }
   }
 
-  const handleCreateNewVersion = async (id: number) => {
-    try {
-      const resultForm = await handleGetForm(id)
-      // if (resultForm?.code == 'SUCCESS') {
-      // }
+  const handleClick = async () => {
+    if (!date || !time || !version) {
+      toast.error('กรุณาเลือกวันและเวลาให้ครบถ้วน', { autoClose: 3000 })
 
-      const request = {
-        name: '',
-        versions: [
-          {
-            version: '',
-            form_details: [{ detail: { data: '' } }]
-          }
-        ]
-      }
-
-      // const response = await createNewVersion(request)
-      // if (response?.code == 'SUCCESS') {
-      //   console.log('response', response)
-      //   toast.success('สร้างเวอร์ชั่นใหม่สำเร็จ!', { autoClose: 3000 })
-      // }
-    } catch (error) {
-      toast.error('สร้างเวอร์ชั่นใหม่ล้มเหลว!', { autoClose: 3000 })
+      return
     }
-  }
-
-  const handleClick = () => {
     try {
-      // const resultForm = await handleGetForm(id)
-      // if (resultForm?.code == 'SUCCESS') {
-      // }
+      const resultForm = await handleGetForm(data?.version[0]?.id)
 
-      const request = {
-        name: '',
-        versions: [
-          {
-            version: '',
-            form_details: [{ detail: { data: '' } }]
-          }
-        ]
+      if (resultForm?.code == 'SUCCESS') {
+        const formFromApi = {
+          isContinue: true,
+          formId: data?.id,
+          versionId: data?.version[0]?.id,
+          name: data?.name,
+          version: data?.version[0]?.version,
+          newVersion: version,
+          form_details: resultForm?.result?.data?.FormDetails[0]?.detail?.data
+        }
+
+        setFullForm(formFromApi)
+        router.push(`/${locale}/admin/form`)
+        closeDialog(id)
+        // const combinedDate = new Date(
+        //   date.getFullYear(),
+        //   date.getMonth(),
+        //   date.getDate(),
+        //   time.getHours(),
+        //   time.getMinutes()
+        // )
+        // const publicDateISO = combinedDate.toISOString()
+        // const request = {
+        //   id: data?.id,
+        //   public_date: publicDateISO,
+        //   versions: [
+        //     {
+        //       version: version,
+        //       form_details: [{ detail: resultForm?.result?.data?.FormDetails[0]?.detail }]
+        //     }
+        //   ]
+        // }
+
+        // const response = await createNewVersion({ request })
+        // if (response?.code == 'SUCCESS') {
+        //   toast.success('สร้างเวอร์ชั่นใหม่สำเร็จ!', { autoClose: 3000 })
+        //   closeDialog(id)
+        // }
       }
-
-      closeDialog(id), onClick()
-
-      // const response = await createNewVersion(request)
-      // if (response?.code == 'SUCCESS') {
-      //   console.log('response', response)
-      //   toast.success('สร้างเวอร์ชั่นใหม่สำเร็จ!', { autoClose: 3000 })
-      // }
     } catch (error) {
       toast.error('สร้างเวอร์ชั่นใหม่ล้มเหลว!', { autoClose: 3000 })
     }
@@ -104,7 +105,13 @@ const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
         <Typography variant='h5'>เวอร์ชั่นใหม่</Typography>
       </Grid>
       <Grid item xs={12}>
-        <CustomTextField fullWidth label='กำหนดเวอร์ชั่น' placeholder='ตัวเลขเท่านั้น' type='number' />
+        <CustomTextField
+          fullWidth
+          label='กำหนดเวอร์ชั่น'
+          placeholder={`ตัวเลขเท่านั้น ปัจจุบัน ${data?.version[0]?.version}`}
+          value={version}
+          onChange={e => setVersion(e.target.value)}
+        />
       </Grid>
       <Grid item xs={12}>
         <AppReactDatepicker

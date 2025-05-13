@@ -23,11 +23,13 @@ import {
 } from '@/queryOptions/form/formQueryOptions'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { useFormStore } from '@/store/useFormStore'
 
 const AdminDashboardComponent = () => {
   const router = useRouter()
   const { lang: locale } = useParams()
   const { showDialog } = useDialog()
+  const setFullForm = useFormStore(state => state.setFullForm)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(99)
   const { data, isPending } = useFetchFormQueryOption(page, pageSize)
@@ -35,8 +37,6 @@ const AdminDashboardComponent = () => {
   const { mutateAsync: deleteForm } = useDeleteFormQueryOption()
 
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
-
-  const { mutateAsync: createNewVersion } = useCreateNewVersionFormQueryOption()
 
   const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
     <div className=' p-4 bg-white  rounded-md  max-w-[200px] h-[262px] max-h-[262px] border shadow-md'>
@@ -57,7 +57,7 @@ const AdminDashboardComponent = () => {
                 disabled: pendingGetForm,
                 className: ' text-secondary',
                 onClick: () => {
-                  onGetForm(data?.version[0]?.id)
+                  onGetForm(data)
                 }
               }
             },
@@ -74,11 +74,6 @@ const AdminDashboardComponent = () => {
                   })
                 }
               }
-            },
-            {
-              text: 'ทำสำเนา',
-              icon: <FileCopy />,
-              menuItemProps: { className: ' text-secondary', onClick: () => {} }
             },
             {
               text: 'กำหนดวันใช้งาน',
@@ -127,12 +122,12 @@ const AdminDashboardComponent = () => {
       <Typography variant='body2' className='text-end'>
         {date}
       </Typography>
-      <div className='flex items-center justify-end gap-1'>
+      {/* <div className='flex items-center justify-end gap-1'>
         <Typography variant='body2' className=' text-success'>
           {status}
         </Typography>
         <AccountTreeOutlined className='text-success' />
-      </div>
+      </div> */}
     </div>
   )
 
@@ -151,15 +146,26 @@ const AdminDashboardComponent = () => {
     }
   }
 
-  const handleGetForm = async (id: number) => {
+  const handleGetForm = async (data: any) => {
     const request = {
-      id: id
+      id: data?.version[0]?.id
     }
 
     try {
       const response = await getForm(request)
       if (response?.code == 'SUCCESS') {
-        console.log('response', response)
+        const formFromApi = {
+          isContinue: true,
+          formId: data?.id,
+          versionId: data?.version[0]?.id,
+          name: data?.name,
+          version: response?.result?.data?.version,
+          newVersion: response?.result?.data?.version,
+          form_details: response?.result?.data?.FormDetails[0]?.detail?.data
+        }
+
+        setFullForm(formFromApi)
+        router.push(`/${locale}/admin/form`)
       }
     } catch (error) {
       toast.error('เรียกฟอร์มล้มเหลว!', { autoClose: 3000 })
