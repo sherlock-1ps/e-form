@@ -148,7 +148,7 @@ const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
         >
           ยกเลิก
         </Button>
-        <Button variant='contained' onClick={handleClick}>
+        <Button variant='contained' onClick={handleClick} disabled={pendingGetForm}>
           ยืนยัน
         </Button>
       </Grid>
