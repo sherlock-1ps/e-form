@@ -20,6 +20,7 @@ import CheckboxProperty from '@/components/e-form/property/checkbox/CheckboxProp
 import RadioProperty from '@/components/e-form/property/radio/RadioProperty'
 import SwitchProperty from '@/components/e-form/property/switch/SwitchProperty'
 import UploadProperty from '@/components/e-form/property/upload/UploadProperty'
+import EditorProperty from '@/components/e-form/property/editor/EditorProperty'
 import { useFormStore } from '@/store/useFormStore.ts'
 import { usePathname } from 'next/navigation'
 
@@ -34,6 +35,10 @@ const FormPropertyBar = () => {
 
     if (selectedField?.fieldId && selectedField?.fieldId?.config?.details?.type == 'text') {
       return <TextProperty item={selectedField?.fieldId} />
+    }
+
+    if (selectedField?.fieldId && selectedField?.fieldId?.config?.details?.type == 'editor') {
+      return <EditorProperty item={selectedField?.fieldId} />
     }
 
     if (selectedField?.fieldId && selectedField?.fieldId?.config?.details?.type == 'image') {

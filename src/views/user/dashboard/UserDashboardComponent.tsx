@@ -20,6 +20,7 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import { DoneAll, PendingActions } from '@mui/icons-material'
 import UserDashboardTable from './UserDashboardTable'
+import EditorForm from '@/components/e-form/newDefault/EditorForm'
 
 const mockUpData = [
   {
@@ -218,6 +219,11 @@ const UserDashboardComponent = () => {
             </TabPanel>
           </CardContent>
         </Card>
+        {/* <Card>
+          <CardContent>
+            <EditorForm />
+          </CardContent>
+        </Card> */}
       </div>
     </TabContext>
   )

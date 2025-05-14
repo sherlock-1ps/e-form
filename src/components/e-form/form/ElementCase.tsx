@@ -13,12 +13,15 @@ import RadioForm from '../newDefault/RadioForm'
 import SwitchForm from '../newDefault/SwitchForm'
 import SignatureForm from '../newDefault/SignatureForm'
 import UploadForm from '../newDefault/UploadForm'
+import EditorForm from '../newDefault/EditorForm'
 
 const ElementCase = ({ item, draft = false }: any) => {
   const renderContent = (item: any) => {
     switch (item?.config?.details?.type) {
       case 'text':
         return <TextLabel item={item} draft={draft} />
+      case 'editor':
+        return <EditorForm item={item} draft={draft} />
       case 'image':
         return <ImageForm item={item} draft={draft} />
       case 'video':
