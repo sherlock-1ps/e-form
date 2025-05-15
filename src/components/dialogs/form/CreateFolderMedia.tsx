@@ -13,63 +13,56 @@ import {
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useDictionary } from '@/contexts/DictionaryContext'
-import { useChangeNameFolderMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useCreateFolderMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 interface confirmProps {
   id: string
   onClick?: () => void
-  data: any
+  data?: any
 }
 
-const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
+const CreateFolderMedia = ({ id, onClick, data }: confirmProps) => {
   const { closeDialog } = useDialog()
   const { dictionary } = useDictionary()
-  const [newName, setNewName] = useState('')
-  const { mutateAsync, isPending } = useChangeNameFolderMediaQueryOption()
+  const [folderName, setFolderName] = useState('')
+  const { mutateAsync: callCreateFolder } = useCreateFolderMediaQueryOption()
 
   const handleSubmit = async () => {
-    if (!newName) {
-      toast.error('กรุณากรอกชื่อโฟลเดอร์ใหม่', { autoClose: 3000 })
+    if (!folderName) {
+      toast.error('ต้องกรอกชื่อโฟลเดอร์', { autoClose: 3000 })
       return
     }
     try {
-      const response = await mutateAsync({ name: newName, id: data.id })
+      const response = await callCreateFolder({ name: folderName, parent_id: data })
       if (response?.code == 'SUCCESS') {
-        toast.success('เปลี่ยนชื่อสำเร็จ!', { autoClose: 3000 })
+        toast.success('สร้างโฟลเดอร์สำเร็จ', { autoClose: 3000 })
         closeDialog(id)
       }
-    } catch (error) {
-      toast.error('เปลี่ยนชื่อล้มเหลว', { autoClose: 3000 })
+    } catch (error: any) {
+      console.log('error', error)
+
+      if (error?.code === 'CREATE_MEDIA_FOLDER_ERROR') {
+        toast.error('ชื่อโฟลเดอร์ซ้ำ', { autoClose: 3000 })
+      } else {
+        toast.error('สร้างโฟลเดอร์ล้มเหลว', { autoClose: 3000 })
+      }
     }
   }
 
   return (
     <Grid container className='flex flex-col gap-2' spacing={2}>
       <Grid item xs={12}>
-        <Typography variant='h5'>แก้ไขชื่อโฟลเดอร์</Typography>
+        <Typography variant='h5'>สร้างโฟลเดอร์</Typography>
       </Grid>
       <Divider />
       <Grid item xs={12} className='flex gap-4'>
         <CustomTextField
           fullWidth
           type='text'
-          label='ชื่อโฟลเดอร์เก่า'
-          placeholder=''
-          disabled
-          value={data?.name ?? ''}
-        />
-      </Grid>
-
-      <Grid item xs={12} className='flex gap-4'>
-        <CustomTextField
-          fullWidth
-          type='text'
-          label='ชื่อโฟลเดอร์ใหม่'
-          placeholder=''
-          value={newName}
-          onChange={e => {
-            setNewName(e.target.value)
-          }}
+          label='ตั้งชื่อโฟลเดอร์'
+          placeholder='ตั้งชื่อ'
+          value={folderName}
+          onChange={e => setFolderName(e.target.value)}
         />
       </Grid>
 
@@ -80,15 +73,16 @@ const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
             closeDialog(id)
           }}
         >
+          {/* {dictionary?.cancel} */}
           ยกเลิก
         </Button>
         <Button
-          disabled={isPending}
           variant='contained'
           onClick={() => {
             handleSubmit()
           }}
         >
+          {/* {dictionary?.confirm} */}
           ยืนยัน
         </Button>
       </Grid>
@@ -96,4 +90,4 @@ const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
   )
 }
 
-export default ChangeNameFormMedia
+export default CreateFolderMedia

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { createForm, createNewVersionForm, createVariable, deleteForm, deleteVariable, editVariable, fetchForm, fetchVariable, getForm, updateForm } from '@/app/sevices/form/formServices';
+import { changeNameFolder, changeNameImage, createFolder, createForm, createNewVersionForm, createVariable, deleteFolder, deleteForm, deleteMedia, deleteVariable, editVariable, fetchForm, fetchMedia, fetchVariable, getForm, updateForm, uploadMedia } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
@@ -131,5 +131,105 @@ export const useDeleteVariableQueryOption = () => {
 
   });
 };
+
+
+
+export function useFetchMediaQueryOption(id: number | null) {
+  return useQuery({
+    queryKey: ["media", id],
+    queryFn: () => fetchMedia({ id }),
+  });
+}
+
+export const useCreateFolderMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createFolder,
+    onError: (error) => {
+      console.error("Error create folder media:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+    },
+
+  });
+};
+
+export const useChangeNameFolderMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: changeNameFolder,
+    onError: (error) => {
+      console.error("Error change name folder:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+    },
+
+  });
+};
+
+
+export const useDeleteFolderMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteFolder,
+    onError: (error) => {
+      console.error("Error delete folder media:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+    },
+
+  });
+};
+
+export const useUploadImageMediaQueryOption = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: uploadMedia,
+    onError: (error) => {
+      console.error('Error upload media:', error)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['media'] })
+    }
+  })
+}
+
+export const useChangeNameImageMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: changeNameImage,
+    onError: (error) => {
+      console.error("Error change name image:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+    },
+
+  });
+};
+
+export const useDeleteImageMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteMedia,
+    onError: (error) => {
+      console.error("Error delete image media:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+    },
+
+  });
+};
+
 
 

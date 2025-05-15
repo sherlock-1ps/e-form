@@ -185,5 +185,125 @@ export const deleteVariable = async ({ id }: { id: number }) => {
 
 };
 
+export const fetchMedia = async ({ id }: { id: number | null }) => {
+  try {
+    const response = await Axios.post("/media/getListMediaFolder", {
+      id: id
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch media:", error);
+
+    axiosErrorHandler(error, '/media/getListMediaFolder')
+    throw error;
+
+  }
+
+};
+
+export const createFolder = async ({ name, parent_id }: { name: string; parent_id?: number | null }) => {
+  try {
+    const payload: any = { name }
+
+    if (parent_id != null) {
+      payload.parent_id = parent_id
+    }
+
+    const response = await Axios.post('/media/createMediaFolder', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error create folder media:', error)
+    const e = axiosErrorHandler(error, '/media/createMediaFolder')
+    throw e
+  }
+}
+
+export const changeNameFolder = async ({ name, id }: { name: string; id: number }) => {
+  try {
+    const payload: any = { name, id }
+
+
+
+    const response = await Axios.post('/media/updateMediaFolder', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error change name folder :', error)
+    const e = axiosErrorHandler(error, '/media/updateMediaFolder')
+    throw e
+  }
+}
+
+export const deleteFolder = async ({ id }: { id: number }) => {
+  try {
+    const payload: any = { id }
+    const response = await Axios.post('/media/deleteMediaFolder', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error delete folder media:', error)
+    const e = axiosErrorHandler(error, '/media/deleteMediaFolder')
+    throw e
+  }
+}
+
+export const uploadMedia = async ({
+  file,
+  folderId
+}: {
+  file: File
+  folderId: number
+}) => {
+  try {
+    const formData = new FormData()
+    formData.append('folder_id', String(folderId))
+    formData.append('file', file)
+
+    const response = await Axios.post('/media/uploadMedia', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error upload media:', error)
+    const e = axiosErrorHandler(error, '/media/uploadMedia')
+    throw e
+  }
+}
+
+
+export const changeNameImage = async ({ name, id }: { name: string; id: number }) => {
+  try {
+    const payload: any = { name, id }
+
+    const response = await Axios.post('/media/updateMedia', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error change name image :', error)
+    const e = axiosErrorHandler(error, '/media/updateMedia')
+    throw e
+  }
+}
+
+
+export const deleteMedia = async ({ id }: { id: number }) => {
+  try {
+    const payload: any = { id }
+    const response = await Axios.post('/media/deleteMedia', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error delete media:', error)
+    const e = axiosErrorHandler(error, '/media/deleteMedia')
+    throw e
+  }
+}
+
 
 

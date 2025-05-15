@@ -13,7 +13,7 @@ import {
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useDictionary } from '@/contexts/DictionaryContext'
-import { useChangeNameFolderMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useChangeNameImageMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 interface confirmProps {
   id: string
@@ -21,15 +21,15 @@ interface confirmProps {
   data: any
 }
 
-const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
+const ChangeNameImageMedia = ({ id, onClick, data }: confirmProps) => {
   const { closeDialog } = useDialog()
   const { dictionary } = useDictionary()
   const [newName, setNewName] = useState('')
-  const { mutateAsync, isPending } = useChangeNameFolderMediaQueryOption()
+  const { mutateAsync, isPending } = useChangeNameImageMediaQueryOption()
 
   const handleSubmit = async () => {
     if (!newName) {
-      toast.error('กรุณากรอกชื่อโฟลเดอร์ใหม่', { autoClose: 3000 })
+      toast.error('กรุณากรอกชื่อไฟล์ใหม่', { autoClose: 3000 })
       return
     }
     try {
@@ -46,25 +46,18 @@ const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
   return (
     <Grid container className='flex flex-col gap-2' spacing={2}>
       <Grid item xs={12}>
-        <Typography variant='h5'>แก้ไขชื่อโฟลเดอร์</Typography>
+        <Typography variant='h5'>แก้ไขชื่อไฟล์</Typography>
       </Grid>
       <Divider />
       <Grid item xs={12} className='flex gap-4'>
-        <CustomTextField
-          fullWidth
-          type='text'
-          label='ชื่อโฟลเดอร์เก่า'
-          placeholder=''
-          disabled
-          value={data?.name ?? ''}
-        />
+        <CustomTextField fullWidth type='text' label='ชื่อไฟล์เก่า' placeholder='' disabled value={data?.name ?? ''} />
       </Grid>
 
       <Grid item xs={12} className='flex gap-4'>
         <CustomTextField
           fullWidth
           type='text'
-          label='ชื่อโฟลเดอร์ใหม่'
+          label='ชื่อไฟล์ใหม่'
           placeholder=''
           value={newName}
           onChange={e => {
@@ -96,4 +89,4 @@ const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
   )
 }
 
-export default ChangeNameFormMedia
+export default ChangeNameImageMedia

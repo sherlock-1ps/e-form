@@ -26,7 +26,7 @@ const DialogManager = () => {
           <DialogCloseButton onClick={() => closeDialog(dialog.id)} disableRipple>
             <i className='tabler-x' />
           </DialogCloseButton>
-          <DialogContent>
+          <DialogContent className='  flex items-center justify-center'>
             {React.isValidElement(dialog.component) && React.cloneElement(dialog.component, { ...dialog.props })}
           </DialogContent>
           {/* <DialogActions>
