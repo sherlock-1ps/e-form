@@ -30,6 +30,7 @@ const ChangeNameImageMedia = ({ id, onClick, data }: confirmProps) => {
   const handleSubmit = async () => {
     if (!newName) {
       toast.error('กรุณากรอกชื่อไฟล์ใหม่', { autoClose: 3000 })
+
       return
     }
     try {

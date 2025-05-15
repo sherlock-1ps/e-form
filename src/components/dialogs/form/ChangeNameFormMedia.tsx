@@ -30,6 +30,7 @@ const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
   const handleSubmit = async () => {
     if (!newName) {
       toast.error('กรุณากรอกชื่อโฟลเดอร์ใหม่', { autoClose: 3000 })
+
       return
     }
     try {

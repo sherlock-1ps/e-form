@@ -93,11 +93,13 @@ const MediaFormComponent = () => {
   const handleUploadImage = async (id: number | null) => {
     if (!selectedFile) {
       toast.error('กรุณาเลือกไฟล์ก่อนอัปโหลด', { autoClose: 3000 })
+
       return
     }
 
     if (!id) {
       toast.error('ต้องเข้าถึงโฟล์เดอร์ที่ต้องการก่อนหรือสร้างโฟลเดอร์ก่อน', { autoClose: 3000 })
+
       return
     }
 

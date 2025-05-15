@@ -30,6 +30,7 @@ const CreateFolderMedia = ({ id, onClick, data }: confirmProps) => {
   const handleSubmit = async () => {
     if (!folderName) {
       toast.error('ต้องกรอกชื่อโฟลเดอร์', { autoClose: 3000 })
+
       return
     }
     try {
