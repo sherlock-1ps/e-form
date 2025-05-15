@@ -62,10 +62,10 @@ const MediaFormComponent = () => {
     setFolderStack((prev: any[]) => [...prev, { id: folder.id, name: folder.name }])
   }
 
-  const handleShowImage = (url: any) => {
+  const handleShowImage = (media: any) => {
     showDialog({
       id: 'alertShowImageDialog',
-      component: <ShowImageDialog image={url} />,
+      component: <ShowImageDialog data={media} />,
       size: 'lg'
     })
   }
@@ -269,7 +269,7 @@ const MediaFormComponent = () => {
           return (
             <Grid item xs={12} sm={4} md={3} key={index}>
               <Card>
-                <CardContent onDoubleClick={() => handleShowImage(media?.url_file_download)}>
+                <CardContent onDoubleClick={() => handleShowImage(media)}>
                   <>
                     <CardContent className='flex justify-between items-center py-2 px-3'>
                       <Typography variant='body2' noWrap className='w-full'>
