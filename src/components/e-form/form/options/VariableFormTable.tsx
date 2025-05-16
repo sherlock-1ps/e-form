@@ -205,6 +205,7 @@ const VariableFormTable = ({ data, page, pageSize, setPage, setPageSize }: any) 
                       id='alertDeleteVariable'
                       title={'ลบตัวแปร'}
                       content1={'คุณต้องการลบตัวแปรนี้ใช่หรือไม่'}
+                      content2={'หากมีตัวแปรผูกอยู่จะส่งผลด้วย'}
                       onClick={() => handleDelete(row.original.id)}
                     />
                   ),

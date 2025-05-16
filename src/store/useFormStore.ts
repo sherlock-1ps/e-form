@@ -38,6 +38,7 @@ type FormState = {
   updateFieldHeight: (parentKey: string, fieldId: string, newHeight: number) => void
   updatePadding: (parentKey: string, boxId: string, newPadding: Partial<{ top: number; bottom: number; left: number; right: number, allPadding: string }>) => void
   updateFormMeta: (meta: Partial<{ name: string; version: string }>) => void
+  updateId: (parentKey: string, fieldId: string, oldId: string, newId: string) => void
   createForm: (name: string, version: string) => void
   toggleLayout: () => void
   setFullForm: (payload: FormVersion) => void
@@ -351,6 +352,62 @@ export const useFormStore = create<FormState>()(
               ...state.form,
               form_details: updatedFormDetails
             }
+          }
+        }),
+      updateId: (parentKey: string, fieldId: string, oldId: string, newId: string) =>
+        set(state => {
+          const updatedFormDetails = state.form.form_details.map(formItem => {
+            if (formItem.parentKey !== parentKey) return formItem
+
+            const updatedFields = formItem.fields.map(field => {
+              if (field.i !== fieldId) return field
+
+              const updatedData = field.data.map((dataItem: any) => {
+                if (dataItem.id !== oldId) return dataItem
+
+                return {
+                  ...dataItem,
+                  id: newId
+                }
+              })
+
+              return {
+                ...field,
+                data: updatedData
+              }
+            })
+
+            return {
+              ...formItem,
+              fields: updatedFields
+            }
+          })
+
+          let updatedSelectedField = state.selectedField
+
+          const isMatch =
+            state.selectedField?.parentKey === parentKey &&
+            state.selectedField?.boxId === fieldId &&
+            state.selectedField?.fieldId?.id === oldId
+
+          if (isMatch) {
+            const updatedFieldData = state.selectedField?.fieldId
+              ? { ...state.selectedField.fieldId, id: newId }
+              : null
+
+            updatedSelectedField = {
+              parentKey: state.selectedField?.parentKey ?? null,
+              boxId: state.selectedField?.boxId ?? null,
+              fieldId: updatedFieldData
+            }
+          }
+
+          return {
+            form: {
+              ...state.form,
+              form_details: updatedFormDetails
+            },
+            selectedField: updatedSelectedField
           }
         }),
       createForm: (name: string, version: string) =>

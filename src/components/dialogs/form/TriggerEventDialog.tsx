@@ -37,13 +37,13 @@ interface TriggerProps {
 }
 
 const events = [
-  { id: 1, name: 'onBlur', key: 'blur' },
-  { id: 2, name: 'onChange', key: 'change' },
-  { id: 3, name: 'onFocus', key: 'focus' },
-  { id: 4, name: 'onSelect', key: 'select' },
-  { id: 5, name: 'onKeyPress', key: 'keypress' },
-  { id: 6, name: 'onClick', key: 'click' },
-  { id: 7, name: 'onLoad', key: 'load' }
+  { id: 1, name: 'onBlur', key: 'onBlur' },
+  { id: 2, name: 'onChange', key: 'onChange' },
+  { id: 3, name: 'onFocus', key: 'onFocus' },
+  { id: 4, name: 'onSelect', key: 'onSelect' },
+  { id: 5, name: 'onKeyPress', key: 'onKeyPress' },
+  { id: 6, name: 'onClick', key: 'onClick' },
+  { id: 7, name: 'onLoad', key: 'onLoad' }
 ]
 
 const actions = [
@@ -52,10 +52,10 @@ const actions = [
 ]
 
 const allowedEventsMap: Record<string, string[]> = {
-  text: ['load'],
-  button: ['click', 'focus'],
-  input: ['blur', 'change', 'focus', 'select'],
-  default: ['blur', 'change', 'focus', 'select', 'keypress', 'click', 'load']
+  text: ['onLoad'],
+  button: ['onClick', 'onFocus'],
+  input: ['blur', 'change', 'onFocus', 'select'],
+  default: ['blur', 'change', 'focus', 'select', 'keypress', 'onClick', 'onLoad']
 }
 
 const operatorList = [
@@ -152,7 +152,6 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
   const removeCondition = (id: string) => {
     setConditions((prev: any) => prev.filter((condition: any) => condition.id !== id))
   }
-  console.log('result', result)
 
   const renderValueFrom = () => {
     switch (valueAction.typeFrom) {

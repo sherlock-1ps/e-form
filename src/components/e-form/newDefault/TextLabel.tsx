@@ -26,14 +26,31 @@ const TextLabel: React.FC<TextLabelProps> = ({ item, draft }) => {
   }
 
   useEffect(() => {
-    const newText = item?.config?.details?.value || ''
-    if (!isFocused && newText) {
+    const details = item?.config?.details
+    if (!details) return
+
+    let newText = ''
+
+    if (details.valueType === 'variable' && details?.trigger?.value) {
+      const triggerValue = details.trigger?.value?.value
+      const triggerName = details.trigger?.name
+
+      if (draft) {
+        newText = triggerValue || ''
+      } else {
+        newText = triggerName ? `{{${triggerName}}}` : ''
+      }
+    } else {
+      newText = details.value || ''
+    }
+
+    if (!isFocused) {
       setText(newText)
       if (divRef.current) {
         divRef.current.innerText = newText
       }
     }
-  }, [item?.config?.details?.value])
+  }, [item?.config?.details])
 
   return (
     <div className='relative w-full' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>

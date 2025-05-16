@@ -100,6 +100,7 @@ export const toolboxDocumentBaseMenu = [
         type: 'text',
         label: 'ข้อความ',
         value: '',
+        valueType: 'string',
         placeholder: 'พิมพ์ข้อความที่นี่',
         isUse: true,
         isShow: true,

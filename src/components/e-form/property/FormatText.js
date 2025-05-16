@@ -13,13 +13,13 @@ const FormatText = ({ item, id }) => {
   const selectedField = useFormStore(state => state.selectedField)
 
   const handleShowStyle = style => {
-    if (item.fontWeight === style) {
+    if (item?.fontWeight === style) {
       return 'primary'
     }
-    if (item.fontStyle === style) {
+    if (item?.fontStyle === style) {
       return 'primary'
     }
-    if (item.textDecoration === style) {
+    if (item?.textDecoration === style) {
       return 'primary'
     }
 
