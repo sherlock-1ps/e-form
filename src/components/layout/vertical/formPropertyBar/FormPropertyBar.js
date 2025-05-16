@@ -94,8 +94,8 @@ const FormPropertyBar = () => {
 
   return (
     selectedField?.parentKey && (
-      <main className='max-w-[320px] w-full h-screen '>
-        <div className='fixed bg-slate-50 top-0 bottom-0 right-0 min-w-[320px] max-w-[320px] overflow-auto'>
+      <main className='max-w-[315px] w-full h-screen '>
+        <div className='fixed bg-slate-50 top-0 bottom-0 right-0 min-w-[315px] max-w-[315px] overflow-auto'>
           {renderedProperty}
         </div>
       </main>

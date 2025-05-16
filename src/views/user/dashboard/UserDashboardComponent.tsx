@@ -222,6 +222,15 @@ const UserDashboardComponent = () => {
         {/* <Card>
           <CardContent>
             <EditorForm />
+            <Button variant='outlined' onClick={() => setZoomLevel(prev => Math.max(prev - 0.1, 0.5))}>
+              -
+            </Button>
+            <Button variant='outlined' onClick={() => setZoomLevel(1)}>
+              Reset
+            </Button>
+            <Button variant='outlined' onClick={() => setZoomLevel(prev => Math.min(prev + 0.1, 2))}>
+              +
+            </Button>
           </CardContent>
         </Card> */}
       </div>

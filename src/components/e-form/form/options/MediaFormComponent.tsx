@@ -9,9 +9,7 @@ import OptionMenu from '@/@core/components/option-menu'
 import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import ChangeNameFormMedia from '@/components/dialogs/form/ChangeNameFormMedia'
-import ChangeNameImgFormMedia from '@/components/dialogs/form/ChangeNameImgFormMedia'
 import {
-  useCreateFolderMediaQueryOption,
   useDeleteFolderMediaQueryOption,
   useDeleteImageMediaQueryOption,
   useFetchMediaQueryOption,
@@ -31,7 +29,6 @@ const MediaFormComponent = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [id, setId] = useState<number | null>(null)
-
   const { data: mediaData, isPending: pendingMedia } = useFetchMediaQueryOption(id)
   const { mutateAsync: callDeleteFolder } = useDeleteFolderMediaQueryOption()
   const { mutateAsync: uploadImage, isPending: pendingUpload } = useUploadImageMediaQueryOption()

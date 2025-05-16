@@ -38,6 +38,7 @@ const DroppableWrapper = React.forwardRef(({ item, onDrop, parentKey }, ref) => 
 DroppableWrapper.displayName = 'DroppableWrapper'
 
 export default function GridLayoutForm({ formElement }) {
+  const form = useFormStore(state => state.form)
   const updateFormByKey = useFormStore(state => state.updateFormByKey)
   const updateFieldData = useFormStore(state => state.updateFieldData)
   const setSelectedField = useFormStore(state => state.setSelectedField)
@@ -97,7 +98,7 @@ export default function GridLayoutForm({ formElement }) {
         layout={layout}
         cols={Number(process.env.NEXT_PUBLIC_GRID_LAYOUT_COL)} //สัมพันธ์กันกับ row ของ cols แต่ละช่อง
         rowHeight={Number(process.env.NEXT_PUBLIC_GRID_LAYOUT_ROW_HEIGHT)}
-        width={formSizeConfig.width}
+        width={form?.layout === 'vertical' ? formSizeConfig.width : formSizeConfig.height}
         margin={[0, 0]}
         containerPadding={[0, 0]}
         isResizable={true}

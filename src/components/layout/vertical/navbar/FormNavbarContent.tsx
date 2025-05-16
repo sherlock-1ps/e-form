@@ -1,5 +1,13 @@
 'use client'
-import { Publish, Preview, EditOutlined, NewReleasesOutlined, SaveOutlined } from '@mui/icons-material'
+import {
+  Publish,
+  Preview,
+  EditOutlined,
+  NewReleasesOutlined,
+  SaveOutlined,
+  SwapHorizontalCircleOutlined,
+  SwapVerticalCircleOutlined
+} from '@mui/icons-material'
 import { useState } from 'react'
 
 // Component Imports
@@ -16,11 +24,15 @@ import {
 import { useFormStore } from '@/store/useFormStore'
 import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
+import { useDialog } from '@/hooks/useDialog'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 
 const FormNavbarContent = () => {
+  const { showDialog } = useDialog()
   const { lang: locale } = useParams()
   const router = useRouter()
   const updateFormMeta = useFormStore(state => state.updateFormMeta)
+  const toggleLayout = useFormStore(state => state.toggleLayout)
   const form = useFormStore(state => state.form)
   const clearForm = useFormStore(state => state.clearForm)
   const [title, setTitle] = useState(form?.name)
@@ -52,7 +64,7 @@ const FormNavbarContent = () => {
         versions: [
           {
             version: form?.version,
-            form_details: [{ detail: { data: form?.form_details } }]
+            form_details: [{ detail: { data: form?.form_details, layout: form?.layout } }]
             // form_details:
             //   Array.isArray(form?.form_details) && form.form_details.length === 0
             //     ? []
@@ -80,7 +92,7 @@ const FormNavbarContent = () => {
         versions: [
           {
             id: form?.versionId,
-            form_details: [{ detail: { data: form?.form_details } }]
+            form_details: [{ detail: { data: form?.form_details, layout: form?.layout } }]
           }
         ]
       }
@@ -103,7 +115,7 @@ const FormNavbarContent = () => {
         versions: [
           {
             version: form?.newVersion,
-            form_details: [{ detail: { data: form?.form_details } }]
+            form_details: [{ detail: { data: form?.form_details, layout: form?.layout } }]
           }
         ]
       }
@@ -119,6 +131,23 @@ const FormNavbarContent = () => {
     }
   }
 
+  const handleToggleLayout = () => {
+    showDialog({
+      id: 'alertConfirmAlert',
+      component: (
+        <ConfirmAlert
+          id='alertConfirmAlert'
+          title={`คุณต้องการเปลี่ยนเป็น ${form?.layout == 'horizontal' ? 'แนวตั้ง' : 'แนวนอน'}`}
+          content1='*จะส่งผลกระทบกับตำแหน่งที่มีอยู่ ดำเนินการต่อหรือไม่ ?'
+          onClick={() => {
+            toggleLayout()
+          }}
+        />
+      ),
+      size: 'sm'
+    })
+  }
+
   return (
     <div className='w-full flex gap-2'>
       <div className='flex flex-col flex-1  '>
@@ -131,11 +160,19 @@ const FormNavbarContent = () => {
         </div>
         <div className='flex gap-2 items-center'>
           <Typography>version :</Typography>
-
           <TextField value={versionText} onChange={handleInputVersion} variant='standard' />
         </div>
       </div>
       <div className='flex items-center gap-2'>
+        <Button
+          color='secondary'
+          variant='outlined'
+          startIcon={form?.layout == 'horizontal' ? <SwapHorizontalCircleOutlined /> : <SwapVerticalCircleOutlined />}
+          onClick={handleToggleLayout}
+        >
+          {form?.layout == 'horizontal' ? 'แนวนอน' : 'แนวตั้ง'}
+        </Button>
+
         <Button color='primary' variant='outlined' onClick={handleShowPreview} startIcon={<Preview />}>
           ดูแบบร่าง
         </Button>

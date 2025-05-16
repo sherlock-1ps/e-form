@@ -56,6 +56,8 @@ const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
       const resultForm = await handleGetForm(data?.version[0]?.id)
 
       if (resultForm?.code == 'SUCCESS') {
+        const layoutValue =
+          resultForm?.result?.data?.FormDetails[0]?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
         const formFromApi = {
           isContinue: true,
           formId: data?.id,
@@ -63,6 +65,7 @@ const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
           name: data?.name,
           version: data?.version[0]?.version,
           newVersion: version,
+          layout: layoutValue as 'vertical' | 'horizontal',
           form_details: resultForm?.result?.data?.FormDetails[0]?.detail?.data
         }
 

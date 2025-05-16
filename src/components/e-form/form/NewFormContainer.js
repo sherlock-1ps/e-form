@@ -31,15 +31,6 @@ const TestForm = dynamic(() => import('@/components/e-form/form/test'), {
   ssr: false
 })
 
-const styles = {
-  width: `${formSizeConfig.width}px`,
-  height: `auto`,
-  minHeight: `${formSizeConfig.height}px`,
-  position: 'relative',
-  borderRadius: '4px',
-  boxShadow: '0px 2px 8px 0px #11151A14'
-}
-
 export const NewFormContainer = ({ formElements }) => {
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -61,7 +52,12 @@ export const NewFormContainer = ({ formElements }) => {
   return (
     <div
       style={{
-        ...styles,
+        width: form?.layout === 'vertical' ? `${formSizeConfig.width}px` : `${formSizeConfig.height}px`,
+        height: `auto`,
+        minHeight: form?.layout === 'vertical' ? `${formSizeConfig.height}px` : `${formSizeConfig.width}px`,
+        position: 'relative',
+        borderRadius: '4px',
+        boxShadow: '0px 2px 8px 0px #11151A14',
         backgroundColor: isOver ? 'rgb(4, 99, 234, 0.08)' : 'white',
         border: isOver ? '2px dashed #0463EA' : 'none'
       }}

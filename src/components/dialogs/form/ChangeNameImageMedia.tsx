@@ -58,7 +58,7 @@ const ChangeNameImageMedia = ({ id, onClick, data }: confirmProps) => {
         <CustomTextField
           fullWidth
           type='text'
-          label='ชื่อไฟล์ใหม่'
+          label='ชื่อไฟล์ใหม่ (ไม่ต้องกรอกสกุลไฟล์)'
           placeholder=''
           value={newName}
           onChange={e => {

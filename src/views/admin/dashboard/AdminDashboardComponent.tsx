@@ -160,6 +160,9 @@ const AdminDashboardComponent = () => {
     try {
       const response = await getForm(request)
       if (response?.code == 'SUCCESS') {
+        const layoutValue =
+          response?.result?.data?.FormDetails[0]?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
+
         const formFromApi = {
           isContinue: true,
           formId: data?.id,
@@ -167,6 +170,7 @@ const AdminDashboardComponent = () => {
           name: data?.name,
           version: response?.result?.data?.version,
           newVersion: response?.result?.data?.version,
+          layout: layoutValue as 'vertical' | 'horizontal',
           form_details: response?.result?.data?.FormDetails[0]?.detail?.data
         }
 

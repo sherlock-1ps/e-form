@@ -8,7 +8,9 @@ const DraftFormPage = () => {
       // }}
       className='min-h-screen flex justify-center p-8'
     >
-      <DraftFormComponent />
+      <div>
+        <DraftFormComponent />
+      </div>
     </div>
   )
 }

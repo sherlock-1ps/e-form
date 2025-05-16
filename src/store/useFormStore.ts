@@ -22,6 +22,7 @@ type FormVersion = {
   isContinue: boolean
   formId: string | number
   versionId: string | number
+  layout: "vertical" | "horizontal"
   form_details: FormObject[]
 }
 
@@ -38,6 +39,7 @@ type FormState = {
   updatePadding: (parentKey: string, boxId: string, newPadding: Partial<{ top: number; bottom: number; left: number; right: number, allPadding: string }>) => void
   updateFormMeta: (meta: Partial<{ name: string; version: string }>) => void
   createForm: (name: string, version: string) => void
+  toggleLayout: () => void
   setFullForm: (payload: FormVersion) => void
   addDefaultForm: () => void
   clearForm: () => void
@@ -81,7 +83,7 @@ const createField = (index: number) => {
 export const useFormStore = create<FormState>()(
   persist(
     (set, get) => ({
-      form: { name: "", version: "", newVersion: "", formId: "", versionId: "", isContinue: false, form_details: [] },
+      form: { name: "", version: "", newVersion: "", formId: "", versionId: "", layout: "vertical", isContinue: false, form_details: [] },
       selectedField: null,
       setForm: (newForm) =>
         set((state) => ({
@@ -262,6 +264,7 @@ export const useFormStore = create<FormState>()(
         }),
       updateDetails: (parentKey, fieldId, dataId, newDetails: Partial<any>) =>
         set(state => {
+
           const updatedFormDetails = state.form.form_details.map(formItem => {
             if (formItem.parentKey !== parentKey) return formItem
 
@@ -359,6 +362,7 @@ export const useFormStore = create<FormState>()(
             isContinue: false,
             formId: "",
             versionId: "",
+            layout: "vertical",
             form_details: []
           },
           selectedField: {
@@ -401,6 +405,13 @@ export const useFormStore = create<FormState>()(
 
         return field?.data?.find((d: any) => d.id === selectedField?.fieldId?.id) ?? null
       },
+      toggleLayout: () =>
+        set((state) => ({
+          form: {
+            ...state.form,
+            layout: state.form.layout === 'vertical' ? 'horizontal' : 'vertical'
+          }
+        })),
       setFullForm: (payload: FormVersion) =>
         set(() => ({
           form: {
@@ -410,6 +421,7 @@ export const useFormStore = create<FormState>()(
             name: payload.name,
             version: payload.version,
             newVersion: payload.newVersion,
+            layout: payload.layout,
             form_details: payload.form_details
           }
         })),
@@ -540,6 +552,7 @@ export const useFormStore = create<FormState>()(
             name: "",
             version: '',
             newVersion: "",
+            layout: "vertical",
             form_details: []
           }
         })),

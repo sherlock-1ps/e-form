@@ -31,7 +31,7 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
     <div className={classnames(verticalLayoutClasses.root, 'flex flex-auto ')}>
       {navigation || null}
       <StyledContentWrapper
-        className={classnames(verticalLayoutClasses.contentWrapper, 'flex flex-col min-is-0 is-full')}
+        className={classnames(verticalLayoutClasses.contentWrapper, 'flex flex-col min-is-0 is-full overflow-auto')}
       >
         {navbar || null}
         {/* Content */}

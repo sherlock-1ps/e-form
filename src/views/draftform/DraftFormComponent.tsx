@@ -17,9 +17,9 @@ const DraftFormComponent = () => {
   return (
     <div
       style={{
-        width: `${formSizeConfig.width}px`,
+        width: form?.layout === 'vertical' ? `${formSizeConfig.width}px` : `${formSizeConfig.height}px`,
         height: `auto`,
-        minHeight: `${formSizeConfig.height}px`,
+        minHeight: form?.layout === 'vertical' ? `${formSizeConfig.height}px` : `${formSizeConfig.width}px`,
         position: 'relative',
         borderRadius: '4px',
         boxShadow: '0px 2px 8px 0px #11151A14',

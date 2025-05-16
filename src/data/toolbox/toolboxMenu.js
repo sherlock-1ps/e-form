@@ -77,10 +77,9 @@ export const toolboxGridMenu = [
         fontWeight: 'normal'
       },
       details: {
-        type: 'text',
+        type: 'grid',
         label: 'Grid',
-        value: '',
-        placeholder: 'พิมพ์ข้อความที่นี่'
+        value: ''
       }
     }
   }
@@ -103,7 +102,10 @@ export const toolboxDocumentBaseMenu = [
         value: '',
         placeholder: 'พิมพ์ข้อความที่นี่',
         isUse: true,
-        isShow: true
+        isShow: true,
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -461,3 +463,10 @@ export const toolboxOptionMenu = [
     }
   }
 ]
+
+// const test = {
+//   value:"",
+//   valueConfig:{
+
+//   }:
+// }

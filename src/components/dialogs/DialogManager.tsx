@@ -17,7 +17,7 @@ const DialogManager = () => {
           // fullWidth={dialog.size == 'sm' ? true : false}
           fullWidth={true}
           fullScreen={false}
-          maxWidth={dialog.size == 'sm' ? 'sm' : 'md'}
+          maxWidth={dialog.size}
           key={dialog.id}
           open={true}
           onClose={() => closeDialog(dialog.id)}

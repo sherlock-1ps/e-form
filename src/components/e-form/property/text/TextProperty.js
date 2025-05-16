@@ -9,7 +9,7 @@ import { Title, Delete } from '@mui/icons-material'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import Switch from '@mui/material/Switch'
-
+import Button from '@mui/material/Button'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import Typography from '@mui/material/Typography'
@@ -22,6 +22,9 @@ import BaseButton from '@/components/ui/button/BaseButton'
 import BaseTitleProperty from '@components/e-form/property/BaseTitleProperty'
 import BaseFontSize from '@components/e-form/property/BaseFontSize'
 import { useFormStore } from '@/store/useFormStore.ts'
+import { useDialog } from '@/hooks/useDialog'
+import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...props }) => {
   // States
@@ -44,6 +47,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...prop
 }
 
 const TextProperty = ({ item }) => {
+  const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -130,8 +134,57 @@ const TextProperty = ({ item }) => {
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>
         <div>
-          <FormControlLabel control={<Switch defaultChecked />} label='Trigger Event' />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={result?.config?.details?.trigger?.isTrigger}
+                onChange={() =>
+                  showDialog({
+                    id: 'alertDialogConfirmToggleTrigger',
+                    component: (
+                      <ConfirmAlert
+                        id='alertDialogConfirmToggleTrigger'
+                        title='เปลี่ยนสถานะ Trigger Event?'
+                        content1='คุณต้องการเปิดหรือปิด Trigger Event ใช่หรือไม่'
+                        onClick={() => {
+                          updateDetails(
+                            String(selectedField?.parentKey ?? ''),
+                            selectedField?.boxId ?? '',
+                            selectedField?.fieldId?.id ?? '',
+                            {
+                              trigger: {
+                                // ...result?.config?.details?.trigger,
+                                isTrigger: !result?.config?.details?.trigger?.isTrigger
+                              }
+                            }
+                          )
+                        }}
+                      />
+                    ),
+                    size: 'sm'
+                  })
+                }
+              />
+            }
+            label='Trigger Event'
+          />
         </div>
+        {result?.config?.details?.trigger?.isTrigger && (
+          <Button
+            variant='contained'
+            fullWidth
+            onClick={() => {
+              showDialog({
+                id: 'TriggerEventDialog',
+                component: <TriggerEventDialog id={'TriggerEventDialog'} />,
+                size: 'xl'
+              })
+            }}
+          >
+            ตั้งค่า Trigger Event
+          </Button>
+        )}
+
         {/* <div>
           <div className='flex items-center gap-2'>
             <BaseButton text='เปลี่ยนแปลง' sx={{ display: 'flex', flex: 1 }} />
