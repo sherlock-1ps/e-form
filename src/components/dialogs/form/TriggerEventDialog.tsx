@@ -241,11 +241,13 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
   const handleClickSubmit = () => {
     if (!selectedTriggerEvent || !selectedTriggerAction) {
       toast.error('กรุณาเลือก event และ action', { autoClose: 3000 })
+
       return
     }
 
     if (selectedTriggerAction === 'setValue' && valueAction.valueFrom === valueAction.valueTo) {
       toast.error('value จากค่า1 ไปยังค่า 2 ห้ามมีค่าเท่ากัน', { autoClose: 3000 })
+
       return
     }
 
@@ -260,6 +262,7 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
 
     if (isIncompleteCondition) {
       toast.error('กรุณากรอก condition ให้ครบถ้วน', { autoClose: 3000 })
+
       return
     }
 
@@ -295,6 +298,7 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
 
     closeDialog(id)
   }
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
