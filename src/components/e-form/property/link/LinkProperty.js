@@ -123,11 +123,11 @@ const LinkProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <RadioGroup row defaultValue='checked' name='basic-radio' aria-label='basic-radio'>
+        {/* <RadioGroup row defaultValue='checked' name='basic-radio' aria-label='basic-radio'>
           <FormControlLabel value='checked' control={<Radio />} label='String' />
           <FormControlLabel value='unchecked' control={<Radio />} label='AppState' />
           <FormControlLabel value='test' control={<Radio />} label='API' />
-        </RadioGroup>
+        </RadioGroup> */}
 
         <DebouncedInput
           label='URL'

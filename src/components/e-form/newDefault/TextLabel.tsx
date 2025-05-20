@@ -11,6 +11,7 @@ type TextLabelProps = {
 const TextLabel: React.FC<TextLabelProps> = ({ item, draft }) => {
   const divRef = useRef<HTMLDivElement>(null)
   const updateValue = useFormStore(state => state.updateValue)
+  const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const selectedField = useFormStore(state => state.selectedField)
   const [text, setText] = useState(item?.config?.details?.value || '')
   const [isFocused, setIsFocused] = useState(false)
@@ -22,18 +23,20 @@ const TextLabel: React.FC<TextLabelProps> = ({ item, draft }) => {
     const newText = rawText.trim() === '' ? '' : rawText
 
     setText(newText)
-    updateValue(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newText)
+    // updateValue(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newText)
+
+    updateValueOnly(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newText)
   }
 
   useEffect(() => {
-    const details = item?.config?.details
+    const details = item?.config?.details?.value
     if (!details) return
 
     let newText = ''
 
-    if (details.valueType === 'variable' && details?.trigger?.value) {
-      const triggerValue = details.trigger?.value?.value
-      const triggerName = details.trigger?.name
+    if (details?.valueType === 'variable' && details?.value) {
+      const triggerValue = details.value?.value
+      const triggerName = details.name
 
       if (draft) {
         newText = triggerValue || ''
@@ -50,7 +53,7 @@ const TextLabel: React.FC<TextLabelProps> = ({ item, draft }) => {
         divRef.current.innerText = newText
       }
     }
-  }, [item?.config?.details])
+  }, [item?.config?.details?.value?.value])
 
   return (
     <div className='relative w-full' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>

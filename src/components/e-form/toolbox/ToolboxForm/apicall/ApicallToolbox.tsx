@@ -3,10 +3,6 @@ import { Button, Chip, Grid, Typography } from '@mui/material'
 const ApicallToolbox = () => {
   const { apiLists, selectedApi, setSelectedApi } = useApiCallStore()
 
-  console.log('apiLists', apiLists)
-
-  console.log('selectedApi', selectedApi)
-
   return (
     <Grid container>
       <Grid item xs={12} className='mb-2'>
@@ -19,7 +15,7 @@ const ApicallToolbox = () => {
       </Grid>
       {apiLists &&
         apiLists.map((item, index) => {
-          const isSelected = selectedApi?.url === item.url
+          const isSelected = selectedApi?.name === item.name
 
           return (
             <Grid item xs={12} className='mb-2' key={index}>

@@ -99,11 +99,13 @@ export const toolboxDocumentBaseMenu = [
       details: {
         type: 'text',
         label: 'ข้อความ',
-        value: '',
-        valueType: 'string',
         placeholder: 'พิมพ์ข้อความที่นี่',
         isUse: true,
         isShow: true,
+        value: {
+          valueType: 'string',
+          value: ''
+        },
         trigger: {
           isTrigger: false
         }
@@ -136,9 +138,14 @@ export const toolboxDocumentBaseMenu = [
       details: {
         type: 'image',
         label: 'รูปภาพ',
-        value: '',
         isUse: true,
-        isShow: true
+        isShow: true,
+        value: {
+          value: ''
+        },
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -158,9 +165,14 @@ export const toolboxDocumentBaseMenu = [
       details: {
         type: 'video',
         label: 'วีดีโอ',
-        value: '',
         isUse: true,
-        isShow: true
+        isShow: true,
+        value: {
+          value: ''
+        },
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   }
@@ -182,9 +194,15 @@ export const toolboxCreateformMenu = [
       details: {
         type: 'button',
         label: 'ปุ่ม',
-        value: 'ปุ่ม',
         isUse: true,
-        isShow: true
+        isShow: true,
+        value: {
+          valueType: 'string',
+          value: 'ปุ่ม'
+        },
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -201,7 +219,10 @@ export const toolboxCreateformMenu = [
       details: {
         type: 'textfield',
         label: 'กล่องข้อความ',
-        value: '',
+        value: {
+          valueType: 'string',
+          value: ''
+        },
         tag: {
           isShow: true,
           value: 'ป้ายกำกับ'
@@ -230,10 +251,13 @@ export const toolboxCreateformMenu = [
     config: {
       style: {},
       details: {
-        type: 'datetime',
-        label: 'วันที่/เวลา',
+        type: 'date',
+        label: 'วันที่',
         title: 'เลือกวันที่',
-        value: '',
+        value: {
+          valueType: 'custom',
+          value: ''
+        },
         tag: {
           isShow: true,
           value: 'เลือกวันที่'
@@ -255,6 +279,38 @@ export const toolboxCreateformMenu = [
   },
   {
     id: 4,
+    icon: <EditCalendarOutlined />,
+    config: {
+      style: {},
+      details: {
+        type: 'datetime',
+        label: 'วันที่/เวลา',
+        title: 'เลือกวันที่',
+        value: {
+          valueType: 'custom',
+          value: ''
+        },
+        tag: {
+          isShow: true,
+          value: 'เลือกวันที่และเวลา'
+        },
+        placeholder: {
+          isShow: true,
+          value: 'วัน / เดือน / ปี / เวลา'
+        },
+        helperText: {
+          isShow: false,
+          value: 'คำแนะนำ'
+        },
+        isUse: true,
+        isShow: true,
+        isShowTime: true,
+        isRequired: true
+      }
+    }
+  },
+  {
+    id: 5,
     icon: <UploadFileOutlined />,
     config: {
       style: {
@@ -297,7 +353,7 @@ export const toolboxCreateformMenu = [
     }
   },
   {
-    id: 5,
+    id: 6,
     icon: <InsertLinkOutlined />,
     config: {
       style: {
@@ -320,7 +376,7 @@ export const toolboxCreateformMenu = [
     }
   },
   {
-    id: 6,
+    id: 7,
     icon: <Draw />,
     config: {
       style: {
@@ -329,19 +385,26 @@ export const toolboxCreateformMenu = [
       details: {
         type: 'signature',
         label: 'E-Signature',
-        signType: 'master',
+        signType: {
+          type: 'master',
+          formId: ''
+        },
         signer: {
           isShow: true,
           value: ''
         },
         tag: {
           isShow: true,
-          value: 'ลงชื่อผู้อนุมัติ'
+          value: 'ลงชื่อ'
         },
-        position: { isShow: true, value: '' },
-        date: { isShow: true, value: '' },
+        endTag: {
+          isShow: false,
+          value: ''
+        },
+        position: { isShow: true, value: '', placeholder: 'จะปรากฏเมื่อลงนาม' },
+        date: { isShow: true, value: '', placeholder: 'จะปรากฏเมื่อลงนาม' },
         setting: {
-          defaultAssign: 'owner'
+          isUserUse: false
         },
         placeholder: 'พิมพ์ข้อความของคุณที่นี่',
         isUse: true,

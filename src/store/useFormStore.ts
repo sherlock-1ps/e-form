@@ -33,6 +33,7 @@ type FormState = {
   updateFormByKey: (key: string, fields: any[]) => void
   updateFieldData: (parentKey: string, fieldId: string, newData: any) => void
   updateValue: (parentKey: string, fieldId: string, dataId: string, newValue: string) => void
+  updateValueOnly: (parentKey: string, fieldId: string, dataId: string, newValue: string) => void
   updateStyle: (parentKey: string, fieldId: string, dataId: string, newStyle: Partial<any>) => void
   updateDetails: (parentKey: string, fieldId: string, dataId: string, newStyle: Partial<any>) => void
   updateFieldHeight: (parentKey: string, fieldId: string, newHeight: number) => void
@@ -197,6 +198,51 @@ export const useFormStore = create<FormState>()(
                     details: {
                       ...dataItem.config.details,
                       value: newValue
+                    }
+                  }
+                }
+              })
+
+              return {
+                ...field,
+                data: updatedData
+              }
+            })
+
+            return {
+              ...formItem,
+              fields: updatedFields
+            }
+          })
+
+          return {
+            form: {
+              ...state.form,
+              form_details: updatedFormDetails
+            }
+          }
+        }),
+      updateValueOnly: (parentKey: string, fieldId: string, dataId: string, newValue: string) =>
+        set(state => {
+          const updatedFormDetails = state.form.form_details.map(formItem => {
+            if (formItem.parentKey !== parentKey) return formItem
+
+            const updatedFields = formItem.fields.map(field => {
+              if (field.i !== fieldId) return field
+
+              const updatedData = field.data.map((dataItem: any) => {
+                if (dataItem.id !== dataId) return dataItem
+
+                return {
+                  ...dataItem,
+                  config: {
+                    ...dataItem.config,
+                    details: {
+                      ...dataItem.config.details,
+                      value: {
+                        ...dataItem.config.details.value,
+                        value: newValue
+                      }
                     }
                   }
                 }

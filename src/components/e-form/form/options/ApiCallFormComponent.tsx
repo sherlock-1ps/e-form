@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Card, CardContent, Divider, Grid, Typography } from '@mui/material'
 import { Add } from '@mui/icons-material'
 
@@ -7,6 +7,7 @@ import { useApiCallStore } from '@/store/useApiCallStore'
 import { CreateApiCallFormComponent } from './CreateApiCallFormComponent'
 import { EditApiCallFormComponent } from './EditApiCallFormComponent'
 import ApiCallFormTable from './ApiCallFormTable'
+import { useFetchApiQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 const mockDataApiCall = [
   {
@@ -33,16 +34,30 @@ const mockDataApiCall = [
 
 export const ApiCallFormComponent = () => {
   const selectedApi = useApiCallStore(state => state.selectedApi)
+  const addApis = useApiCallStore(state => state.addApis)
   const [isCreateApiCall, setIsCreateApiCall] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50)
+  const { data: apiLists, isPending: pendingApi } = useFetchApiQueryOption(page, pageSize)
 
   const handleCloseCreate = () => setIsCreateApiCall(false)
   const handleEditApiCall = (key: string) => {
     // implement as needed
   }
 
+  useEffect(() => {
+    if (apiLists?.result?.data.length > 0) {
+      addApis(apiLists?.result?.data)
+    }
+  }, [apiLists])
+
+  useEffect(() => {
+    setIsCreateApiCall(false)
+  }, [selectedApi])
+
   // Renders when creating a new API
   if (isCreateApiCall) {
-    return <CreateApiCallFormComponent onStateCreateChange={handleCloseCreate} />
+    return <CreateApiCallFormComponent onStateCreateChange={handleCloseCreate} onCreate={setIsCreateApiCall} />
   }
 
   // Renders when editing an existing API
@@ -67,10 +82,22 @@ export const ApiCallFormComponent = () => {
                 เพิ่ม API Call
               </Button>
             </Grid>
-
-            {mockDataApiCall.length > 0 ? (
+            {pendingApi && (
               <Grid item xs={12}>
-                <ApiCallFormTable data={mockDataApiCall} onEditApi={handleEditApiCall} />
+                <Typography>กำลังโหลด....</Typography>
+              </Grid>
+            )}
+
+            {apiLists?.result?.data?.length > 0 ? (
+              <Grid item xs={12}>
+                <ApiCallFormTable
+                  data={apiLists?.result}
+                  onEditApi={handleEditApiCall}
+                  page={page}
+                  pageSize={pageSize}
+                  setPage={setPage}
+                  setPageSize={setPageSize}
+                />
               </Grid>
             ) : (
               <Grid item xs={12}>

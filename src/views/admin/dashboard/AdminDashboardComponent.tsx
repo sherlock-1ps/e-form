@@ -31,7 +31,7 @@ const AdminDashboardComponent = () => {
   const { showDialog } = useDialog()
   const setFullForm = useFormStore(state => state.setFullForm)
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(99)
+  const [pageSize, setPageSize] = useState(999)
   const { data, isPending } = useFetchFormQueryOption(page, pageSize)
 
   const { mutateAsync: deleteForm } = useDeleteFormQueryOption()
@@ -154,14 +154,14 @@ const AdminDashboardComponent = () => {
 
   const handleGetForm = async (data: any) => {
     const request = {
-      id: data?.version[0]?.id
+      id: data?.version?.[0]?.id
     }
 
     try {
       const response = await getForm(request)
       if (response?.code == 'SUCCESS') {
         const layoutValue =
-          response?.result?.data?.FormDetails[0]?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
+          response?.result?.data?.FormDetails?.[0]?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
 
         const formFromApi = {
           isContinue: true,
@@ -213,7 +213,7 @@ const AdminDashboardComponent = () => {
                     <ImageCard
                       key={index}
                       title={item?.name}
-                      version={item?.version[0]?.version}
+                      version={item?.version?.[0]?.version ?? ''}
                       data={item}
                       image='/images/test/test01.png'
                       date='แก้ไขล่าสุด 31 ธ.ค. 2567'

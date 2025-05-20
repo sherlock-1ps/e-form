@@ -13,6 +13,7 @@ import TextfieldProperty from '@/components/e-form/property/textfield/TextfieldP
 import SelectProperty from '@/components/e-form/property/select/SelectProperty'
 import ButtonProperty from '@/components/e-form/property/button/ButtonProperty'
 import DatetimeProperty from '@/components/e-form/property/datetime/DatetimeProperty'
+import DateProperty from '@/components/e-form/property/date/DateProperty'
 import LinkProperty from '@/components/e-form/property/link/LinkProperty'
 import SignatureProperty from '@/components/e-form/property/signature/SignatureProperty'
 import DropdownProperty from '@/components/e-form/property/dropdown/DropdownProperty'
@@ -23,9 +24,11 @@ import UploadProperty from '@/components/e-form/property/upload/UploadProperty'
 import EditorProperty from '@/components/e-form/property/editor/EditorProperty'
 import { useFormStore } from '@/store/useFormStore.ts'
 import { usePathname } from 'next/navigation'
+import { useToolboxTabStore } from '@/store/useToolboxTabStore'
 
 const FormPropertyBar = () => {
   const selectedField = useFormStore(state => state.selectedField)
+  const { activeTab } = useToolboxTabStore()
   const pathname = usePathname()
 
   const renderedProperty = useMemo(() => {
@@ -55,6 +58,10 @@ const FormPropertyBar = () => {
 
     if (selectedField?.fieldId && selectedField?.fieldId?.config?.details?.type == 'textfield') {
       return <TextfieldProperty />
+    }
+
+    if (selectedField?.fieldId && selectedField?.fieldId?.config?.details?.type == 'date') {
+      return <DateProperty />
     }
 
     if (selectedField?.fieldId && selectedField?.fieldId?.config?.details?.type == 'datetime') {
@@ -93,7 +100,8 @@ const FormPropertyBar = () => {
   if (!pathname.includes('/admin/form')) return null
 
   return (
-    selectedField?.parentKey && (
+    selectedField?.parentKey &&
+    activeTab == 'document' && (
       <main className='max-w-[315px] w-full h-screen '>
         <div className='fixed bg-slate-50 top-0 bottom-0 right-0 min-w-[315px] max-w-[315px] overflow-auto'>
           {renderedProperty}

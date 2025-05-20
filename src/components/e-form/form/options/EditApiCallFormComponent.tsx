@@ -11,6 +11,8 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import TabPanel from '@mui/lab/TabPanel'
 import axios from 'axios'
 import { useApiCallStore } from '@/store/useApiCallStore'
+import { toast } from 'react-toastify'
+import { useUpdateApiMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 const httpMethods = [
   { label: 'GET', value: 'GET' },
@@ -34,7 +36,10 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
   const [apiName, setApiName] = useState(selectedApi?.name ?? '')
   const [apiUrl, setApiUrl] = useState(selectedApi?.url ?? '')
   const [response, setResponse] = useState('')
-  const [bodyContent, setBodyContent] = useState('')
+  const [bodyContent, setBodyContent] = useState(JSON.stringify(selectedApi?.body) ?? '')
+  const [headers, setHeaders] = useState(JSON.stringify(selectedApi?.headers) ?? '')
+
+  const { mutateAsync } = useUpdateApiMediaQueryOption()
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setMainTabValue(newValue)
@@ -47,31 +52,117 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
 
   const handleCallTestApi = async () => {
     if (!methodType || !apiUrl) {
-      alert('โปรดกรอก method และ API Url')
+      toast.error('โปรดกรอก method หรือ API Url', { autoClose: 3000 })
 
       return
     }
 
+    let parsedHeaders: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+
+    if (headers.trim()) {
+      try {
+        parsedHeaders = {
+          ...parsedHeaders,
+          ...JSON.parse(headers)
+        }
+      } catch (err) {
+        toast.error('JSON ใน headers ไม่ถูกต้อง', { autoClose: 3000 })
+        setResponse('⚠️ Invalid JSON in headers')
+        return
+      }
+    }
+
+    let parsedBody: any = undefined
+
+    if (bodyContent.trim() && methodType !== 'GET' && methodType !== 'HEAD') {
+      try {
+        parsedBody = JSON.parse(bodyContent)
+      } catch (err) {
+        toast.error('JSON ใน BODY ไม่ถูกต้อง', { autoClose: 3000 })
+        setResponse('⚠️ Invalid JSON in body')
+        return
+      }
+    }
+
     try {
-      const res = await fetch(apiUrl, {
-        method: methodType,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        // Optionally include a body for methods like POST/PUT/PATCH
-        ...(methodType !== 'GET' && methodType !== 'HEAD' ? { body: bodyContent } : {})
+      const res = await axios({
+        method: methodType.toLowerCase() as any,
+        url: apiUrl,
+        headers: parsedHeaders,
+        data: parsedBody
       })
 
-      const data = await res.json()
-      console.log('data', data)
+      setResponse(JSON.stringify(res.data, null, 2))
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const status = error.response.status
+          const statusText = error.response.statusText
+          const data = error.response.data
 
-      setResponse(JSON.stringify(data, null, 2))
-    } catch (error) {
-      if (error instanceof Error) {
-        setResponse(`Error: ${error.message}`)
+          setResponse(`❌ HTTP ${status} ${error.message} ${statusText}\n${JSON.stringify(data, null, 2)}`)
+        } else if (error.request) {
+          // Network error (e.g., domain not found, server offline)
+          setResponse(`🌐 Network error: ${error.message}`)
+        } else {
+          // Unknown config/setup error
+          setResponse(`⚠️ Error: ${error.message}`)
+        }
       } else {
-        setResponse('Unknown error occurred')
+        setResponse(`Unknown error: ${error.message}`)
       }
+    }
+  }
+
+  const handleUpdateApi = async () => {
+    if (!apiName || !methodType || !apiUrl) {
+      toast.error('กรุณากรอกข้อมูลให้ครบถ้วน', { autoClose: 3000 })
+      return
+    }
+
+    try {
+      if (!selectedApi) {
+        toast.error('ไม่พบ API ที่ต้องการแก้ไข', { autoClose: 3000 })
+
+        return
+      }
+
+      const request: any = {
+        id: selectedApi.id,
+        name: apiName,
+        method: methodType,
+        url: apiUrl
+      }
+
+      if (bodyContent.trim()) {
+        try {
+          request.body = JSON.parse(bodyContent)
+        } catch (err) {
+          toast.error('BODY ไม่ใช่ JSON ที่ถูกต้อง', { autoClose: 3000 })
+          return
+        }
+      }
+
+      if (headers.trim()) {
+        try {
+          request.headers = JSON.parse(headers)
+        } catch (err) {
+          toast.error('Headers ไม่ใช่ JSON ที่ถูกต้อง', { autoClose: 3000 })
+          return
+        }
+      }
+
+      const response = await mutateAsync(request)
+
+      if (response?.code) {
+        toast.success('อัพเดท API สำเร็จ!', { autoClose: 3000 })
+        setSelectedApi(null)
+      }
+    } catch (error) {
+      console.log('error', error)
+      toast.error('อัพเดท API ล้มเหลว!', { autoClose: 3000 })
     }
   }
 
@@ -80,7 +171,17 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
       setMethodType(selectedApi.method ?? '')
       setApiName(selectedApi.name ?? '')
       setApiUrl(selectedApi.url ?? '')
-      setBodyContent('')
+      if (selectedApi?.body) {
+        setBodyContent(JSON.stringify(selectedApi?.body))
+      } else {
+        setBodyContent('')
+      }
+
+      if (selectedApi?.headers) {
+        setHeaders(JSON.stringify(selectedApi?.headers))
+      } else {
+        setHeaders('')
+      }
     }
   }, [selectedApi])
 
@@ -166,12 +267,15 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
 
                       <Grid item xs={12}>
                         <TabPanel value='1'>
-                          <Typography variant='h6' className='mb-2'>
-                            Headers
-                          </Typography>
-                          <Button variant='outlined' endIcon={<Add />}>
-                            Add Header
-                          </Button>
+                          <CustomTextField
+                            label=' Headers (JSON)'
+                            multiline
+                            fullWidth
+                            rows={9}
+                            value={headers}
+                            onChange={e => setHeaders(e.target.value)}
+                            placeholder='{"key": "value"}'
+                          />
                         </TabPanel>
                         {/* <TabPanel value='2'>
                           <Typography variant='h6' className='mb-2'>
@@ -207,7 +311,18 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
                     >
                       ยกเลิก
                     </Button>
-                    <Button variant='contained' startIcon={<Add />} onClick={() => {}}>
+                    <Button
+                      variant='contained'
+                      startIcon={<Add />}
+                      onClick={() => {
+                        handleUpdateApi()
+                      }}
+                      // disabled={
+                      //   apiName === selectedApi?.name &&
+                      //   methodType === selectedApi?.method &&
+                      //   apiUrl === selectedApi?.url
+                      // }
+                    >
                       แก้ไข API Call
                     </Button>
                   </div>
@@ -221,9 +336,17 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
                     * เพิ่มข้อมูลใน Call Definition ก่อนทำการทดสอบ
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} className='flex gap-2'>
                   <Button variant='contained' onClick={handleCallTestApi}>
                     ทดสอบ
+                  </Button>
+                  <Button
+                    variant='contained'
+                    onClick={() => {
+                      setResponse('')
+                    }}
+                  >
+                    รีเซต
                   </Button>
                 </Grid>
                 <Grid item xs={12}>

@@ -14,6 +14,7 @@ import SwitchForm from '../newDefault/SwitchForm'
 import SignatureForm from '../newDefault/SignatureForm'
 import UploadForm from '../newDefault/UploadForm'
 import EditorForm from '../newDefault/EditorForm'
+import DatePickerForm from '../newDefault/DatePickerForm'
 
 const ElementCase = ({ item, draft = false }: any) => {
   const renderContent = (item: any) => {
@@ -30,6 +31,8 @@ const ElementCase = ({ item, draft = false }: any) => {
         return <ButtonForm item={item} draft={draft} />
       case 'textfield':
         return <TextFieldForm item={item} draft={draft} />
+      case 'date':
+        return <DatePickerForm item={item} draft={draft} />
       case 'datetime':
         return <DatetimePickerForm item={item} draft={draft} />
       case 'upload':

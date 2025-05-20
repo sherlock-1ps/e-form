@@ -305,5 +305,153 @@ export const deleteMedia = async ({ id }: { id: number }) => {
   }
 }
 
+export const fetchApi = async ({ page, pageSize }: { page: number; pageSize: number }) => {
+  try {
+    const response = await Axios.post("/api/getListApi", {
+      page,
+      limit: pageSize,
+      order_by: "id DESC"
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch api:", error);
+
+    const e = axiosErrorHandler(error, '/api/getListApi')
+    throw e;
+
+  }
+
+};
+
+export const createApi = async ({ name, method, url, body, headers }: { name: string; method: string, url: string, body: any, headers: any }) => {
+  try {
+    const payload: any = { name, method, url }
+
+    if (body != null) {
+      payload.body = body
+    }
+
+    if (headers != null) {
+      payload.headers = headers
+    }
+
+    const response = await Axios.post('/api/createApi', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error create api:', error)
+    const e = axiosErrorHandler(error, '/api/createApi')
+    throw e
+  }
+}
+
+export const updateApi = async ({ id, name, method, url, body, headers }: { id: number, name: string; method: string, url: string, body: any, headers: any }) => {
+  try {
+    const payload: any = { id, name, method, url }
+
+    if (body != null) {
+      payload.body = body
+    }
+
+    if (headers != null) {
+      payload.headers = headers
+    }
+
+    const response = await Axios.post('/api/updateApi', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error update api:', error)
+    const e = axiosErrorHandler(error, '/api/updateApi')
+    throw e
+  }
+}
+
+export const deleteApi = async ({ id }: { id: number }) => {
+  try {
+    const payload: any = { id }
+    const response = await Axios.post('/api/deleteApi', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error delete api:', error)
+    const e = axiosErrorHandler(error, '/api/deleteApi')
+    throw e
+  }
+}
+
+export const getUploadFile = async ({ form_data_id }: { form_data_id: number }) => {
+  try {
+    const response = await Axios.post("/upload/getUploads", {
+      form_data_id,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch upload file:", error);
+
+    const e = axiosErrorHandler(error, '/upload/getUploads')
+    throw e;
+
+  }
+
+};
+
+
+export const uploadFile = async ({
+  file,
+  form_data_id
+}: {
+  file: File
+  form_data_id: number
+}) => {
+  try {
+    const formData = new FormData()
+    formData.append('form_data_id', String(form_data_id))
+    formData.append('file', file)
+
+    const response = await Axios.post('/upload/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error upload file:', error)
+    const e = axiosErrorHandler(error, '/upload/upload')
+    throw e
+  }
+}
+
+export const updateFile = async ({ id, comment }: { id: number, comment: string }) => {
+  try {
+    const payload: any = { id, comment }
+    const response = await Axios.post('/upload/update', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error update file:', error)
+    const e = axiosErrorHandler(error, '/upload/update')
+    throw e
+  }
+}
+
+export const deleteUploadFile = async ({ id }: { id: number }) => {
+  try {
+    const payload: any = { id }
+    const response = await Axios.post('/upload/deleteUploadFile', payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Error delete file:', error)
+    const e = axiosErrorHandler(error, '/upload/deleteUploadFile')
+    throw e
+  }
+}
+
 
 

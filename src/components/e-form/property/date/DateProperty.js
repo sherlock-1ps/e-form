@@ -60,7 +60,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
   )
 }
 
-const DatetimeProperty = () => {
+const DateProperty = () => {
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -88,7 +88,7 @@ const DatetimeProperty = () => {
   return (
     <div>
       <BaseTitleProperty
-        title='วันที่และเวลา'
+        title='วันที่'
         icon={<EditCalendarOutlined sx={{ width: '32px', height: '32px' }} />}
         item={selectedField}
       />
@@ -416,4 +416,4 @@ const DatetimeProperty = () => {
   )
 }
 
-export default DatetimeProperty
+export default DateProperty

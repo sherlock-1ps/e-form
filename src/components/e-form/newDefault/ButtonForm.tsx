@@ -25,7 +25,9 @@ const ButtonForm = ({ item }: any) => {
         }}
         disabled={!item?.config?.details?.isUse}
       >
-        {item?.config?.details?.value ?? 'ปุ่ม'}
+        {item?.config?.details?.value?.valueType == 'variable'
+          ? `{{${item?.config?.details?.value?.name}}}`
+          : item?.config?.details?.value?.value}
       </Button>
     </div>
   )

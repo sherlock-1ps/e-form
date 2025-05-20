@@ -2,17 +2,17 @@
 
 import { useState, useRef } from 'react'
 import { Typography } from '@mui/material'
-import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { MobileDatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { Dayjs } from 'dayjs'
 import 'dayjs/locale/th'
 import newAdapter from '@/libs/newAdapter'
 import { useFormStore } from '@/store/useFormStore'
 import dayjs from 'dayjs'
 
-const DatetimePickerForm = ({ item }: any) => {
+const DatePickerForm = ({ item, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const selectedField = useFormStore(state => state.selectedField)
-  // const [date, setDate] = useState<Dayjs | null>(null)
+
   const [date, setDate] = useState<Dayjs | null>(() => {
     const val = item?.config?.details?.value?.value
 
@@ -27,8 +27,12 @@ const DatetimePickerForm = ({ item }: any) => {
   const inputRef = useRef<any>(null)
 
   const handleChange = (newDate: Dayjs | null) => {
+    if (draft) {
+      return
+    }
     setDate(newDate)
     setOpen(false)
+
     if (newDate) {
       const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
       updateValueOnly(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', formattedDate)
@@ -48,13 +52,13 @@ const DatetimePickerForm = ({ item }: any) => {
         {item?.config?.details?.tag?.isShow && (
           <Typography variant='body2'>{item?.config?.details?.tag?.value ?? 'เลือกวันที่'}</Typography>
         )}
-        <MobileDateTimePicker
+        <MobileDatePicker
           disabled={!item?.config?.details?.isUse}
           open={open}
           onClose={() => setOpen(false)}
           value={date}
           onChange={handleChange}
-          format='DD/MM/YYYY HH:mm'
+          format='DD/MM/YYYY'
           // label={date ? '' : item?.config?.details?.placeholder?.value}
           slotProps={{
             textField: {
@@ -94,4 +98,4 @@ const DatetimePickerForm = ({ item }: any) => {
   )
 }
 
-export default DatetimePickerForm
+export default DatePickerForm

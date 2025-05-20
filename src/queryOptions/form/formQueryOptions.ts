@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { changeNameFolder, changeNameImage, createFolder, createForm, createNewVersionForm, createVariable, deleteFolder, deleteForm, deleteMedia, deleteVariable, editVariable, fetchForm, fetchMedia, fetchVariable, getForm, updateForm, uploadMedia } from '@/app/sevices/form/formServices';
+import { changeNameFolder, changeNameImage, createApi, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchForm, fetchMedia, fetchVariable, getForm, getUploadFile, updateApi, updateFile, updateForm, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
@@ -81,7 +81,7 @@ export const useDeleteFormQueryOption = () => {
 
 export function useFetchVariableQueryOption(page: number, pageSize: number) {
   return useQuery({
-    queryKey: ["variable"],
+    queryKey: ["variable", page, pageSize],
     queryFn: () => fetchVariable({ page, pageSize }),
   });
 }
@@ -230,6 +230,118 @@ export const useDeleteImageMediaQueryOption = () => {
 
   });
 };
+
+
+export function useFetchApiQueryOption(page: number, pageSize: number) {
+  return useQuery({
+    queryKey: ["api", page, pageSize],
+    queryFn: () => fetchApi({ page, pageSize }),
+  });
+}
+
+export const useCreateApiMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createApi,
+    onError: (error) => {
+      console.error("Error create api:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["api"] });
+    },
+
+  });
+};
+
+export const useUpdateApiMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateApi,
+    onError: (error) => {
+      console.error("Error update api:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["api"] });
+    },
+
+  });
+};
+
+
+
+export const useDeleteApiMediaQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteApi,
+    onError: (error) => {
+      console.error("Error delete api:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["api"] });
+    },
+
+  });
+};
+
+
+
+export function useFetchUploadFileQueryOption(form_data_id: number) {
+  return useQuery({
+    queryKey: ["uploadFile"],
+    queryFn: () => getUploadFile({ form_data_id }),
+  });
+}
+
+
+export const useUploadFileQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: uploadFile,
+    onError: (error) => {
+      console.error("Error upload file:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["uploadFile"] });
+    },
+
+  });
+};
+
+export const useUpdateFileQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateFile,
+    onError: (error) => {
+      console.error("Error update file:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["uploadFile"] });
+    },
+
+  });
+};
+
+export const useDeleteFileQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteUploadFile,
+    onError: (error) => {
+      console.error("Error delete file:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["uploadFile"] });
+    },
+
+  });
+};
+
+
 
 
 

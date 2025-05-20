@@ -30,7 +30,7 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { toast } from 'react-toastify'
 import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
 
-const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLength, ...props }) => {
+const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -49,7 +49,18 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLeng
     <CustomTextField
       {...props}
       value={value}
-      onChange={e => setValue(e.target.value)}
+      onChange={e => {
+        const input = e.target.value
+        if (!isEng) {
+          setValue(input)
+
+          return
+        }
+        const isValid = /^[a-zA-Z0-9]*$/.test(input)
+        if (isValid) {
+          setValue(input)
+        }
+      }}
       inputProps={{
         ...(maxLength ? { maxLength } : {}),
         ...(props.inputProps || {})
@@ -63,9 +74,10 @@ const TextProperty = ({ item }) => {
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
+  const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const updateId = useFormStore(state => state.updateId)
   const [isDuplicateId, setIsDuplicatedId] = useState(false)
-  const { data: variableData } = useFetchVariableQueryOption(1, 350)
+  const { data: variableData } = useFetchVariableQueryOption(1, 999)
 
   const result = form?.form_details
     .flatMap(formItem => formItem.fields)
@@ -125,6 +137,7 @@ const TextProperty = ({ item }) => {
           value={result?.id}
           error={isDuplicateId}
           maxLength={25}
+          isEng
           onChange={newValue => {
             if (newValue === result?.id) return
 
@@ -159,7 +172,7 @@ const TextProperty = ({ item }) => {
       >
         <RadioGroup
           row
-          value={result?.config?.details?.valueType || 'string'}
+          value={result?.config?.details?.value?.valueType || 'string'}
           name='basic-radio'
           aria-label='basic-radio'
           onChange={e =>
@@ -168,7 +181,10 @@ const TextProperty = ({ item }) => {
               selectedField?.boxId ?? '',
               selectedField?.fieldId?.id ?? '',
               {
-                valueType: e.target.value
+                value: {
+                  value: '',
+                  valueType: e.target.value
+                }
               }
             )
           }
@@ -176,14 +192,14 @@ const TextProperty = ({ item }) => {
           <FormControlLabel value='string' control={<Radio />} label='String' />
           <FormControlLabel value='variable' control={<Radio />} label='Variable' />
         </RadioGroup>
-        {result?.config?.details?.valueType == 'variable' ? (
+        {result?.config?.details?.value?.valueType == 'variable' ? (
           <Autocomplete
             fullWidth
             options={variableData?.result?.data || []}
             getOptionLabel={option => `{{${option.name}}}`}
             value={
               variableData?.result?.data?.find(
-                item => item.value?.value === result?.config?.details?.trigger?.value?.value
+                item => item.value?.value === result?.config?.details?.value?.value?.value
               ) || null
             }
             onChange={(event, newValue) => {
@@ -192,8 +208,8 @@ const TextProperty = ({ item }) => {
                 selectedField?.boxId ?? '',
                 selectedField?.fieldId?.id ?? '',
                 {
-                  trigger: {
-                    ...result?.config?.details?.trigger,
+                  value: {
+                    ...result?.config?.details?.value,
                     ...newValue
                   }
                 }
@@ -205,15 +221,21 @@ const TextProperty = ({ item }) => {
           <DebouncedInput
             label='ข้อความ'
             placeholder={result?.config?.details?.placeholder}
-            value={result?.config?.details?.value || ''}
+            value={result?.config?.details?.value?.value || ''}
             onChange={newText =>
-              updateDetails(
+              // updateDetails(
+              //   String(selectedField?.parentKey ?? ''),
+              //   selectedField?.boxId ?? '',
+              //   selectedField?.fieldId?.id ?? '',
+              //   {
+              //     value: newText
+              //   }
+              // )
+              updateValueOnly(
                 String(selectedField?.parentKey ?? ''),
                 selectedField?.boxId ?? '',
                 selectedField?.fieldId?.id ?? '',
-                {
-                  value: newText
-                }
+                newText
               )
             }
           />

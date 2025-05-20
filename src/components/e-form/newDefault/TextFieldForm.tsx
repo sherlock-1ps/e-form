@@ -6,21 +6,24 @@ import { Button, IconButton, InputAdornment } from '@mui/material'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useFormStore } from '@/store/useFormStore'
 
-const TextFieldForm = ({ item }: any) => {
+const TextFieldForm = ({ item, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
+  const updateValueOnly = useFormStore(state => state.updateValueOnly)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
 
-    updateDetails(
-      String(selectedField?.parentKey ?? ''),
-      selectedField?.boxId ?? '',
-      selectedField?.fieldId?.id ?? '',
-      {
-        value: newValue
-      }
-    )
+    // updateDetails(
+    //   String(selectedField?.parentKey ?? ''),
+    //   selectedField?.boxId ?? '',
+    //   selectedField?.fieldId?.id ?? '',
+    //   {
+    //     value: newValue
+    //   }
+    // )
+
+    updateValueOnly(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newValue)
   }
 
   return (
@@ -29,7 +32,13 @@ const TextFieldForm = ({ item }: any) => {
         fullWidth
         multiline
         minRows={1}
-        value={item?.config?.details?.value}
+        value={
+          item?.config?.details?.value?.valueType == 'variable'
+            ? draft
+              ? item?.config?.details?.value?.value?.value
+              : `{{${item?.config?.details?.value?.name}}}`
+            : item?.config?.details?.value?.value
+        }
         onChange={handleChange}
         label={item?.config?.details?.tag?.isShow && item?.config?.details?.tag?.value}
         disabled={!item?.config?.details?.isUse}

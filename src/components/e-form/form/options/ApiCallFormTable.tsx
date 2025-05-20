@@ -50,6 +50,7 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import CreateVariableFormDialog from '@/components/dialogs/form/CreateVariableFormDialog'
 import EditVariableFormDialog from '@/components/dialogs/form/EditVariableFormDialog'
 import { useApiCallStore } from '@/store/useApiCallStore'
+import { useDeleteApiMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -88,10 +89,17 @@ const DebouncedInput = ({
   return <CustomTextField {...props} value={value} onChange={e => setValue(e.target.value)} />
 }
 
-type variableType = {
+type ApiData = {
+  id: number
+  created_by: string
+  created_at: string
   name: string
-  method: string
+  method: 'get' | 'post' | 'put' | 'delete' | string
   url: string
+  query_params: Record<string, any> | null
+  authorization: string | null
+  headers: any
+  body: any
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -108,9 +116,9 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 }
 
 // Column Definitions
-const columnHelper = createColumnHelper<variableType>()
+const columnHelper = createColumnHelper<ApiData>()
 
-const ApiCallFormTable = ({ data, onEditApi }: any) => {
+const ApiCallFormTable = ({ data, onEditApi, page, pageSize, setPage, setPageSize }: any) => {
   const { showDialog } = useDialog()
   const { dictionary } = useDictionary()
   const router = useRouter()
@@ -120,10 +128,24 @@ const ApiCallFormTable = ({ data, onEditApi }: any) => {
 
   const setSelectedApi = useApiCallStore(state => state.setSelectedApi)
 
+  const { mutateAsync } = useDeleteApiMediaQueryOption()
+
   // Hooks
   const { lang: locale } = useParams()
 
-  const columns = useMemo<ColumnDef<variableType, any>[]>(
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await mutateAsync({ id })
+      if (response?.code == 'SUCCESS') {
+        toast.success('ลบ Api สำเร็จ!', { autoClose: 3000 })
+      }
+    } catch (error) {
+      console.log('error', error)
+      toast.error('ลบ Api ล้มเหลว!', { autoClose: 3000 })
+    }
+  }
+
+  const columns = useMemo<ColumnDef<ApiData, any>[]>(
     () => [
       columnHelper.accessor('name', {
         header: 'ชื่อ API Call',
@@ -160,7 +182,9 @@ const ApiCallFormTable = ({ data, onEditApi }: any) => {
                       id='alertDeleteApiCall'
                       title={'ลบ API Call'}
                       content1={'คุณต้องการ API Call นี้ใช่หรือไม่'}
-                      onClick={() => {}}
+                      onClick={() => {
+                        handleDelete(row.original.id)
+                      }}
                     />
                   ),
                   size: 'sm'
@@ -179,7 +203,7 @@ const ApiCallFormTable = ({ data, onEditApi }: any) => {
   )
 
   const table = useReactTable({
-    data: (data as variableType[]) || [],
+    data: (data?.data as ApiData[]) || [],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -270,14 +294,14 @@ const ApiCallFormTable = ({ data, onEditApi }: any) => {
           )}
         </table>
       </div>
-      {/* <TablePaginationComponent
+      <TablePaginationComponent
         table={table}
-        count={data.max_page}
+        count={Math.ceil(data.total / pageSize)}
         page={page}
         pageSize={pageSize}
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
-      /> */}
+      />
     </Card>
   )
 }

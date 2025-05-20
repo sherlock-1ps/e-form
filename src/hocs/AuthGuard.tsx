@@ -33,7 +33,7 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
 
     handleCallCheckAuth(
       token ||
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IiIsInJvbGUiOiJhZG1pbiJ9.l28a2rfWgMw3a_A7PmrJs5Jl7getf85KUzpy22jDSww'
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiJ9.eAZGCQou3yQ3GoobmqcrE7yE7xwMu0Lbd_TCCCVTMqc'
     )
   }, [])
 

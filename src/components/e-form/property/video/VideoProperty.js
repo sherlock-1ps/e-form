@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 import Checkbox from '@mui/material/Checkbox'
 
@@ -10,7 +10,8 @@ import {
   ImageOutlined,
   FitScreenOutlined,
   Delete,
-  OndemandVideoOutlined
+  OndemandVideoOutlined,
+  DeleteOutlined
 } from '@mui/icons-material'
 import Switch from '@mui/material/Switch'
 
@@ -19,17 +20,70 @@ import BaseButton from '@/components/ui/button/BaseButton'
 import BaseTitleProperty from '@components/e-form/property/BaseTitleProperty'
 import { useFormStore } from '@/store/useFormStore.ts'
 import { formSizeConfig } from '@configs/formSizeConfig'
+import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
+import { useDialog } from '@/hooks/useDialog'
+import { toolboxDocumentBaseMenu } from '@/data/toolbox/toolboxMenu'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import { toast } from 'react-toastify'
+import SelectMediaVideoDialog from '@/components/dialogs/form/SelectMediaVideoDialog'
+
+const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLength, ...props }) => {
+  const [value, setValue] = useState(initialValue)
+
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  }, [value])
+
+  return (
+    <CustomTextField
+      {...props}
+      value={value}
+      onChange={e => {
+        const input = e.target.value
+        const isValid = /^[a-zA-Z0-9]*$/.test(input)
+        if (isValid) {
+          setValue(input)
+        }
+      }}
+      inputProps={{
+        ...(maxLength ? { maxLength } : {}),
+        ...(props.inputProps || {})
+      }}
+    />
+  )
+}
 
 const VideoProperty = ({ item }) => {
+  const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
   const updateStyle = useFormStore(state => state.updateStyle)
+  const updateId = useFormStore(state => state.updateId)
+  const [isDuplicateId, setIsDuplicatedId] = useState(false)
 
   const result = form?.form_details
     .flatMap(formItem => formItem.fields)
     .flatMap(field => field.data)
     .find(dataItem => dataItem.id === selectedField?.fieldId?.id)
+
+  const allIds = useMemo(() => {
+    return form.form_details.flatMap(section => section.fields.flatMap(field => field.data.map(item => item.id)))
+  }, [form])
+
+  useEffect(() => {
+    if (isDuplicateId) {
+      setIsDuplicatedId(false)
+    }
+  }, [selectedField])
 
   return (
     <div>
@@ -82,7 +136,39 @@ const VideoProperty = ({ item }) => {
             }
           />
         </div>
-        <CustomTextField label='Component ID' placeholder='Placeholder' value={selectedField?.fieldId?.id} />
+        <DebouncedInput
+          label='Component ID'
+          placeholder='Placeholder'
+          value={result?.id}
+          error={isDuplicateId}
+          maxLength={25}
+          onChange={newValue => {
+            if (newValue === result?.id) return
+
+            if (allIds.includes(newValue)) {
+              toast.error('ID ซ้ำ กรุณาใช้ ID อื่น', { autoClose: 3000 })
+              setIsDuplicatedId(true)
+
+              return
+            }
+
+            if (newValue == '') {
+              setIsDuplicatedId(true)
+
+              return
+            }
+            if (isDuplicateId) {
+              setIsDuplicatedId(false)
+            }
+
+            updateId(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              newValue
+            )
+          }}
+        />
       </section>
       <section
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
@@ -134,14 +220,58 @@ const VideoProperty = ({ item }) => {
         </div>
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>
-        <CustomTextField select fullWidth defaultValue='' label='เลือกวีดีโอ' id='select-position'>
-          <MenuItem value=''>
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </CustomTextField>
+        <Typography variant='h6'>วีดีโอปัจจุบัน</Typography>
+        <div className='flex items-center justify-between'>
+          <Typography variant='body2'>{result?.config?.details?.value?.name ?? 'ยังไม่มีวีดีโอ'}</Typography>
+          {result?.config?.details?.value?.value && (
+            <Button
+              variant='outlined'
+              color='error'
+              onClick={
+                () =>
+                  showDialog({
+                    id: 'alertDialogConfirmToggleTrigger',
+                    component: (
+                      <ConfirmAlert
+                        id='alertDialogConfirmToggleTrigger'
+                        title='ลบวีดีโอ'
+                        content1='คุณต้องการลบวีดีโอนี้ ใช่หรือไม่'
+                        onClick={() => {
+                          updateDetails(
+                            String(selectedField?.parentKey ?? ''),
+                            selectedField?.boxId ?? '',
+                            selectedField?.fieldId?.id ?? '',
+                            {
+                              value: toolboxDocumentBaseMenu[3]?.config?.details?.value
+                            }
+                          )
+                        }}
+                      />
+                    ),
+                    size: 'sm'
+                  })
+
+                // updateValueOnly(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', '')
+              }
+            >
+              <DeleteOutlined style={{ color: 'red', fontSize: '20px' }} />
+            </Button>
+          )}
+        </div>
+
+        <Button
+          fullWidth
+          variant='contained'
+          onClick={() => {
+            showDialog({
+              id: 'alertSelectMediaVideoDialog',
+              component: <SelectMediaVideoDialog id='alertSelectMediaVideoDialog' />,
+              size: 'lg'
+            })
+          }}
+        >
+          เลือกวีดีโอ
+        </Button>
         <div className='w-full flex justify-around'>
           <FormControlLabel
             label='เล่นอัตโนมัติ'
@@ -177,7 +307,7 @@ const VideoProperty = ({ item }) => {
             }
           />
         </div>
-        <div className='w-full flex items-center justify-between'>
+        {/* <div className='w-full flex items-center justify-between'>
           <Typography color='text.primary'>การขยายภาพ</Typography>
           <div className='flex items-center justify-center gap-2'>
             <BaseButton
@@ -209,14 +339,58 @@ const VideoProperty = ({ item }) => {
               }}
             />
           </div>
-        </div>
-        <div>
-          <FormControlLabel control={<Switch defaultChecked />} label='Trigger Event' />
-        </div>
-        {/* <div className='flex items-center gap-2'>
-          <BaseButton text='เปลี่ยนแปลง' sx={{ display: 'flex', flex: 1 }} />
-          <BaseButton text='ลบ' icon={Delete} iconPosition='right' color='error' sx={{ display: 'flex', flex: 1 }} />
         </div> */}
+        <div>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={result?.config?.details?.trigger?.isTrigger}
+                onChange={() =>
+                  showDialog({
+                    id: 'alertDialogConfirmToggleTrigger',
+                    component: (
+                      <ConfirmAlert
+                        id='alertDialogConfirmToggleTrigger'
+                        title='เปลี่ยนสถานะ Trigger Event?'
+                        content1='คุณต้องการเปิดหรือปิด Trigger Event ใช่หรือไม่'
+                        onClick={() => {
+                          updateDetails(
+                            String(selectedField?.parentKey ?? ''),
+                            selectedField?.boxId ?? '',
+                            selectedField?.fieldId?.id ?? '',
+                            {
+                              trigger: {
+                                // ...result?.config?.details?.trigger,
+                                isTrigger: !result?.config?.details?.trigger?.isTrigger
+                              }
+                            }
+                          )
+                        }}
+                      />
+                    ),
+                    size: 'sm'
+                  })
+                }
+              />
+            }
+            label='Trigger Event'
+          />
+        </div>
+        {result?.config?.details?.trigger?.isTrigger && (
+          <Button
+            variant='contained'
+            fullWidth
+            onClick={() => {
+              showDialog({
+                id: 'TriggerEventDialog',
+                component: <TriggerEventDialog id={'TriggerEventDialog'} />,
+                size: 'xl'
+              })
+            }}
+          >
+            ตั้งค่า Trigger Event
+          </Button>
+        )}
       </section>
     </div>
   )

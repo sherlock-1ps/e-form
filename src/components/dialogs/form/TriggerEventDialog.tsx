@@ -13,6 +13,7 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
+  Tab,
   TextField,
   Typography
 } from '@mui/material'
@@ -23,14 +24,19 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import SearchIcon from '@mui/icons-material/Search'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import AddIcon from '@mui/icons-material/Add'
-import { useMemo, useState } from 'react'
+import { SyntheticEvent, useMemo, useState } from 'react'
 import { nanoid } from 'nanoid'
 import ConfirmAlert from '../alerts/ConfirmAlert'
 import SelectTriggerTypeDialog from './SelectTriggerTypeDialog'
-import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useFetchApiQueryOption, useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
 import Autocomplete from '@mui/material/Autocomplete'
 import { useFormStore } from '@/store/useFormStore'
 import { toast } from 'react-toastify'
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
+import axios from 'axios'
+import { useToolboxTabStore } from '@/store/useToolboxTabStore'
 
 interface TriggerProps {
   id: string
@@ -41,7 +47,7 @@ const events = [
   { id: 2, name: 'onChange', key: 'onChange' },
   { id: 3, name: 'onFocus', key: 'onFocus' },
   { id: 4, name: 'onSelect', key: 'onSelect' },
-  { id: 5, name: 'onKeyPress', key: 'onKeyPress' },
+  { id: 5, name: 'onKeyDown', key: 'onKeyDown' },
   { id: 6, name: 'onClick', key: 'onClick' },
   { id: 7, name: 'onLoad', key: 'onLoad' }
 ]
@@ -53,7 +59,9 @@ const actions = [
 
 const allowedEventsMap: Record<string, string[]> = {
   text: ['onLoad'],
-  button: ['onClick', 'onFocus'],
+  image: ['onLoad'],
+  video: ['onLoad'],
+  button: ['onBlur', 'onFocus', 'onKeyDown', 'onClick'],
   input: ['blur', 'change', 'onFocus', 'select'],
   default: ['blur', 'change', 'focus', 'select', 'keypress', 'onClick', 'onLoad']
 }
@@ -110,6 +118,7 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
+  const { setActiveTab } = useToolboxTabStore()
   const result = form?.form_details
     .flatMap(formItem => formItem.fields)
     .flatMap(field => field.data)
@@ -117,6 +126,8 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
   const allowedKeys = allowedEventsMap[result?.config?.details?.type] || allowedEventsMap.default
   const { closeDialog } = useDialog()
   const { showDialog } = useDialog()
+  const [mainTabValue, setMainTabValue] = useState('1')
+  const [subTabValue, setSubTabValue] = useState('1')
   const [conditions, setConditions] = useState<any>(result?.config?.details?.trigger?.conditions || [])
   const [selectedTriggerEvent, setSelectedTriggerEvent] = useState<string>(
     result?.config?.details?.trigger?.event || ''
@@ -124,6 +135,8 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
   const [selectedTriggerAction, setSelectedTriggerAction] = useState<string>(
     result?.config?.details?.trigger?.action?.type || ''
   )
+  const [selectedApi, setSelectedApi] = useState<any | null>(null)
+  const [response, setResponse] = useState('')
   const [valueAction, setValueAction] = useState({
     typeFrom: result?.config?.details?.trigger?.action?.from?.type || 'current',
     valueFrom: result?.config?.details?.trigger?.action?.from?.value || '',
@@ -131,9 +144,8 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
     valueTo: result?.config?.details?.trigger?.action?.to?.value || ''
   })
   const { data: variableData } = useFetchVariableQueryOption(1, 350)
+  const { data: apiLists, isPending: pendingApi } = useFetchApiQueryOption(1, 900)
   const ids = useMemo(() => getAllIdsFromData(form), [])
-
-  console.log('conditions', conditions)
 
   const addCondition = (key1: any, key2: any) => {
     const variable1 = {
@@ -147,6 +159,14 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
       id: ''
     }
     setConditions((prev: any) => [...prev, { id: nanoid(8), logic: 'and', variable1, variable2, operator: null }])
+  }
+
+  const handleChange = (event: SyntheticEvent, newValue: string) => {
+    setMainTabValue(newValue)
+    setResponse('')
+  }
+  const handleSubChange = (event: SyntheticEvent, newValue: string) => {
+    setSubTabValue(newValue)
   }
 
   const removeCondition = (id: string) => {
@@ -280,6 +300,7 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
         }
       }
     }
+    console.log('resultData', resultData)
 
     const existingTrigger = result?.config?.details?.trigger ?? {}
 
@@ -296,6 +317,50 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
     )
 
     closeDialog(id)
+  }
+
+  const handleCallTestApi = async () => {
+    let parsedHeaders: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+
+    parsedHeaders = {
+      ...parsedHeaders,
+      ...selectedApi?.headers
+    }
+
+    let parsedBody: any = undefined
+
+    parsedBody = selectedApi?.body
+
+    try {
+      const res = await axios({
+        method: selectedApi?.method.toLowerCase() as any,
+        url: selectedApi?.url,
+        headers: parsedHeaders,
+        data: parsedBody
+      })
+
+      setResponse(JSON.stringify(res.data, null, 2))
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const status = error.response.status
+          const statusText = error.response.statusText
+          const data = error.response.data
+
+          setResponse(`❌ HTTP ${status} ${error.message} ${statusText}\n${JSON.stringify(data, null, 2)}`)
+        } else if (error.request) {
+          // Network error (e.g., domain not found, server offline)
+          setResponse(`🌐 Network error: ${error.message}`)
+        } else {
+          // Unknown config/setup error
+          setResponse(`⚠️ Error: ${error.message}`)
+        }
+      } else {
+        setResponse(`Unknown error: ${error.message}`)
+      }
+    }
   }
 
   return (
@@ -599,6 +664,172 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
                 </RadioGroup>
 
                 {renderValueTo()}
+              </div>
+            )}
+            {selectedTriggerAction == 'callApi' && apiLists?.result?.data?.length > 0 && (
+              <CustomTextField
+                select
+                fullWidth
+                label='เลือก API'
+                value={selectedApi ?? ''}
+                onChange={e => setSelectedApi(e.target.value)}
+                SelectProps={{
+                  displayEmpty: true
+                }}
+                className='mt-4'
+              >
+                <MenuItem value='' disabled>
+                  <em className='opacity-50'>ว่าง</em>
+                </MenuItem>
+
+                {apiLists?.result?.data.map((api: any) => (
+                  <MenuItem key={api.id} value={api}>
+                    {api.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            )}
+
+            {apiLists?.result?.length < 1 && selectedTriggerAction == 'callApi' && (
+              <div className='flex items-center gap-2 mt-4'>
+                <Typography>ยังไม่มี API กดเพื่อสร้าง</Typography>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    setActiveTab('apiCall'), closeDialog(id)
+                  }}
+                >
+                  สร้าง API
+                </Button>
+              </div>
+            )}
+
+            {selectedApi && (
+              <div className=' mt-4'>
+                <TabContext value={mainTabValue}>
+                  <Grid container spacing={6} className='mb-4'>
+                    <Grid item xs={12} sm={6}>
+                      <TabList variant='fullWidth' onChange={handleChange} aria-label='full width tabs example'>
+                        <Tab
+                          value='1'
+                          label='Call Definition'
+                          className={mainTabValue === '1' ? 'bg-primaryLighter' : ''}
+                        />
+                        <Tab
+                          value='2'
+                          label='Response & Test'
+                          className={mainTabValue === '2' ? 'bg-primaryLighter' : ''}
+                        />
+                      </TabList>
+                    </Grid>
+                  </Grid>
+                  <TabPanel value='1'>
+                    <Grid container spacing={6}>
+                      <Grid item xs={6}>
+                        <CustomTextField
+                          value={selectedApi?.name}
+                          label='API Call Name'
+                          fullWidth
+                          placeholder='ชื่อ API'
+                          disabled
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <CustomTextField value={selectedApi?.method} label='Method' fullWidth placeholder='' disabled />
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <CustomTextField
+                          value={selectedApi?.url}
+                          label='API URL'
+                          fullWidth
+                          placeholder='URL API'
+                          disabled
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Divider />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TabContext value={subTabValue}>
+                          <Grid container spacing={6}>
+                            <Grid item xs={12} sm={8}>
+                              <TabList variant='fullWidth' onChange={handleSubChange} aria-label='sub tabs'>
+                                <Tab
+                                  value='1'
+                                  label='Headers'
+                                  className={subTabValue === '1' ? 'bg-primaryLighter' : ''}
+                                />
+
+                                <Tab
+                                  value='2'
+                                  label='BODY'
+                                  className={subTabValue === '3' ? 'bg-primaryLighter' : ''}
+                                />
+                              </TabList>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                              <TabPanel value='1'>
+                                <CustomTextField
+                                  label=' Headers (JSON)'
+                                  multiline
+                                  fullWidth
+                                  rows={9}
+                                  value={selectedApi?.headers ? JSON.stringify(selectedApi?.headers, null, 2) : ''}
+                                  placeholder='ไม่มี'
+                                />
+                              </TabPanel>
+
+                              <TabPanel value='2'>
+                                <CustomTextField
+                                  label=' Body (JSON)'
+                                  multiline
+                                  fullWidth
+                                  rows={9}
+                                  value={selectedApi?.body ? JSON.stringify(selectedApi?.body, null, 2) : ''}
+                                  placeholder='ไม่มี'
+                                />
+                              </TabPanel>
+                            </Grid>
+                          </Grid>
+                        </TabContext>
+                      </Grid>
+                    </Grid>
+                  </TabPanel>
+                  <TabPanel value='2'>
+                    <Grid container spacing={6}>
+                      <Grid item xs={12}>
+                        <Typography variant='h6' className='text-primary'>
+                          * เพื่อทดสอบ API
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} className='flex gap-2'>
+                        <Button variant='contained' onClick={handleCallTestApi}>
+                          ทดสอบ
+                        </Button>
+                        <Button
+                          variant='contained'
+                          onClick={() => {
+                            setResponse('')
+                          }}
+                        >
+                          รีเซต
+                        </Button>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomTextField
+                          rows={14}
+                          multiline
+                          fullWidth
+                          label='Response'
+                          value={response}
+                          placeholder='ยังไม่มีผลการทดสอบ'
+                        />
+                      </Grid>
+                    </Grid>
+                  </TabPanel>
+                </TabContext>
               </div>
             )}
           </div>

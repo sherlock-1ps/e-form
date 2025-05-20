@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import Checkbox from '@mui/material/Checkbox'
 
@@ -15,6 +15,49 @@ import { useFormStore } from '@/store/useFormStore.ts'
 import { formSizeConfig } from '@configs/formSizeConfig'
 import { useDialog } from '@/hooks/useDialog'
 import SelectFileUploadDialog from '@/components/dialogs/form/SelectFileUploadDialog'
+import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import { toast } from 'react-toastify'
+import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
+
+const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 750, maxLength, ...props }) => {
+  const [value, setValue] = useState(initialValue)
+
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  }, [value])
+
+  return (
+    <CustomTextField
+      {...props}
+      value={value}
+      onChange={e => {
+        const input = e.target.value
+        if (!isEng) {
+          setValue(input)
+
+          return
+        }
+        const isValid = /^[a-zA-Z0-9]*$/.test(input)
+        if (isValid) {
+          setValue(input)
+        }
+      }}
+      inputProps={{
+        ...(maxLength ? { maxLength } : {}),
+        ...(props.inputProps || {})
+      }}
+    />
+  )
+}
 
 const UploadProperty = () => {
   const { showDialog } = useDialog()
@@ -22,11 +65,25 @@ const UploadProperty = () => {
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
   const updateStyle = useFormStore(state => state.updateStyle)
+  const updateValueOnly = useFormStore(state => state.updateValueOnly)
+  const updateId = useFormStore(state => state.updateId)
+  const [isDuplicateId, setIsDuplicatedId] = useState(false)
+  const { data: variableData } = useFetchVariableQueryOption(1, 999)
 
   const result = form?.form_details
     .flatMap(formItem => formItem.fields)
     .flatMap(field => field.data)
     .find(dataItem => dataItem.id === selectedField?.fieldId?.id)
+
+  const allIds = useMemo(() => {
+    return form.form_details.flatMap(section => section.fields.flatMap(field => field.data.map(item => item.id)))
+  }, [form])
+
+  useEffect(() => {
+    if (isDuplicateId) {
+      setIsDuplicatedId(false)
+    }
+  }, [selectedField])
 
   return (
     <div>
@@ -80,13 +137,40 @@ const UploadProperty = () => {
             }
           />
         </div>
-        <CustomTextField label='Component ID' placeholder='Placeholder' value={selectedField?.fieldId?.id} />
-        <CustomTextField select fullWidth defaultValue='' label='ประเภทข้อมูล' id='select-position'>
-          <MenuItem value=''>
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>ไฟล์</MenuItem>
-        </CustomTextField>
+        <DebouncedInput
+          label='Component ID'
+          placeholder='Placeholder'
+          value={result?.id}
+          error={isDuplicateId}
+          maxLength={25}
+          isEng
+          onChange={newValue => {
+            if (newValue === result?.id) return
+
+            if (allIds.includes(newValue)) {
+              toast.error('ID ซ้ำ กรุณาใช้ ID อื่น', { autoClose: 3000 })
+              setIsDuplicatedId(true)
+
+              return
+            }
+
+            if (newValue == '') {
+              setIsDuplicatedId(true)
+
+              return
+            }
+            if (isDuplicateId) {
+              setIsDuplicatedId(false)
+            }
+
+            updateId(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              newValue
+            )
+          }}
+        />
       </section>
       <section
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
@@ -238,7 +322,7 @@ const UploadProperty = () => {
                 }}
               />
             }
-            label='รองรับการอัปโหลดหลายไฟล์'
+            label='รองรับอัปโหลดหลายไฟล์'
             sx={{
               '& .MuiFormControlLabel-label': {
                 fontSize: '12.5px',
@@ -276,7 +360,57 @@ const UploadProperty = () => {
           </CustomTextField>
         </div>
 
-        <FormControlLabel control={<Switch defaultChecked />} label='Trigger Event' />
+        <div>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={result?.config?.details?.trigger?.isTrigger}
+                onChange={() =>
+                  showDialog({
+                    id: 'alertDialogConfirmToggleTrigger',
+                    component: (
+                      <ConfirmAlert
+                        id='alertDialogConfirmToggleTrigger'
+                        title='เปลี่ยนสถานะ Trigger Event?'
+                        content1='คุณต้องการเปิดหรือปิด Trigger Event ใช่หรือไม่'
+                        onClick={() => {
+                          updateDetails(
+                            String(selectedField?.parentKey ?? ''),
+                            selectedField?.boxId ?? '',
+                            selectedField?.fieldId?.id ?? '',
+                            {
+                              trigger: {
+                                // ...result?.config?.details?.trigger,
+                                isTrigger: !result?.config?.details?.trigger?.isTrigger
+                              }
+                            }
+                          )
+                        }}
+                      />
+                    ),
+                    size: 'sm'
+                  })
+                }
+              />
+            }
+            label='Trigger Event'
+          />
+        </div>
+        {result?.config?.details?.trigger?.isTrigger && (
+          <Button
+            variant='contained'
+            fullWidth
+            onClick={() => {
+              showDialog({
+                id: 'TriggerEventDialog',
+                component: <TriggerEventDialog id={'TriggerEventDialog'} />,
+                size: 'xl'
+              })
+            }}
+          >
+            ตั้งค่า Trigger Event
+          </Button>
+        )}
       </section>
     </div>
   )

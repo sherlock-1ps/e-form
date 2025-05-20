@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import Checkbox from '@mui/material/Checkbox'
 
@@ -13,13 +13,18 @@ import BaseButton from '@/components/ui/button/BaseButton'
 import BaseTitleProperty from '@components/e-form/property/BaseTitleProperty'
 import { useFormStore } from '@/store/useFormStore.ts'
 import Radio from '@mui/material/Radio'
+import Autocomplete from '@mui/material/Autocomplete'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormatText from '@components/e-form/property/FormatText'
 import FormatTextPosition from '@components/e-form/property/FormatTextPosition'
 import { formSizeConfig } from '@configs/formSizeConfig'
+import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
+import { useDialog } from '@/hooks/useDialog'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import { toast } from 'react-toastify'
+import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
 
-const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...props }) => {
-  // States
+const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 750, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -32,22 +37,57 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...prop
     }, debounce)
 
     return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
-  return <CustomTextField {...props} value={value} onChange={e => setValue(e.target.value)} />
+  return (
+    <CustomTextField
+      {...props}
+      value={value}
+      onChange={e => {
+        const input = e.target.value
+        if (!isEng) {
+          setValue(input)
+
+          return
+        }
+        const isValid = /^[a-zA-Z0-9]*$/.test(input)
+        if (isValid) {
+          setValue(input)
+        }
+      }}
+      inputProps={{
+        ...(maxLength ? { maxLength } : {}),
+        ...(props.inputProps || {})
+      }}
+    />
+  )
 }
 
 const ButtonProperty = () => {
+  const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
+  const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const updateStyle = useFormStore(state => state.updateStyle)
+  const updateId = useFormStore(state => state.updateId)
+  const [isDuplicateId, setIsDuplicatedId] = useState(false)
+  const { data: variableData } = useFetchVariableQueryOption(1, 999)
 
   const result = form?.form_details
     .flatMap(formItem => formItem.fields)
     .flatMap(field => field.data)
     .find(dataItem => dataItem.id === selectedField?.fieldId?.id)
+
+  const allIds = useMemo(() => {
+    return form.form_details.flatMap(section => section.fields.flatMap(field => field.data.map(item => item.id)))
+  }, [form])
+
+  useEffect(() => {
+    if (isDuplicateId) {
+      setIsDuplicatedId(false)
+    }
+  }, [selectedField])
 
   return (
     <div>
@@ -100,7 +140,40 @@ const ButtonProperty = () => {
             }
           />
         </div>
-        <CustomTextField label='Component ID' placeholder='Placeholder' value={selectedField?.fieldId?.id} />
+        <DebouncedInput
+          label='Component ID'
+          placeholder='Placeholder'
+          value={result?.id}
+          error={isDuplicateId}
+          maxLength={25}
+          isEng
+          onChange={newValue => {
+            if (newValue === result?.id) return
+
+            if (allIds.includes(newValue)) {
+              toast.error('ID ซ้ำ กรุณาใช้ ID อื่น', { autoClose: 3000 })
+              setIsDuplicatedId(true)
+
+              return
+            }
+
+            if (newValue == '') {
+              setIsDuplicatedId(true)
+
+              return
+            }
+            if (isDuplicateId) {
+              setIsDuplicatedId(false)
+            }
+
+            updateId(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              newValue
+            )
+          }}
+        />
       </section>
       <section
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
@@ -164,27 +237,76 @@ const ButtonProperty = () => {
         </CustomTextField>
         <div className='p-2 bg-primaryLighter rounded-md'>
           <Typography variant='body2'>ข้อความในปุ่ม</Typography>
-          <RadioGroup row defaultValue='checked' name='basic-radio' aria-label='basic-radio'>
-            <FormControlLabel value='checked' control={<Radio />} label='String' />
-            <FormControlLabel value='unchecked' control={<Radio />} label='Variable' />
-            <FormControlLabel value='test' control={<Radio />} label='API' />
-          </RadioGroup>
-
-          <DebouncedInput
-            label='รายละเอียด'
-            placeholder={result.config.details.placeholder}
-            value={result.config.details.value || ''}
-            onChange={newText =>
+          <RadioGroup
+            row
+            value={result?.config?.details?.value?.valueType || 'string'}
+            name='basic-radio'
+            aria-label='basic-radio'
+            onChange={e =>
               updateDetails(
                 String(selectedField?.parentKey ?? ''),
                 selectedField?.boxId ?? '',
                 selectedField?.fieldId?.id ?? '',
                 {
-                  value: newText
+                  value: {
+                    value: '',
+                    valueType: e.target.value
+                  }
                 }
               )
             }
-          />
+          >
+            <FormControlLabel value='string' control={<Radio />} label='String' />
+            <FormControlLabel value='variable' control={<Radio />} label='Variable' />
+          </RadioGroup>
+          {result?.config?.details?.value?.valueType == 'variable' ? (
+            <Autocomplete
+              fullWidth
+              options={variableData?.result?.data || []}
+              getOptionLabel={option => `{{${option.name}}}`}
+              value={
+                variableData?.result?.data?.find(
+                  item => item.value?.value === result?.config?.details?.value?.value?.value
+                ) || null
+              }
+              onChange={(event, newValue) => {
+                updateDetails(
+                  String(selectedField?.parentKey ?? ''),
+                  selectedField?.boxId ?? '',
+                  selectedField?.fieldId?.id ?? '',
+                  {
+                    value: {
+                      ...result?.config?.details?.value,
+                      ...newValue
+                    }
+                  }
+                )
+              }}
+              renderInput={params => <CustomTextField {...params} label='ตัวแปร' placeholder='เลือก...' />}
+            />
+          ) : (
+            <DebouncedInput
+              label='ข้อความ'
+              placeholder={result?.config?.details?.placeholder}
+              value={result?.config?.details?.value?.value || ''}
+              onChange={newText =>
+                // updateDetails(
+                //   String(selectedField?.parentKey ?? ''),
+                //   selectedField?.boxId ?? '',
+                //   selectedField?.fieldId?.id ?? '',
+                //   {
+                //     value: newText
+                //   }
+                // )
+                updateValueOnly(
+                  String(selectedField?.parentKey ?? ''),
+                  selectedField?.boxId ?? '',
+                  selectedField?.fieldId?.id ?? '',
+                  newText
+                )
+              }
+            />
+          )}
         </div>
         <div>
           <FormatText item={result?.config?.style} id={selectedField?.fieldId?.id} />
@@ -195,7 +317,57 @@ const ButtonProperty = () => {
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>
         <div>
-          <FormControlLabel control={<Switch defaultChecked />} label='Trigger Event' />
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={result?.config?.details?.trigger?.isTrigger}
+                  onChange={() =>
+                    showDialog({
+                      id: 'alertDialogConfirmToggleTrigger',
+                      component: (
+                        <ConfirmAlert
+                          id='alertDialogConfirmToggleTrigger'
+                          title='เปลี่ยนสถานะ Trigger Event?'
+                          content1='คุณต้องการเปิดหรือปิด Trigger Event ใช่หรือไม่'
+                          onClick={() => {
+                            updateDetails(
+                              String(selectedField?.parentKey ?? ''),
+                              selectedField?.boxId ?? '',
+                              selectedField?.fieldId?.id ?? '',
+                              {
+                                trigger: {
+                                  // ...result?.config?.details?.trigger,
+                                  isTrigger: !result?.config?.details?.trigger?.isTrigger
+                                }
+                              }
+                            )
+                          }}
+                        />
+                      ),
+                      size: 'sm'
+                    })
+                  }
+                />
+              }
+              label='Trigger Event'
+            />
+          </div>
+          {result?.config?.details?.trigger?.isTrigger && (
+            <Button
+              variant='contained'
+              fullWidth
+              onClick={() => {
+                showDialog({
+                  id: 'TriggerEventDialog',
+                  component: <TriggerEventDialog id={'TriggerEventDialog'} />,
+                  size: 'xl'
+                })
+              }}
+            >
+              ตั้งค่า Trigger Event
+            </Button>
+          )}
         </div>
       </section>
     </div>
