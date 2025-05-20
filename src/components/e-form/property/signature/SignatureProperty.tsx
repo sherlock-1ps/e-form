@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 
 import Checkbox from '@mui/material/Checkbox'
 
@@ -43,15 +43,6 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 
     return () => clearTimeout(timeout)
   }, [value])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value
-    const isValid = isEng ? /^[a-zA-Z0-9]*$/.test(input) : true
-
-    if (isValid) {
-      setValue(input)
-    }
-  }
 
   return (
     <CustomTextField
