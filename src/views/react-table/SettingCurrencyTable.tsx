@@ -1,10 +1,9 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 // MUI Imports
-import React from 'react'
 
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -127,8 +126,7 @@ const columns = [
     cell: info => {
       const row = info.row.original
 
-      
-return (
+      return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img
             src={`/images/setting-website/currency/${row.icon}Icon.png`}
@@ -145,8 +143,7 @@ return (
     cell: info => {
       const row = info.row.original
 
-      
-return (
+      return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span>{row.name}</span>
         </div>

@@ -3,11 +3,10 @@
 import { useState, useRef } from 'react'
 import { Typography } from '@mui/material'
 import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/th'
 import newAdapter from '@/libs/newAdapter'
 import { useFormStore } from '@/store/useFormStore'
-import dayjs from 'dayjs'
 
 const DatetimePickerForm = ({ item }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
