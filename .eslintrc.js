@@ -50,7 +50,7 @@ module.exports = {
         next: '*'
       }
     ],
-    'newline-before-return': 'error',
+    'newline-before-return': 'off',
     'import/newline-after-import': [
       'off',
       {
