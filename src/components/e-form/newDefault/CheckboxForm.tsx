@@ -9,41 +9,57 @@ import { useFormStore } from '@/store/useFormStore'
 const CheckboxForm = ({ item }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
+  const options =
+    item?.config?.details?.value?.options?.length > 0
+      ? item.config.details.value.options
+      : [
+          {
+            name: 'Default',
+            isChecked: false
+          }
+        ]
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <FormGroup row={item?.config?.details?.row}>
-        {item?.config?.details?.itemList &&
-          item?.config?.details?.itemList.map((data: any, idx: number) => {
-            return (
-              <FormControlLabel
-                disabled={!item?.config?.details?.isUse}
-                key={idx}
-                label={data.name}
-                className='m-0'
-                control={
-                  <Checkbox
-                    checked={data.isChecked}
-                    name={data.name}
-                    onChange={e => {
-                      const newItemList = item.config.details.itemList.map((d: any, i: number) =>
-                        i === idx ? { ...d, isChecked: e.target.checked } : d
-                      )
+        {options.map((data: any, idx: number) => {
+          return (
+            <FormControlLabel
+              disabled={!item?.config?.details?.isUse}
+              key={idx}
+              label={data.name}
+              className='m-0'
+              control={
+                <Checkbox
+                  checked={item?.config?.details?.value?.checkedList?.includes(data.value) ?? false}
+                  name={data.name}
+                  onChange={e => {
+                    if (!data.value) return
 
-                      updateDetails(
-                        String(selectedField?.parentKey ?? ''),
-                        selectedField?.boxId ?? '',
-                        selectedField?.fieldId?.id ?? '',
-                        {
-                          itemList: newItemList
+                    const checked = e.target.checked
+                    const currentCheckedList = item?.config?.details?.value?.checkedList || []
+
+                    const newCheckedList = checked
+                      ? [...currentCheckedList, data.value]
+                      : currentCheckedList.filter((v: any) => v !== data.value)
+
+                    updateDetails(
+                      String(selectedField?.parentKey ?? ''),
+                      selectedField?.boxId ?? '',
+                      selectedField?.fieldId?.id ?? '',
+                      {
+                        value: {
+                          ...item?.config?.details?.value,
+                          checkedList: newCheckedList
                         }
-                      )
-                    }}
-                  />
-                }
-              />
-            )
-          })}
+                      }
+                    )
+                  }}
+                />
+              }
+            />
+          )
+        })}
       </FormGroup>
     </div>
   )

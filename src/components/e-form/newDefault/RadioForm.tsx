@@ -11,27 +11,45 @@ const RadioForm = ({ item }: any) => {
   const selectedField = useFormStore(state => state.selectedField)
 
   const handleChange = (event: any) => {
+    const selectedValue = event.target.value
+
+    // ❌ ถ้าเป็น default (value ว่าง) ไม่อัปเดต
+    if (selectedValue === '') return
+
     updateDetails(
       String(selectedField?.parentKey ?? ''),
       selectedField?.boxId ?? '',
       selectedField?.fieldId?.id ?? '',
       {
-        value: event.target.value
+        value: {
+          ...item?.config?.details?.value,
+          value: selectedValue
+        }
       }
     )
   }
+
+  const options =
+    item?.config?.details?.value?.options?.length > 0
+      ? item.config.details.value.options
+      : [
+          {
+            name: 'Default Option',
+            value: ''
+          }
+        ]
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <FormControl className='flex-wrap flex-row'>
         <RadioGroup
           row={item?.config?.details?.row}
-          value={item?.config?.details?.value}
+          value={item?.config?.details?.value?.value}
           name='radio_form'
           aria-label='radio_form'
           onChange={handleChange}
         >
-          {item?.config?.details?.itemList.map((data: any, idx: number) => (
+          {options.map((data: any, idx: number) => (
             <FormControlLabel
               key={idx}
               value={data.value}

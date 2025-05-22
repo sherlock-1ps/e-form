@@ -6,9 +6,11 @@ import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
 
-const SwitchForm = ({ item }: any) => {
+const SwitchForm = ({ item, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
+
+  console.log(item)
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
@@ -16,20 +18,33 @@ const SwitchForm = ({ item }: any) => {
         disabled={!item?.config?.details?.isUse}
         control={
           <Switch
-            checked={item?.config?.details?.value === '1'}
+            checked={
+              item?.config?.details?.value?.valueType == 'variable'
+                ? item?.config?.details?.value?.value?.value
+                : item?.config?.details?.value?.value
+            }
             onChange={e => {
               updateDetails(
                 String(selectedField?.parentKey ?? ''),
                 selectedField?.boxId ?? '',
                 selectedField?.fieldId?.id ?? '',
                 {
-                  value: e.target.checked ? '1' : '0'
+                  value: {
+                    ...item?.config?.details?.value,
+                    value: e.target.checked
+                  }
                 }
               )
             }}
           />
         }
-        label={item?.config?.details?.text}
+        label={
+          draft
+            ? item?.config?.details?.value?.name
+            : item?.config?.details?.value?.valueType == 'variable'
+              ? `{{${item?.config?.details?.value?.name}}}`
+              : item?.config?.details?.value?.name
+        }
       />
     </div>
   )

@@ -241,7 +241,10 @@ export const toolboxCreateformMenu = [
         },
         isUse: true,
         isShow: true,
-        isRequired: true
+        isRequired: true,
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -273,7 +276,10 @@ export const toolboxCreateformMenu = [
         isUse: true,
         isShow: true,
         isShowTime: true,
-        isRequired: true
+        isRequired: true,
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -305,7 +311,10 @@ export const toolboxCreateformMenu = [
         isUse: true,
         isShow: true,
         isShowTime: true,
-        isRequired: true
+        isRequired: true,
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -348,7 +357,10 @@ export const toolboxCreateformMenu = [
         maxSize: 20,
         maxFileUpload: 50,
         isUse: true,
-        isShow: true
+        isShow: true,
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -371,7 +383,10 @@ export const toolboxCreateformMenu = [
         isUse: true,
         isShow: true,
         isCutLink: false,
-        isRequired: true
+        isRequired: true,
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -442,14 +457,13 @@ export const toolboxOptionMenu = [
       details: {
         type: 'dropdown',
         label: 'ตัวเลือก',
-        value: '',
+        value: {
+          valueType: 'custom',
+          value: ''
+        },
         isUse: true,
         isShow: true,
-        itemList: [
-          { name: 'Ten', value: 10, enhanced: false },
-          { name: 'Twenty', value: 20, enhanced: false },
-          { name: 'Thirty', value: 30, enhanced: false }
-        ],
+
         tag: {
           isShow: true,
           value: 'ตัวเลือก'
@@ -462,6 +476,9 @@ export const toolboxOptionMenu = [
         helperText: {
           isShow: true,
           value: 'คำแนะนำ'
+        },
+        trigger: {
+          isTrigger: false
         }
       }
     }
@@ -480,12 +497,14 @@ export const toolboxOptionMenu = [
         isUse: true,
         isShow: true,
         isRequired: true,
-        itemList: [
-          { isChecked: true, value: '', name: 'ตัวเลือก 1', enhanced: false },
-          { isChecked: false, value: '', name: 'ตัวเลือก 2', enhanced: false },
-          { isChecked: true, value: '', name: 'ตัวเลือก 3', enhanced: false }
-        ],
-        defaultAdd: { isChecked: false, value: '', name: 'ตัวเลือก ', enhanced: false }
+        value: {
+          valueType: 'custom',
+          checkedList: []
+        },
+
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -501,13 +520,19 @@ export const toolboxOptionMenu = [
         isUse: true,
         isShow: true,
         isRequired: true,
-        value: '',
+        value: {
+          valueType: 'custom',
+          value: ''
+        },
         itemList: [
           { value: '1', name: 'ตัวเลือก 1', enhanced: false },
           { value: '2', name: 'ตัวเลือก 2', enhanced: false },
           { value: '3', name: 'ตัวเลือก 3', enhanced: false }
         ],
-        defaultAdd: { value: '', name: 'ตัวเลือก ', enhanced: false }
+        defaultAdd: { value: '', name: 'ตัวเลือก ', enhanced: false },
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   },
@@ -519,10 +544,16 @@ export const toolboxOptionMenu = [
       details: {
         type: 'switch',
         label: 'สวิตซ์',
-        text: 'Switch',
-        value: '0',
+        value: {
+          valueType: 'custom',
+          name: 'Switch',
+          value: false
+        },
         isUse: true,
-        isShow: true
+        isShow: true,
+        trigger: {
+          isTrigger: false
+        }
       }
     }
   }

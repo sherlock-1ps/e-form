@@ -406,11 +406,13 @@ const SignatureProperty = () => {
           }
         />
       </section>
-      <section
-        className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
-        style={{ borderBottom: '1.5px solid #11151A1F' }}
-      >
-        {/* <RadioGroup
+
+      {result?.config?.details?.signType?.type == 'master' && (
+        <section
+          className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
+          style={{ borderBottom: '1.5px solid #11151A1F' }}
+        >
+          {/* <RadioGroup
           name='select-option'
           value={result?.config?.details?.setting?.defaultAssign}
           onChange={e =>
@@ -447,30 +449,32 @@ const SignatureProperty = () => {
 
           <FormControlLabel value='clone' control={<Radio />} label='ให้ผู้ใช้กำหนด' />
         </RadioGroup> */}
-        <FormControlLabel
-          label={'ให้ผู้ใช้กำหนด'}
-          className='m-0'
-          control={
-            <Checkbox
-              checked={result?.config?.details?.setting?.isUserUse}
-              name={'isUserUse'}
-              onChange={e => {
-                updateDetails(
-                  String(selectedField?.parentKey ?? ''),
-                  selectedField?.boxId ?? '',
-                  selectedField?.fieldId?.id ?? '',
-                  {
-                    setting: {
-                      ...result?.config?.details?.setting,
-                      isUserUse: e.target.checked
+
+          <FormControlLabel
+            label={'ให้ผู้ใช้กำหนด'}
+            className='m-0'
+            control={
+              <Checkbox
+                checked={result?.config?.details?.setting?.isUserUse}
+                name={'isUserUse'}
+                onChange={e => {
+                  updateDetails(
+                    String(selectedField?.parentKey ?? ''),
+                    selectedField?.boxId ?? '',
+                    selectedField?.fieldId?.id ?? '',
+                    {
+                      setting: {
+                        ...result?.config?.details?.setting,
+                        isUserUse: e.target.checked
+                      }
                     }
-                  }
-                )
-              }}
-            />
-          }
-        />
-      </section>
+                  )
+                }}
+              />
+            }
+          />
+        </section>
+      )}
     </div>
   )
 }
