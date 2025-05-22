@@ -153,7 +153,7 @@ const FormNavbarContent = () => {
       <div className='flex flex-col flex-1  '>
         <div className='flex gap-2 items-center'>
           <Typography>Name :</Typography>
-          <TextField value={title} onChange={handleInputChange} variant='standard' />
+          <TextField value={title} onChange={handleInputChange} variant='standard' className='min-w-[394px]' />
           <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='p-1'>
             <EditOutlined sx={{ width: '16px', height: '18px' }} />
           </IconButton>

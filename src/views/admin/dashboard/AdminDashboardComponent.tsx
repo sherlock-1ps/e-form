@@ -39,9 +39,10 @@ const AdminDashboardComponent = () => {
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
 
   const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
-    <div className=' p-4 bg-white  rounded-md  max-w-[200px] h-[262px] max-h-[262px] border shadow-md'>
+    <div className=' p-4 bg-white  rounded-md  max-w-[250px] h-[275px] max-h-[290px] border shadow-md'>
       <div className='flex items-center justify-between'>
-        <Typography variant='h6' className='text-start overflow-hidden text-ellipsis whitespace-nowrap'>
+        {/* <Typography variant='h6' className='text-start overflow-hidden text-ellipsis whitespace-nowrap'> */}
+        <Typography variant='h6' className='text-start pb-2'>
           {title}
         </Typography>
         <OptionMenu
