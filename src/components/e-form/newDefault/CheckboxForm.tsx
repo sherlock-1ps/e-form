@@ -6,18 +6,21 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
 
-const CheckboxForm = ({ item }: any) => {
+const CheckboxForm = ({ item, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
+
   const options =
     item?.config?.details?.value?.options?.length > 0
       ? item.config.details.value.options
-      : [
-          {
-            name: 'Default',
-            isChecked: false
-          }
-        ]
+      : item?.config?.details?.value?.value?.value?.value?.options?.length > 0
+        ? item?.config?.details?.value?.value?.value?.value?.options
+        : [
+            {
+              name: 'Default',
+              isChecked: false
+            }
+          ]
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
@@ -34,6 +37,7 @@ const CheckboxForm = ({ item }: any) => {
                   checked={item?.config?.details?.value?.checkedList?.includes(data.value) ?? false}
                   name={data.name}
                   onChange={e => {
+                    if (!draft) return
                     if (!data.value) return
 
                     const checked = e.target.checked

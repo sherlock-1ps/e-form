@@ -74,6 +74,9 @@ const CheckboxProperty = () => {
     .flatMap(field => field.data)
     .find(dataItem => dataItem.id === selectedField?.fieldId?.id)
 
+  const options =
+    result?.config?.details?.value?.options ?? result?.config?.details?.value?.value?.value?.value?.options ?? []
+
   const allIds = useMemo(() => {
     return form.form_details.flatMap(section => section.fields.flatMap(field => field.data.map(item => item.id)))
   }, [form])
@@ -268,7 +271,8 @@ const CheckboxProperty = () => {
         {/* <ChoiceBox item={result} /> */}
         <div className='flex items-center justify-between'>
           <Typography variant='h6'>ตัวเลือกที่แสดง</Typography>
-          {result?.config?.details?.value?.options?.length > 0 && (
+
+          {options.length > 0 && (
             <IconButton
               className=' bg-slate-200'
               onClick={() => {
@@ -288,18 +292,21 @@ const CheckboxProperty = () => {
             </IconButton>
           )}
         </div>
-        {result?.config?.details?.value?.options?.length > 0 ? (
-          result?.config?.details?.value?.options?.map((item, index) => {
-            return (
-              <div className='flex flex-col mt-2' key={index}>
-                <Typography>ตัวเลือกที่ {index + 1}</Typography>
-                <div className='flex gap-2 p-1 items-end'>
-                  <CustomTextField fullWidth label='Name' value={item?.name} disabled />
-                  <CustomTextField fullWidth label='Value' value={item?.value} disabled />
-                </div>
+        {result?.config?.details?.value?.valueType == 'custom' ? (
+          <Typography variant='body2'>ตัวเลือกจาก Custom</Typography>
+        ) : (
+          <Typography variant='h6'>ตัวเลือกจาก Variable {result?.config?.details?.value?.value?.name}</Typography>
+        )}
+        {options.length > 0 ? (
+          options.map((item, index) => (
+            <div className='flex flex-col mt-2' key={index}>
+              <Typography>ตัวเลือกที่ {index + 1}</Typography>
+              <div className='flex gap-2 p-1 items-end'>
+                <CustomTextField fullWidth label='Name' value={item?.name} disabled />
+                <CustomTextField fullWidth label='Value' value={item?.value} disabled />
               </div>
-            )
-          })
+            </div>
+          ))
         ) : (
           <Typography variant='body2' className='my-2'>
             ยังไม่มีตัวเลือก
@@ -307,7 +314,7 @@ const CheckboxProperty = () => {
         )}
 
         <BaseButton
-          text={`${result?.config?.details?.value?.options?.length > 0 ? 'เปลี่ยนตัวเลือก' : 'เพิ่มตัวเลือก'}`}
+          text={`${options.length > 0 ? 'เปลี่ยนตัวเลือก' : 'เพิ่มตัวเลือก'}`}
           icon={Add}
           iconPosition='left'
           color='secondary'

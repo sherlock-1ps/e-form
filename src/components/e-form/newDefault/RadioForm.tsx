@@ -6,11 +6,12 @@ import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
 
-const RadioForm = ({ item }: any) => {
+const RadioForm = ({ item, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
 
   const handleChange = (event: any) => {
+    if (!draft) return
     const selectedValue = event.target.value
 
     // ❌ ถ้าเป็น default (value ว่าง) ไม่อัปเดต
@@ -21,10 +22,7 @@ const RadioForm = ({ item }: any) => {
       selectedField?.boxId ?? '',
       selectedField?.fieldId?.id ?? '',
       {
-        value: {
-          ...item?.config?.details?.value,
-          value: selectedValue
-        }
+        selectedValue: selectedValue
       }
     )
   }
@@ -32,19 +30,22 @@ const RadioForm = ({ item }: any) => {
   const options =
     item?.config?.details?.value?.options?.length > 0
       ? item.config.details.value.options
-      : [
-          {
-            name: 'Default Option',
-            value: ''
-          }
-        ]
+      : item?.config?.details?.value?.value?.value?.value?.options?.length > 0
+        ? item?.config?.details?.value?.value?.value?.value?.options
+        : [
+            {
+              name: 'Default Option',
+              value: ''
+            }
+          ]
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <FormControl className='flex-wrap flex-row'>
         <RadioGroup
           row={item?.config?.details?.row}
-          value={item?.config?.details?.value?.value}
+          defaultValue={''}
+          value={item?.config?.details?.selectedValue}
           name='radio_form'
           aria-label='radio_form'
           onChange={handleChange}

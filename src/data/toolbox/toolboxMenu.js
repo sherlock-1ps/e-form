@@ -501,7 +501,6 @@ export const toolboxOptionMenu = [
           valueType: 'custom',
           checkedList: []
         },
-
         trigger: {
           isTrigger: false
         }
@@ -520,6 +519,7 @@ export const toolboxOptionMenu = [
         isUse: true,
         isShow: true,
         isRequired: true,
+        selectedValue: '',
         value: {
           valueType: 'custom',
           value: ''

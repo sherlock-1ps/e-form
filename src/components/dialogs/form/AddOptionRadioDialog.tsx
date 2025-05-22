@@ -192,7 +192,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
                     variant='contained'
                     startIcon={<Add />}
                     onClick={handleAdd}
-                    disabled={(!name || !value) && result?.config?.details?.maxCheckbox == items?.length}
+                    disabled={!name || !value || result?.config?.details?.maxCheckbox == items?.length}
                   >
                     เพิ่ม
                   </Button>
