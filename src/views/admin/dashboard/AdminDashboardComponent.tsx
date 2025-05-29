@@ -40,7 +40,7 @@ const AdminDashboardComponent = () => {
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
 
   const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
-    <div className='flex flex-col p-4 bg-white rounded-md max-w-[200px] w-[200px] h-[275px] border shadow-md'>
+    <div className='flex flex-col p-4 bg-white rounded-md max-w-[220px] w-[220px] h-[275px] border shadow-md'>
       {/* Header */}
       <div className='flex items-center justify-between'>
         <Typography variant='h6' className='text-start pb-2'>
