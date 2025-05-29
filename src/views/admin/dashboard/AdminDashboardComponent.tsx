@@ -40,16 +40,14 @@ const AdminDashboardComponent = () => {
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
 
   const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
-    <div className=' p-4 bg-white  rounded-md  max-w-[250px] h-[275px] max-h-[290px] border shadow-md'>
+    <div className='flex flex-col p-4 bg-white rounded-md max-w-[250px] h-[275px] border shadow-md'>
+      {/* Header */}
       <div className='flex items-center justify-between'>
-        {/* <Typography variant='h6' className='text-start overflow-hidden text-ellipsis whitespace-nowrap'> */}
         <Typography variant='h6' className='text-start pb-2'>
           {title}
         </Typography>
         <OptionMenu
-          iconButtonProps={{
-            size: 'medium'
-          }}
+          iconButtonProps={{ size: 'medium' }}
           iconClassName='text-secondary'
           options={[
             {
@@ -57,17 +55,15 @@ const AdminDashboardComponent = () => {
               icon: pendingGetForm ? <CircularProgress size={20} /> : <Edit />,
               menuItemProps: {
                 disabled: pendingGetForm,
-                className: ' text-secondary',
-                onClick: () => {
-                  onGetForm(data)
-                }
+                className: 'text-secondary',
+                onClick: () => onGetForm(data)
               }
             },
             {
               text: 'เวอร์ชั่นใหม่',
               icon: <CreateNewFolder />,
               menuItemProps: {
-                className: ' text-secondary',
+                className: 'text-secondary',
                 onClick: () => {
                   showDialog({
                     id: 'alertEditVersionFormDialog',
@@ -81,7 +77,7 @@ const AdminDashboardComponent = () => {
               text: 'กำหนดวันใช้งาน',
               icon: <EditCalendar />,
               menuItemProps: {
-                className: ' text-secondary',
+                className: 'text-secondary',
                 onClick: () => {
                   showDialog({
                     id: 'alertDateUseFormDialog',
@@ -115,27 +111,30 @@ const AdminDashboardComponent = () => {
           ]}
         />
       </div>
+
+      {/* Version info */}
       <div className='flex justify-between'>
-        <Typography className='w-full text-start italic' variant='body2'>
+        <Typography className='text-start italic' variant='body2'>
           เวอร์ชั่น
         </Typography>
-        <Typography className='w-full text-end italic' variant='body2'>
+        <Typography className='text-end italic' variant='body2'>
           {version}
         </Typography>
       </div>
 
-      <Button className='p-0' color='secondary'>
-        <img src={image} alt={title} className='w-full h-auto rounded-md' />
-      </Button>
+      {/* Image container */}
+      <div className='flex-1 my-2 rounded overflow-hidden'>
+        {/* <img src={image} alt={title} className='w-full h-full object-cover' /> */}
+        <Typography className='w-full h-full bg-slate-100 flex items-center justify-center' variant='body2'>
+          {title}
+        </Typography>
+        {/* Or if you want just black placeholder: <div className='w-full h-full bg-black' /> */}
+      </div>
+
+      {/* Date */}
       <Typography variant='body2' className='text-end'>
         {date}
       </Typography>
-      {/* <div className='flex items-center justify-end gap-1'>
-        <Typography variant='body2' className=' text-success'>
-          {status}
-        </Typography>
-        <AccountTreeOutlined className='text-success' />
-      </div> */}
     </div>
   )
 
