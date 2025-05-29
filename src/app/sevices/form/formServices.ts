@@ -53,6 +53,22 @@ export const getForm = async ({ id }: { id: any }) => {
 
 };
 
+export const updateDateForm = async ({ request }: { request: any }) => {
+  try {
+    const response = await Axios.post("/forms/public/update", request);
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error update date form:", error);
+
+    const e = axiosErrorHandler(error, '/forms/public/update')
+    throw e;
+
+  }
+
+};
+
 
 export const createForm = async ({ request }: { request: any }) => {
   try {

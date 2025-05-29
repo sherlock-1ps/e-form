@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { changeNameFolder, changeNameImage, createApi, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchForm, fetchMedia, fetchVariable, getForm, getUploadFile, updateApi, updateFile, updateForm, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
+import { changeNameFolder, changeNameImage, createApi, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchForm, fetchMedia, fetchVariable, getForm, getUploadFile, updateApi, updateDateForm, updateFile, updateForm, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
@@ -19,6 +19,22 @@ export const useGetFormQueryOption = () => {
     mutationFn: getForm,
     onError: (error) => {
       console.error("Error get form:", error);
+    },
+
+
+  });
+};
+
+export const useUpdateDateFormFormQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateDateForm,
+    onError: (error) => {
+      console.error("Error update date form:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["form"] });
     },
 
 

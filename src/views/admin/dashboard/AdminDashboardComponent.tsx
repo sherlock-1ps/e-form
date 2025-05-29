@@ -24,6 +24,7 @@ import {
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useFormStore } from '@/store/useFormStore'
+import { formatThaiDate } from '@/utils/formatDateTime'
 
 const AdminDashboardComponent = () => {
   const router = useRouter()
@@ -84,7 +85,7 @@ const AdminDashboardComponent = () => {
                 onClick: () => {
                   showDialog({
                     id: 'alertDateUseFormDialog',
-                    component: <DateUseFormDialog id='alertDateUseFormDialog' onClick={() => {}} />,
+                    component: <DateUseFormDialog id='alertDateUseFormDialog' data={data} />,
                     size: 'sm'
                   })
                 }
@@ -217,7 +218,7 @@ const AdminDashboardComponent = () => {
                       version={item?.version?.[0]?.version ?? ''}
                       data={item}
                       image='/images/test/test01.png'
-                      date='แก้ไขล่าสุด 31 ธ.ค. 2567'
+                      date={`แก้ไขล่าสุด ${formatThaiDate(item?.created_at)}`}
                       status={'ใช้งานอยู่'}
                       onDelete={handleDeleteForm}
                       onGetForm={handleGetForm}

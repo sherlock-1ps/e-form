@@ -79,11 +79,11 @@ const CreateFormDialog = ({ id, onClick }: createFormProps) => {
       </Grid>
 
       <Grid item xs={12}>
-        <Typography variant='h6'>เลือกเทมเพลต</Typography>
+        {/* <Typography variant='h6'>เลือกเทมเพลต</Typography> */}
       </Grid>
       <div className='flex items-center justify-center gap-4 flex-wrap w-full mt-4'>
         <FormCard title='ฟอร์มว่าง' isEmpty onClick={handleCreateNewForm} />
-        <FormCard title='ใบจัดซื้อ' image='/images/test/test01.png' onClick={() => console.log('Open form')} />
+        {/* <FormCard title='ใบจัดซื้อ' image='/images/test/test01.png' onClick={() => console.log('Open form')} /> */}
       </div>
     </Grid>
   )
