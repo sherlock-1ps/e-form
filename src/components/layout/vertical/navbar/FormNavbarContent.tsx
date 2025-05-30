@@ -152,14 +152,14 @@ const FormNavbarContent = () => {
     <div className='w-full flex gap-2'>
       <div className='flex flex-col flex-1  '>
         <div className='flex gap-2 items-center'>
-          <Typography>Name :</Typography>
-          <TextField value={title} onChange={handleInputChange} variant='standard' className='min-w-[394px]' />
+          <Typography className='text-nowrap'>Name :</Typography>
+          <TextField value={title} onChange={handleInputChange} variant='standard' className='max-w-[394px] w-full' />
           <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='p-1'>
             <EditOutlined sx={{ width: '16px', height: '18px' }} />
           </IconButton>
         </div>
         <div className='flex gap-2 items-center'>
-          <Typography>version :</Typography>
+          <Typography className='text-nowrap'>version :</Typography>
           <TextField value={versionText} onChange={handleInputVersion} variant='standard' />
         </div>
       </div>

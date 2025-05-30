@@ -21,6 +21,9 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useDialog } from '@/hooks/useDialog'
 import { toolboxOptionMenu } from '@/data/toolbox/toolboxMenu'
 import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import Autocomplete from '@mui/material/Autocomplete'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
@@ -68,6 +71,7 @@ const CheckboxProperty = () => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const updateId = useFormStore(state => state.updateId)
   const [isDuplicateId, setIsDuplicatedId] = useState(false)
+  const { data: variableData } = useFetchVariableQueryOption(1, 999)
 
   const result = form?.form_details
     .flatMap(formItem => formItem.fields)
@@ -171,6 +175,108 @@ const CheckboxProperty = () => {
             )
           }}
         />
+      </section>
+      <section
+        className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
+        style={{ borderBottom: '1.5px solid #11151A1F' }}
+      >
+        <RadioGroup
+          row
+          value={result?.config?.details?.keyValue?.keyValueType || 'string'}
+          name='basic-radio'
+          aria-label='basic-radio'
+          onChange={e => {
+            updateDetails(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              {
+                keyValue: {
+                  value: '',
+                  keyValueType: e.target.value
+                }
+              }
+            ),
+              updateDetails(
+                String(selectedField?.parentKey ?? ''),
+                selectedField?.boxId ?? '',
+                selectedField?.fieldId?.id ?? '',
+                {
+                  value: {
+                    ...result?.config?.details?.value,
+                    checkedList: [],
+                    value: ''
+                  }
+                }
+              )
+          }}
+        >
+          <FormControlLabel value='string' control={<Radio />} label='String' />
+          <FormControlLabel value='variable' control={<Radio />} label='Variable' />
+        </RadioGroup>
+        {result?.config?.details?.keyValue?.keyValueType == 'variable' ? (
+          <Autocomplete
+            fullWidth
+            options={
+              variableData?.result?.data?.filter(
+                item => item.variable_type == 'string' || item.variable_type == 'number'
+              ) || []
+            }
+            getOptionLabel={option => `{{${option.name}}}`}
+            value={
+              variableData?.result?.data?.find(
+                item => item.value?.value === result?.config?.details?.value?.value?.value?.value
+              ) || null
+            }
+            onChange={(event, newValue) => {
+              // updateDetails(
+              //   String(selectedField?.parentKey ?? ''),
+              //   selectedField?.boxId ?? '',
+              //   selectedField?.fieldId?.id ?? '',
+              //   {
+              //     keyValue: {
+              //       ...result?.config?.details?.keyValue,
+              //       value: newValue,
+              //       realValue: newValue?.value?.value
+              //     }
+              //   }
+              // )
+
+              updateDetails(
+                String(selectedField?.parentKey ?? ''),
+                selectedField?.boxId ?? '',
+                selectedField?.fieldId?.id ?? '',
+                {
+                  value: {
+                    ...result?.config?.details?.value,
+                    value: newValue,
+                    checkedList: [newValue?.value?.value]
+                  }
+                }
+              )
+            }}
+            renderInput={params => <CustomTextField {...params} label='ตัวแปร' placeholder='เลือก...' />}
+          />
+        ) : (
+          <DebouncedInput
+            label='กำหนดค่า'
+            placeholder='กรอกค่า....'
+            value={result?.config?.details?.keyValue?.realValue || ''}
+            onChange={newText => {
+              updateDetails(
+                String(selectedField?.parentKey ?? ''),
+                selectedField?.boxId ?? '',
+                selectedField?.fieldId?.id ?? '',
+                {
+                  value: {
+                    ...result?.config?.details?.value,
+                    checkedList: [newText]
+                  }
+                }
+              )
+            }}
+          />
+        )}
       </section>
 
       <section

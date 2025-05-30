@@ -457,6 +457,11 @@ export const toolboxOptionMenu = [
       details: {
         type: 'dropdown',
         label: 'ตัวเลือก',
+        keyValue: {
+          keyValueType: 'string',
+          value: '',
+          realValue: ''
+        },
         value: {
           valueType: 'custom',
           value: ''
@@ -497,6 +502,10 @@ export const toolboxOptionMenu = [
         isUse: true,
         isShow: true,
         isRequired: true,
+        keyValue: {
+          keyValueType: 'string',
+          value: ''
+        },
         value: {
           valueType: 'custom',
           checkedList: []
@@ -520,15 +529,14 @@ export const toolboxOptionMenu = [
         isShow: true,
         isRequired: true,
         selectedValue: '',
+        keyValue: {
+          keyValueType: 'string',
+          value: ''
+        },
         value: {
           valueType: 'custom',
           value: ''
         },
-        itemList: [
-          { value: '1', name: 'ตัวเลือก 1', enhanced: false },
-          { value: '2', name: 'ตัวเลือก 2', enhanced: false },
-          { value: '3', name: 'ตัวเลือก 3', enhanced: false }
-        ],
         defaultAdd: { value: '', name: 'ตัวเลือก ', enhanced: false },
         trigger: {
           isTrigger: false

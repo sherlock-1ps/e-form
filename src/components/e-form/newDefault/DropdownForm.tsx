@@ -24,7 +24,12 @@ const DropdownForm = ({ item }: any) => {
         fullWidth
         disabled={!item?.config?.details?.isUse}
         label={item?.config?.details?.tag?.isShow ? item?.config?.details?.tag?.value : undefined}
-        value={defaultValue}
+        value={
+          item?.config?.details?.keyValue?.realValue?.trim() === ''
+            ? defaultValue
+            : item?.config?.details?.keyValue?.realValue
+        }
+        // defaultValue={defaultValue}
         helperText={item?.config?.details?.helperText?.isShow && item?.config?.details?.helperText?.value}
         style={item?.config?.style || {}}
       >
