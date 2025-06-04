@@ -6,22 +6,16 @@ import { axiosErrorHandler } from "@/utils/axiosErrorHandler"
 import { removeCookie, setCookie } from "@/utils/cookieHandler"
 
 
-export const signIn = async (credentials: any) => {
-  try {
-    const response = await Axios.post('/login', {
-      email: credentials.email,
-      password: credentials.password,
-    })
+export const signIn = async (token: any) => {
 
-    const { token } = response.data.data
+  try {
+    const response = await Axios.post('/auth/verify-ext', token)
+
     setCookie("accessToken", token)
 
-    return {
-      success: true,
-      code: response.data.code,
-      data: response.data.data,
-    }
+    return response.data
   } catch (error: any) {
+    console.error("error auth", error);
     const status = error?.response?.status ?? 500
     const code = error?.response?.data?.code ?? 'UNKNOWN'
     const message = error?.response?.data?.message ?? 'Internal Server Error'

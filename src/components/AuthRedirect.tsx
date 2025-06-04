@@ -1,54 +1,36 @@
-// 'use client'
-
-// // Next Imports
-// import { redirect, usePathname } from 'next/navigation'
-
-// // Type Imports
-// import type { Locale } from '@configs/i18n'
-
-// // Config Imports
-// import themeConfig from '@configs/themeConfig'
-
-// // Util Imports
-// import { getLocalizedUrl } from '@/utils/i18n'
-
-// const AuthRedirect = ({ lang }: { lang: Locale }) => {
-//   const pathname = usePathname()
-
-//   // ℹ️ Bring me `lang`
-//   const redirectUrl = `/${lang}/login?redirectTo=${pathname}`
-//   const login = `/${lang}/login`
-//   const homePage = getLocalizedUrl(themeConfig.homePageUrl, lang)
-
-//   return redirect(pathname === login ? login : pathname === homePage ? login : redirectUrl)
-// }
-
-// export default AuthRedirect
-
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-// Next Imports
-import { redirect, usePathname } from 'next/navigation'
+import { useDialog } from '@/hooks/useDialog'
+import { useEffect } from 'react'
+import ConfirmAlert from './dialogs/alerts/ConfirmAlert'
 
-// Type Imports
-import type { Locale } from '@configs/i18n'
+const AuthRedirect = () => {
+  const { showDialog } = useDialog()
 
-// Config Imports
-import themeConfig from '@configs/themeConfig'
+  useEffect(() => {
+    const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_MAIN_URL
+    if (redirectUrl) {
+      showDialog({
+        id: 'alertErrorToken',
+        component: (
+          <ConfirmAlert
+            id='alertErrorToken'
+            title={'Invailid JWT'}
+            content1={'please login again!'}
+            onClick={() => {
+              window.location.href = redirectUrl
+            }}
+          />
+        ),
+        size: 'sm'
+      })
+    } else {
+      console.error('❌ NEXT_PUBLIC_REDIRECT_MAIN_URL is not defined')
+    }
+  }, [])
 
-// Util Imports
-import { getLocalizedUrl } from '@/utils/i18n'
-
-const AuthRedirect = ({ lang }: { lang: Locale }) => {
-  const pathname = usePathname()
-
-  // ℹ️ Bring me `lang`
-  const redirectUrl = `/${lang}/login?redirectTo=${pathname}`
-  const login = `/${lang}/login`
-  const homePage = getLocalizedUrl(themeConfig.homePageUrl, lang)
-
-  return redirect(pathname === login ? login : pathname === homePage ? login : login)
-  // return redirect(pathname === login ? login : pathname === homePage ? login : redirectUrl)
+  return null
 }
 
 export default AuthRedirect
