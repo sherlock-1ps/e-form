@@ -152,46 +152,42 @@ const Login = ({ mode }: { mode: SystemMode }) => {
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    setIsLoading(true)
-    const res = await signIn(data)
-
-    if (res?.code == 'SUCCESS' && res?.data?.two_fa_type) {
-      if (res?.data?.two_fa_type == 'google') {
-        router.push(`/${locale}/verify2faGoogle/?email=${data?.email}`)
-      } else if (res?.data?.two_fa_type == 'email') {
-        router.push(`/${locale}/verify2faEmail/?email=${data?.email}&expired=${res?.data?.expired}`)
-      }
-    } else if (res?.code == 'SUCCESS') {
-      useAuthStore.getState().setTokens(res.data.token)
-      const resultProfile = await fetchProfile()
-      if (resultProfile?.data?.is_first_login) {
-        router.push(`/${locale}/setnewpassword`)
-      } else {
-        useAuthStore.getState().setProfile(resultProfile.data)
-
-        const availableRoutes = extractViewRoutesFromPermissions(resultProfile?.data?.permission)
-
-        const redirectURL = searchParams.get('redirectTo') ?? `${availableRoutes[0]}`
-        router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-      }
-    } else if (res?.code == 'PINCODE_NOT_EXPIRED') {
-      toast.error('Pincode not expired', { autoClose: 3000 })
-    } else {
-      if (res?.code == 'INVALID_PASSWORD') {
-        toast.error('Invalid password!', { autoClose: 3000 })
-        setErrorState({ message: ['Invalid password'] })
-      } else if (res?.code == 'UNKNOWN') {
-        toast.error('Internal Server Error!', { autoClose: 3000 })
-        setErrorState({ message: ['Internal Server Error, please try again!'] })
-      } else if (res?.code == 'USER_NOT_FOUND') {
-        toast.error('User not found!', { autoClose: 3000 })
-        setErrorState({ message: ['User not found!'] })
-      }
-    }
-
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 1300)
+    // setIsLoading(true)
+    // const res = await signIn(data)
+    // if (res?.code == 'SUCCESS' && res?.data?.two_fa_type) {
+    //   if (res?.data?.two_fa_type == 'google') {
+    //     router.push(`/${locale}/verify2faGoogle/?email=${data?.email}`)
+    //   } else if (res?.data?.two_fa_type == 'email') {
+    //     router.push(`/${locale}/verify2faEmail/?email=${data?.email}&expired=${res?.data?.expired}`)
+    //   }
+    // } else if (res?.code == 'SUCCESS') {
+    //   useAuthStore.getState().setTokens(res.data.token)
+    //   const resultProfile = await fetchProfile()
+    //   if (resultProfile?.data?.is_first_login) {
+    //     router.push(`/${locale}/setnewpassword`)
+    //   } else {
+    //     useAuthStore.getState().setProfile(resultProfile.data)
+    //     const availableRoutes = extractViewRoutesFromPermissions(resultProfile?.data?.permission)
+    //     const redirectURL = searchParams.get('redirectTo') ?? `${availableRoutes[0]}`
+    //     router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+    //   }
+    // } else if (res?.code == 'PINCODE_NOT_EXPIRED') {
+    //   toast.error('Pincode not expired', { autoClose: 3000 })
+    // } else {
+    //   if (res?.code == 'INVALID_PASSWORD') {
+    //     toast.error('Invalid password!', { autoClose: 3000 })
+    //     setErrorState({ message: ['Invalid password'] })
+    //   } else if (res?.code == 'UNKNOWN') {
+    //     toast.error('Internal Server Error!', { autoClose: 3000 })
+    //     setErrorState({ message: ['Internal Server Error, please try again!'] })
+    //   } else if (res?.code == 'USER_NOT_FOUND') {
+    //     toast.error('User not found!', { autoClose: 3000 })
+    //     setErrorState({ message: ['User not found!'] })
+    //   }
+    // }
+    // setTimeout(() => {
+    //   setIsLoading(false)
+    // }, 1300)
   }
 
   // const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
