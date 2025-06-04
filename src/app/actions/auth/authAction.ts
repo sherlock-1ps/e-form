@@ -7,24 +7,36 @@ import { removeCookie, setCookie } from "@/utils/cookieHandler"
 
 
 export const signIn = async (token: any) => {
-
   try {
-    const response = await Axios.post('/auth/verify-ext', token)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_END_POINT_URL}/auth/verify-ext`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0',
+      },
+      body: JSON.stringify(token),
+    })
 
-    setCookie("accessToken", token)
+    if (!response.ok) {
+      const errorData = await response.json()
+      return {
+        success: false,
+        status: response.status,
+        code: errorData?.code ?? 'UNKNOWN',
+        message: errorData?.message ?? 'Internal Server Error',
+      }
+    }
 
-    return response.data
-  } catch (error: any) {
-    console.error("error auth", error);
-    const status = error?.response?.status ?? 500
-    const code = error?.response?.data?.code ?? 'UNKNOWN'
-    const message = error?.response?.data?.message ?? 'Internal Server Error'
+    const data = await response.json()
 
+    return data
+  } catch (error) {
+    console.error('error auth', error)
     return {
       success: false,
-      status,
-      code,
-      message,
+      status: 500,
+      code: 'FETCH_ERROR',
+      message: 'Unexpected error occurred',
     }
   }
 }
