@@ -42,7 +42,7 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
 
   const handleCallCheckAuth = async (key: any) => {
     try {
-      const response = await signIn({ token: key })
+      const response = await signIn(key)
 
       console.log('response login', response)
 
