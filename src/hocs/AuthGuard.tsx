@@ -10,7 +10,7 @@ import type { PropsWithChildren } from 'react'
 import PermissionRedirect from './PermissionRedirect'
 import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
-import { signIn } from '@/app/actions/auth/authAction'
+import Axios from '@/libs/axios/axios'
 
 interface AuthGuardProps extends PropsWithChildren {
   locale: Locale
@@ -42,9 +42,7 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
 
   const handleCallCheckAuth = async (key: any) => {
     try {
-      const response = await signIn(key)
-
-      console.log('response login', response)
+      const response = await handleGetLogin(key)
 
       if (response.code == 'SUCCESS') {
         useAuthStore.getState().setTokens(key ?? '')
@@ -67,6 +65,26 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
         ),
         size: 'sm'
       })
+    }
+  }
+
+  const handleGetLogin = async (token: string) => {
+    try {
+      const response = await Axios.post('/auth/verify-ext', { token: token })
+
+      return response.data
+    } catch (error: any) {
+      console.error('error auth', error)
+      const status = error?.response?.status ?? 500
+      const code = error?.response?.data?.code ?? 'UNKNOWN'
+      const message = error?.response?.data?.message ?? 'Internal Server Error'
+
+      return {
+        success: false,
+        status,
+        code,
+        message
+      }
     }
   }
 
