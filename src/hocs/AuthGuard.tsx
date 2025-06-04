@@ -44,6 +44,8 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
     try {
       const response = await signIn({ token: key })
 
+      console.log('response login', response)
+
       if (response.code == 'SUCCESS') {
         useAuthStore.getState().setTokens(key ?? '')
         useAuthStore.getState().setProfile(response?.result?.data?.userLogin)
