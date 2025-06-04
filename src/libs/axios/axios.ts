@@ -30,7 +30,7 @@ Axios.interceptors.request.use(
 
 
 
-    if (config.headers && accessToken) {
+    if (config.headers && accessToken && config.url !== '/auth/verify-ext') {
       config.headers['Authorization'] = `Bearer ${accessToken}`
     }
 
