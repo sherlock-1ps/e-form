@@ -13,7 +13,9 @@ export const signIn = async (token: string) => {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'Mozilla/5.0', // ปลอม UA ป้องกันโดน block
+        'User-Agent': 'Mozilla/5.0', // ✅ ปลอมเหมือน browser
+        'Origin': 'https://e-form-iota.vercel.app',
+        'Referer': 'https://e-form-iota.vercel.app',
       },
       body: JSON.stringify({ token }),
     })
