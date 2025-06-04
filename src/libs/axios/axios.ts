@@ -51,63 +51,18 @@ Axios.interceptors.response.use(
 
     if (typeof window !== 'undefined') {
       const errorCode = err.response?.data?.code
-      if (errorCode === 'TOKEN_DESTROYED') {
+      if (errorCode === 'TOKEN_IS_EXPIRED') {
+        const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_MAIN_URL
+        if (redirectUrl) {
 
-        useAuthStore.getState().clearTokens()
-        window.location.href = '/login'
+          useAuthStore.getState().clearTokens()
+          window.location.href = redirectUrl
+        }
+
+
       }
     }
-    // console.log("originalRequest", !originalRequest._retry);
 
-
-    // const errorCode = err.response?.data?.code
-
-    // console.log("errorCode", errorCode);
-    // console.log("isRefreshing", isRefreshing);
-
-
-
-    // if (errorCode === 'TOKEN_DESTROYED' && !originalRequest._retry) {
-    //   if (isRefreshing) {
-    //     return new Promise(function (resolve, reject) {
-    //       failedQueue.push({ resolve, reject })
-    //     })
-    //       .then(token => {
-    //         originalRequest.headers['Authorization'] = 'Bearer ' + token
-    //         return Axios(originalRequest)
-    //       })
-    //       .catch(err => Promise.reject(err))
-    //   }
-
-    //   originalRequest._retry = true
-    //   isRefreshing = true
-
-    //   try {
-    //     const response = await Axios.get('/refreshToken')
-
-    //     console.log("response", response);
-
-
-
-    //     const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data
-    //     setTokens(newAccessToken, newRefreshToken)
-
-    //     Axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`
-    //     processQueue(null, newAccessToken)
-
-    //     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
-    //     return Axios(originalRequest)
-    //   } catch (refreshError) {
-    //     processQueue(refreshError, null)
-    //     clearTokens()
-    //     if (typeof window !== 'undefined') {
-    //       window.location.href = '/'
-    //     }
-    //     return Promise.reject(refreshError)
-    //   } finally {
-    //     isRefreshing = false
-    //   }
-    // }
 
 
     return Promise.reject(err)
