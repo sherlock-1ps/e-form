@@ -1,4 +1,5 @@
 import Axios from "@/libs/axios/axios";
+import AxiosExternal from "@/libs/axios/axiosExternal";
 import { axiosErrorHandler } from "@/utils/axiosErrorHandler";
 
 type VariableValue = {
@@ -507,6 +508,194 @@ export const getStartFlow = async ({ id }: { id: number }) => {
   }
 
 };
+
+
+export const fetchFlow = async ({ page, pageSize }: { page: number; pageSize: number }) => {
+  try {
+    const response = await Axios.post("/flows/list", {
+      page,
+      limit: pageSize,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch flow:", error);
+
+    axiosErrorHandler(error, '/flows/list')
+    throw error;
+
+  }
+
+};
+
+export const deleteFlow = async ({ id }: { id: number }) => {
+  try {
+
+    const response = await Axios.post("/flows/delete", { id });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error delete flow:", error);
+
+    const e = axiosErrorHandler(error, '/flows/delete')
+    throw e;
+
+  }
+
+};
+
+export const updateDateFlow = async ({ request }: { request: any }) => {
+  try {
+    const response = await Axios.post("/flows/public/update", request);
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error update date flow:", error);
+
+    const e = axiosErrorHandler(error, '/flows/public/update')
+    throw e;
+
+  }
+
+};
+
+export const createFlow = async (request: any) => {
+  try {
+    const response = await Axios.post("/flows/create", request)
+    return response.data
+  } catch (error) {
+    console.error("Error create flow:", error)
+    const e = axiosErrorHandler(error, "/flows/create")
+    throw e
+  }
+}
+
+export const updateFlow = async (request: any) => {
+  try {
+    const response = await Axios.post("/flows/update", request)
+    return response.data
+  } catch (error) {
+    console.error("Error update flow:", error)
+    const e = axiosErrorHandler(error, "/flows/update")
+    throw e
+  }
+}
+
+export const updateVersion = async (request: any) => {
+  try {
+    const response = await Axios.post("/flows/versions/create", request)
+    return response.data
+  } catch (error) {
+    console.error("Error update version:", error)
+    const e = axiosErrorHandler(error, "/flows/versions/create")
+    throw e
+  }
+}
+
+export const getFlow = async (id: number) => {
+  try {
+    const response = await Axios.post("/flows/get", { id })
+    return response.data
+  } catch (error) {
+    console.error("Error get flow:", error)
+    const e = axiosErrorHandler(error, "/flows/get")
+    throw e
+  }
+}
+
+export const getPersonList = async ({
+  page,
+  pageSize,
+  f_person_id = '',
+  f_name = ''
+}: {
+  page: number
+  pageSize: number
+  f_person_id?: string
+  f_name?: string
+}) => {
+  try {
+    const payload = { page, limit: pageSize, f_person_id, f_name }
+    const response = await AxiosExternal.post("/api/service/core/get-person-lists", payload)
+    return response.data
+  } catch (error) {
+    console.error("Error get person list:", error)
+    const e = axiosErrorHandler(error, "/api/service/core/get-person-lists")
+    throw e
+  }
+}
+
+export const getPositionList = async ({
+  page,
+  pageSize,
+  f_position_id = '',
+  f_position_name = ''
+}: {
+  page: number
+  pageSize: number
+  f_position_id?: string
+  f_position_name?: string
+}) => {
+  try {
+    const payload = { page, limit: pageSize, f_position_id, f_position_name }
+    const response = await AxiosExternal.post("/api/service/core/get-position-lists", payload)
+    return response.data
+  } catch (error) {
+    console.error("Error get position list:", error)
+    const e = axiosErrorHandler(error, "/api/service/core/get-position-lists")
+    throw e
+  }
+}
+
+export const getDepartmentList = async ({
+  page,
+  pageSize,
+  f_dept_id = '',
+  department_name = ''
+}: {
+  page: number
+  pageSize: number
+  f_dept_id?: string
+  department_name?: string
+}) => {
+  try {
+    const payload = { page, limit: pageSize, f_dept_id, department_name }
+    const response = await AxiosExternal.post("/api/service/core/get-department-lists", payload)
+    return response.data
+  } catch (error) {
+    console.error("Error get department list:", error)
+    const e = axiosErrorHandler(error, "/api/service/core/get-department-lists")
+    throw e
+  }
+}
+
+
+export const fetchFormName = async ({ page, pageSize }: { page: number; pageSize: number }) => {
+  try {
+    const response = await Axios.post("/forms/get-name", {
+      page,
+      limit: pageSize,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch form:", error);
+
+    axiosErrorHandler(error, '/forms/get-name')
+    throw error;
+
+  }
+
+};
+
+
+
+
+
 
 
 

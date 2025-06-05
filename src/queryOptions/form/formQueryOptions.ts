@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { changeNameFolder, changeNameImage, createApi, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchFlowName, fetchForm, fetchMedia, fetchVariable, getForm, getStartFlow, getUploadFile, updateApi, updateDateForm, updateFile, updateForm, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
+import { changeNameFolder, changeNameImage, createApi, createFlow, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteFlow, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchFlow, fetchFlowName, fetchForm, fetchFormName, fetchMedia, fetchVariable, getDepartmentList, getFlow, getForm, getPositionList, getStartFlow, getUploadFile, updateApi, updateDateFlow, updateDateForm, updateFile, updateFlow, updateForm, updateVersion, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
 
 export function useFetchFormQueryOption(page: number, pageSize: number) {
   return useQuery({
-    queryKey: ["form"],
+    queryKey: ["form", page, pageSize],
     queryFn: () => fetchForm({ page, pageSize }),
   });
 }
@@ -376,6 +376,147 @@ export const useStartFlowQueryOption = () => {
 
   });
 };
+
+
+
+export function useFetchFlowQueryOption(page: number, pageSize: number) {
+  return useQuery({
+    queryKey: ["flow", page, pageSize],
+    queryFn: () => fetchFlow({ page, pageSize }),
+  });
+}
+
+export const useDeleteFlowQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteFlow,
+    onError: (error) => {
+      console.error("Error delete flow:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["flow"] });
+    },
+
+  });
+};
+
+export const useUpdateDateFlowQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateDateFlow,
+    onError: (error) => {
+      console.error("Error update date flow:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["flow"] });
+    },
+
+
+  });
+};
+
+export const useCreateFlowQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createFlow,
+    onError: (error) => {
+      console.error("Error create flow:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["flow"] });
+    },
+  });
+};
+
+export const useUpdateFlowQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateFlow,
+    onError: (error) => {
+      console.error("Error update flow:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["flow"] });
+    },
+
+
+  });
+};
+
+export const useUpdateVersionFlowQueryOption = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateVersion,
+    onError: (error) => {
+      console.error("Error update version flow:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["flow"] });
+    },
+
+
+  });
+};
+
+
+
+export const useGetFlowQueryOption = () => {
+
+  return useMutation({
+    mutationFn: getFlow,
+    onError: (error) => {
+      console.error("Error get flow:", error);
+    },
+  });
+};
+
+
+export function useGetPersonExternalQueryOption(page: number, pageSize: number, f_person_id: string, f_name: string, options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ["person", page, pageSize],
+    queryFn: () => getPersonList({ page, pageSize, f_person_id, f_name }),
+    ...options
+
+  });
+}
+
+
+export function useGetPositionExternalQueryOption(
+  page: number,
+  pageSize: number,
+  f_position_id: string,
+  f_position_name: string,
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ['position', page, pageSize, f_position_id, f_position_name],
+    queryFn: () => getPositionList({ page, pageSize, f_position_id, f_position_name }),
+    ...options
+  })
+}
+
+
+export function useGetDepartmentExternalQueryOption(page: number, pageSize: number, f_dept_id: string, department_name: string, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ["department", page, pageSize],
+    queryFn: () => getDepartmentList({ page, pageSize, f_dept_id, department_name }),
+    ...options
+
+  });
+}
+
+export function useFetchFormFlowQueryOption(page: number, pageSize: number) {
+  return useQuery({
+    queryKey: ["formFlow"],
+    queryFn: () => fetchFormName({ page, pageSize }),
+  });
+}
 
 
 

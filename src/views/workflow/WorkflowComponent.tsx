@@ -13,31 +13,32 @@ import CreateFormDialog from '@/components/dialogs/form/CreateFormDialog'
 import OptionMenu from '@/@core/components/option-menu'
 import { Edit, FileCopy, EditCalendar, Delete, CreateNewFolder, AccountTreeOutlined } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
-import EditVersionFormDialog from '@/components/dialogs/form/EditVersionFormDialog'
-import DateUseFormDialog from '@/components/dialogs/form/DateUseFormDialog'
+import EditVersionFlowDialog from '@/components/dialogs/flow/EditVersionFlowDialog'
+import DateUseFlowDialog from '@/components/dialogs/flow/DateUseFlowDialog'
 import {
-  useCreateNewVersionFormQueryOption,
-  useDeleteFormQueryOption,
-  useFetchFormQueryOption,
-  useGetFormQueryOption
+  useDeleteFlowQueryOption,
+  useFetchFlowQueryOption,
+  useGetFlowQueryOption
 } from '@/queryOptions/form/formQueryOptions'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useFormStore } from '@/store/useFormStore'
 import { formatThaiDate } from '@/utils/formatDateTime'
+import { useFlowStore } from '@/store/useFlowStore'
+import CreateFlowDialog from '@/components/dialogs/form/CreateFlowDialog'
 
-const AdminDashboardComponent = () => {
+const WorkflowComponent = () => {
   const router = useRouter()
   const { lang: locale } = useParams()
   const { showDialog } = useDialog()
-  const setFullForm = useFormStore(state => state.setFullForm)
+  const setFullFlow = useFlowStore(state => state.setFullFlow)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
-  const { data, isPending } = useFetchFormQueryOption(page, pageSize)
+  const { data, isPending } = useFetchFlowQueryOption(page, pageSize)
 
-  const { mutateAsync: deleteForm } = useDeleteFormQueryOption()
+  const { mutateAsync: deleteFlow } = useDeleteFlowQueryOption()
 
-  const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
+  const { mutateAsync: getFlow, isPending: pendingGetFlow } = useGetFlowQueryOption()
 
   const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
     <div className='flex flex-col p-4 bg-white rounded-md max-w-[220px] w-[220px] h-[275px] border shadow-md'>
@@ -52,9 +53,9 @@ const AdminDashboardComponent = () => {
           options={[
             {
               text: 'แก้ไข',
-              icon: pendingGetForm ? <CircularProgress size={20} /> : <Edit />,
+              icon: pendingGetFlow ? <CircularProgress size={20} /> : <Edit />,
               menuItemProps: {
-                disabled: pendingGetForm,
+                disabled: pendingGetFlow,
                 className: 'text-secondary',
                 onClick: () => onGetForm(data)
               }
@@ -66,8 +67,8 @@ const AdminDashboardComponent = () => {
                 className: 'text-secondary',
                 onClick: () => {
                   showDialog({
-                    id: 'alertEditVersionFormDialog',
-                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => {}} />,
+                    id: 'alertEditVersionFlowDialog',
+                    component: <EditVersionFlowDialog id='alertEditVersionFlowDialog' data={data} onClick={() => {}} />,
                     size: 'sm'
                   })
                 }
@@ -80,8 +81,8 @@ const AdminDashboardComponent = () => {
                 className: 'text-secondary',
                 onClick: () => {
                   showDialog({
-                    id: 'alertDateUseFormDialog',
-                    component: <DateUseFormDialog id='alertDateUseFormDialog' data={data} />,
+                    id: 'alertDateUseFlowDialog',
+                    component: <DateUseFlowDialog id='alertDateUseFlowDialog' data={data} />,
                     size: 'sm'
                   })
                 }
@@ -98,9 +99,10 @@ const AdminDashboardComponent = () => {
                     component: (
                       <ConfirmAlert
                         id='alertDeleteForm'
-                        title={'ลบฟอร์ม'}
-                        content1={`คุณต้องการลบฟอร์มนี้ใช่หรือไม่`}
+                        title={'ลบโฟลว์'}
+                        content1={`คุณต้องการลบโฟลว์นี้ใช่หรือไม่`}
                         onClick={() => onDelete(data?.id)}
+                        // onClick={() => onDelete(data?.version?.[0].id)}
                       />
                     ),
                     size: 'sm'
@@ -138,48 +140,45 @@ const AdminDashboardComponent = () => {
     </div>
   )
 
-  const handleDeleteForm = async (id: number) => {
+  const handleDeleteFlow = async (id: number) => {
     const request = {
       id: id
     }
 
     try {
-      const response = await deleteForm(request)
+      const response = await deleteFlow(request)
       if (response?.code == 'SUCCESS') {
-        toast.success('ลบฟอร์มสำเร็จแล้ว!', { autoClose: 3000 })
+        toast.success('ลบโฟลว์สำเร็จแล้ว!', { autoClose: 3000 })
       }
     } catch (error) {
-      toast.error('ลบฟอร์มล้มเหลว!', { autoClose: 3000 })
+      toast.error('ลบโฟลว์ล้มเหลว!', { autoClose: 3000 })
     }
   }
 
   const handleGetForm = async (data: any) => {
-    const request = {
-      id: data?.version?.[0]?.id
-    }
-
     try {
-      const response = await getForm(request)
-      if (response?.code == 'SUCCESS') {
-        const layoutValue =
-          response?.result?.data?.FormDetails?.[0]?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
+      const response = await getFlow(data?.version?.[0]?.id)
 
-        const formFromApi = {
+      if (response?.code == 'SUCCESS') {
+        const result = {
           isContinue: true,
-          formId: data?.id,
           versionId: data?.version[0]?.id,
           name: data?.name,
-          version: response?.result?.data?.version,
-          newVersion: response?.result?.data?.version,
-          layout: layoutValue as 'vertical' | 'horizontal',
-          form_details: response?.result?.data?.FormDetails[0]?.detail?.data
+          flowId: data?.id,
+          version: response?.result?.data?.flow_version?.version,
+          newVersion: '',
+          publicDate: '',
+          endDate: '',
+          flow: {
+            ...response?.result?.data?.flow
+          }
         }
 
-        setFullForm(formFromApi)
-        router.push(`/${locale}/admin/form`)
+        setFullFlow(result)
+        router.push(`/${locale}/admin/workflow`)
       }
     } catch (error) {
-      toast.error('เรียกฟอร์มล้มเหลว!', { autoClose: 3000 })
+      toast.error('เรียกโฟลว์ล้มเหลว!', { autoClose: 3000 })
     }
   }
 
@@ -188,11 +187,10 @@ const AdminDashboardComponent = () => {
       {/* <Grid item xs={12}>
         <DashboardNavbarContent />
       </Grid> */}
-
       <Grid item xs={12}>
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
-            <Typography variant='h5'>จัดการแบบฟอร์ม</Typography>
+            <Typography variant='h5'>จัดการเวิร์กโฟลว์</Typography>
 
             <div className='flex gap-4 flex-wrap'>
               <Button
@@ -200,8 +198,8 @@ const AdminDashboardComponent = () => {
                 style={{ backgroundColor: '#0463EA14' }}
                 onClick={() => {
                   showDialog({
-                    id: 'alertCreateFormDialog',
-                    component: <CreateFormDialog id='alertCreateFormDialog' onClick={() => {}} />,
+                    id: 'alertCreateFlowDialog',
+                    component: <CreateFlowDialog id='alertCreateFlowDialog' onClick={() => {}} />,
                     size: 'sm'
                   })
                 }}
@@ -222,7 +220,7 @@ const AdminDashboardComponent = () => {
                       image='/images/test/test01.png'
                       date={`แก้ไขล่าสุด ${formatThaiDate(item?.created_at)}`}
                       status={'ใช้งานอยู่'}
-                      onDelete={handleDeleteForm}
+                      onDelete={handleDeleteFlow}
                       onGetForm={handleGetForm}
                     />
                   )
@@ -247,4 +245,4 @@ const AdminDashboardComponent = () => {
   )
 }
 
-export default AdminDashboardComponent
+export default WorkflowComponent

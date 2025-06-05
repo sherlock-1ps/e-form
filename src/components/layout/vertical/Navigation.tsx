@@ -152,6 +152,8 @@ const Navigation = (props: Props) => {
   const renderNavigationMenu = useMemo(() => {
     if (pathname.includes('/draftform')) {
       return null
+    } else if (pathname.includes('/admin/workflow')) {
+      return null
     } else {
       return (
         <VerticalNav
