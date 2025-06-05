@@ -564,7 +564,6 @@ export const useFormStore = create<FormState>()(
           const updatedFormDetails = state.form.form_details.map((formItem) => {
             const filteredFields = formItem.fields.filter((field) => field.i !== fieldId)
 
-            // If no field was removed, return as-is
             if (filteredFields.length === formItem.fields.length) return formItem
 
             const newWidth =

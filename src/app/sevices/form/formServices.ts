@@ -469,5 +469,44 @@ export const deleteUploadFile = async ({ id }: { id: number }) => {
   }
 }
 
+export const fetchFlowName = async ({ page, pageSize }: { page: number; pageSize: number }) => {
+  try {
+    const response = await Axios.post("/flows/get-name", {
+      page,
+      limit: pageSize,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch flow name:", error);
+
+    axiosErrorHandler(error, '/flows/get-name')
+    throw error;
+
+  }
+
+};
+
+export const getStartFlow = async ({ id }: { id: number }) => {
+  console.log("123", id);
+
+  try {
+    const response = await Axios.post("/flows/get-start-flow", {
+      id: id,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch flow name:", error);
+
+    const e = axiosErrorHandler(error, '/flows/get-name')
+    throw e;
+
+  }
+
+};
+
 
 

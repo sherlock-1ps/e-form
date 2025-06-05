@@ -5,6 +5,7 @@ import { Avatar, Button, Grid, Typography, Divider } from '@mui/material'
 import { Email, Phone, Work, LocationOn } from '@mui/icons-material'
 
 import { useDialog } from '@/hooks/useDialog'
+import { useAuthStore } from '@/store/useAuthStore'
 
 interface profileProps {
   id: string
@@ -12,6 +13,7 @@ interface profileProps {
 
 const ProfileDialog = ({ id }: profileProps) => {
   const { closeDialog } = useDialog()
+  const profile = useAuthStore(state => state.profile)
 
   const mockProfile = {
     name: 'สมชาย ใจดี',
@@ -32,9 +34,11 @@ const ProfileDialog = ({ id }: profileProps) => {
 
       <Grid item xs={12} className='flex flex-col items-center gap-2'>
         <Avatar src={mockProfile.avatarUrl} sx={{ width: 80, height: 80 }} />
-        <Typography variant='h6'>{mockProfile.name}</Typography>
+        <Typography variant='h6'>
+          {profile?.userInformation?.F_FIRST_NAME} {profile?.userInformation?.F_LAST_NAME}{' '}
+        </Typography>
         <Typography variant='body2' color='textSecondary'>
-          {mockProfile.role}
+          {profile?.userInformation?.F_POSITION_NAME}
         </Typography>
       </Grid>
 
@@ -46,7 +50,7 @@ const ProfileDialog = ({ id }: profileProps) => {
         <Grid container spacing={2}>
           <Grid item xs={12} className='flex items-center gap-2'>
             <Email fontSize='small' />
-            <Typography>{mockProfile.email}</Typography>
+            <Typography>{profile?.email}</Typography>
           </Grid>
           <Grid item xs={12} className='flex items-center gap-2'>
             <Phone fontSize='small' />
@@ -54,7 +58,7 @@ const ProfileDialog = ({ id }: profileProps) => {
           </Grid>
           <Grid item xs={12} className='flex items-center gap-2'>
             <LocationOn fontSize='small' />
-            <Typography>{mockProfile.location}</Typography>
+            <Typography>{profile?.userInformation?.F_NAME}</Typography>
           </Grid>
         </Grid>
       </Grid>
