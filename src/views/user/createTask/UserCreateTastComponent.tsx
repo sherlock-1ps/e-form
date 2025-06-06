@@ -3,72 +3,36 @@
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import TablePaginationComponent from '@/components/TablePaginationComponent'
 import { useDialog } from '@/hooks/useDialog'
-import { useFetchFlowNnameQueryOption, useStartFlowQueryOption } from '@/queryOptions/form/formQueryOptions'
+import {
+  useFetchFlowNnameQueryOption,
+  useFetchFlowQueryOption,
+  useGetFlowQueryOption,
+  useStartFlowQueryOption
+} from '@/queryOptions/form/formQueryOptions'
 // MUI Imports
 import { Button, Card, CardContent, Grid, Pagination, Typography } from '@mui/material'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import UserStartTaskComponent from './start/UserStartTaskComponent'
-
-const mockCards = [
-  {
-    id: 1,
-    title: 'ขออนุมัติเบิกค่าเช่าบ้าน (6005)',
-    description: 'คำอธิบายสำหรับงานที่เกี่ยวข้องกับเบิกค่าเช่าบ้าน'
-  },
-  {
-    id: 2,
-    title: 'ขออนุมัติค่าเดินทาง (6006)',
-    description: 'ค่าใช้จ่ายสำหรับการเดินทางไปประชุมต่างจังหวัด'
-  },
-  {
-    id: 3,
-    title: 'ขออนุมัติซื้ออุปกรณ์สำนักงาน',
-    description: 'ซื้อเครื่องเขียนและวัสดุสิ้นเปลืองสำหรับแผนก'
-  },
-  {
-    id: 4,
-    title: 'ขออนุมัติเบี้ยเลี้ยงพนักงาน',
-    description: 'เบี้ยเลี้ยงสำหรับพนักงานปฏิบัติงานนอกสถานที่'
-  },
-  {
-    id: 5,
-    title: 'ขออนุมัติโครงการพัฒนาระบบ',
-    description: 'เอกสารขออนุมัติสำหรับเริ่มต้นโครงการ IT ใหม่'
-  },
-  {
-    id: 6,
-    title: 'ขออนุมัติอบรมภายในองค์กร',
-    description: 'หลักสูตรอบรมสำหรับพนักงานในองค์กร'
-  },
-  {
-    id: 7,
-    title: 'ขออนุมัติจ้างที่ปรึกษา',
-    description: 'ขออนุมัติค่าจ้างผู้เชี่ยวชาญจากภายนอก'
-  },
-  {
-    id: 8,
-    title: 'ขออนุมัติปรับปรุงสถานที่',
-    description: 'งานปรับปรุงสำนักงาน และห้องประชุม'
-  },
-  {
-    id: 9,
-    title: 'ขออนุมัติซื้อซอฟต์แวร์',
-    description: 'ระบบซอฟต์แวร์บริหารจัดการโครงการ'
-  }
-]
+import ViewWorkflowComponent from './ViewWorkflowComponent'
+import { useFlowStore } from '@/store/useFlowStore'
 
 const UserCreateTastComponent = () => {
   const { showDialog } = useDialog()
+  const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
+
   const router = useRouter()
   const params = useParams()
   const { lang: locale } = params
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(30)
-  const [startFlow, setStartFlow] = useState(false)
+  const [currentSection, setCurrentSection] = useState('dashboard')
 
-  const { data: flowNameData, isPending: pendingFlow } = useFetchFlowNnameQueryOption(page, pageSize)
+  // const { data: flowNameData, isPending: pendingFlow } = useFetchFlowNnameQueryOption(page, pageSize)
+  const { data: flowNameData, isPending: pendingFlow } = useFetchFlowQueryOption(page, pageSize)
+  const { mutateAsync: getFlow, isPending: pendingGetFlow } = useGetFlowQueryOption()
+
   const { mutateAsync: callStartFlow } = useStartFlowQueryOption()
 
   const handleStartFlow = async (id: any) => {
@@ -77,15 +41,44 @@ const UserCreateTastComponent = () => {
 
       if (response?.code == 'SUCCESS') {
         toast.success('เริ่มต้นโฟลว์สำเร็จ!', { autoClose: 3000 })
-        setStartFlow(true)
+        setCurrentSection('startFlow')
       }
     } catch (error) {
       toast.error('เริ่มโฟลว์ล้มเหลว!', { autoClose: 3000 })
     }
   }
-  return startFlow ? (
-    <UserStartTaskComponent />
-  ) : (
+
+  const handleShowWorkflow = async (id: number) => {
+    try {
+      const response = await getFlow(id)
+
+      if (response?.code == 'SUCCESS') {
+        const resultFlow = {
+          flow: {
+            ...response?.result?.data?.flow
+          }
+        }
+
+        setFlowDiagramData(resultFlow)
+
+        setCurrentSection('viewFlow')
+      }
+    } catch (error) {
+      toast.error('เรียกโฟลว์ล้มเหลว!', { autoClose: 3000 })
+    }
+  }
+
+  if (currentSection === 'startFlow') return <UserStartTaskComponent />
+  if (currentSection === 'viewFlow')
+    return (
+      <ViewWorkflowComponent
+        onBack={() => {
+          setCurrentSection('dashboard')
+        }}
+      />
+    )
+
+  return (
     <Card>
       <CardContent
         style={{ backgroundColor: '#E9EAEF' }}
@@ -113,7 +106,14 @@ const UserCreateTastComponent = () => {
                       </div>
 
                       <div className='flex gap-4 items-center justify-end h-[40px]'>
-                        <Button variant='outlined' color='secondary' className='h-full text-sm'>
+                        <Button
+                          variant='outlined'
+                          color='secondary'
+                          className='h-full text-sm'
+                          onClick={() => {
+                            handleShowWorkflow(item?.version?.[0]?.id)
+                          }}
+                        >
                           ดูเวิร์คโฟลว์
                         </Button>
                         <Button

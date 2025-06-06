@@ -25,6 +25,7 @@ type FlowState = {
   createFlow: (name: string, version: string) => void
   updateFlowInfo: (info: Partial<Pick<Flow, 'name' | 'version'>>) => void
   setFullFlow: (payload: any) => void
+  setFlowDiagramData: (payload: any) => void
 
   myDiagram: any
   setMyDiagram: (diagram: any) => void
@@ -99,7 +100,21 @@ export const useFlowStore = create<FlowState>()(
             publicDate: payload.publicDate ?? state.flow.publicDate,
             endDate: payload.endDate ?? state.flow.endDate,
             isContinue: payload.isContinue ?? state.flow.isContinue,
-            flow: payload.flow ?? {}
+            flow: payload.flow ?? {
+              nodeDataArray: [],
+              linkDataArray: []
+            }
+          }
+        })),
+
+      setFlowDiagramData: (payload) =>
+        set((state) => ({
+          flow: {
+            ...state.flow,
+            flow: payload?.flow ?? {
+              nodeDataArray: [],
+              linkDataArray: []
+            }
           }
         })),
 
