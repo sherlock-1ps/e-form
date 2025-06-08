@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 // MUI Imports
@@ -26,7 +27,7 @@ import {
   FileOpen
 } from '@mui/icons-material'
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import StepperWrapper from '@/@core/styles/stepper'
 import classNames from 'classnames'
 import StepperCustomDot from '@/components/stepper-dot'
@@ -37,9 +38,25 @@ import ElectonicSignDialog from '@/components/dialogs/sign/ElectonicSignDialog'
 import CertifySignDialog from '@/components/dialogs/sign/CertifySignDialog'
 import OtpSignDialog from '@/components/dialogs/sign/OtpSignDialog'
 import FlowDocTable from '../../followTask/FlowDocTable'
+import { useFormStore } from '@/store/useFormStore'
+import ViewWorkflowComponent from '../ViewWorkflowComponent'
+import {
+  useDeleteAttachments,
+  useFetchAttachmentsQueryOption,
+  useFetchCommentQueryOption,
+  useSaveStartFlowQueryOption,
+  useUploadAttachments
+} from '@/queryOptions/form/formQueryOptions'
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
+import { styled } from '@mui/material/styles'
+import { toast } from 'react-toastify'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import DraftFormComponent from '@/views/draftform/DraftFormComponent'
+import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
+import FlowDocFullTable from '../../followTask/FlowDocFullTable'
 
 const steps = {
-  currentFlow: 3,
+  currentFlow: 6,
   list: [
     {
       title: 'ขออนุมัติเบิกค่าเช่าบ้าน (6005)',
@@ -110,7 +127,37 @@ const mockupData = [
   }
 ]
 
-const UserStartTaskComponent = () => {
+const allowedExtensions = [
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.gif',
+  '.webp',
+  '.bmp',
+  '.avi',
+  '.mp4',
+  '.mov',
+  '.pdf',
+  '.doc',
+  '.docx',
+  '.xlsx',
+  '.ppt',
+  '.pptx',
+  '.csv'
+]
+
+const CustomConnector = styled(StepConnector, {
+  shouldForwardProp: prop => prop !== 'hideLine'
+})<{ hideLine?: boolean }>(({ hideLine }) => ({
+  [`&.${stepConnectorClasses.vertical}`]: {
+    ...(hideLine && {
+      display: 'none'
+    })
+  }
+}))
+
+const UserStartTaskComponent = ({ data }: any) => {
+  const form = useFormStore(state => state.form)
   const router = useRouter()
   const { showDialog } = useDialog()
   const params = useParams()
@@ -118,30 +165,150 @@ const UserStartTaskComponent = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [activeStep, setActiveStep] = useState(steps.currentFlow)
   const [isAttacth, setIsAttacth] = useState(false)
-  const [images, setImages] = useState<File[]>([])
   const [isStartSign, setIsStartSign] = useState(false)
+  const [linkIdButton, setLinkIdButton] = useState(null)
+  const [isShowHistoryComment, setIsShowHistoryComment] = useState(false)
   const [isAlreadySign, setIsAlreadySign] = useState(false)
   const [isExpanded, setIsExpanded] = useState(true)
   const [isShowWorkflow, setIsShowWorkFlow] = useState(false)
+  const [nameTask, setNameTask] = useState(form?.name)
+  const [startStep, setStartStep] = useState<any[]>([])
+  const formDataId = data?.form_data_id ?? data?.form_data_detail[0]?.form_data_id
+  const { data: attactmentData } = useFetchAttachmentsQueryOption(formDataId)
+  const { mutateAsync: callUploadAttachment, isPending } = useUploadAttachments()
+  const { mutateAsync: callDeleteAttachment } = useDeleteAttachments()
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(25)
+  const { data: commentData } = useFetchCommentQueryOption(page, pageSize, formDataId)
+  const { mutateAsync: callSaveStartflow } = useSaveStartFlowQueryOption()
 
-  const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      setImages(prev => [...prev, ...Array.from(files)])
-      e.target.value = '' // reset input
+  useEffect(() => {
+    const findStart = data?.flow?.nodeDataArray?.find((item: any) => item.category == 'start')
+    if (findStart) {
+      const nextNodeStart = traverseNextNodesFromCurrentStepSkipCondition(
+        data?.flow?.nodeDataArray,
+        data?.flow?.linkDataArray,
+        findStart?.key
+      )
+
+      if (findStart && Array.isArray(nextNodeStart)) {
+        const withStart = [findStart, ...nextNodeStart]
+        setStartStep(withStart)
+      }
+    }
+  }, [])
+
+  function traverseNextNodesFromCurrentStepSkipCondition(nodes: any[], links: any[], currentStep: any): any[] {
+    const result: any[] = []
+
+    const nodeMap: Map<any, any> = new Map(nodes.map((node: any) => [node.key, node]))
+    const linkMap: Map<any, any[]> = new Map()
+
+    links.forEach((link: any) => {
+      if (!linkMap.has(link.from)) linkMap.set(link.from, [])
+      linkMap.get(link.from)?.push(link)
+    })
+
+    function dfs(currentKey: any): void {
+      const nextLinks: any[] = linkMap.get(currentKey) || []
+      for (const link of nextLinks) {
+        const nextNode: any = nodeMap.get(link.to)
+        if (!nextNode) continue
+
+        if (nextNode.category === 'condition') {
+          dfs(nextNode.key)
+        } else {
+          result.push(nextNode)
+        }
+      }
+    }
+
+    dfs(currentStep)
+    return result
+  }
+
+  const handleAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const isTooLarge = file.size > Number(process.env.NEXT_PUBLIC_MAX_FILE_IMAGE_SIZE_MB) * 1024 * 1024
+      const isInvalidExt = !allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext))
+
+      if (isTooLarge) {
+        toast.error('ไฟล์มีขนาดเกิน 20MB และไม่สามารถอัปโหลดได้', { autoClose: 3000 })
+        return
+      }
+
+      if (isInvalidExt) {
+        toast.error('พบไฟล์ที่ไม่รองรับรูปแบบ', { autoClose: 3000 })
+        return
+      }
+
+      const response = await handleUpdateAttachment(file)
+
+      if (response?.code === 'SUCCESS') {
+        toast.success('อัพโหลดไฟล์สำเร็จ', { autoClose: 3000 })
+      }
+
+      e.target.value = ''
     }
   }
 
-  const handleRemoveImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index))
+  const handleUpdateAttachment = async (file: any) => {
+    try {
+      const response = await callUploadAttachment({ file, form_data_id: data?.form_data_id })
+      return response
+    } catch (error) {
+      toast.error('อัพโหลดไฟล์ล้มเหลว', { autoClose: 3000 })
+    }
+  }
+
+  const handleRemoveImage = async (id: any) => {
+    try {
+      const response = await callDeleteAttachment({ id })
+      if (response?.code == 'SUCCESS') {
+        toast.success('ลบไฟล์สำเร็จ', { autoClose: 3000 })
+      }
+    } catch (error) {
+      toast.error('ลบไฟล์ล้มเหลว', { autoClose: 3000 })
+    }
+  }
+
+  const handleSaveStartflow = async (comment: string, linkId?: any) => {
+    try {
+      const resultMapValue = mapKeyValueForm(form?.form_details)
+
+      const request = {
+        id: data?.form_data_id, // มี FormData id ตลอดแล้วว
+        // "form_data_detail_id": 22, // ตอนมี id
+        flow_activity_link_id: linkIdButton || linkId,
+        form_version_id: data?.form_detail?.form_version_id, //กรณีตรงนี้ คือ เขาจะส่งform ต่อไปที่เชื่อมมาหรือ
+        is_sign: false,
+        // "sign_date": "2025-12-31T23:59:59Z", // false ไม่ส่ง
+        // "sign": { // false ไม่ส่ง
+        //     "data": "xxx"
+        // },
+        data_detail: resultMapValue,
+        comment: comment ?? ''
+      }
+      const response = await callSaveStartflow(request)
+
+      return response
+    } catch (error) {
+      toast.error('ไม่สามารถบันทึกได้', { autoClose: 3000 })
+    }
+  }
+
+  const handleEditPdf = async (item: any) => {
+    window.open(
+      `/${locale}/user/viewPdf?url=${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?form_data_id=${item?.form_data_id}?attachment_id=${item?.id}?.file=${item?.url_file_download}`,
+      '_blank'
+    )
   }
 
   return (
-    <div className='flex gap-4 w-full min-h-[calc(100vh-3rem)]'>
+    <div className='flex gap-4 w-full min-h-[calc(100vh-3rem)] relative'>
       <div
-        className={`transition-all duration-300 overflow-hidden ${
-          collapsed ? 'w-[60px] min-w-[60px]' : 'w-[300px] min-w-[300px]'
-        }`}
+        className={`transition-all duration-75 z-20 ${collapsed ? 'w-[60px] min-w-[60px]' : 'w-[300px] min-w-[300px]'}`}
       >
         {collapsed ? (
           <div className='flex items-center justify-center bg-white p-2 rounded-sm'>
@@ -155,7 +322,7 @@ const UserStartTaskComponent = () => {
             </div>
           </div>
         ) : (
-          <Card className=''>
+          <Card className=' shadow-2xl'>
             <CardContent className='flex flex-col overflow-auto max-h-[calc(100vh-3rem)]'>
               <div className='flex justify-between items-center'>
                 <Typography variant='h6'>การทำงาน</Typography>
@@ -164,22 +331,41 @@ const UserStartTaskComponent = () => {
                 </IconButton>
               </div>
               <StepperWrapper>
-                <Stepper activeStep={activeStep} orientation='vertical'>
-                  {steps?.list.map((step, index) => (
-                    <Step key={index} className={classNames({ active: activeStep === index })}>
-                      <StepLabel StepIconComponent={StepperCustomDot}>
+                <Stepper activeStep={1} orientation='vertical'>
+                  {startStep.map((step, index) => (
+                    <Step
+                      key={index}
+                      className={classNames({ active: 1 === index })}
+                      sx={{ display: index === 0 ? 'block' : 'none' }} // 👈 ซ่อนด้วย style
+                    >
+                      <StepLabel StepIconComponent={iconProps => <StepperCustomDot {...iconProps} index={index} />}>
                         <div className='step-label'>
-                          <div>
-                            <Typography className='step-title'>{step.title}</Typography>
-                            <Typography className='step-subtitle'>{step.subtitle}</Typography>
-                          </div>
+                          <Typography className='step-title'>{step?.text ?? ''}</Typography>
                         </div>
                       </StepLabel>
-                      {/* <StepContent>
-                        <Typography>{step.description}</Typography>
-                      </StepContent> */}
                     </Step>
                   ))}
+                </Stepper>
+
+                <Stepper activeStep={0} orientation='vertical' connector={null}>
+                  {startStep
+                    .filter(item => item.category != 'start')
+                    .map((step, index) => (
+                      <Step key={index} className={classNames({ active: 1 === index })}>
+                        <StepLabel StepIconComponent={iconProps => <StepperCustomDot {...iconProps} index={index} />}>
+                          <div className='step-label'>
+                            <div>
+                              <Typography className='step-title'>{step?.text ?? ''}</Typography>
+                              {/* <Typography className='step-subtitle'>{step.subtitle}</Typography> */}
+                            </div>
+                          </div>
+                        </StepLabel>
+                      </Step>
+                    ))}
+
+                  {!startStep.find(item => item.category == 'end') && (
+                    <Typography variant='body2'>ยังมี Flow ต่อ.......</Typography>
+                  )}
                 </Stepper>
               </StepperWrapper>
               {isShowWorkflow ? (
@@ -215,17 +401,15 @@ const UserStartTaskComponent = () => {
       </div>
 
       {isShowWorkflow ? (
-        <div className='flex flex-1 min-h-[calc(100vh-3rem)] rounded-md overflow-hidden'>
-          <iframe
-            src='https://e-form-iota.vercel.app/flow/index.html'
-            className='w-full h-full border-0'
-            title='Wikipedia'
-          ></iframe>
+        <div className='flex flex-1 w-full h-full  absolute top-0 left-0'>
+          <ViewWorkflowComponent onBack={false} />
         </div>
       ) : (
         <>
-          <div className=' w-full min-h-screen pb-[210px]'>
-            <div className='min-w-[794px] w-[794px] mx-auto bg-white rounded-md min-h-[1123px]'></div>
+          <div className=' w-full min-h-screen pb-[210px] z-30'>
+            <div className='flex flex-1 items-center justify-center'>
+              <DraftFormComponent />
+            </div>
             <div className='fixed bottom-4 max-w-[calc(62vw)] w-full  right-6 '>
               {!isExpanded ? (
                 <div className='w-full flex items-end justify-end'>
@@ -242,7 +426,7 @@ const UserStartTaskComponent = () => {
                   </div>
                 </div>
               ) : (
-                <Card className='h-full shadow-lg relative'>
+                <Card className='h-full shadow-xl relative '>
                   <CardContent>
                     {!isStartSign && (
                       <Button
@@ -261,7 +445,13 @@ const UserStartTaskComponent = () => {
                           <Typography variant='h6'>การลงนามและการเดินหนังสือ</Typography>
                         </Grid>
                         <Grid item xs={6} className='flex justify-end'>
-                          <Button variant='outlined' startIcon={<History />} onClick={() => {}}>
+                          <Button
+                            variant='outlined'
+                            startIcon={<History />}
+                            onClick={() => {
+                              setIsShowHistoryComment(true)
+                            }}
+                          >
                             ดูประวัติการดำเนินการทั้งหมด
                           </Button>
                         </Grid>
@@ -269,18 +459,18 @@ const UserStartTaskComponent = () => {
                           <Divider />
                         </Grid>
                         <Grid item xs={12}>
-                          <FlowDocTable data={mockupData} />
+                          <FlowDocTable data={(commentData?.result?.data || []).slice(0, 3)} />
                         </Grid>
-                        <Grid item xs={12} className='flex items-center justify-between gap-1'>
+                        <Grid item xs={12} className='flex items-center justify-between gap-2'>
                           <Button
                             variant='contained'
                             color='inherit'
                             onClick={() => {
                               setIsStartSign(false)
                             }}
+                            className=' self-start'
                           >
-                            <i className='tabler-x text-md text-actionActive' />
-                            ปิด
+                            กลับ
                           </Button>
                           <div className='flex gap-2 items-center overflow-auto flex-nowrap min-w-0'>
                             {isAlreadySign ? (
@@ -303,7 +493,7 @@ const UserStartTaskComponent = () => {
                                   onClick={() => {
                                     showDialog({
                                       id: 'alertSignDialog',
-                                      component: <NormalSignDialog id='alertSignDialog' onClick={() => {}} />,
+                                      component: <NormalSignDialog id='alertSignDialog' onSave={handleSaveStartflow} />,
                                       size: 'sm'
                                     })
                                   }}
@@ -364,7 +554,7 @@ const UserStartTaskComponent = () => {
                         <div className='flex gap-2 items-center'>
                           <Typography variant='h6'>คุณกำลังอยู่ในขั้นตอนการบันทึกงานเข้าระบบ</Typography>
                           <Typography variant='body2' className=' text-primary'>
-                            “ขออนุมัติค่าเช่าบ้าน (6005) 2568-01-31 1”
+                            “{form?.name}”
                           </Typography>
                         </div>
                         <Divider className='my-2' />
@@ -373,10 +563,15 @@ const UserStartTaskComponent = () => {
                             <CustomTextField
                               fullWidth
                               label='กำหนดชื่องาน'
-                              placeholder='ขออนุมัติค่าเช่าบ้าน (6005) 2568-01-31 1'
+                              placeholder={form?.name}
                               type={'text'}
+                              value={nameTask}
+                              onChange={e => {
+                                setNameTask(e.target.value)
+                              }}
                             />
                           </Grid>
+
                           <Grid item xs={6} className='flex items-end justify-end'>
                             <Button
                               variant='outlined'
@@ -391,10 +586,27 @@ const UserStartTaskComponent = () => {
                           <Grid item xs={12} className='mt-2 '>
                             <div className='w-full overflow-auto py-1'>
                               <div className='flex justify-end flex-nowrap min-w-max gap-2'>
-                                <Button variant='contained' color='inherit' startIcon={<EditNote />}>
-                                  บันทึกเป็นแบบร่าง
-                                </Button>
-                                <Button
+                                {data?.flow_activity_link.map((item: any, index: number) => {
+                                  return (
+                                    <Button
+                                      key={index}
+                                      variant='contained'
+                                      // startIcon={<EditNote />}
+                                      onClick={() => {
+                                        if (item?.signId) {
+                                          setLinkIdButton(item?.link_id)
+                                          setIsStartSign(true)
+                                        } else {
+                                          handleSaveStartflow('', item?.link_id)
+                                        }
+                                      }}
+                                    >
+                                      {item?.text}
+                                    </Button>
+                                  )
+                                })}
+
+                                {/* <Button
                                   variant='contained'
                                   startIcon={<Start />}
                                   onClick={() => {
@@ -402,7 +614,7 @@ const UserStartTaskComponent = () => {
                                   }}
                                 >
                                   ลงนามและเริ่มงาน
-                                </Button>
+                                </Button> */}
                               </div>
                             </div>
                           </Grid>
@@ -423,7 +635,7 @@ const UserStartTaskComponent = () => {
                     <div className='flex flex-col gap-2'>
                       <Typography variant='h5'>จัดการไฟล์แนบ</Typography>
                       <Typography variant='body2' className=' text-primary'>
-                        “ขออนุมัติค่าเช่าบ้าน (6005) 2568-01-31 1”
+                        {form?.name}
                       </Typography>
                     </div>
 
@@ -437,7 +649,60 @@ const UserStartTaskComponent = () => {
                     </IconButton>
                   </div>
                   <div className='flex flex-wrap gap-4 p-6'>
-                    {images.map((img, index) => (
+                    {attactmentData?.result?.data?.attachments.length > 0 &&
+                      attactmentData?.result?.data?.attachments?.map((item: any, index: number) => (
+                        <div
+                          key={index}
+                          className='relative w-[240px] h-[140px] flex flex-col items-center border rounded-md overflow-hidden'
+                        >
+                          <div className='relative w-full h-[120px]'>
+                            <img
+                              src={item?.url_file_download || item?.url_thumbnail_download}
+                              className='w-full h-full object-cover'
+                              alt='preview'
+                            />
+                            <IconButton
+                              size='small'
+                              className='absolute top-0 right-0 bg-white'
+                              onClick={() => {
+                                showDialog({
+                                  id: 'alertDeleteApiCall',
+                                  component: (
+                                    <ConfirmAlert
+                                      id='alertDeleteApiCall'
+                                      title={'ลบไฟล์แนบ'}
+                                      content1={'คุณต้องการลบไฟล์แนบนี้ใช่หรือไม่'}
+                                      onClick={() => {
+                                        handleRemoveImage(item?.id)
+                                      }}
+                                    />
+                                  ),
+                                  size: 'sm'
+                                })
+                              }}
+                            >
+                              <i className='tabler-x text-sm text-red-500' />
+                            </IconButton>
+                            <div className='absolute top-0 left-0 bg-white w-5 flex items-center justify-center'>
+                              <Typography variant='h6'>{index + 1}</Typography>
+                            </div>
+                          </div>
+                          {item?.attachment_type.includes('pdf') && (
+                            <Button
+                              variant='contained'
+                              onClick={() => {
+                                handleEditPdf(item)
+                              }}
+                            >
+                              Edit PDF
+                            </Button>
+                          )}
+                          <div className='w-full'>
+                            <Typography className='text-xs break-words leading-snug'>{item?.name}</Typography>
+                          </div>
+                        </div>
+                      ))}
+                    {/* {images.map((img, index) => (
                       <div
                         key={index}
                         className='relative w-[240px] h-[140px] flex flex-col items-center border rounded-md overflow-hidden'
@@ -455,19 +720,63 @@ const UserStartTaskComponent = () => {
                             <Typography variant='h6'>{index + 1}</Typography>
                           </div>
                         </div>
-                        <Typography className='truncate text-xs ' title={img.name}>
-                          {img.name}
-                        </Typography>
+                        <div className='w-full'>
+                          <Typography className='text-xs break-words leading-snug'>{img.name}</Typography>
+                        </div>
                       </div>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
 
                 <div className='w-full flex items-center justify-center'>
-                  <Button variant='contained' component='label' color='primary'>
+                  <Button variant='contained' component='label' color='primary' disabled={isPending}>
                     เพิ่มไฟล์ใหม่
-                    <input type='file' hidden accept='image/*' multiple onChange={handleAddImage} />
+                    <input
+                      type='file'
+                      hidden
+                      accept={`
+      .jpg,.jpeg,.png,.gif,.webp,.bmp,
+      .avi,.mp4,.mov,
+      .pdf,.doc,.docx,.xlsx,.ppt,.pptx,.csv
+    `}
+                      onChange={handleAddImage}
+                    />
                   </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isShowHistoryComment && (
+            <div className=' fixed top-0 bottom-0 left-0 right-0 bg-slate-400 bg-opacity-50  z-40 flex items-end justify-end'>
+              <div className='w-[800px] h-screen bg-slate-100 flex flex-col gap-2 justify-between pb-8'>
+                <div className=' overflow-auto'>
+                  <div className='flex items-center justify-between p-6 bg-white'>
+                    <div className='flex flex-col gap-2'>
+                      <Typography variant='h5'>ประวัติการดำเนินการทั้งหมด</Typography>
+                      <Typography variant='body2' className=' text-primary'>
+                        {form?.name}
+                      </Typography>
+                    </div>
+
+                    <IconButton
+                      size='small'
+                      onClick={() => {
+                        setIsShowHistoryComment(false)
+                      }}
+                    >
+                      <i className='tabler-x text-2xl text-actionActive' />
+                    </IconButton>
+                  </div>
+                  <div className='w-full p-6'>
+                    <FlowDocFullTable
+                      data={commentData?.result?.data || []}
+                      page={page}
+                      pageSize={pageSize}
+                      setPage={setPage}
+                      setPageSize={setPageSize}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

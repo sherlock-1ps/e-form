@@ -845,6 +845,21 @@ export default function AdminWorkflowComponent() {
           handleSaveNodeLocal()
         }
       }
+
+      if (e.change === go.ChangedEvent.Insert && e.modelChange === 'nodeDataArray') {
+        const newNode = e.newValue
+
+        if (newNode.category === 'start') {
+          const hasStart = myDiagram.model.nodeDataArray.some(n => n.category === 'start' && n.key !== newNode.key)
+
+          if (hasStart) {
+            setTimeout(() => {
+              myDiagram.model.removeNodeData(newNode)
+              toast.error('ไม่สามารถเพิ่มได้, start มีได้แค่อันเดียว', { autoClose: 3000 })
+            }, 0)
+          }
+        }
+      }
     })
 
     const myPalette = $(go.Palette, paletteRef.current, {

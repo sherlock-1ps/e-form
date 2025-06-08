@@ -17,17 +17,19 @@ import { toast } from 'react-toastify'
 import UserStartTaskComponent from './start/UserStartTaskComponent'
 import ViewWorkflowComponent from './ViewWorkflowComponent'
 import { useFlowStore } from '@/store/useFlowStore'
+import { useFormStore } from '@/store/useFormStore'
 
 const UserCreateTastComponent = () => {
   const { showDialog } = useDialog()
   const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
-
+  const setFullForm = useFormStore(state => state.setFullForm)
   const router = useRouter()
   const params = useParams()
   const { lang: locale } = params
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(30)
   const [currentSection, setCurrentSection] = useState('dashboard')
+  const [dataStartFlow, setDataStartFlow] = useState({})
 
   // const { data: flowNameData, isPending: pendingFlow } = useFetchFlowNnameQueryOption(page, pageSize)
   const { data: flowNameData, isPending: pendingFlow } = useFetchFlowQueryOption(page, pageSize)
@@ -35,13 +37,36 @@ const UserCreateTastComponent = () => {
 
   const { mutateAsync: callStartFlow } = useStartFlowQueryOption()
 
-  const handleStartFlow = async (id: any) => {
+  const handleStartFlow = async (item: any) => {
     try {
-      const response = await callStartFlow({ id })
+      const response = await callStartFlow({ id: item.id })
 
       if (response?.code == 'SUCCESS') {
-        toast.success('เริ่มต้นโฟลว์สำเร็จ!', { autoClose: 3000 })
-        setCurrentSection('startFlow')
+        const resultFlow = {
+          flow: {
+            ...response?.result?.data?.flow
+          }
+        }
+
+        const layoutValue =
+          response?.result?.data?.form_detail?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
+        const formFromApi = {
+          isContinue: true,
+          name: item?.name,
+          formId: response?.result?.data?.form_detail?.id,
+          versionId: response?.result?.data?.form_detail?.form_version_id,
+          layout: layoutValue as 'vertical' | 'horizontal',
+          form_details: response?.result?.data?.form_detail?.detail?.data
+        }
+
+        setFlowDiagramData(resultFlow)
+        setFullForm(formFromApi)
+        setDataStartFlow(response?.result?.data)
+
+        setTimeout(() => {
+          setCurrentSection('startFlow')
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }, 350)
       }
     } catch (error) {
       toast.error('เริ่มโฟลว์ล้มเหลว!', { autoClose: 3000 })
@@ -68,7 +93,7 @@ const UserCreateTastComponent = () => {
     }
   }
 
-  if (currentSection === 'startFlow') return <UserStartTaskComponent />
+  if (currentSection === 'startFlow') return <UserStartTaskComponent data={dataStartFlow} />
   if (currentSection === 'viewFlow')
     return (
       <ViewWorkflowComponent
@@ -128,7 +153,7 @@ const UserCreateTastComponent = () => {
                                   title='เริ่มต้นใช้งาน'
                                   content1='คุณต้องการใช้งานโฟลว์นี้ ใช่หรือไม่'
                                   onClick={() => {
-                                    handleStartFlow(item?.id)
+                                    handleStartFlow(item)
                                   }}
                                 />
                               ),

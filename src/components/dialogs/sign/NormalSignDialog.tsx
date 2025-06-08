@@ -6,15 +6,31 @@ import { Grid, Typography } from '@mui/material'
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useState } from 'react'
+import { useFormStore } from '@/store/useFormStore'
+import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
+import { toast } from 'react-toastify'
 
 interface signProps {
   id: string
-  onClick: () => void
+  onSave: (comment: string) => Promise<any>
 }
 
-const NormalSignDialog = ({ id, onClick }: signProps) => {
+const NormalSignDialog = ({ id, onSave }: signProps) => {
   const { closeDialog } = useDialog()
-  const [formData, setFormData] = useState('')
+  const [comment, setComment] = useState('')
+
+  const handleConfirm = async () => {
+    try {
+      const response = await onSave(comment)
+      if (response?.code == 'SUCCESS') {
+        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
+        closeDialog(id)
+      }
+    } catch (err) {
+      console.error('save failed', err)
+      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+    }
+  }
 
   return (
     <Grid container spacing={4}>
@@ -30,8 +46,8 @@ const NormalSignDialog = ({ id, onClick }: signProps) => {
           fullWidth
           label='ความคิดเห็น'
           placeholder='ระบุความคิดเห็น...'
-          value={formData}
-          onChange={e => setFormData(e.target.value)}
+          value={comment}
+          onChange={e => setComment(e.target.value)}
         />
       </Grid>
 
@@ -48,7 +64,7 @@ const NormalSignDialog = ({ id, onClick }: signProps) => {
         <Button
           variant='contained'
           onClick={() => {
-            closeDialog(id), onClick()
+            handleConfirm()
           }}
         >
           ยืนยัน

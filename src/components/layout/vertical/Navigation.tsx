@@ -154,6 +154,8 @@ const Navigation = (props: Props) => {
       return null
     } else if (pathname.includes('/admin/workflow')) {
       return null
+    } else if (pathname.includes('/user/viewPdf')) {
+      return null
     } else {
       return (
         <VerticalNav

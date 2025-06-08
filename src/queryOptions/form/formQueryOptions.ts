@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { changeNameFolder, changeNameImage, createApi, createFlow, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteFlow, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchFlow, fetchFlowName, fetchForm, fetchFormName, fetchMedia, fetchVariable, getDepartmentList, getFlow, getForm, getPersonList, getPositionList, getStartFlow, getUploadFile, updateApi, updateDateFlow, updateDateForm, updateFile, updateFlow, updateForm, updateVersion, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
+import { changeNameFolder, changeNameImage, createApi, createFlow, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteAttachments, deleteFlow, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchAttachments, fetchFlow, fetchFlowName, fetchForm, fetchFormName, fetchListComment, fetchMedia, fetchVariable, fetchWorkAll, fetchWorkInProgress, getDepartmentList, getFlow, getForm, getNextFlow, getPersonList, getPositionList, getStartFlow, getUploadFile, saveStartFlow, updateApi, updateDateFlow, updateDateForm, updateFile, updateFlow, updateForm, updateVersion, uploadAttachments, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
@@ -517,6 +517,105 @@ export function useFetchFormFlowQueryOption(page: number, pageSize: number) {
     queryFn: () => fetchFormName({ page, pageSize }),
   });
 }
+
+
+export function useFetchAttachmentsQueryOption(id: number) {
+  return useQuery({
+    queryKey: ["attachments"],
+    queryFn: () => fetchAttachments({ id }),
+  });
+}
+
+export const useUploadAttachments = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: uploadAttachments,
+    onError: (error) => {
+      console.error("Error upload attachments:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["attachments"] });
+    },
+  });
+};
+
+export const useDeleteAttachments = () => {
+  const queryClient = useQueryClient();
+
+
+  return useMutation({
+    mutationFn: deleteAttachments,
+    onError: (error) => {
+      console.error("Error delete attachments:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["attachments"] });
+    },
+  });
+};
+
+export function useFetchCommentQueryOption(page: number, pageSize: number, form_data_id: number) {
+  return useQuery({
+    queryKey: ["comment", page, pageSize],
+    queryFn: () => fetchListComment({ page, pageSize, form_data_id }),
+  });
+}
+
+export const useSaveStartFlowQueryOption = () => {
+  // const queryClient = useQueryClient();
+
+
+  return useMutation({
+    mutationFn: saveStartFlow,
+    onError: (error) => {
+      console.error("Error save  start flow:", error);
+    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["attachments"] });
+    // },
+  });
+};
+
+
+
+export function useFetchWorkInProgressQueryOption(page: number, pageSize: number, flow_id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ["workProgress", page, pageSize, flow_id],
+    queryFn: () => fetchWorkInProgress({ page, pageSize, flow_id }),
+    ...options
+  });
+}
+
+export function useFetchWorkAllQueryOption(page: number, pageSize: number, flow_id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ["worlAll", page, pageSize, flow_id],
+    queryFn: () => fetchWorkAll({ page, pageSize, flow_id }),
+    ...options
+  });
+}
+
+export const useNextFlowQueryOption = () => {
+  // const queryClient = useQueryClient();
+
+
+  return useMutation({
+    mutationFn: getNextFlow,
+    onError: (error) => {
+      console.error("Error next flow:", error);
+    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["attachments"] });
+    // },
+  });
+};
+
+
+
+
+
+
+
 
 
 

@@ -16,9 +16,9 @@ type FormObject = {
 }
 
 type FormVersion = {
-  name: string
-  version: string
-  newVersion: string
+  name?: string
+  version?: string
+  newVersion?: string
   isContinue: boolean
   formId: string | number
   versionId: string | number
@@ -516,16 +516,16 @@ export const useFormStore = create<FormState>()(
           }
         })),
       setFullForm: (payload: FormVersion) =>
-        set(() => ({
+        set(state => ({
           form: {
             isContinue: true,
-            formId: payload.formId,
-            versionId: payload.versionId,
-            name: payload.name,
-            version: payload.version,
-            newVersion: payload.newVersion,
-            layout: payload.layout,
-            form_details: payload.form_details
+            formId: payload.formId ?? state.form.formId,
+            versionId: payload.versionId ?? state.form.versionId,
+            name: payload.name ?? state.form.name,
+            version: payload.version ?? state.form.version,
+            newVersion: payload.newVersion ?? state.form.newVersion,
+            layout: payload.layout ?? state.form.layout,
+            form_details: payload.form_details ?? []
           }
         })),
       addFieldToForm: () =>

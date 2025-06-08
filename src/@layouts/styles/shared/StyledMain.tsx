@@ -13,13 +13,16 @@ type StyledMainProps = {
 }
 
 const StyledMain = styled.main<StyledMainProps>`
-  padding: ${({ pathname }) => (pathname.includes('/admin/workflow') ? '0px' : `${themeConfig.layoutPadding}px`)};
+  padding: ${({ pathname }) =>
+    pathname.includes('/admin/workflow') || pathname.includes('/user/viewPdf')
+      ? '0px'
+      : `${themeConfig.layoutPadding}px`};
 
   ${({ isContentCompact, pathname }) =>
     isContentCompact &&
     `
     margin-inline: auto;
-    max-inline-size: ${pathname.includes('/admin/workflow') ? '1920px' : themeConfig.compactContentWidth + 'px'};
+    max-inline-size: ${pathname.includes('/admin/workflow') || pathname.includes('/user/viewPdf') ? '1920px' : themeConfig.compactContentWidth + 'px'};
   `}
 
   &:has(.${commonLayoutClasses.contentHeightFixed}) {

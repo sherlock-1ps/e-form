@@ -83,7 +83,7 @@ const SignatureForm = ({ item }: any) => {
 
         <div className='flex min-w-[200px] relative'>
           <img
-            src='/images/signImg.jpg'
+            src='/images/signImg.png'
             alt='ลายเซ็นต์จะปรากฏเมื่อลงนาม'
             style={{
               opacity: 1,

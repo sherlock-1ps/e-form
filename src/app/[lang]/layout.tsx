@@ -26,8 +26,8 @@ import { DictionaryProvider } from '@/contexts/DictionaryContext'
 import { getDictionary } from '@/utils/getDictionary'
 
 export const metadata = {
-  title: 'E-Form',
-  description: 'E-Form Sarabun',
+  title: 'E-Workflow',
+  description: 'E-Workflow Sarabun',
   icons: {
     icon: '../favicon.ico'
   }

@@ -19,114 +19,87 @@ import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import { DoneAll, PendingActions } from '@mui/icons-material'
-import UserDashboardTable from './UserDashboardTable'
 import EditorForm from '@/components/e-form/newDefault/EditorForm'
-
-const mockUpData = [
-  {
-    createdAt: '31 ม.ค. 2568 12:34',
-    startedBy: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    },
-    jobName: 'ขออนุมัติค่าเช่าบ้าน (6005) 2568-01-31',
-    jobId: '1',
-    latestStatus: {
-      label: 'รออนุมัติ',
-      date: '31 ม.ค. 2568 12:34',
-      color: 'orange'
-    },
-    currentAssignee: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    }
-  }
-]
-
-const mockUpDoneData = [
-  {
-    createdAt: '31 ม.ค. 2568 12:34',
-    startedBy: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    },
-    jobName: 'ขออนุมัติค่าเช่าบ้าน (6005) 2568-01-31',
-    jobId: '1',
-    latestStatus: {
-      label: 'เสร็จสิ้น',
-      date: '31 ม.ค. 2568 12:34',
-      color: 'orange'
-    },
-    currentAssignee: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    }
-  },
-  {
-    createdAt: '31 ม.ค. 2568 12:34',
-    startedBy: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    },
-    jobName: 'ขออนุมัติค่าเช่าบ้าน (6005) 2568-01-31',
-    jobId: '1',
-    latestStatus: {
-      label: 'เสร็จสิ้น',
-      date: '31 ม.ค. 2568 12:34',
-      color: 'orange'
-    },
-    currentAssignee: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    }
-  },
-  {
-    createdAt: '31 ม.ค. 2568 12:34',
-    startedBy: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    },
-    jobName: 'ขออนุมัติค่าเช่าบ้าน (6005) 2568-01-31',
-    jobId: '1',
-    latestStatus: {
-      label: 'เสร็จสิ้น',
-      date: '31 ม.ค. 2568 12:34',
-      color: 'orange'
-    },
-    currentAssignee: {
-      name: 'Name Surname',
-      position: 'ตำแหน่งงาน',
-      avatar: 'OP',
-      online: true
-    }
-  }
-]
+import {
+  useFetchFlowNnameQueryOption,
+  useFetchFormFlowQueryOption,
+  useFetchWorkInProgressQueryOption,
+  useNextFlowQueryOption
+} from '@/queryOptions/form/formQueryOptions'
+import { toast } from 'react-toastify'
+import { useFlowStore } from '@/store/useFlowStore'
+import { useFormStore } from '@/store/useFormStore'
+import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
+import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
+import UserDashboardTable from './UserDashboardTable'
 
 const UserDashboardComponent = () => {
   const router = useRouter()
   const params = useParams()
+  const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
+  const setFullForm = useFormStore(state => state.setFullForm)
   const { lang: locale } = params
   const [value, setValue] = useState<string>('1')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
+  const [currentSection, setCurrentSection] = useState('dashboard')
+  const [selectedWorkflow, setSelectedWorkflow] = useState<string>('')
+  const [dataNextFlow, setDataNextFlow] = useState({})
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
+
+  const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
+  const { data: workPregressData } = useFetchWorkInProgressQueryOption(page, pageSize, Number(selectedWorkflow), {
+    enabled: selectedWorkflow !== ''
+  })
+
+  const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
+
+  const handleClickManange = async (id: number) => {
+    try {
+      const response = await callNextFlow({ form_data_id: id })
+      if (response?.code == 'SUCCESS') {
+        let updateForm = response?.result?.data?.form_detail?.detail?.data
+        const resultFlow = {
+          flow: {
+            ...response?.result?.data?.flow
+          }
+        }
+
+        const detailMerge = response?.result?.data?.current_data_detail_merge
+        if (detailMerge?.data_detail) {
+          updateForm = updateFormValueByKey(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+        }
+
+        const layoutValue =
+          response?.result?.data?.form_detail?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
+
+        const formFromApi = {
+          isContinue: true,
+          name: response?.result?.data?.form_detail?.name ?? '-',
+          formId: response?.result?.data?.form_detail?.id,
+          versionId: response?.result?.data?.form_detail?.form_version_id,
+          layout: layoutValue as 'vertical' | 'horizontal',
+          form_details: updateForm
+        }
+
+        setFlowDiagramData(resultFlow)
+        setFullForm(formFromApi)
+        setDataNextFlow(response?.result?.data)
+
+        setTimeout(() => {
+          setCurrentSection('nextFlow')
+        }, 350)
+      }
+    } catch (error) {
+      console.log('error', error)
+      toast.error('ไม่สามารถเรียก flow ได้', { autoClose: 3000 })
+    }
+  }
+
+  if (currentSection === 'nextFlow') return <UserStartTaskComponent data={dataNextFlow} />
 
   return (
     <TabContext value={value}>
@@ -143,13 +116,13 @@ const UserDashboardComponent = () => {
                     iconPosition={'start'}
                     className={value === '1' ? 'bg-primaryLighter' : ''}
                   />
-                  <Tab
+                  {/* <Tab
                     value='2'
                     label='งานที่จบแล้ว'
                     icon={<DoneAll />}
                     iconPosition={'start'}
                     className={value === '2' ? 'bg-primaryLighter' : ''}
-                  />
+                  /> */}
                 </TabList>
               </Grid>
             </Grid>
@@ -163,31 +136,37 @@ const UserDashboardComponent = () => {
                   <CustomTextField
                     select
                     fullWidth
-                    defaultValue=''
                     label='เลือกเวิร์คโฟลว์'
-                    SelectProps={{
-                      displayEmpty: true
-                    }}
+                    value={selectedWorkflow}
+                    onChange={e => setSelectedWorkflow(e.target.value)}
+                    SelectProps={{ displayEmpty: true }}
                   >
                     <MenuItem value='' disabled>
-                      <em className=' opacity-50'>เลือกเวิร์คโฟลว์</em>
+                      <em className='opacity-50'>เลือกเวิร์คโฟลว์</em>
                     </MenuItem>
-                    <MenuItem value={10}>ขอเบิกเงินค่าเช่า (6006)</MenuItem>
+
+                    {flowData?.result?.data?.map((item: any) => (
+                      <MenuItem key={item.id} value={String(item.id)}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
                 <Grid item xs={12}>
                   <UserDashboardTable
-                    projectTable={mockUpData}
+                    projectTable={workPregressData?.result?.data || []}
                     page={page}
                     pageSize={pageSize}
                     setPage={setPage}
                     setPageSize={setPageSize}
+                    count={workPregressData?.result?.total}
+                    onManage={handleClickManange}
                   />
                 </Grid>
                 <Divider />
               </Grid>
             </TabPanel>
-            <TabPanel value='2'>
+            {/* <TabPanel value='2'>
               <Grid container spacing={4}>
                 <Grid item xs={12} sm={4}>
                   <CustomTextField
@@ -207,7 +186,7 @@ const UserDashboardComponent = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <UserDashboardTable
-                    projectTable={mockUpDoneData}
+                    projectTable={workPregressData?.result || []}
                     page={page}
                     pageSize={pageSize}
                     setPage={setPage}
@@ -216,23 +195,9 @@ const UserDashboardComponent = () => {
                 </Grid>
                 <Divider />
               </Grid>
-            </TabPanel>
+            </TabPanel> */}
           </CardContent>
         </Card>
-        {/* <Card>
-          <CardContent>
-            <EditorForm />
-            <Button variant='outlined' onClick={() => setZoomLevel(prev => Math.max(prev - 0.1, 0.5))}>
-              -
-            </Button>
-            <Button variant='outlined' onClick={() => setZoomLevel(1)}>
-              Reset
-            </Button>
-            <Button variant='outlined' onClick={() => setZoomLevel(prev => Math.min(prev + 0.1, 2))}>
-              +
-            </Button>
-          </CardContent>
-        </Card> */}
       </div>
     </TabContext>
   )

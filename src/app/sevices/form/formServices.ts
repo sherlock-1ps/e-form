@@ -490,8 +490,6 @@ export const fetchFlowName = async ({ page, pageSize }: { page: number; pageSize
 };
 
 export const getStartFlow = async ({ id }: { id: number }) => {
-  console.log("123", id);
-
   try {
     const response = await Axios.post("/flows/get-start-flow", {
       id: id,
@@ -500,9 +498,27 @@ export const getStartFlow = async ({ id }: { id: number }) => {
     return response.data;
 
   } catch (error) {
-    console.error("Error fetch flow name:", error);
+    console.error("Error get start flow:", error);
 
-    const e = axiosErrorHandler(error, '/flows/get-name')
+    const e = axiosErrorHandler(error, '/flows/get-start-flow')
+    throw e;
+
+  }
+
+};
+
+export const getNextFlow = async ({ form_data_id }: { form_data_id: number }) => {
+  try {
+    const response = await Axios.post("/flows/get-next-flow", {
+      form_data_id: form_data_id,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error get next flow:", error);
+
+    const e = axiosErrorHandler(error, '/flows/get-next-flow')
     throw e;
 
   }
@@ -691,6 +707,145 @@ export const fetchFormName = async ({ page, pageSize }: { page: number; pageSize
   }
 
 };
+
+export const fetchAttachments = async ({ id }: { id: number }) => {
+  try {
+    const response = await Axios.post("/attachments/list", {
+      form_data_id: id,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch attachments:", error);
+
+    const e = axiosErrorHandler(error, '/attachments/list')
+    throw e;
+
+  }
+
+};
+
+
+
+export const uploadAttachments = async ({
+  file,
+  form_data_id
+}: {
+  file: File
+  form_data_id: number
+}) => {
+  try {
+    const formData = new FormData()
+    formData.append('form_data_id', String(form_data_id))
+    formData.append('file', file)
+
+    const response = await Axios.post('/attachments/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error upload attachments:', error)
+    const e = axiosErrorHandler(error, '/attachments/upload')
+    throw e
+  }
+}
+
+export const deleteAttachments = async ({ id }: { id: number }) => {
+  try {
+    const response = await Axios.post("/attachments/delete", {
+      id: id,
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error delete attachments:", error);
+
+    const e = axiosErrorHandler(error, '/attachments/delete')
+    throw e;
+
+  }
+
+};
+
+
+
+export const fetchListComment = async ({ page, pageSize, form_data_id }: { page: number; pageSize: number; form_data_id: number }) => {
+  try {
+    const response = await Axios.post("/form-datas/list/comment", {
+      page,
+      limit: pageSize,
+      form_data_id
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch list comment:", error);
+
+    axiosErrorHandler(error, '/form-datas/list/comment')
+    throw error;
+
+  }
+
+};
+
+export const saveStartFlow = async (request: any) => {
+  try {
+    const response = await Axios.post("/form-datas/save", request)
+    return response.data
+  } catch (error) {
+    console.error("Error save start flow:", error)
+    const e = axiosErrorHandler(error, "/form-datas/save")
+    throw e
+  }
+}
+
+
+export const fetchWorkInProgress = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
+  try {
+    const response = await Axios.post("/form-datas/work/in-progress", {
+      page,
+      limit: pageSize,
+      flow_id
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch work in progress:", error);
+
+    const e = axiosErrorHandler(error, '/form-datas/work/in-progress')
+    throw e;
+
+  }
+
+};
+
+export const fetchWorkAll = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
+  try {
+    const response = await Axios.post("/form-datas/work/all", {
+      page,
+      limit: pageSize,
+      flow_id
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch work all:", error);
+
+    const e = axiosErrorHandler(error, '/form-datas/work/all')
+    throw e;
+
+  }
+
+};
+
 
 
 

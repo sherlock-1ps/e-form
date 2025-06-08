@@ -44,6 +44,9 @@ import tableStyles from '@core/styles/table.module.css'
 import { getInitials } from '@/utils/getInitials'
 import { Button, Typography } from '@mui/material'
 import { OptionType } from '@/@core/components/option-menu/types'
+import { FormatShowDate } from '@/utils/formatShowDate'
+import { useDialog } from '@/hooks/useDialog'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -110,21 +113,36 @@ interface LatestStatus {
 }
 
 interface TableRowData {
-  createdAt: string
-  startedBy: UserInfo
-  jobName: string
-  jobId: string
-  latestStatus: LatestStatus
-  currentAssignee: UserInfo
+  id: number
+  created_by: string
+  updated_by: string
+  created_at: string
+  updated_at: string
+  flow_version_id: number
+  is_sign: boolean
+  sign_date: string
+  sign: any | null
+  FormDataDetails: any | null
+  current_activities: number[]
+  current_assignees_user: any | null
+  current_assignees_department: any | null
+  current_assignees_position: any | null
+  current_activity_names: string[] | null
+  current_assignees_user_names: string[]
+  current_assignees_department_names: string[] | null
+  current_assignees_position_names: string[] | null
+  status: string
+  FormDataDetailMerge: any | null
 }
 // Column Definitions
 const columnHelper = createColumnHelper<TableRowData>()
 
-const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize }: any) => {
+const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize, count, onManage }: any) => {
+  const { showDialog } = useDialog()
+
   // States
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [data, setData] = useState(...[projectTable])
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Hooks
@@ -152,51 +170,51 @@ const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize
       //     />
       //   )
       // },
-      columnHelper.accessor('createdAt', {
+      columnHelper.accessor('created_at', {
         header: 'วันที่สร้าง',
-        cell: ({ row }) => <Typography variant='body2'>{row.original.createdAt}</Typography>
+        cell: ({ row }) => <Typography variant='body2'>{FormatShowDate(row.original.created_at)}</Typography>
       }),
-      columnHelper.accessor('startedBy.name', {
+      columnHelper.accessor('created_by', {
         header: 'เริ่มโดย',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             {/* <CustomAvatar src={row.original.startedBy.avatar} size={34} /> */}
-            <CustomAvatar size={32}>{getInitials(row.original.startedBy.name)}</CustomAvatar>
+            {/* <CustomAvatar size={32}>{getInitials(row.original.startedBy.name)}</CustomAvatar> */}
             <div className='flex flex-col'>
               <Typography className='font-medium' color='text.primary'>
-                {row.original.startedBy.name}
+                {row.original.created_by}
               </Typography>
-              <Typography variant='body2'>{row.original.startedBy.position}</Typography>
+              <Typography variant='body2'>-</Typography>
             </div>
           </div>
         )
       }),
-      columnHelper.accessor('jobName', {
+      columnHelper.accessor('FormDataDetails', {
         header: 'ชื่องาน',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.jobName}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>-</Typography>
       }),
-      columnHelper.accessor('latestStatus.date', {
+      columnHelper.accessor('status', {
         header: 'สถานะล่าสุด',
         cell: ({ row }) => (
           <div className='flex  gap-2'>
             <Typography style={{ color: '#0463EA' }} variant='h6'>
-              {row.original.latestStatus.label}
+              {row.original.status}
             </Typography>
-            <Typography>{row.original.latestStatus.date}</Typography>
+            <Typography>{FormatShowDate(row.original.updated_at)}</Typography>
           </div>
         ),
         enableSorting: false
       }),
-      columnHelper.accessor('currentAssignee.name', {
+      columnHelper.accessor('current_assignees_user_names', {
         header: 'ผู้รับผิดชอบปัจจุบัน',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
-            <CustomAvatar size={32}>{getInitials(row.original.currentAssignee.name)}</CustomAvatar>
+            {/* <CustomAvatar size={32}>{getInitials(row.original.current_assignees_user_names)}</CustomAvatar> */}
             <div className='flex flex-col'>
               <Typography className='font-medium' color='text.primary'>
-                {row.original.currentAssignee.name}
+                {row.original.current_assignees_user_names ?? '-'}
               </Typography>
-              <Typography variant='body2'>{row.original.currentAssignee.position}</Typography>
+              <Typography variant='body2'>{row.original.current_assignees_position ?? '-'}</Typography>
             </div>
           </div>
         )
@@ -206,27 +224,67 @@ const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize
         header: 'การดำเนินการ',
         cell: ({ row }) => {
           const options: OptionType[] = [
-            {
-              text: 'ดู workflow',
-              menuItemProps: {
-                className: 'flex items-center gap-2 text-textSecondary',
-                onClick: () => {}
-              }
-            }
+            // {
+            //   text: 'แก้ไข',
+            //   menuItemProps: {
+            //     className: 'flex items-center  text-textSecondary',
+            //     onClick: () => {}
+            //   }
+            // }
           ]
 
           return (
-            <OptionMenu
-              options={options}
-              customTrigger={
-                <div className='flex gap-2'>
-                  <Button variant='contained' color='secondary' className='flex items-center justify-center px-4 py-1'>
-                    จัดการ
-                    <OptionMenu iconButtonProps={{ size: 'medium' }} iconClassName='text-white' options={[]} />
-                  </Button>
-                </div>
-              }
-            />
+            // <OptionMenu
+            //   options={options}
+            //   customTrigger={
+            //     <div className='flex items-center '>
+            //       <Button
+            //         variant='contained'
+            //         color='primary'
+            //         className=''
+            //         onClick={() => {
+            //           showDialog({
+            //             id: 'alertDialogConfirmToggleTrigger',
+            //             component: (
+            //               <ConfirmAlert
+            //                 id='alertDialogConfirmToggleTrigger'
+            //                 title='จัดการ Flow'
+            //                 content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
+            //                 onClick={() => handleClickManage(row.original.id)}
+            //               />
+            //             ),
+            //             size: 'sm'
+            //           })
+
+            //         }}
+            //       >
+            //         จัดการ
+            //       </Button>
+            //       {/* <OptionMenu iconButtonProps={{ size: 'medium' }} iconClassName='text-white' options={[]} /> */}
+            //     </div>
+            //   }
+            // />
+            <Button
+              variant='contained'
+              color='primary'
+              className=''
+              onClick={() => {
+                showDialog({
+                  id: 'alertDialogConfirmToggleTrigger',
+                  component: (
+                    <ConfirmAlert
+                      id='alertDialogConfirmToggleTrigger'
+                      title='จัดการ Flow'
+                      content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
+                      onClick={() => onManage(row.original.id)}
+                    />
+                  ),
+                  size: 'sm'
+                })
+              }}
+            >
+              จัดการ
+            </Button>
           )
         },
         enableSorting: false
@@ -237,7 +295,7 @@ const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize
   )
 
   const table = useReactTable({
-    data: data as TableRowData[],
+    data: projectTable as TableRowData[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -330,7 +388,7 @@ const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize
       </div>
       <TablePaginationComponent
         table={table}
-        count={data.max_page}
+        count={count}
         page={page}
         pageSize={pageSize}
         onPageChange={setPage}

@@ -77,7 +77,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // Column Definitions
 const columnHelper = createColumnHelper<flowType>()
 
-const FlowDocTable = ({ data }: any) => {
+const FlowDocFullTable = ({ data = [], page, pageSize, setPage, setPageSize }: any) => {
   const { showDialog } = useDialog()
   const { dictionary } = useDictionary()
   const router = useRouter()
@@ -213,8 +213,16 @@ const FlowDocTable = ({ data }: any) => {
           )}
         </table>
       </div>
+      <TablePaginationComponent
+        table={table}
+        count={data?.total || 1}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </Card>
   )
 }
 
-export default FlowDocTable
+export default FlowDocFullTable

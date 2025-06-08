@@ -27,8 +27,6 @@ const ActivityFlowBar = () => {
     return Date.now() + Math.floor(Math.random() * 1000)
   }
 
-  console.log('selectedField', selectedField?.data?.form)
-
   useEffect(() => {
     if (selectedField?.key && myDiagram && flow) {
       // const nodeData = myDiagram.model.findNodeDataForKey(selectedField.key)

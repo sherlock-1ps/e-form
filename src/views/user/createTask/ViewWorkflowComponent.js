@@ -603,17 +603,19 @@ export default function ViewWorkflowComponent({ onBack }) {
         </div>
       </div>
 
-      <div className='absolute top-5 left-3 z-50 flex gap-4 bg-primaryLight rounded-md'>
-        <IconButton
-          color='primary'
-          onClick={() => {
-            onBack()
-          }}
-        >
-          <ArrowBackIcon />
-          <Typography variant='h6'>ย้อนกลับ</Typography>
-        </IconButton>
-      </div>
+      {onBack && (
+        <div className='absolute top-5 left-3 z-50 flex gap-4 bg-primaryLight rounded-md'>
+          <IconButton
+            color='primary'
+            onClick={() => {
+              onBack()
+            }}
+          >
+            <ArrowBackIcon />
+            <Typography variant='h6'>ย้อนกลับ</Typography>
+          </IconButton>
+        </div>
+      )}
     </div>
   )
 }
