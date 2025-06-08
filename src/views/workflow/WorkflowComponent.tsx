@@ -127,7 +127,7 @@ const WorkflowComponent = () => {
       {/* Image container */}
       <div className='flex-1 my-2 rounded overflow-hidden'>
         {/* <img src={image} alt={title} className='w-full h-full object-cover' /> */}
-        <Typography className=' h-full bg-slate-100 flex items-center justify-center text-wrap' variant='body2'>
+        <Typography className=' h-full bg-slate-100 flex items-center justify-center text-wrap px-2' variant='body2'>
           {title}
         </Typography>
         {/* Or if you want just black placeholder: <div className='w-full h-full bg-black' /> */}
