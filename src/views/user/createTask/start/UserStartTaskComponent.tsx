@@ -299,10 +299,10 @@ const UserStartTaskComponent = ({ data }: any) => {
   }
 
   const handleEditPdf = async (item: any) => {
-    window.open(
-      `/${locale}/user/viewPdf?url=${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`,
-      '_blank'
-    )
+    const innerUrl = `${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`
+    const encodedUrl = encodeURIComponent(innerUrl)
+
+    window.open(`/${locale}/user/viewPdf?url=${encodedUrl}`, '_blank')
   }
 
   return (
