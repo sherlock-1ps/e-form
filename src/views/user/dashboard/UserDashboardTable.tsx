@@ -118,6 +118,7 @@ interface TableRowData {
   updated_by: string
   created_at: string
   updated_at: string
+  name: string
   flow_version_id: number
   is_sign: boolean
   sign_date: string
@@ -137,7 +138,16 @@ interface TableRowData {
 // Column Definitions
 const columnHelper = createColumnHelper<TableRowData>()
 
-const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize, count, onManage }: any) => {
+const UserDashboardTable = ({
+  projectTable,
+  page,
+  pageSize,
+  setPage,
+  setPageSize,
+  count,
+  onManage,
+  onViewFlow
+}: any) => {
   const { showDialog } = useDialog()
 
   // States
@@ -189,9 +199,9 @@ const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize
           </div>
         )
       }),
-      columnHelper.accessor('FormDataDetails', {
+      columnHelper.accessor('name', {
         header: 'ชื่องาน',
-        cell: ({ row }) => <Typography color='text.primary'>-</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original?.name}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'สถานะล่าสุด',
@@ -264,27 +274,39 @@ const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize
             //     </div>
             //   }
             // />
-            <Button
-              variant='contained'
-              color='primary'
-              className=''
-              onClick={() => {
-                showDialog({
-                  id: 'alertDialogConfirmToggleTrigger',
-                  component: (
-                    <ConfirmAlert
-                      id='alertDialogConfirmToggleTrigger'
-                      title='จัดการ Flow'
-                      content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
-                      onClick={() => onManage(row.original.id)}
-                    />
-                  ),
-                  size: 'sm'
-                })
-              }}
-            >
-              จัดการ
-            </Button>
+            <div className='flex gap-2'>
+              <Button
+                variant='outlined'
+                color='primary'
+                className=''
+                onClick={() => {
+                  onViewFlow(row.original.id)
+                }}
+              >
+                ดูโฟลว์
+              </Button>
+              <Button
+                variant='contained'
+                color='primary'
+                className=''
+                onClick={() => {
+                  showDialog({
+                    id: 'alertDialogConfirmToggleTrigger',
+                    component: (
+                      <ConfirmAlert
+                        id='alertDialogConfirmToggleTrigger'
+                        title='จัดการ Flow'
+                        content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
+                        onClick={() => onManage(row.original.id, row.original?.status)}
+                      />
+                    ),
+                    size: 'sm'
+                  })
+                }}
+              >
+                จัดการ
+              </Button>
+            </div>
           )
         },
         enableSorting: false

@@ -23,7 +23,8 @@ import EditorForm from '@/components/e-form/newDefault/EditorForm'
 import {
   useFetchFlowNnameQueryOption,
   useFetchWorkMyQueryOption,
-  useNextFlowQueryOption
+  useNextFlowQueryOption,
+  useStartFlowQueryOption
 } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
 import { useFlowStore } from '@/store/useFlowStore'
@@ -55,10 +56,16 @@ const UserDashboardComponent = () => {
   })
 
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
+  const { mutateAsync: callStartFlow } = useStartFlowQueryOption()
 
-  const handleClickManange = async (id: number) => {
+  const handleClickManange = async (id: number, status: any) => {
     try {
-      const response = await callNextFlow({ form_data_id: id })
+      let response
+      if (status == 'draft') {
+        response = await callStartFlow({ id: id })
+      } else {
+        response = await callNextFlow({ form_data_id: id })
+      }
       if (response?.code == 'SUCCESS') {
         let updateForm = response?.result?.data?.form_detail?.detail?.data
         const resultFlow = {
@@ -96,6 +103,10 @@ const UserDashboardComponent = () => {
       console.log('error', error)
       toast.error('ไม่สามารถเรียก flow ได้', { autoClose: 3000 })
     }
+  }
+
+  const handleShowFlow = async (id: number) => {
+    window.open(`/${locale}/workflow/viewflow?form_data_id=${id}`, '_blank')
   }
 
   if (currentSection === 'nextFlow') return <UserStartTaskComponent data={dataNextFlow} />
@@ -163,6 +174,7 @@ const UserDashboardComponent = () => {
                     setPageSize={setPageSize}
                     count={workMyData?.result?.total}
                     onManage={handleClickManange}
+                    onViewFlow={handleShowFlow}
                   />
                 </Grid>
                 <Divider />

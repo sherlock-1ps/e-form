@@ -93,6 +93,10 @@ const UserFollowTaskComponent = () => {
     }
   }
 
+  const handleShowFlow = async (id: number) => {
+    window.open(`/${locale}/workflow/viewflow?form_data_id=${id}`, '_blank')
+  }
+
   if (currentSection === 'nextFlow') return <UserStartTaskComponent data={dataNextFlow} />
 
   return (
@@ -132,6 +136,7 @@ const UserFollowTaskComponent = () => {
                 setPageSize={setPageSize}
                 count={workInPregressData?.result?.total}
                 onManage={handleClickManange}
+                onViewFlow={handleShowFlow}
               />
             </Grid>
             <Divider />
