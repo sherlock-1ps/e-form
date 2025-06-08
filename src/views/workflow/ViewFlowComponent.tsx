@@ -39,7 +39,7 @@ const ViewFlowComponent = () => {
         // start
         window.myDiagram.model.setDataProperty(link.data, 'color', green)
       }
-      for (const element of response.result.data.form_data_detail) {
+      for (const element of response?.result?.data?.form_data_detail) {
         if (link.fromNode.data.key === element.link_from && link.toNode.data.key === element.link_to) {
           changeNodeColorByKey(link.fromNode.data.key, green)
           window.myDiagram.model.setDataProperty(link.data, 'color', green)
