@@ -159,17 +159,20 @@ const UserNextTaskComponent = ({ data }: any) => {
   const { mutateAsync: callSaveStartflow } = useSaveStartFlowQueryOption()
 
   useEffect(() => {
-    const completedFlow = data?.form_data_detail
-    const currentFlow = data?.flow_activity_link
-    const nodeData = data?.flow?.nodeDataArray
+    const completedFlow = data?.form_data_detail ?? []
+    const currentFlow = data?.flow_activity_link ?? []
+    const nodeData = data?.flow?.nodeDataArray ?? []
+
     const linkKeys = completedFlow.flatMap((item: any) => [item.link_from, item.link_to])
     const filteredNodes = nodeData.filter((node: any) => linkKeys.includes(node.key))
+
     const targetKeys = currentFlow.map((flow: any) => flow.link_to)
-    const targetNodes = nodeData.filter((node: any) => targetKeys.includes(node.key))
+    const currentNodes = nodeData.filter((node: any) => targetKeys.includes(node.key))
+
+    const targetNodes =
+      currentNodes.length > 1 ? [{ ...currentNodes[0], children: currentNodes.slice(1) }] : currentNodes
 
     const result = [...filteredNodes, ...targetNodes]
-
-    console.log('result', result)
 
     setStartStep(result)
   }, [])
@@ -285,6 +288,15 @@ const UserNextTaskComponent = ({ data }: any) => {
                         <div className='step-label'>
                           <Typography className='step-title'>{step?.text ?? ''}</Typography>
                         </div>
+                        {step?.children?.length > 0 &&
+                          step.children?.map((data: any, index: number) => {
+                            return (
+                              <div className='step-label flex flex-col items-start' key={index}>
+                                <Typography className='step-title self-center'>หรือ</Typography>
+                                <Typography className='step-title'>{data?.text ?? ''}</Typography>
+                              </div>
+                            )
+                          })}
                       </StepLabel>
                     </Step>
                   ))}
