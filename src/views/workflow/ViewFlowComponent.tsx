@@ -1,9 +1,11 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Grid, Typography, CardContent, Card } from '@mui/material'
+import { Grid, Typography, CardContent, Card, Button } from '@mui/material'
 import Script from 'next/script'
 import { useViewFlowOption } from '@/queryOptions/form/formQueryOptions'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { toast } from 'react-toastify'
 declare global {
   interface Window {
     go: any
@@ -11,7 +13,7 @@ declare global {
   }
 }
 
-const ViewFlowComponent = () => {
+const ViewFlowComponent = ({ formDataId, onBack }: any) => {
   const [goLoaded, setGoLoaded] = useState(false)
   const diagramRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
@@ -19,7 +21,9 @@ const ViewFlowComponent = () => {
   // const [formDataId, setFormDataId] = useState<string | null>(null)
   const { mutateAsync: callViewFlow } = useViewFlowOption()
   const fetchData = async () => {
-    const form_data_id = parseInt(searchParams.get('form_data_id') || '0')
+    // const form_data_id = parseInt(searchParams.get('form_data_id') || '0')
+    const form_data_id = parseInt(formDataId || '0')
+
     const response = await callViewFlow({ form_data_id })
     window.myDiagram.model = window.go.Model.fromJson(response.result.data.flow)
 
@@ -33,13 +37,17 @@ const ViewFlowComponent = () => {
     }
 
     const green = '#53D28C'
+    const formDataDetails = response?.result?.data?.form_data_detail ?? []
+
     window.myDiagram.links.each(function (link: any) {
       console.log('link', link.data)
+
       if (link.fromNode.data.key === -1) {
         // start
         window.myDiagram.model.setDataProperty(link.data, 'color', green)
       }
-      for (const element of response?.result?.data?.form_data_detail) {
+
+      for (const element of formDataDetails) {
         if (link.fromNode.data.key === element.link_from && link.toNode.data.key === element.link_to) {
           changeNodeColorByKey(link.fromNode.data.key, green)
           window.myDiagram.model.setDataProperty(link.data, 'color', green)
@@ -186,15 +194,51 @@ const ViewFlowComponent = () => {
       }).bindTwoWay('text')
     ).bindTwoWay('points')
     fetchData()
-  }, [goLoaded])
+  }, [goLoaded, formDataId])
+
+  const loadScript = (src: any) => {
+    return new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = src
+      script.async = true
+      script.onload = () => resolve()
+      script.onerror = () => reject()
+      document.body.appendChild(script)
+    })
+  }
+
+  useEffect(() => {
+    if (!window.go) {
+      loadScript('/lib/go.js')
+        .then(() => {
+          setGoLoaded(true)
+        })
+        .catch(() => {
+          console.error('❌ Failed to load go.js')
+          toast.error('ไม่สามารถโหลด script ได้', { autoClose: 3000 })
+        })
+    } else {
+      setGoLoaded(true)
+    }
+  }, [formDataId])
 
   return (
     <Grid container spacing={6}>
-      <Script src='/lib/go.js' strategy='afterInteractive' onLoad={() => setGoLoaded(true)} />
       <Grid item xs={12}>
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
-            <Typography variant='h5'>เวิร์กโฟลว์</Typography>
+            <div className='flex gap-2 items-center'>
+              <Button
+                variant='contained'
+                startIcon={<ArrowBackIcon />}
+                onClick={() => {
+                  onBack()
+                }}
+              >
+                ย้อนกลับ
+              </Button>
+              <Typography variant='h5'>เวิร์กโฟลว์ปัจจุบัน</Typography>
+            </div>
             <div ref={diagramRef} style={{ flexGrow: 1, border: '1px solid black' }} />
           </CardContent>
         </Card>

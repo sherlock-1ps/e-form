@@ -33,6 +33,7 @@ import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
 import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
 import UserDashboardTable from './UserDashboardTable'
 import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
+import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 
 const UserDashboardComponent = () => {
   const router = useRouter()
@@ -46,6 +47,7 @@ const UserDashboardComponent = () => {
   const [currentSection, setCurrentSection] = useState('dashboard')
   const [selectedWorkflow, setSelectedWorkflow] = useState<string>('')
   const [dataNextFlow, setDataNextFlow] = useState({})
+  const [viewFlowId, setViewFlowId] = useState<number | null>(null)
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)
@@ -111,7 +113,17 @@ const UserDashboardComponent = () => {
   }
 
   const handleShowFlow = async (id: number) => {
-    window.open(`/${locale}/workflow/viewflow?form_data_id=${id}`, '_blank')
+    // window.open(`/${locale}/workflow/viewflow?form_data_id=${id}`, '_blank')
+    setViewFlowId(id)
+    setCurrentSection('watchFlow')
+  }
+
+  const handleBackShowFlow = () => {
+    setCurrentSection('dashboard')
+  }
+
+  if (currentSection === 'watchFlow' && viewFlowId !== null) {
+    return <ViewFlowComponent formDataId={viewFlowId} onBack={handleBackShowFlow} />
   }
 
   if (currentSection === 'startFlow') return <UserStartTaskComponent data={dataNextFlow} />

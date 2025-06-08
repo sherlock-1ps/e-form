@@ -33,6 +33,7 @@ import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
 import { toast } from 'react-toastify'
 import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
 import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
+import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 
 const UserFollowTaskComponent = () => {
   const router = useRouter()
@@ -45,6 +46,7 @@ const UserFollowTaskComponent = () => {
   const [currentSection, setCurrentSection] = useState('dashboard')
   const [selectedWorkflow, setSelectedWorkflow] = useState<string>('')
   const [dataNextFlow, setDataNextFlow] = useState({})
+  const [viewFlowId, setViewFlowId] = useState<number | null>(null)
 
   const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
   const { data: workInPregressData } = useFetchWorkInProgressQueryOption(page, pageSize, Number(selectedWorkflow), {
@@ -95,10 +97,19 @@ const UserFollowTaskComponent = () => {
   }
 
   const handleShowFlow = async (id: number) => {
-    window.open(`/${locale}/workflow/viewflow?form_data_id=${id}`, '_blank')
+    setViewFlowId(id)
+    setCurrentSection('watchFlow')
+  }
+
+  const handleBackShowFlow = () => {
+    setCurrentSection('dashboard')
   }
 
   if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} />
+
+  if (currentSection === 'watchFlow' && viewFlowId !== null) {
+    return <ViewFlowComponent formDataId={viewFlowId} onBack={handleBackShowFlow} />
+  }
 
   return (
     <div className='flex flex-col gap-6'>
