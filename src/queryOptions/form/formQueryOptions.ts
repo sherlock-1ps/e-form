@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { changeRoleAccount, createOperator, fetchAccount, searchAccount, updateStatusAccount } from '@/app/sevices/account/account';
-import { changeNameFolder, changeNameImage, createApi, createFlow, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteAttachments, deleteFlow, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchAttachments, fetchFlow, fetchFlowName, fetchForm, fetchFormName, fetchListComment, fetchMedia, fetchVariable, fetchWorkAll, fetchWorkInProgress, getDepartmentList, getFlow, getForm, getNextFlow, getPersonList, getPositionList, getStartFlow, getUploadFile, saveStartFlow, updateApi, updateDateFlow, updateDateForm, updateFile, updateFlow, updateForm, updateVersion, uploadAttachments, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
+import { changeNameFolder, changeNameImage, createApi, createFlow, createFolder, createForm, createNewVersionForm, createVariable, deleteApi, deleteAttachments, deleteFlow, deleteFolder, deleteForm, deleteMedia, deleteUploadFile, deleteVariable, editVariable, fetchApi, fetchAttachments, fetchFlow, fetchFlowName, fetchForm, fetchFormName, fetchListComment, fetchMedia, fetchVariable, fetchWorkAll, fetchWorkInProgress, fetchWorkMy, getDepartmentList, getFlow, getForm, getNextFlow, getPersonList, getPositionList, getStartFlow, getUploadFile, saveStartFlow, updateApi, updateDateFlow, updateDateForm, updateFile, updateFlow, updateForm, updateVersion, uploadAttachments, uploadFile, uploadMedia } from '@/app/sevices/form/formServices';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 
@@ -589,8 +589,16 @@ export function useFetchWorkInProgressQueryOption(page: number, pageSize: number
 
 export function useFetchWorkAllQueryOption(page: number, pageSize: number, flow_id: number, options?: { enabled?: boolean }) {
   return useQuery({
-    queryKey: ["worlAll", page, pageSize, flow_id],
+    queryKey: ["workAll", page, pageSize, flow_id],
     queryFn: () => fetchWorkAll({ page, pageSize, flow_id }),
+    ...options
+  });
+}
+
+export function useFetchWorkMyQueryOption(page: number, pageSize: number, flow_id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ["workMy", page, pageSize, flow_id],
+    queryFn: () => fetchWorkMy({ page, pageSize, flow_id }),
     ...options
   });
 }
@@ -609,6 +617,7 @@ export const useNextFlowQueryOption = () => {
     // },
   });
 };
+
 
 
 

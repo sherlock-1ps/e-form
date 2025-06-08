@@ -20,22 +20,80 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import { DoneAll, PendingActions } from '@mui/icons-material'
 import EditorForm from '@/components/e-form/newDefault/EditorForm'
-import { useFetchFlowNnameQueryOption, useFetchWorkInProgressQueryOption } from '@/queryOptions/form/formQueryOptions'
+import {
+  useFetchFlowNnameQueryOption,
+  useFetchWorkAllQueryOption,
+  useFetchWorkInProgressQueryOption,
+  useNextFlowQueryOption
+} from '@/queryOptions/form/formQueryOptions'
 import UserDashboardTable from '../dashboard/UserDashboardTable'
+import { useFlowStore } from '@/store/useFlowStore'
+import { useFormStore } from '@/store/useFormStore'
+import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
+import { toast } from 'react-toastify'
+import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
 
 const UserFollowTaskComponent = () => {
   const router = useRouter()
   const params = useParams()
+  const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
+  const setFullForm = useFormStore(state => state.setFullForm)
   const { lang: locale } = params
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
-
+  const [currentSection, setCurrentSection] = useState('dashboard')
   const [selectedWorkflow, setSelectedWorkflow] = useState<string>('')
+  const [dataNextFlow, setDataNextFlow] = useState({})
 
   const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
-  const { data: workPregressData } = useFetchWorkInProgressQueryOption(page, pageSize, Number(selectedWorkflow), {
+  const { data: workInPregressData } = useFetchWorkInProgressQueryOption(page, pageSize, Number(selectedWorkflow), {
     enabled: selectedWorkflow !== ''
   })
+  const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
+
+  const handleClickManange = async (id: number) => {
+    try {
+      const response = await callNextFlow({ form_data_id: id })
+      if (response?.code == 'SUCCESS') {
+        let updateForm = response?.result?.data?.form_detail?.detail?.data
+        const resultFlow = {
+          flow: {
+            ...response?.result?.data?.flow
+          }
+        }
+
+        const detailMerge = response?.result?.data?.current_data_detail_merge
+        if (detailMerge?.data_detail) {
+          updateForm = updateFormValueByKey(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+        }
+
+        const layoutValue =
+          response?.result?.data?.form_detail?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
+
+        const formFromApi = {
+          isContinue: true,
+          name: response?.result?.data?.form_detail?.name ?? '-',
+          formId: response?.result?.data?.form_detail?.id,
+          versionId: response?.result?.data?.form_detail?.form_version_id,
+          layout: layoutValue as 'vertical' | 'horizontal',
+          form_details: updateForm
+        }
+
+        setFlowDiagramData(resultFlow)
+        setFullForm(formFromApi)
+        setDataNextFlow(response?.result?.data)
+
+        setTimeout(() => {
+          setCurrentSection('nextFlow')
+        }, 350)
+      }
+    } catch (error) {
+      console.log('error', error)
+      toast.error('ไม่สามารถเรียก flow ได้', { autoClose: 3000 })
+    }
+  }
+
+  if (currentSection === 'nextFlow') return <UserStartTaskComponent data={dataNextFlow} />
 
   return (
     <div className='flex flex-col gap-6'>
@@ -66,14 +124,15 @@ const UserFollowTaskComponent = () => {
               </CustomTextField>
             </Grid>
             <Grid item xs={12}>
-              {/* <UserDashboardTable
-                projectTable={workPregressData?.result?.data || []}
+              <UserDashboardTable
+                projectTable={workInPregressData?.result?.data || []}
                 page={page}
                 pageSize={pageSize}
                 setPage={setPage}
                 setPageSize={setPageSize}
-                count={workPregressData?.result?.total}
-              /> */}
+                count={workInPregressData?.result?.total}
+                onManage={handleClickManange}
+              />
             </Grid>
             <Divider />
           </Grid>

@@ -388,7 +388,7 @@ const UserDashboardTable = ({ projectTable, page, pageSize, setPage, setPageSize
       </div>
       <TablePaginationComponent
         table={table}
-        count={count}
+        count={Math.ceil(count / pageSize)}
         page={page}
         pageSize={pageSize}
         onPageChange={setPage}
