@@ -165,7 +165,7 @@ const WorkflowComponent = () => {
           versionId: data?.version[0]?.id,
           name: data?.name,
           flowId: data?.id,
-          version: response?.result?.data?.flow_version?.version,
+          version: data?.version[0]?.version,
           newVersion: '',
           publicDate: '',
           endDate: '',
