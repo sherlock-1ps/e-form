@@ -121,11 +121,11 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
         <SubMenu label={'จัดการงาน'} className='mt-4 p-4 rounded-lg bg-white shadow-lg'>
-          <MenuItem href={`/${locale}/user/dashboard`} icon={<Task style={{ width: '20px', height: '20px' }} />}>
-            งานของฉัน
-          </MenuItem>
           <MenuItem href={`/${locale}/user/createTask`} icon={<Add style={{ width: '20px', height: '20px' }} />}>
             สร้างงานใหม่
+          </MenuItem>
+          <MenuItem href={`/${locale}/user/dashboard`} icon={<Task style={{ width: '20px', height: '20px' }} />}>
+            งานของฉัน
           </MenuItem>
           <Divider className='my-2' />
           <MenuItem href={`/${locale}/user/followTask`} icon={<PushPin style={{ width: '20px', height: '20px' }} />}>
