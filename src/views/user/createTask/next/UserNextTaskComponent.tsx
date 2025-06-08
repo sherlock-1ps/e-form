@@ -55,54 +55,6 @@ import DraftFormComponent from '@/views/draftform/DraftFormComponent'
 import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
 import FlowDocFullTable from '../../followTask/FlowDocFullTable'
 
-const steps = {
-  currentFlow: 6,
-  list: [
-    {
-      title: 'ขออนุมัติเบิกค่าเช่าบ้าน (6005)',
-      subtitle: 'Username, 31 ม.ค. 2568 12:34',
-      status: 'completed'
-    },
-    {
-      title: 'กรอกแบบฟอร์มและบันทึกเข้าระบบ',
-      subtitle: 'กำลังดำเนินการ',
-      status: 'active'
-    },
-    {
-      title: 'ผอ. สำนักฯ พิจารณาอนุมัติ',
-      status: 'pending'
-    },
-    {
-      title: 'จนท. คลัง ตรวจสอบเอกสาร',
-      status: 'pending'
-    },
-    {
-      title: 'ผอ. คลัง พิจารณาอนุมัติ',
-      status: 'pending'
-    },
-    {
-      title: 'กรรมการที่ 1 ตรวจสอบอนุมัติ',
-      status: 'pending'
-    },
-    {
-      title: 'กรรมการที่ 2 ตรวจสอบอนุมัติ',
-      status: 'pending'
-    },
-    {
-      title: 'กรรมการที่ 3 ตรวจสอบอนุมัติ',
-      status: 'pending'
-    },
-    {
-      title: 'แจ้งผลการขออนุมัติ',
-      status: 'pending'
-    },
-    {
-      title: 'เสร็จสิ้น',
-      status: 'pending'
-    }
-  ]
-}
-
 const allowedExtensions = [
   '.jpg',
   '.jpeg',
@@ -122,16 +74,6 @@ const allowedExtensions = [
   '.csv'
 ]
 
-const CustomConnector = styled(StepConnector, {
-  shouldForwardProp: prop => prop !== 'hideLine'
-})<{ hideLine?: boolean }>(({ hideLine }) => ({
-  [`&.${stepConnectorClasses.vertical}`]: {
-    ...(hideLine && {
-      display: 'none'
-    })
-  }
-}))
-
 const UserNextTaskComponent = ({ data }: any) => {
   const form = useFormStore(state => state.form)
   const router = useRouter()
@@ -139,7 +81,6 @@ const UserNextTaskComponent = ({ data }: any) => {
   const params = useParams()
   const { lang: locale } = params
   const [collapsed, setCollapsed] = useState(false)
-  const [activeStep, setActiveStep] = useState(steps.currentFlow)
   const [isAttacth, setIsAttacth] = useState(false)
   const [isStartSign, setIsStartSign] = useState(false)
   const [linkIdButton, setLinkIdButton] = useState(null)
@@ -147,7 +88,6 @@ const UserNextTaskComponent = ({ data }: any) => {
   const [isAlreadySign, setIsAlreadySign] = useState(false)
   const [isExpanded, setIsExpanded] = useState(true)
   const [isShowWorkflow, setIsShowWorkFlow] = useState(false)
-  const [nameTask, setNameTask] = useState(form?.name)
   const [startStep, setStartStep] = useState<any[]>([])
   const formDataId = data?.form_data_id ?? data?.form_data_detail[0]?.form_data_id
   const { data: attactmentData } = useFetchAttachmentsQueryOption(formDataId)

@@ -59,6 +59,14 @@ type flowType = {
   create_by: string
   created_at: string
   comment: string
+  f_first_name: string
+  f_last_name: string
+  department_name: string
+  f_dept_id: string
+  f_position_id: string
+  f_position_name: string
+  form_data_id: number
+  id: number
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -90,20 +98,27 @@ const FlowDocFullTable = ({ data = [], page, pageSize, setPage, setPageSize }: a
 
   const columns = useMemo<ColumnDef<flowType, any>[]>(
     () => [
-      columnHelper.accessor('create_by', {
+      columnHelper.accessor('f_first_name', {
         header: 'ผู้ดำเนินการ',
-        cell: ({ row }) => <Typography variant='body1'>{row.original.create_by}</Typography>
+        cell: ({ row }) => (
+          <div className=' flex flex-col items-center'>
+            <Typography variant='body1'>
+              {row.original.f_first_name} {row.original.f_last_name}
+            </Typography>
+            <Typography variant='body1'>{row.original.f_position_name}</Typography>
+          </div>
+        )
       }),
-      // columnHelper.accessor('created_at', {
-      //   header: 'หน่วยงาน / สังกัด',
-      //   cell: ({ row }) => <Typography variant='body1'>{row.original.created_at}</Typography>
-      // }),
-      columnHelper.display({
-        id: 'department',
+      columnHelper.accessor('department_name', {
         header: 'หน่วยงาน / สังกัด',
-        cell: ({ row }) => <Typography variant='body1'>-</Typography>,
-        enableSorting: false
+        cell: ({ row }) => <Typography variant='body1'>{row.original.department_name}</Typography>
       }),
+      // columnHelper.display({
+      //   id: 'department',
+      //   header: 'หน่วยงาน / สังกัด',
+      //   cell: ({ row }) => <Typography variant='body1'>-</Typography>,
+      //   enableSorting: false
+      // }),
       columnHelper.accessor('created_at', {
         header: 'บันทึกเวลา',
         cell: ({ row }) => <Typography variant='body1'>{FormatShowDate(row.original.created_at)}</Typography>
@@ -111,17 +126,11 @@ const FlowDocFullTable = ({ data = [], page, pageSize, setPage, setPageSize }: a
       columnHelper.accessor('comment', {
         header: 'ความคิดเห็น',
         cell: ({ row }) => <Typography variant='body1'>{row.original.comment}</Typography>
-      }),
+      })
       // columnHelper.accessor('status', {
       //   header: 'สถานะ',
       //   cell: ({ row }) => <Typography variant='body1'>{row.original.status}</Typography>
       // })
-      columnHelper.display({
-        id: 'action',
-        header: 'สถานะ',
-        cell: ({ row }) => <Typography variant='body1'>-</Typography>,
-        enableSorting: false
-      })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data]
