@@ -3,21 +3,55 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Grid, Typography, CardContent, Card } from '@mui/material'
 import Script from 'next/script'
+import { useViewFlowOption } from '@/queryOptions/form/formQueryOptions'
 declare global {
   interface Window {
     go: any
+    myDiagram: any
   }
 }
+
 const ViewFlowComponent = () => {
   const [goLoaded, setGoLoaded] = useState(false)
   const diagramRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
 
   // const [formDataId, setFormDataId] = useState<string | null>(null)
+  const { mutateAsync: callViewFlow } = useViewFlowOption()
+  const fetchData = async () => {
+    const form_data_id = parseInt(searchParams.get('form_data_id') || '0')
+    const response = await callViewFlow({ form_data_id })
+    window.myDiagram.model = window.go.Model.fromJson(response.result.data.flow)
+
+    function changeNodeColorByKey(key: string, newColor: string) {
+      const node = window.myDiagram.findNodeForKey(key)
+      if (node) {
+        window.myDiagram.model.startTransaction('change node color')
+        window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
+        window.myDiagram.model.commitTransaction('change node color')
+      }
+    }
+
+    const green = '#53D28C'
+    window.myDiagram.links.each(function (link: any) {
+      console.log('link', link.data)
+      if (link.fromNode.data.key === -1) {
+        // start
+        window.myDiagram.model.setDataProperty(link.data, 'color', green)
+      }
+      for (const element of response.result.data.form_data_detail) {
+        if (link.fromNode.data.key === element.link_from && link.toNode.data.key === element.link_to) {
+          changeNodeColorByKey(link.fromNode.data.key, green)
+          window.myDiagram.model.setDataProperty(link.data, 'color', green)
+        }
+      }
+    })
+    console.log('flow', response.result)
+  }
 
   useEffect(() => {
-    console.log(searchParams.get('form_data_id'))
     if (!goLoaded || !window.go || !diagramRef.current) return
+    if (window.go.Diagram.fromDiv(diagramRef.current)) return
     const go = window.go
     const $ = go.GraphObject.make
     const myDiagram = $(go.Diagram, diagramRef.current, {
@@ -25,6 +59,7 @@ const ViewFlowComponent = () => {
       layout: $(go.TreeLayout),
       'undoManager.isEnabled': true
     })
+    window.myDiagram = myDiagram
 
     const findImgPath = (pic: string) => `./img/${pic}.svg`
     const jsonParse = (data: string) => JSON.parse(data)
@@ -143,151 +178,14 @@ const ViewFlowComponent = () => {
         curve: go.Curve.JumpOver,
         corner: 5
       },
-      $(go.Shape, { strokeWidth: 1.5 }),
-      $(go.Shape, { toArrow: 'OpenTriangle' }),
+      $(go.Shape, { strokeWidth: 1.5 }).bindTwoWay('stroke', 'color').bindTwoWay('fill', 'color'),
+      $(go.Shape, { toArrow: 'OpenTriangle' }).bindTwoWay('stroke', 'color').bindTwoWay('fill', 'color'),
       $(go.TextBlock, {
         font: '400 9pt Source Sans Pro, sans-serif',
         segmentOffset: new go.Point(NaN, 10)
       }).bindTwoWay('text')
     ).bindTwoWay('points')
-
-    // === Load JSON model ===
-    myDiagram.model = go.Model.fromJson({
-      class: 'GraphLinksModel',
-      pointsDigits: 1,
-      linkFromPortIdProperty: 'fromPort',
-      linkToPortIdProperty: 'toPort',
-      modelData: {
-        position: '-741.5 -310'
-      },
-      nodeDataArray: [
-        {
-          key: -1,
-          text: 'Start',
-          figure: 'Ellipse',
-          category: 'start',
-          components: '',
-          location: '-350 -250',
-          size: '75 75',
-          fill: '#53D28C'
-        },
-        {
-          key: -2,
-          text: 'กรอกรายละเอียดแบบฟอร์ม 6006',
-          figure: 'Rectangle',
-          category: 'activity',
-          components: '["1","2"]',
-          location: '-350 -150',
-          form: 48,
-          assignees_requestor: true
-        },
-        {
-          key: -3,
-          text: 'ผอ.สำนัก ตรวจสอบ และ ลงนาม',
-          figure: 'Rectangle',
-          category: 'activity',
-          components: '["1","2"]',
-          location: '-350 -30',
-          assignees_user: [2020]
-        },
-        {
-          key: -4,
-          text: 'ผส.คลังตรวจสอบ',
-          figure: 'Rectangle',
-          category: 'activity',
-          components: '["1","2"]',
-          location: '-350 100',
-          assignees_user: [2021]
-        },
-        {
-          key: -5,
-          text: 'จนท. ลงนามรับเงิน',
-          figure: 'Rectangle',
-          category: 'activity',
-          components: '["1","2"]',
-          location: '-350 220',
-          assignees_requestor: true
-        },
-        {
-          key: -6,
-          text: 'End',
-          figure: 'Ellipse',
-          category: 'end',
-          components: '',
-          location: '-350 330',
-          size: '75 75',
-          fill: '#CE0620'
-        }
-      ],
-      linkDataArray: [
-        {
-          key: 0,
-          toPort: 'T',
-          fromPort: 'B',
-          from: -1,
-          to: -2,
-          points: [-350, -212.5, -350, -202.5, -350, -198, -350, -198, -350, -193.5, -350, -183.5],
-          text: '',
-          signId: ''
-        },
-        {
-          key: 0,
-          toPort: 'T',
-          fromPort: 'B',
-          from: -2,
-          to: -3,
-          points: [-350, -116.5, -350, -106.5, -350, -90, -350, -90, -350, -73.5, -350, -63.5],
-          text: 'บันทึก',
-          signId: 'SignRequestorS1'
-        },
-        {
-          key: 0,
-          toPort: 'T',
-          fromPort: 'B',
-          from: -3,
-          to: -4,
-          points: [-350, 3.5, -350, 13.5, -350, 35, -350, 35, -350, 56.5, -350, 66.5],
-          text: 'ลงนาม',
-          signId: 'SignDirOfficeInspectS2'
-        },
-        {
-          key: 0,
-          toPort: 'T',
-          fromPort: 'B',
-          from: -4,
-          to: -5,
-          points: [
-            -350, 133.53891601562498, -350, 143.53891601562498, -350, 160, -350, 160, -350, 176.461083984375, -350,
-            186.461083984375
-          ],
-          text: 'จ่ายเงิน',
-          signId: 'SignDirTreasuryAuditS3'
-        },
-        {
-          key: 0,
-          toPort: 'T',
-          fromPort: 'B',
-          from: -5,
-          to: -6,
-          points: [
-            -350, 253.53891601562498, -350, 263.538916015625, -350, 273.0194580078125, -350, 273.0194580078125, -350,
-            282.5, -350, 292.5
-          ],
-          text: 'ยืนยันการรับเงิน',
-          signId: 'SignRequestorS4'
-        },
-        {
-          key: 0,
-          toPort: 'R',
-          fromPort: 'R',
-          from: -4,
-          to: -2,
-          points: [-280.5, 100, -270.5, 100, -232.3, 100, -232.3, -25, -232.3, -150, -242.3, -150],
-          text: 'ส่งกลับเจ้าของเรื่อง',
-          signId: ''
-        }
-      ]
-    })
+    fetchData()
   }, [goLoaded])
 
   return (

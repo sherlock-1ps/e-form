@@ -1,6 +1,6 @@
-import Axios from "@/libs/axios/axios";
-import AxiosExternal from "@/libs/axios/axiosExternal";
-import { axiosErrorHandler } from "@/utils/axiosErrorHandler";
+import Axios from '@/libs/axios/axios'
+import AxiosExternal from '@/libs/axios/axiosExternal'
+import { axiosErrorHandler } from '@/utils/axiosErrorHandler'
 
 type VariableValue = {
   value: any
@@ -21,156 +21,126 @@ type CreateVariablePayload = {
 
 export const fetchForm = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
-    const response = await Axios.post("/forms/list", {
+    const response = await Axios.post('/forms/list', {
       page,
-      limit: pageSize,
-    });
+      limit: pageSize
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch form:", error);
+    console.error('Error fetch form:', error)
 
     axiosErrorHandler(error, '/forms/list')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const getForm = async ({ id }: { id: any }) => {
   try {
-    const response = await Axios.post("/forms/get", { id });
+    const response = await Axios.post('/forms/get', { id })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error get form:", error);
+    console.error('Error get form:', error)
 
     const e = axiosErrorHandler(error, '/forms/get')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const updateDateForm = async ({ request }: { request: any }) => {
   try {
-    const response = await Axios.post("/forms/public/update", request);
+    const response = await Axios.post('/forms/public/update', request)
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error update date form:", error);
+    console.error('Error update date form:', error)
 
     const e = axiosErrorHandler(error, '/forms/public/update')
-    throw e;
-
+    throw e
   }
-
-};
-
+}
 
 export const createForm = async ({ request }: { request: any }) => {
   try {
-    const response = await Axios.post("/forms/create", request);
+    const response = await Axios.post('/forms/create', request)
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error create form:", error);
+    console.error('Error create form:', error)
 
     const e = axiosErrorHandler(error, '/forms/create')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const updateForm = async ({ request }: { request: any }) => {
   try {
-    const response = await Axios.post("/forms/update", request);
+    const response = await Axios.post('/forms/update', request)
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error update form:", error);
+    console.error('Error update form:', error)
 
     const e = axiosErrorHandler(error, '/forms/update')
-    throw e;
-
+    throw e
   }
-
-};
-
+}
 
 export const createNewVersionForm = async ({ request }: { request: any }) => {
   try {
-    const response = await Axios.post("/forms/versions/create", request);
+    const response = await Axios.post('/forms/versions/create', request)
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error create new version form:", error);
+    console.error('Error create new version form:', error)
 
     const e = axiosErrorHandler(error, '/forms/versions/create')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const deleteForm = async ({ id }: { id: number }) => {
   try {
+    const response = await Axios.post('/forms/delete', { id })
 
-    const response = await Axios.post("/forms/delete", { id });
-
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error delete form:", error);
+    console.error('Error delete form:', error)
 
     const e = axiosErrorHandler(error, '/forms/delete')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const fetchVariable = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
-    const response = await Axios.post("/variable/list", {
+    const response = await Axios.post('/variable/list', {
       page,
-      limit: pageSize,
-    });
+      limit: pageSize
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch variable:", error);
+    console.error('Error fetch variable:', error)
 
     axiosErrorHandler(error, '/variable/list')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const createVariable = async (payload: CreateVariablePayload) => {
   try {
-    const response = await Axios.post("/variable/create", payload);
+    const response = await Axios.post('/variable/create', payload)
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error create variable:", error);
+    console.error('Error create variable:', error)
 
     axiosErrorHandler(error, '/variable/create')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const editVariable = async (payload: EditVariablePayload) => {
   try {
@@ -186,39 +156,33 @@ export const editVariable = async (payload: EditVariablePayload) => {
 
 export const deleteVariable = async ({ id }: { id: number }) => {
   try {
-    const response = await Axios.post("/variable/delete", {
-      id,
-    });
+    const response = await Axios.post('/variable/delete', {
+      id
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error delete variable:", error);
+    console.error('Error delete variable:', error)
 
     axiosErrorHandler(error, '/variable/delete')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const fetchMedia = async ({ id }: { id: number | null }) => {
   try {
-    const response = await Axios.post("/media/folders/list", {
+    const response = await Axios.post('/media/folders/list', {
       id: id
-    });
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch media:", error);
+    console.error('Error fetch media:', error)
 
     axiosErrorHandler(error, '/media/folders/list')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const createFolder = async ({ name, parent_id }: { name: string; parent_id?: number | null }) => {
   try {
@@ -241,8 +205,6 @@ export const createFolder = async ({ name, parent_id }: { name: string; parent_i
 export const changeNameFolder = async ({ name, id }: { name: string; id: number }) => {
   try {
     const payload: any = { name, id }
-
-
 
     const response = await Axios.post('/media/folders/update', payload)
 
@@ -267,13 +229,7 @@ export const deleteFolder = async ({ id }: { id: number }) => {
   }
 }
 
-export const uploadMedia = async ({
-  file,
-  folderId
-}: {
-  file: File
-  folderId: number
-}) => {
+export const uploadMedia = async ({ file, folderId }: { file: File; folderId: number }) => {
   try {
     const formData = new FormData()
     formData.append('folder_id', String(folderId))
@@ -293,7 +249,6 @@ export const uploadMedia = async ({
   }
 }
 
-
 export const changeNameImage = async ({ name, id }: { name: string; id: number }) => {
   try {
     const payload: any = { name, id }
@@ -307,7 +262,6 @@ export const changeNameImage = async ({ name, id }: { name: string; id: number }
     throw e
   }
 }
-
 
 export const deleteMedia = async ({ id }: { id: number }) => {
   try {
@@ -324,25 +278,34 @@ export const deleteMedia = async ({ id }: { id: number }) => {
 
 export const fetchApi = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
-    const response = await Axios.post("/apis/list", {
+    const response = await Axios.post('/apis/list', {
       page,
       limit: pageSize,
-      order_by: "id DESC"
-    });
+      order_by: 'id DESC'
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch api:", error);
+    console.error('Error fetch api:', error)
 
     const e = axiosErrorHandler(error, '/apis/list')
-    throw e;
-
+    throw e
   }
+}
 
-};
-
-export const createApi = async ({ name, method, url, body, headers }: { name: string; method: string, url: string, body: any, headers: any }) => {
+export const createApi = async ({
+  name,
+  method,
+  url,
+  body,
+  headers
+}: {
+  name: string
+  method: string
+  url: string
+  body: any
+  headers: any
+}) => {
   try {
     const payload: any = { name, method, url }
 
@@ -364,7 +327,21 @@ export const createApi = async ({ name, method, url, body, headers }: { name: st
   }
 }
 
-export const updateApi = async ({ id, name, method, url, body, headers }: { id: number, name: string; method: string, url: string, body: any, headers: any }) => {
+export const updateApi = async ({
+  id,
+  name,
+  method,
+  url,
+  body,
+  headers
+}: {
+  id: number
+  name: string
+  method: string
+  url: string
+  body: any
+  headers: any
+}) => {
   try {
     const payload: any = { id, name, method, url }
 
@@ -401,30 +378,20 @@ export const deleteApi = async ({ id }: { id: number }) => {
 
 export const getUploadFile = async ({ form_data_id }: { form_data_id: number }) => {
   try {
-    const response = await Axios.post("/uploads/list", {
-      form_data_id,
-    });
+    const response = await Axios.post('/uploads/list', {
+      form_data_id
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch upload file:", error);
+    console.error('Error fetch upload file:', error)
 
     const e = axiosErrorHandler(error, '/uploads/list')
-    throw e;
-
+    throw e
   }
+}
 
-};
-
-
-export const uploadFile = async ({
-  file,
-  form_data_id
-}: {
-  file: File
-  form_data_id: number
-}) => {
+export const uploadFile = async ({ file, form_data_id }: { file: File; form_data_id: number }) => {
   try {
     const formData = new FormData()
     formData.append('form_data_id', String(form_data_id))
@@ -444,7 +411,7 @@ export const uploadFile = async ({
   }
 }
 
-export const updateFile = async ({ id, comment }: { id: number, comment: string }) => {
+export const updateFile = async ({ id, comment }: { id: number; comment: string }) => {
   try {
     const payload: any = { id, comment }
     const response = await Axios.post('/uploads/update', payload)
@@ -472,152 +439,132 @@ export const deleteUploadFile = async ({ id }: { id: number }) => {
 
 export const fetchFlowName = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
-    const response = await Axios.post("/flows/get-name", {
+    const response = await Axios.post('/flows/get-name', {
       page,
-      limit: pageSize,
-    });
+      limit: pageSize
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch flow name:", error);
+    console.error('Error fetch flow name:', error)
 
     axiosErrorHandler(error, '/flows/get-name')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const getStartFlow = async ({ id }: { id: number }) => {
   try {
-    const response = await Axios.post("/flows/get-start-flow", {
-      id: id,
-    });
+    const response = await Axios.post('/flows/get-start-flow', {
+      id: id
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error get start flow:", error);
+    console.error('Error get start flow:', error)
 
     const e = axiosErrorHandler(error, '/flows/get-start-flow')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const getNextFlow = async ({ form_data_id }: { form_data_id: number }) => {
   try {
-    const response = await Axios.post("/flows/get-next-flow", {
-      form_data_id: form_data_id,
-    });
+    const response = await Axios.post('/flows/get-next-flow', {
+      form_data_id: form_data_id
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error get next flow:", error);
+    console.error('Error get next flow:', error)
 
     const e = axiosErrorHandler(error, '/flows/get-next-flow')
-    throw e;
-
+    throw e
   }
-
-};
-
+}
 
 export const fetchFlow = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
-    const response = await Axios.post("/flows/list", {
+    const response = await Axios.post('/flows/list', {
       page,
-      limit: pageSize,
-    });
+      limit: pageSize
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch flow:", error);
+    console.error('Error fetch flow:', error)
 
     axiosErrorHandler(error, '/flows/list')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const deleteFlow = async ({ id }: { id: number }) => {
   try {
+    const response = await Axios.post('/flows/delete', { id })
 
-    const response = await Axios.post("/flows/delete", { id });
-
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error delete flow:", error);
+    console.error('Error delete flow:', error)
 
     const e = axiosErrorHandler(error, '/flows/delete')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const updateDateFlow = async ({ request }: { request: any }) => {
   try {
-    const response = await Axios.post("/flows/public/update", request);
+    const response = await Axios.post('/flows/public/update', request)
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error update date flow:", error);
+    console.error('Error update date flow:', error)
 
     const e = axiosErrorHandler(error, '/flows/public/update')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const createFlow = async (request: any) => {
   try {
-    const response = await Axios.post("/flows/create", request)
+    const response = await Axios.post('/flows/create', request)
     return response.data
   } catch (error) {
-    console.error("Error create flow:", error)
-    const e = axiosErrorHandler(error, "/flows/create")
+    console.error('Error create flow:', error)
+    const e = axiosErrorHandler(error, '/flows/create')
     throw e
   }
 }
 
 export const updateFlow = async (request: any) => {
   try {
-    const response = await Axios.post("/flows/update", request)
+    const response = await Axios.post('/flows/update', request)
     return response.data
   } catch (error) {
-    console.error("Error update flow:", error)
-    const e = axiosErrorHandler(error, "/flows/update")
+    console.error('Error update flow:', error)
+    const e = axiosErrorHandler(error, '/flows/update')
     throw e
   }
 }
 
 export const updateVersion = async (request: any) => {
   try {
-    const response = await Axios.post("/flows/versions/create", request)
+    const response = await Axios.post('/flows/versions/create', request)
     return response.data
   } catch (error) {
-    console.error("Error update version:", error)
-    const e = axiosErrorHandler(error, "/flows/versions/create")
+    console.error('Error update version:', error)
+    const e = axiosErrorHandler(error, '/flows/versions/create')
     throw e
   }
 }
 
 export const getFlow = async (id: number) => {
   try {
-    const response = await Axios.post("/flows/get", { id })
+    const response = await Axios.post('/flows/get', { id })
     return response.data
   } catch (error) {
-    console.error("Error get flow:", error)
-    const e = axiosErrorHandler(error, "/flows/get")
+    console.error('Error get flow:', error)
+    const e = axiosErrorHandler(error, '/flows/get')
     throw e
   }
 }
@@ -635,11 +582,11 @@ export const getPersonList = async ({
 }) => {
   try {
     const payload = { page, limit: pageSize, f_person_id, f_name }
-    const response = await AxiosExternal.post("/api/service/core/get-person-lists", payload)
+    const response = await AxiosExternal.post('/api/service/core/get-person-lists', payload)
     return response.data
   } catch (error) {
-    console.error("Error get person list:", error)
-    const e = axiosErrorHandler(error, "/api/service/core/get-person-lists")
+    console.error('Error get person list:', error)
+    const e = axiosErrorHandler(error, '/api/service/core/get-person-lists')
     throw e
   }
 }
@@ -657,11 +604,11 @@ export const getPositionList = async ({
 }) => {
   try {
     const payload = { page, limit: pageSize, f_position_id, f_position_name }
-    const response = await AxiosExternal.post("/api/service/core/get-position-lists", payload)
+    const response = await AxiosExternal.post('/api/service/core/get-position-lists', payload)
     return response.data
   } catch (error) {
-    console.error("Error get position list:", error)
-    const e = axiosErrorHandler(error, "/api/service/core/get-position-lists")
+    console.error('Error get position list:', error)
+    const e = axiosErrorHandler(error, '/api/service/core/get-position-lists')
     throw e
   }
 }
@@ -679,62 +626,47 @@ export const getDepartmentList = async ({
 }) => {
   try {
     const payload = { page, limit: pageSize, f_dept_id, department_name }
-    const response = await AxiosExternal.post("/api/service/core/get-department-lists", payload)
+    const response = await AxiosExternal.post('/api/service/core/get-department-lists', payload)
     return response.data
   } catch (error) {
-    console.error("Error get department list:", error)
-    const e = axiosErrorHandler(error, "/api/service/core/get-department-lists")
+    console.error('Error get department list:', error)
+    const e = axiosErrorHandler(error, '/api/service/core/get-department-lists')
     throw e
   }
 }
 
-
 export const fetchFormName = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
-    const response = await Axios.post("/forms/get-name", {
+    const response = await Axios.post('/forms/get-name', {
       page,
-      limit: pageSize,
-    });
+      limit: pageSize
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch form:", error);
+    console.error('Error fetch form:', error)
 
     axiosErrorHandler(error, '/forms/get-name')
-    throw error;
-
+    throw error
   }
-
-};
+}
 
 export const fetchAttachments = async ({ id }: { id: number }) => {
   try {
-    const response = await Axios.post("/attachments/list", {
-      form_data_id: id,
-    });
+    const response = await Axios.post('/attachments/list', {
+      form_data_id: id
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch attachments:", error);
+    console.error('Error fetch attachments:', error)
 
     const e = axiosErrorHandler(error, '/attachments/list')
-    throw e;
-
+    throw e
   }
+}
 
-};
-
-
-
-export const uploadAttachments = async ({
-  file,
-  form_data_id
-}: {
-  file: File
-  form_data_id: number
-}) => {
+export const uploadAttachments = async ({ file, form_data_id }: { file: File; form_data_id: number }) => {
   try {
     const formData = new FormData()
     formData.append('form_data_id', String(form_data_id))
@@ -756,121 +688,129 @@ export const uploadAttachments = async ({
 
 export const deleteAttachments = async ({ id }: { id: number }) => {
   try {
-    const response = await Axios.post("/attachments/delete", {
-      id: id,
-    });
+    const response = await Axios.post('/attachments/delete', {
+      id: id
+    })
 
-    return response.data;
-
-  } catch (error) {
-    console.error("Error delete attachments:", error);
-
-    const e = axiosErrorHandler(error, '/attachments/delete')
-    throw e;
-
-  }
-
-};
-
-
-
-export const fetchListComment = async ({ page, pageSize, form_data_id }: { page: number; pageSize: number; form_data_id: number }) => {
-  try {
-    const response = await Axios.post("/form-datas/list/comment", {
-      page,
-      limit: pageSize,
-      form_data_id
-    });
-
-    return response.data;
-
-  } catch (error) {
-    console.error("Error fetch list comment:", error);
-
-    axiosErrorHandler(error, '/form-datas/list/comment')
-    throw error;
-
-  }
-
-};
-
-export const saveStartFlow = async (request: any) => {
-  try {
-    const response = await Axios.post("/form-datas/save", request)
     return response.data
   } catch (error) {
-    console.error("Error save start flow:", error)
-    const e = axiosErrorHandler(error, "/form-datas/save")
+    console.error('Error delete attachments:', error)
+
+    const e = axiosErrorHandler(error, '/attachments/delete')
     throw e
   }
 }
 
-
-export const fetchWorkInProgress = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
+export const fetchListComment = async ({
+  page,
+  pageSize,
+  form_data_id
+}: {
+  page: number
+  pageSize: number
+  form_data_id: number
+}) => {
   try {
-    const response = await Axios.post("/form-datas/work/in-progress", {
+    const response = await Axios.post('/form-datas/list/comment', {
+      page,
+      limit: pageSize,
+      form_data_id
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetch list comment:', error)
+
+    axiosErrorHandler(error, '/form-datas/list/comment')
+    throw error
+  }
+}
+
+export const saveStartFlow = async (request: any) => {
+  try {
+    const response = await Axios.post('/form-datas/save', request)
+    return response.data
+  } catch (error) {
+    console.error('Error save start flow:', error)
+    const e = axiosErrorHandler(error, '/form-datas/save')
+    throw e
+  }
+}
+
+export const fetchWorkInProgress = async ({
+  page,
+  pageSize,
+  flow_id
+}: {
+  page: number
+  pageSize: number
+  flow_id: number
+}) => {
+  try {
+    const response = await Axios.post('/form-datas/work/in-progress', {
       page,
       limit: pageSize,
       flow_id
-    });
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch work in progress:", error);
+    console.error('Error fetch work in progress:', error)
 
     const e = axiosErrorHandler(error, '/form-datas/work/in-progress')
-    throw e;
-
+    throw e
   }
+}
 
-};
-
-export const fetchWorkAll = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
+export const fetchWorkAll = async ({
+  page,
+  pageSize,
+  flow_id
+}: {
+  page: number
+  pageSize: number
+  flow_id: number
+}) => {
   try {
-    const response = await Axios.post("/form-datas/work/all", {
+    const response = await Axios.post('/form-datas/work/all', {
       page,
       limit: pageSize,
       flow_id
-    });
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch work all:", error);
+    console.error('Error fetch work all:', error)
 
     const e = axiosErrorHandler(error, '/form-datas/work/all')
-    throw e;
-
+    throw e
   }
-
-};
+}
 
 export const fetchWorkMy = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
   try {
-    const response = await Axios.post("/form-datas/work/my", {
+    const response = await Axios.post('/form-datas/work/my', {
       page,
       limit: pageSize,
       flow_id
-    });
+    })
 
-    return response.data;
-
+    return response.data
   } catch (error) {
-    console.error("Error fetch work my:", error);
+    console.error('Error fetch work my:', error)
 
     const e = axiosErrorHandler(error, '/form-datas/work/my')
-    throw e;
-
+    throw e
   }
+}
 
-};
-
-
-
-
-
-
-
-
-
+export const viewFlow = async (request: any) => {
+  try {
+    const response = await Axios.post('/form-datas/view-flow', request)
+    return response.data
+  } catch (error) {
+    console.error('Error create flow:', error)
+    const e = axiosErrorHandler(error, '/form-datas/view-flow')
+    throw e
+  }
+}
