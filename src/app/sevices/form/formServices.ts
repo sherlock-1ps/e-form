@@ -846,6 +846,26 @@ export const fetchWorkAll = async ({ page, pageSize, flow_id }: { page: number; 
 
 };
 
+export const fetchWorkMy = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
+  try {
+    const response = await Axios.post("/form-datas/work/my", {
+      page,
+      limit: pageSize,
+      flow_id
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error fetch work my:", error);
+
+    const e = axiosErrorHandler(error, '/form-datas/work/my')
+    throw e;
+
+  }
+
+};
+
 
 
 

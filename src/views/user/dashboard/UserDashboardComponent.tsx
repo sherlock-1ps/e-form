@@ -22,8 +22,7 @@ import { DoneAll, PendingActions } from '@mui/icons-material'
 import EditorForm from '@/components/e-form/newDefault/EditorForm'
 import {
   useFetchFlowNnameQueryOption,
-  useFetchFormFlowQueryOption,
-  useFetchWorkInProgressQueryOption,
+  useFetchWorkMyQueryOption,
   useNextFlowQueryOption
 } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
@@ -51,7 +50,7 @@ const UserDashboardComponent = () => {
   }
 
   const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
-  const { data: workPregressData } = useFetchWorkInProgressQueryOption(page, pageSize, Number(selectedWorkflow), {
+  const { data: workMyData } = useFetchWorkMyQueryOption(page, pageSize, Number(selectedWorkflow), {
     enabled: selectedWorkflow !== ''
   })
 
@@ -132,6 +131,9 @@ const UserDashboardComponent = () => {
           <CardContent>
             <TabPanel value='1'>
               <Grid container spacing={4}>
+                <Grid item xs={12}>
+                  <Typography variant='h5'>งานของฉัน</Typography>
+                </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomTextField
                     select
@@ -154,12 +156,12 @@ const UserDashboardComponent = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <UserDashboardTable
-                    projectTable={workPregressData?.result?.data || []}
+                    projectTable={workMyData?.result?.data || []}
                     page={page}
                     pageSize={pageSize}
                     setPage={setPage}
                     setPageSize={setPageSize}
-                    count={workPregressData?.result?.total}
+                    count={workMyData?.result?.total}
                     onManage={handleClickManange}
                   />
                 </Grid>
