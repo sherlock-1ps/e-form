@@ -500,7 +500,7 @@ const UserNextTaskComponent = ({ data }: any) => {
                         </div>
                         <Divider className='my-2' />
                         <Grid container>
-                          <Grid item xs={6} spacing={4}>
+                          {/* <Grid item xs={6} spacing={4}>
                             <CustomTextField
                               fullWidth
                               label='กำหนดชื่องาน'
@@ -511,9 +511,9 @@ const UserNextTaskComponent = ({ data }: any) => {
                                 setNameTask(e.target.value)
                               }}
                             />
-                          </Grid>
+                          </Grid> */}
 
-                          <Grid item xs={6} className='flex items-end justify-end'>
+                          <Grid item xs={12} className='flex items-end justify-end'>
                             <Button
                               variant='outlined'
                               startIcon={<AttachFile />}
