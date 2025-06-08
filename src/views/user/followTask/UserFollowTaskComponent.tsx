@@ -32,6 +32,7 @@ import { useFormStore } from '@/store/useFormStore'
 import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
 import { toast } from 'react-toastify'
 import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
+import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 
 const UserFollowTaskComponent = () => {
   const router = useRouter()
@@ -97,7 +98,7 @@ const UserFollowTaskComponent = () => {
     window.open(`/${locale}/workflow/viewflow?form_data_id=${id}`, '_blank')
   }
 
-  if (currentSection === 'nextFlow') return <UserStartTaskComponent data={dataNextFlow} />
+  if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} />
 
   return (
     <div className='flex flex-col gap-6'>

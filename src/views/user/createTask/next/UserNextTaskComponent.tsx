@@ -103,30 +103,6 @@ const steps = {
   ]
 }
 
-const mockupData = [
-  {
-    operator: 'สมชาย ใจดี',
-    department: 'ฝ่ายบุคคล',
-    timestamp: '30 เม.ย. 2568 10:15',
-    comment: 'เห็นควรอนุมัติ',
-    status: 'ร่างและเสนอ'
-  },
-  {
-    operator: 'วิภา พิพัฒน์',
-    department: 'การเงิน',
-    timestamp: '30 เม.ย. 2568 11:00',
-    comment: 'รอเอกสารเพิ่มเติม',
-    status: 'รอลงนาม'
-  },
-  {
-    operator: 'มนตรี ขยันดี',
-    department: 'ตรวจสอบภายใน',
-    timestamp: '29 เม.ย. 2568 16:45',
-    comment: 'เอกสารถูกต้อง',
-    status: 'รอลงนาม'
-  }
-]
-
 const allowedExtensions = [
   '.jpg',
   '.jpeg',
@@ -156,7 +132,7 @@ const CustomConnector = styled(StepConnector, {
   }
 }))
 
-const UserStartTaskComponent = ({ data }: any) => {
+const UserNextTaskComponent = ({ data }: any) => {
   const form = useFormStore(state => state.form)
   const router = useRouter()
   const { showDialog } = useDialog()
@@ -183,49 +159,20 @@ const UserStartTaskComponent = ({ data }: any) => {
   const { mutateAsync: callSaveStartflow } = useSaveStartFlowQueryOption()
 
   useEffect(() => {
-    const findStart = data?.flow?.nodeDataArray?.find((item: any) => item.category == 'start')
-    if (findStart) {
-      const nextNodeStart = traverseNextNodesFromCurrentStepSkipCondition(
-        data?.flow?.nodeDataArray,
-        data?.flow?.linkDataArray,
-        findStart?.key
-      )
+    const completedFlow = data?.form_data_detail
+    const currentFlow = data?.flow_activity_link
+    const nodeData = data?.flow?.nodeDataArray
+    const linkKeys = completedFlow.flatMap((item: any) => [item.link_from, item.link_to])
+    const filteredNodes = nodeData.filter((node: any) => linkKeys.includes(node.key))
+    const targetKeys = currentFlow.map((flow: any) => flow.link_to)
+    const targetNodes = nodeData.filter((node: any) => targetKeys.includes(node.key))
 
-      if (findStart && Array.isArray(nextNodeStart)) {
-        const withStart = [findStart, ...nextNodeStart]
-        setStartStep(withStart)
-      }
-    }
+    const result = [...filteredNodes, ...targetNodes]
+
+    console.log('result', result)
+
+    setStartStep(result)
   }, [])
-
-  function traverseNextNodesFromCurrentStepSkipCondition(nodes: any[], links: any[], currentStep: any): any[] {
-    const result: any[] = []
-
-    const nodeMap: Map<any, any> = new Map(nodes.map((node: any) => [node.key, node]))
-    const linkMap: Map<any, any[]> = new Map()
-
-    links.forEach((link: any) => {
-      if (!linkMap.has(link.from)) linkMap.set(link.from, [])
-      linkMap.get(link.from)?.push(link)
-    })
-
-    function dfs(currentKey: any): void {
-      const nextLinks: any[] = linkMap.get(currentKey) || []
-      for (const link of nextLinks) {
-        const nextNode: any = nodeMap.get(link.to)
-        if (!nextNode) continue
-
-        if (nextNode.category === 'condition') {
-          dfs(nextNode.key)
-        } else {
-          result.push(nextNode)
-        }
-      }
-    }
-
-    dfs(currentStep)
-    return result
-  }
 
   const handleAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -331,41 +278,16 @@ const UserStartTaskComponent = ({ data }: any) => {
                 </IconButton>
               </div>
               <StepperWrapper>
-                <Stepper activeStep={1} orientation='vertical'>
+                <Stepper activeStep={startStep.length - 1} orientation='vertical'>
                   {startStep.map((step, index) => (
-                    <Step
-                      key={index}
-                      className={classNames({ active: 1 === index })}
-                      sx={{ display: index === 0 ? 'block' : 'none' }} // 👈 ซ่อนด้วย style
-                    >
-                      <StepLabel StepIconComponent={iconProps => <StepperCustomDot {...iconProps} index={index} />}>
+                    <Step key={index} className={classNames({})}>
+                      <StepLabel StepIconComponent={iconProps => <StepperCustomDot {...iconProps} />}>
                         <div className='step-label'>
                           <Typography className='step-title'>{step?.text ?? ''}</Typography>
                         </div>
                       </StepLabel>
                     </Step>
                   ))}
-                </Stepper>
-
-                <Stepper activeStep={0} orientation='vertical' connector={null}>
-                  {startStep
-                    .filter(item => item.category != 'start')
-                    .map((step, index) => (
-                      <Step key={index} className={classNames({ active: 1 === index })}>
-                        <StepLabel StepIconComponent={iconProps => <StepperCustomDot {...iconProps} index={index} />}>
-                          <div className='step-label'>
-                            <div>
-                              <Typography className='step-title'>{step?.text ?? ''}</Typography>
-                              {/* <Typography className='step-subtitle'>{step.subtitle}</Typography> */}
-                            </div>
-                          </div>
-                        </StepLabel>
-                      </Step>
-                    ))}
-
-                  {!startStep.find(item => item.category == 'end') && (
-                    <Typography variant='body2'>ยังมี Flow ต่อ.......</Typography>
-                  )}
                 </Stepper>
               </StepperWrapper>
               {isShowWorkflow ? (
@@ -794,4 +716,4 @@ const UserStartTaskComponent = ({ data }: any) => {
   )
 }
 
-export default UserStartTaskComponent
+export default UserNextTaskComponent

@@ -6,18 +6,37 @@ import { Divider, Grid, IconButton, InputAdornment, MenuItem, Typography } from 
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 interface signProps {
   id: string
-  onClick: () => void
+  onSave: (comment: string) => Promise<any>
 }
 
-const CertifySignDialog = ({ id, onClick }: signProps) => {
+const CertifySignDialog = ({ id, onSave }: signProps) => {
+  const router = useRouter()
+  const params = useParams()
+  const { lang: locale } = params
   const { closeDialog } = useDialog()
-  const [formData, setFormData] = useState('')
+  const [comment, setComment] = useState('')
   const [isPasswordShown, setIsPasswordShown] = useState(false)
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
+
+  const handleConfirm = async () => {
+    try {
+      const response = await onSave(comment)
+      if (response?.code == 'SUCCESS') {
+        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
+        closeDialog(id)
+        router.push(`/${locale}/user/allTask`)
+      }
+    } catch (err) {
+      console.error('save failed', err)
+      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+    }
+  }
 
   return (
     <Grid container spacing={4}>
@@ -33,8 +52,8 @@ const CertifySignDialog = ({ id, onClick }: signProps) => {
           fullWidth
           label='ความคิดเห็น'
           placeholder='ระบุความคิดเห็น...'
-          value={formData}
-          onChange={e => setFormData(e.target.value)}
+          value={comment}
+          onChange={e => setComment(e.target.value)}
         />
       </Grid>
       <Grid item xs={12}>
@@ -82,7 +101,7 @@ const CertifySignDialog = ({ id, onClick }: signProps) => {
         <Button
           variant='contained'
           onClick={() => {
-            closeDialog(id), onClick()
+            handleConfirm()
           }}
         >
           ยืนยัน

@@ -32,6 +32,7 @@ import { useFormStore } from '@/store/useFormStore'
 import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
 import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
 import UserDashboardTable from './UserDashboardTable'
+import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 
 const UserDashboardComponent = () => {
   const router = useRouter()
@@ -96,7 +97,11 @@ const UserDashboardComponent = () => {
         setDataNextFlow(response?.result?.data)
 
         setTimeout(() => {
-          setCurrentSection('nextFlow')
+          if (status == 'draft') {
+            setCurrentSection('startFlow')
+          } else {
+            setCurrentSection('nextFlow')
+          }
         }, 350)
       }
     } catch (error) {
@@ -109,7 +114,8 @@ const UserDashboardComponent = () => {
     window.open(`/${locale}/workflow/viewflow?form_data_id=${id}`, '_blank')
   }
 
-  if (currentSection === 'nextFlow') return <UserStartTaskComponent data={dataNextFlow} />
+  if (currentSection === 'startFlow') return <UserStartTaskComponent data={dataNextFlow} />
+  if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} />
 
   return (
     <TabContext value={value}>

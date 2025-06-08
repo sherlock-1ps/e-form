@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { useFormStore } from '@/store/useFormStore'
 import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
 import { toast } from 'react-toastify'
+import { useParams, useRouter } from 'next/navigation'
 
 interface signProps {
   id: string
@@ -16,6 +17,10 @@ interface signProps {
 }
 
 const NormalSignDialog = ({ id, onSave }: signProps) => {
+  const router = useRouter()
+  const params = useParams()
+  const { lang: locale } = params
+
   const { closeDialog } = useDialog()
   const [comment, setComment] = useState('')
 
@@ -25,6 +30,7 @@ const NormalSignDialog = ({ id, onSave }: signProps) => {
       if (response?.code == 'SUCCESS') {
         toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
         closeDialog(id)
+        router.push(`/${locale}/user/allTask`)
       }
     } catch (err) {
       console.error('save failed', err)

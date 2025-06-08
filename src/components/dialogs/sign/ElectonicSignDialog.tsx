@@ -10,19 +10,24 @@ import { Button, Grid, Typography } from '@mui/material'
 // Custom Hooks & Components
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
+import { toast } from 'react-toastify'
+import { useParams, useRouter } from 'next/navigation'
 
 // Props
 interface signProps {
   id: string
-  onClick: () => void
+  onSave: (comment: string) => Promise<any>
 }
 
-const ElectonicSignDialog = ({ id, onClick }: signProps) => {
+const ElectonicSignDialog = ({ id, onSave }: signProps) => {
+  const router = useRouter()
+  const params = useParams()
+  const { lang: locale } = params
   const { closeDialog } = useDialog()
   const sigPadRef = useRef<SignatureCanvas>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const [formData, setFormData] = useState('')
+  const [comment, setComment] = useState('')
   const [canvasWidth, setCanvasWidth] = useState(800)
 
   const downloadSignature = () => {
@@ -36,6 +41,20 @@ const ElectonicSignDialog = ({ id, onClick }: signProps) => {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  }
+
+  const handleConfirm = async () => {
+    try {
+      const response = await onSave(comment)
+      if (response?.code == 'SUCCESS') {
+        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
+        closeDialog(id)
+        router.push(`/${locale}/user/allTask`)
+      }
+    } catch (err) {
+      console.error('save failed', err)
+      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+    }
   }
 
   // Resize canvas based on actual width
@@ -74,8 +93,8 @@ const ElectonicSignDialog = ({ id, onClick }: signProps) => {
           fullWidth
           label='ความคิดเห็น'
           placeholder='ระบุความคิดเห็น...'
-          value={formData}
-          onChange={e => setFormData(e.target.value)}
+          value={comment}
+          onChange={e => setComment(e.target.value)}
         />
       </Grid>
 
@@ -118,8 +137,7 @@ const ElectonicSignDialog = ({ id, onClick }: signProps) => {
         <Button
           variant='contained'
           onClick={() => {
-            closeDialog(id)
-            onClick()
+            handleConfirm()
           }}
         >
           ยืนยัน
