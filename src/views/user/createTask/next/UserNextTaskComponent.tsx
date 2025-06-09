@@ -55,6 +55,7 @@ import DraftFormComponent from '@/views/draftform/DraftFormComponent'
 import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
 import FlowDocFullTable from '../../followTask/FlowDocFullTable'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
+import CommentSignDialog from '@/components/dialogs/sign/CommentSignDialog'
 
 const allowedExtensions = [
   '.jpg',
@@ -287,7 +288,7 @@ const UserNextTaskComponent = ({ data }: any) => {
         </div>
       ) : (
         <>
-          <div className=' w-full min-h-screen pb-[210px] z-30'>
+          <div className=' w-full min-h-screen mb-[400px] z-30'>
             <div className='flex flex-1 items-center justify-center'>
               <DraftFormComponent />
             </div>
@@ -485,7 +486,18 @@ const UserNextTaskComponent = ({ data }: any) => {
                                           setLinkIdButton(item?.link_id)
                                           setIsStartSign(true)
                                         } else {
-                                          handleSaveStartflow('', item?.link_id)
+                                          showDialog({
+                                            id: 'alertCommentSignDialog',
+                                            component: (
+                                              <CommentSignDialog
+                                                id='alertCommentSignDialog'
+                                                onSave={handleSaveStartflow}
+                                                flowId={item?.link_id}
+                                                title={item?.text}
+                                              />
+                                            ),
+                                            size: 'sm'
+                                          })
                                         }
                                       }}
                                     >
@@ -642,9 +654,9 @@ const UserNextTaskComponent = ({ data }: any) => {
                   <div className='flex items-center justify-between p-6 bg-white'>
                     <div className='flex flex-col gap-2'>
                       <Typography variant='h5'>ประวัติการดำเนินการทั้งหมด</Typography>
-                      <Typography variant='body2' className=' text-primary'>
+                      {/* <Typography variant='body2' className=' text-primary'>
                         {form?.name}
-                      </Typography>
+                      </Typography> */}
                     </div>
 
                     <IconButton

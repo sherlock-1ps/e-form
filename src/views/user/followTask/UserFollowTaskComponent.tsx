@@ -44,14 +44,12 @@ const UserFollowTaskComponent = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
   const [currentSection, setCurrentSection] = useState('dashboard')
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string>('')
+  const [selectedWorkflow, setSelectedWorkflow] = useState<any>(0)
   const [dataNextFlow, setDataNextFlow] = useState({})
   const [viewFlowId, setViewFlowId] = useState<number | null>(null)
 
   const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
-  const { data: workInPregressData } = useFetchWorkInProgressQueryOption(page, pageSize, Number(selectedWorkflow), {
-    enabled: selectedWorkflow !== ''
-  })
+  const { data: workInPregressData } = useFetchWorkInProgressQueryOption(page, pageSize, Number(selectedWorkflow))
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
 
   const handleClickManange = async (id: number) => {
@@ -128,7 +126,7 @@ const UserFollowTaskComponent = () => {
                 onChange={e => setSelectedWorkflow(e.target.value)}
                 SelectProps={{ displayEmpty: true }}
               >
-                <MenuItem value='' disabled>
+                <MenuItem value={0} disabled>
                   <em className='opacity-50'>เลือกเวิร์คโฟลว์</em>
                 </MenuItem>
 

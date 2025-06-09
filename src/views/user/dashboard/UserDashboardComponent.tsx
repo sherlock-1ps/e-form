@@ -45,18 +45,12 @@ const UserDashboardComponent = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
   const [currentSection, setCurrentSection] = useState('dashboard')
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string>('')
+  const [selectedWorkflow, setSelectedWorkflow] = useState<any>(0)
   const [dataNextFlow, setDataNextFlow] = useState({})
   const [viewFlowId, setViewFlowId] = useState<number | null>(null)
 
-  const handleChange = (event: SyntheticEvent, newValue: string) => {
-    setValue(newValue)
-  }
-
   const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
-  const { data: workMyData } = useFetchWorkMyQueryOption(page, pageSize, Number(selectedWorkflow), {
-    enabled: selectedWorkflow !== ''
-  })
+  const { data: workMyData } = useFetchWorkMyQueryOption(page, pageSize, Number(selectedWorkflow))
 
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
   const { mutateAsync: callStartFlow } = useStartFlowQueryOption()
@@ -132,7 +126,7 @@ const UserDashboardComponent = () => {
   return (
     <TabContext value={value}>
       <div className='flex flex-col gap-6'>
-        <Card>
+        {/* <Card>
           <CardContent>
             <Grid container>
               <Grid item xs={12} sm={6}>
@@ -144,18 +138,18 @@ const UserDashboardComponent = () => {
                     iconPosition={'start'}
                     className={value === '1' ? 'bg-primaryLighter' : ''}
                   />
-                  {/* <Tab
+                  <Tab
                     value='2'
                     label='งานที่จบแล้ว'
                     icon={<DoneAll />}
                     iconPosition={'start'}
                     className={value === '2' ? 'bg-primaryLighter' : ''}
-                  /> */}
+                  />
                 </TabList>
               </Grid>
             </Grid>
           </CardContent>
-        </Card>
+        </Card> */}
         <Card>
           <CardContent>
             <TabPanel value='1'>
@@ -172,7 +166,7 @@ const UserDashboardComponent = () => {
                     onChange={e => setSelectedWorkflow(e.target.value)}
                     SelectProps={{ displayEmpty: true }}
                   >
-                    <MenuItem value='' disabled>
+                    <MenuItem value={0} disabled>
                       <em className='opacity-50'>เลือกเวิร์คโฟลว์</em>
                     </MenuItem>
 

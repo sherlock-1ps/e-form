@@ -71,7 +71,7 @@ const DropppableBoxDraft = forwardRef(
             }}
             style={{
               border: '1px dashed transparent',
-              borderColor: selectedField?.fieldId?.id === fieldData.id ? '#0463EA' : 'transparent',
+              borderColor: selectedField?.fieldId?.id === fieldData.id ? 'transparent' : 'transparent',
               boxSizing: 'border-box'
             }}
           >
