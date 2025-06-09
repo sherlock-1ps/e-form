@@ -6,7 +6,7 @@ import { Button, IconButton, InputAdornment } from '@mui/material'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useFormStore } from '@/store/useFormStore'
 
-const TextFieldForm = ({ item, draft }: any) => {
+const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
@@ -23,7 +23,7 @@ const TextFieldForm = ({ item, draft }: any) => {
     //   }
     // )
 
-    updateValueOnly(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newValue)
+    updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', newValue)
   }
 
   return (

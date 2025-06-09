@@ -68,20 +68,20 @@ const DroppableBox = forwardRef(({ item, isOver, parentKey }, ref) => {
       )}
 
       {item?.data &&
-        item?.data.map((item, index) => {
+        item?.data.map((data, index) => {
           return (
             <div
               key={index}
               onClick={() => {
-                hanldeSelectField(item)
+                hanldeSelectField(data)
               }}
               style={{
                 border: '1px dashed transparent', // ให้มีกรอบตลอด เพราะถ้าใส่ตอนเช็ค height มันจะขยับไปมา
-                borderColor: selectedField?.fieldId?.id === item.id ? '#0463EA' : 'transparent',
+                borderColor: selectedField?.fieldId?.id === data.id ? '#0463EA' : 'transparent',
                 boxSizing: 'border-box'
               }}
             >
-              <ElementCase item={item} />
+              <ElementCase item={data} parentKey={parentKey} boxId={item?.i} />
             </div>
           )
         })}

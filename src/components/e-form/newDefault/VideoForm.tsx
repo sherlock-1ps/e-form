@@ -7,7 +7,7 @@ import { useFormStore } from '@/store/useFormStore'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useDialog } from '@/hooks/useDialog'
 
-const VideoForm = ({ item, draft }: any) => {
+const VideoForm = ({ item, parentKey, boxId, draft }: any) => {
   const { showDialog } = useDialog()
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -75,14 +75,9 @@ const VideoForm = ({ item, draft }: any) => {
                         title='ลบวิดีโอ'
                         content1='คุณต้องการลบวีดีโอนี้ ใช่หรือไม่'
                         onClick={() => {
-                          updateDetails(
-                            String(selectedField?.parentKey ?? ''),
-                            selectedField?.boxId ?? '',
-                            selectedField?.fieldId?.id ?? '',
-                            {
-                              value: toolboxDocumentBaseMenu[2]?.config?.details?.value
-                            }
-                          )
+                          updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+                            value: toolboxDocumentBaseMenu[2]?.config?.details?.value
+                          })
                         }}
                       />
                     ),

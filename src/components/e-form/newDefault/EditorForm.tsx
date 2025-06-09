@@ -10,7 +10,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import Theme from '@/lexcial/Theme'
 import ToolbarPlugin from '@/lexcial/plugins/ToolbarPlugin'
 
-const EditorForm = ({ item }: any) => {
+const EditorForm = ({ item, parentKey, boxId }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
   const placeholder = 'Enter some rich text...'

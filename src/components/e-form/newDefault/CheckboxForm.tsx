@@ -6,7 +6,7 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
 
-const CheckboxForm = ({ item, draft }: any) => {
+const CheckboxForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
 
@@ -47,17 +47,12 @@ const CheckboxForm = ({ item, draft }: any) => {
                       ? [...currentCheckedList, data.value]
                       : currentCheckedList.filter((v: any) => v !== data.value)
 
-                    updateDetails(
-                      String(selectedField?.parentKey ?? ''),
-                      selectedField?.boxId ?? '',
-                      selectedField?.fieldId?.id ?? '',
-                      {
-                        value: {
-                          ...item?.config?.details?.value,
-                          checkedList: newCheckedList
-                        }
+                    updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+                      value: {
+                        ...item?.config?.details?.value,
+                        checkedList: newCheckedList
                       }
-                    )
+                    })
                   }}
                 />
               }

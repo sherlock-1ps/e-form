@@ -6,9 +6,11 @@ import React, { useRef, useState, useEffect } from 'react'
 type TextLabelProps = {
   item: any
   draft?: boolean
+  parentKey: any
+  boxId: any
 }
 
-const TextLabel: React.FC<TextLabelProps> = ({ item, draft }) => {
+const TextLabel: React.FC<TextLabelProps> = ({ item, parentKey, boxId, draft }) => {
   const divRef = useRef<HTMLDivElement>(null)
   const updateValue = useFormStore(state => state.updateValue)
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
@@ -25,7 +27,7 @@ const TextLabel: React.FC<TextLabelProps> = ({ item, draft }) => {
     setText(newText)
     // updateValue(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newText)
 
-    updateValueOnly(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newText)
+    updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', newText)
   }
 
   useEffect(() => {

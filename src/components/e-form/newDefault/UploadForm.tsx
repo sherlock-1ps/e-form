@@ -6,7 +6,7 @@ import { useFormStore } from '@/store/useFormStore'
 import { Button, IconButton, Typography } from '@mui/material'
 import CustomTextField from '@/@core/components/mui/TextField'
 
-const UploadForm = ({ item }: any) => {
+const UploadForm = ({ item, parentKey, boxId, draft }: any) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -50,14 +50,9 @@ const UploadForm = ({ item }: any) => {
     const existing = item?.config?.details?.value || []
     const result = { value: objectUrl, comment: '', size: resultFileSize, name: fileName, type: fileExt }
 
-    updateDetails(
-      String(selectedField?.parentKey ?? ''),
-      selectedField?.boxId ?? '',
-      selectedField?.fieldId?.id ?? '',
-      {
-        value: [...existing, result]
-      }
-    )
+    updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+      value: [...existing, result]
+    })
   }
 
   return (
@@ -93,14 +88,9 @@ const UploadForm = ({ item }: any) => {
                     onClick={() => {
                       const newValue = item?.config?.details?.value.filter((_: any, i: any) => i !== index)
 
-                      updateDetails(
-                        String(selectedField?.parentKey ?? ''),
-                        selectedField?.boxId ?? '',
-                        selectedField?.fieldId?.id ?? '',
-                        {
-                          value: newValue
-                        }
-                      )
+                      updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+                        value: newValue
+                      })
                     }}
                   >
                     <DeleteOutline className=' text-error ' />
@@ -158,14 +148,9 @@ const UploadForm = ({ item }: any) => {
                           comment: e.target.value
                         }
 
-                        updateDetails(
-                          String(selectedField?.parentKey ?? ''),
-                          selectedField?.boxId ?? '',
-                          selectedField?.fieldId?.id ?? '',
-                          {
-                            value: newValue
-                          }
-                        )
+                        updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+                          value: newValue
+                        })
                       }}
                     />
                   </div>

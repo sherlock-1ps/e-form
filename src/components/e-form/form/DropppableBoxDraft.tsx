@@ -75,7 +75,7 @@ const DropppableBoxDraft = forwardRef(
               boxSizing: 'border-box'
             }}
           >
-            <ElementCase item={fieldData} draft />
+            <ElementCase item={fieldData} parentKey={parentKey} boxId={item?.i} draft />
           </div>
         ))}
       </Box>

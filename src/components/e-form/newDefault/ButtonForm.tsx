@@ -6,7 +6,7 @@ import { MAX_FILE_VIDEO_SIZE_MB } from '@/data/toolbox/toolboxMenu'
 import { Button } from '@mui/material'
 import { useFormStore } from '@/store/useFormStore'
 
-const ButtonForm = ({ item }: any) => {
+const ButtonForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValue = useFormStore(state => state.updateValue)
   const selectedField = useFormStore(state => state.selectedField)
 

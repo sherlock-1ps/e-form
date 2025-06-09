@@ -6,11 +6,9 @@ import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
 
-const SwitchForm = ({ item, draft }: any) => {
+const SwitchForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
-
-  console.log(item)
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
@@ -24,17 +22,12 @@ const SwitchForm = ({ item, draft }: any) => {
                 : item?.config?.details?.value?.value
             }
             onChange={e => {
-              updateDetails(
-                String(selectedField?.parentKey ?? ''),
-                selectedField?.boxId ?? '',
-                selectedField?.fieldId?.id ?? '',
-                {
-                  value: {
-                    ...item?.config?.details?.value,
-                    value: e.target.checked
-                  }
+              updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+                value: {
+                  ...item?.config?.details?.value,
+                  value: e.target.checked
                 }
-              )
+              })
             }}
           />
         }

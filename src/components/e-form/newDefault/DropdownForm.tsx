@@ -4,7 +4,7 @@ import { Typography, Button, MenuItem } from '@mui/material'
 import CustomTextField from '@core/components/mui/TextField'
 import { useFormStore } from '@/store/useFormStore'
 
-const DropdownForm = ({ item }: any) => {
+const DropdownForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValue = useFormStore(state => state.updateValue)
   const selectedField = useFormStore(state => state.selectedField)
 

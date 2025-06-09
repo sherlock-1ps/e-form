@@ -5,9 +5,11 @@ import { useFormStore } from '@/store/useFormStore'
 type LinkFormProps = {
   item: any
   draft?: boolean
+  parentKey: any
+  boxId: any
 }
 
-const LinkForm: React.FC<LinkFormProps> = ({ item, draft }) => {
+const LinkForm: React.FC<LinkFormProps> = ({ item, parentKey, boxId, draft }) => {
   const divRef = useRef<HTMLDivElement>(null)
   const secondDivRef = useRef<HTMLDivElement>(null)
   const updateValue = useFormStore(state => state.updateValue)
@@ -22,7 +24,7 @@ const LinkForm: React.FC<LinkFormProps> = ({ item, draft }) => {
     const target = isCut ? secondDivRef.current : divRef.current
     const rawText = target?.innerText || ''
     const newText = rawText.trim()
-    updateValue(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', newText)
+    updateValue(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', newText)
   }
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import { DeleteOutlined } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useFormStore } from '@/store/useFormStore'
 
-const SignatureForm = ({ item }: any) => {
+const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   let currentItem = item

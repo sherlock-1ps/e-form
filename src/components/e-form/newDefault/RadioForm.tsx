@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
 
-const RadioForm = ({ item, draft }: any) => {
+const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
 
@@ -17,14 +17,9 @@ const RadioForm = ({ item, draft }: any) => {
     // ❌ ถ้าเป็น default (value ว่าง) ไม่อัปเดต
     if (selectedValue === '') return
 
-    updateDetails(
-      String(selectedField?.parentKey ?? ''),
-      selectedField?.boxId ?? '',
-      selectedField?.fieldId?.id ?? '',
-      {
-        selectedValue: selectedValue
-      }
-    )
+    updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+      selectedValue: selectedValue
+    })
   }
 
   const options =

@@ -8,7 +8,7 @@ import 'dayjs/locale/th'
 import newAdapter from '@/libs/newAdapter'
 import { useFormStore } from '@/store/useFormStore'
 
-const DatePickerForm = ({ item, draft }: any) => {
+const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const selectedField = useFormStore(state => state.selectedField)
 
@@ -34,7 +34,7 @@ const DatePickerForm = ({ item, draft }: any) => {
 
     if (newDate) {
       const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
-      updateValueOnly(String(selectedField?.parentKey ?? ''), selectedField?.boxId ?? '', item?.id ?? '', formattedDate)
+      updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', formattedDate)
     }
   }
 

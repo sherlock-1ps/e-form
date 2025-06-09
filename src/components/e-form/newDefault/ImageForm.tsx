@@ -7,13 +7,12 @@ import { useFormStore } from '@/store/useFormStore'
 import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 
-const ImageForm = ({ item, draft }: any) => {
+const ImageForm = ({ item, parentKey, boxId, draft }: any) => {
   const { showDialog } = useDialog()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const updateValue = useFormStore(state => state.updateValue)
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const updateDetails = useFormStore(state => state.updateDetails)
-
   const selectedField = useFormStore(state => state.selectedField)
 
   const handleDivClick = () => {
@@ -75,14 +74,9 @@ const ImageForm = ({ item, draft }: any) => {
                         title='ลบรูปภาพ'
                         content1='คุณต้องการลบรูปภาพนี้ ใช่หรือไม่'
                         onClick={() => {
-                          updateDetails(
-                            String(selectedField?.parentKey ?? ''),
-                            selectedField?.boxId ?? '',
-                            selectedField?.fieldId?.id ?? '',
-                            {
-                              value: toolboxDocumentBaseMenu[2]?.config?.details?.value
-                            }
-                          )
+                          updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
+                            value: toolboxDocumentBaseMenu[2]?.config?.details?.value
+                          })
                         }}
                       />
                     ),
