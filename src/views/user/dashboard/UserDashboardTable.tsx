@@ -11,7 +11,7 @@ import Checkbox from '@mui/material/Checkbox'
 import CardHeader from '@mui/material/CardHeader'
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
-
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 // Third-party Imports
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -42,7 +42,7 @@ import TablePaginationComponent from '@/components/TablePaginationComponent'
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 import { getInitials } from '@/utils/getInitials'
-import { Button, Chip, Typography } from '@mui/material'
+import { Button, Chip, Tooltip, Typography } from '@mui/material'
 import { OptionType } from '@/@core/components/option-menu/types'
 import { FormatShowDate } from '@/utils/formatShowDate'
 import { useDialog } from '@/hooks/useDialog'
@@ -213,10 +213,8 @@ const UserDashboardTable = ({
         header: 'สถานะล่าสุด',
         cell: ({ row }) => (
           <div className='flex  gap-2'>
-            {row.original.status == 'draft' ? (
+            {row.original.status == 'draft' && (
               <Chip className=' capitalize' label={row.original.status} size='small' variant='tonal' color='primary' />
-            ) : (
-              <Chip className=' capitalize' label={row.original.status} size='small' variant='tonal' color='success' />
             )}
 
             <Typography>{FormatShowDate(row.original.updated_at)}</Typography>
@@ -228,14 +226,20 @@ const UserDashboardTable = ({
         header: 'ผู้รับผิดชอบปัจจุบัน',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
-            {/* <CustomAvatar size={32}>{getInitials(row.original.current_assignees_user_names)}</CustomAvatar> */}
-            <div className='flex flex-col'>
+            {row.original.status === 'draft' ? (
               <Typography className='font-medium'>
-                {row.original.status === 'draft'
-                  ? `${profile?.userInformation?.F_FIRST_NAME || ''} ${profile?.userInformation?.F_LAST_NAME || ''}`
-                  : (row.original.current_assignees_user_names ?? '-')}
+                {profile?.userInformation?.F_FIRST_NAME || ''} {profile?.userInformation?.F_LAST_NAME || ''}
               </Typography>
-            </div>
+            ) : (
+              <>
+                <Typography className='font-medium truncate max-w-[220px] cursor-help'>
+                  {row.original.current_assignees_user_names ?? '-'}
+                </Typography>
+                <Tooltip title={(row.original.current_assignees_user_names || []).join(', ')}>
+                  <PeopleOutlineIcon className='text-primary cursor-help' fontSize='small' />
+                </Tooltip>
+              </>
+            )}
           </div>
         )
       }),
