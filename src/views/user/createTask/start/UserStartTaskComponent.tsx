@@ -54,6 +54,7 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import DraftFormComponent from '@/views/draftform/DraftFormComponent'
 import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
 import FlowDocFullTable from '../../followTask/FlowDocFullTable'
+import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 
 const steps = {
   currentFlow: 6,
@@ -298,6 +299,10 @@ const UserStartTaskComponent = ({ data }: any) => {
     }
   }
 
+  const handleBackShowFlow = () => {
+    setIsShowWorkFlow(!isShowWorkflow)
+  }
+
   const handleEditPdf = async (item: any) => {
     const innerUrl = `${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`
     const encodedUrl = encodeURIComponent(innerUrl)
@@ -311,11 +316,11 @@ const UserStartTaskComponent = ({ data }: any) => {
         className={`transition-all duration-75 z-20 ${collapsed ? 'w-[60px] min-w-[60px]' : 'w-[300px] min-w-[300px]'}`}
       >
         {collapsed ? (
-          <div className='flex items-center justify-center bg-white p-2 rounded-sm'>
-            <div className='flex  items-center gap-2'>
+          <div className='flex items-center justify-center p-2 rounded-sm'>
+            <div className='flex  items-center gap-2  bg-primary rounded-lg'>
               <IconButton className='w-[60px]' onClick={() => setCollapsed(!collapsed)}>
                 {/* <ChevronRight /> */}
-                <Typography variant='body2' className=' text-textPrimary'>
+                <Typography variant='body2' className=' text-white'>
                   ดูโฟล์ว
                 </Typography>
               </IconButton>
@@ -402,7 +407,9 @@ const UserStartTaskComponent = ({ data }: any) => {
 
       {isShowWorkflow ? (
         <div className='flex flex-1 w-full h-full  absolute top-0 left-0'>
-          <ViewWorkflowComponent onBack={false} />
+          {/* <ViewWorkflowComponent onBack={false} /> */}
+
+          <ViewFlowComponent formDataId={formDataId} onBack={handleBackShowFlow} noBack={true} />
         </div>
       ) : (
         <>

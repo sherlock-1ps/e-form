@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-const ViewFlowComponent = ({ formDataId, onBack }: any) => {
+const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
   const [goLoaded, setGoLoaded] = useState(false)
   const diagramRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
@@ -228,15 +228,18 @@ const ViewFlowComponent = ({ formDataId, onBack }: any) => {
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
             <div className='flex gap-2 items-center'>
-              <Button
-                variant='contained'
-                startIcon={<ArrowBackIcon />}
-                onClick={() => {
-                  onBack()
-                }}
-              >
-                ย้อนกลับ
-              </Button>
+              {!noBack && (
+                <Button
+                  variant='contained'
+                  startIcon={<ArrowBackIcon />}
+                  onClick={() => {
+                    onBack()
+                  }}
+                >
+                  ย้อนกลับ
+                </Button>
+              )}
+
               <Typography variant='h5'>เวิร์กโฟลว์ปัจจุบัน</Typography>
             </div>
             <div ref={diagramRef} style={{ flexGrow: 1, border: '1px solid black' }} />

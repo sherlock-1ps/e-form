@@ -11,7 +11,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import IconButton from '@mui/material/IconButton'
 import { Typography } from '@mui/material'
 
-export default function ViewWorkflowComponent({ onBack }) {
+export default function ViewWorkflowComponent({ onBack, name }) {
   const flow = useFlowStore(state => state.flow)
 
   const router = useRouter()
@@ -35,15 +35,7 @@ export default function ViewWorkflowComponent({ onBack }) {
     const $ = go.GraphObject.make
 
     const myDiagram = $(go.Diagram, diagramRef.current, {
-      grid: $(
-        go.Panel,
-        'Grid',
-        $(go.Shape, 'LineH', { stroke: 'lightgray', strokeWidth: 0.5 }),
-        $(go.Shape, 'LineH', { stroke: 'gray', strokeWidth: 0.5, interval: 10 }),
-        $(go.Shape, 'LineV', { stroke: 'lightgray', strokeWidth: 0.5 }),
-        $(go.Shape, 'LineV', { stroke: 'gray', strokeWidth: 0.5, interval: 10 })
-      ),
-      'draggingTool.isGridSnapEnabled': true,
+      'draggingTool.isGridSnapEnabled': false, // also disable snap-to-grid
       'linkingTool.isUnconnectedLinkValid': true,
       'linkingTool.portGravity': 20,
       'relinkingTool.isUnconnectedLinkValid': true,
@@ -604,16 +596,19 @@ export default function ViewWorkflowComponent({ onBack }) {
       </div>
 
       {onBack && (
-        <div className='absolute top-5 left-3 z-50 flex gap-4 bg-primaryLight rounded-md'>
-          <IconButton
-            color='primary'
-            onClick={() => {
-              onBack()
-            }}
-          >
-            <ArrowBackIcon />
-            <Typography variant='h6'>ย้อนกลับ</Typography>
-          </IconButton>
+        <div className='flex gap-4 absolute top-5 left-3 z-50 rounded-md items-center'>
+          <div className='bg-primaryLight  rounded-lg'>
+            <IconButton
+              color='primary'
+              onClick={() => {
+                onBack()
+              }}
+            >
+              <ArrowBackIcon />
+              <Typography variant='h6'>ย้อนกลับ</Typography>
+            </IconButton>
+          </div>
+          {name && <Typography variant='h5'>{name}</Typography>}
         </div>
       )}
     </div>

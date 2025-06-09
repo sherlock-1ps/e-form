@@ -30,6 +30,7 @@ const UserCreateTastComponent = () => {
   const [pageSize, setPageSize] = useState(30)
   const [currentSection, setCurrentSection] = useState('dashboard')
   const [dataStartFlow, setDataStartFlow] = useState({})
+  const [selectedViewFlow, setSelectedViewFlow] = useState(0)
 
   // const { data: flowNameData, isPending: pendingFlow } = useFetchFlowNnameQueryOption(page, pageSize)
   const { data: flowNameData, isPending: pendingFlow } = useFetchFlowQueryOption(page, pageSize)
@@ -94,12 +95,14 @@ const UserCreateTastComponent = () => {
   }
 
   if (currentSection === 'startFlow') return <UserStartTaskComponent data={dataStartFlow} />
-  if (currentSection === 'viewFlow')
+
+  if (currentSection === 'viewFlow' && selectedViewFlow)
     return (
       <ViewWorkflowComponent
         onBack={() => {
           setCurrentSection('dashboard')
         }}
+        name={selectedViewFlow}
       />
     )
 
@@ -136,6 +139,7 @@ const UserCreateTastComponent = () => {
                           color='secondary'
                           className='h-full text-sm'
                           onClick={() => {
+                            setSelectedViewFlow(item?.name)
                             handleShowWorkflow(item?.version?.[0]?.id)
                           }}
                         >
