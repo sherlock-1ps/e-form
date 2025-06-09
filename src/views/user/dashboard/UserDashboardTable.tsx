@@ -42,11 +42,12 @@ import TablePaginationComponent from '@/components/TablePaginationComponent'
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 import { getInitials } from '@/utils/getInitials'
-import { Button, Typography } from '@mui/material'
+import { Button, Chip, Typography } from '@mui/material'
 import { OptionType } from '@/@core/components/option-menu/types'
 import { FormatShowDate } from '@/utils/formatShowDate'
 import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import { useAuthStore } from '@/store/useAuthStore'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -134,6 +135,10 @@ interface TableRowData {
   current_assignees_position_names: string[] | null
   status: string
   FormDataDetailMerge: any | null
+  f_first_name: any
+  f_last_name: any
+  f_position_name: any
+  department_name: any
 }
 // Column Definitions
 const columnHelper = createColumnHelper<TableRowData>()
@@ -149,6 +154,7 @@ const UserDashboardTable = ({
   onViewFlow
 }: any) => {
   const { showDialog } = useDialog()
+  const profile = useAuthStore(state => state.profile)
 
   // States
   const [rowSelection, setRowSelection] = useState({})
@@ -194,7 +200,7 @@ const UserDashboardTable = ({
               <Typography className='font-medium' color='text.primary'>
                 {row.original.created_by}
               </Typography>
-              <Typography variant='body2'>-</Typography>
+              <Typography variant='body2'>{`${row.original.f_first_name} ${row.original.f_last_name}`}</Typography>
             </div>
           </div>
         )
@@ -207,9 +213,12 @@ const UserDashboardTable = ({
         header: 'สถานะล่าสุด',
         cell: ({ row }) => (
           <div className='flex  gap-2'>
-            <Typography style={{ color: '#0463EA' }} variant='h6'>
-              {row.original.status}
-            </Typography>
+            {row.original.status == 'draft' ? (
+              <Chip className=' capitalize' label={row.original.status} size='small' variant='tonal' color='primary' />
+            ) : (
+              <Chip className=' capitalize' label={row.original.status} size='small' variant='tonal' color='success' />
+            )}
+
             <Typography>{FormatShowDate(row.original.updated_at)}</Typography>
           </div>
         ),
@@ -221,10 +230,11 @@ const UserDashboardTable = ({
           <div className='flex items-center gap-3'>
             {/* <CustomAvatar size={32}>{getInitials(row.original.current_assignees_user_names)}</CustomAvatar> */}
             <div className='flex flex-col'>
-              <Typography className='font-medium' color='text.primary'>
-                {row.original.current_assignees_user_names ?? '-'}
+              <Typography className='font-medium'>
+                {row.original.status === 'draft'
+                  ? `${profile?.userInformation?.F_FIRST_NAME || ''} ${profile?.userInformation?.F_LAST_NAME || ''}`
+                  : (row.original.current_assignees_user_names ?? '-')}
               </Typography>
-              <Typography variant='body2'>{row.original.current_assignees_position ?? '-'}</Typography>
             </div>
           </div>
         )
