@@ -52,10 +52,10 @@ const ProfileDialog = ({ id }: profileProps) => {
             <Email fontSize='small' />
             <Typography>{profile?.email}</Typography>
           </Grid>
-          <Grid item xs={12} className='flex items-center gap-2'>
+          {/* <Grid item xs={12} className='flex items-center gap-2'>
             <Phone fontSize='small' />
             <Typography>{mockProfile.phone}</Typography>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} className='flex items-center gap-2'>
             <LocationOn fontSize='small' />
             <Typography>{profile?.userInformation?.F_NAME}</Typography>
