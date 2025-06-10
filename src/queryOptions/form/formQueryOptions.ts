@@ -485,6 +485,8 @@ export function useGetPersonExternalQueryOption(
   f_name: string,
   options?: { enabled?: boolean }
 ) {
+  console.log(f_person_id, f_name)
+
   return useQuery({
     queryKey: ['person', page, pageSize],
     queryFn: () => getPersonList({ page, pageSize, f_person_id, f_name }),
@@ -649,12 +651,7 @@ export const useViewFlowOption = () => {
   })
 }
 
-
-export function useFetchNotificationQueryOption(
-  page: number,
-  pageSize: number,
-  options?: { enabled?: boolean }
-) {
+export function useFetchNotificationQueryOption(page: number, pageSize: number, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ['notificationList', page, pageSize],
     queryFn: () => fetchNotification({ page, pageSize }),
@@ -662,9 +659,8 @@ export function useFetchNotificationQueryOption(
   })
 }
 
-
 export const useReadNotification = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: readNotificationRead,
@@ -672,9 +668,7 @@ export const useReadNotification = () => {
       console.error('Error read notification', error)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["notificationList"] });
-    },
+      queryClient.invalidateQueries({ queryKey: ['notificationList'] })
+    }
   })
 }
-
-
