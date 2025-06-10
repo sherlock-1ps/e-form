@@ -177,7 +177,7 @@ const NotificationDropdown = () => {
 
   return (
     <>
-      <IconButton ref={anchorRef} onClick={handleToggle} className='text-textPrimary'>
+      <IconButton ref={anchorRef} onClick={handleToggle}>
         <Badge
           color='error'
           className='cursor-pointer'
