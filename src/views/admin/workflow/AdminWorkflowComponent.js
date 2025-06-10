@@ -29,30 +29,6 @@ import NotificationsDropdown, { NotificationsType } from '../../../components/la
 import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
 import { useDialog } from '@/hooks/useDialog'
 
-const notifications = [
-  {
-    avatarImage: '',
-    title: 'โปรดตรวจสอบและลงนาม',
-    subtitle: 'ขออนุมัติเบิกค่าเช่าบ้าน 6005',
-    time: '1h ago',
-    read: false
-  },
-  {
-    avatarImage: '',
-    title: 'โปรดตรวจสอบและลงนาม',
-    subtitle: 'ขออนุมัติเบิกค่าเช่าบ้าน 6005',
-    time: '12h ago',
-    read: false
-  },
-  {
-    avatarImage: '',
-    title: 'ดำเนินการเรียบร้อย',
-    subtitle: 'ขออนุมัติเบิกค่าเช่าบ้าน 6005',
-    time: 'May 18, 8:26 AM',
-    read: true
-  }
-]
-
 export default function AdminWorkflowComponent() {
   const { showDialog } = useDialog()
   const flow = useFlowStore(state => state.flow)
@@ -1086,7 +1062,7 @@ export default function AdminWorkflowComponent() {
             </Link>
             <div className='flex '>
               {/* <NotificationAddOutlined sx={{ width: '24px', height: '24px', color: '#11151AE5' }} /> */}
-              <NotificationsDropdown notifications={notifications} />
+              <NotificationsDropdown />
               <IconButton
                 edge='end'
                 onMouseDown={e => e.preventDefault()}

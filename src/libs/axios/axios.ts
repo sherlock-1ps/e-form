@@ -49,19 +49,19 @@ Axios.interceptors.response.use(
   },
   async err => {
 
-    if (typeof window !== 'undefined') {
-      const errorCode = err.response?.data?.code
-      if (errorCode === 'TOKEN_IS_EXPIRED') {
-        const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_MAIN_URL
-        if (redirectUrl) {
+    // if (typeof window !== 'undefined') {
+    //   const errorCode = err.response?.data?.code
+    //   if (errorCode === 'TOKEN_IS_EXPIRED') {
+    //     const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_MAIN_URL
+    //     if (redirectUrl) {
 
-          useAuthStore.getState().clearTokens()
-          window.location.href = redirectUrl
-        }
+    //       useAuthStore.getState().clearTokens()
+    //       window.location.href = redirectUrl
+    //     }
 
 
-      }
-    }
+    //   }
+    // }
 
 
 

@@ -121,26 +121,27 @@ const NotificationDropdown = () => {
   // Read notification when notification is clicked
   const handleReadNotification = async (notification: any) => {
     try {
-      const response = await callReadNotification({ id: notification?.id })
-
-      if (response?.code == 'SUCCESS') {
-        toast.success('อ่านแล้ว', { autoClose: 3000 })
-        if (notification?.data?.link) {
-          showDialog({
-            id: 'alertErrorToken',
-            component: (
-              <ConfirmAlert
-                id='alertErrorToken'
-                title={'นำทางไปดูงาน'}
-                content1={'คุณต้องการดำเนินการต่อหรือไม่'}
-                onClick={() => {
-                  router.push(`/${locale}${notification?.data?.link}`)
-                }}
-              />
-            ),
-            size: 'sm'
-          })
+      if (notification?.status == 0) {
+        const response = await callReadNotification({ id: notification?.id })
+        if (response?.code == 'SUCCESS') {
+          toast.success('อ่านแล้ว', { autoClose: 3000 })
         }
+      }
+      if (notification?.data?.link) {
+        showDialog({
+          id: 'alertErrorToken',
+          component: (
+            <ConfirmAlert
+              id='alertErrorToken'
+              title={'นำทางไปดูงาน'}
+              content1={'คุณต้องการดำเนินการต่อหรือไม่'}
+              onClick={() => {
+                router.push(`/${locale}${notification?.data?.link}`)
+              }}
+            />
+          ),
+          size: 'sm'
+        })
       }
     } catch (error) {
       console.log('callReadNotification', callReadNotification)
