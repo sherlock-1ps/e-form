@@ -2,7 +2,7 @@
 'use client'
 
 // React Imports
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 // Next Imports
 import Link from 'next/link'
@@ -10,6 +10,7 @@ import { useParams, usePathname } from 'next/navigation'
 
 // MUI Imports
 import { styled, useColorScheme, useTheme } from '@mui/material/styles'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 
 // Type Imports
 import type { getDictionary } from '@/utils/getDictionary'
@@ -39,6 +40,7 @@ import NotificationsDropdown, { NotificationsType } from '../shared/Notification
 import { useDialog } from '@/hooks/useDialog'
 import NormalSignDialog from '@/components/dialogs/sign/NormalSignDialog'
 import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
+import { useFetchNotificationQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 type Props = {
   dictionary: Awaited<ReturnType<typeof getDictionary>>
@@ -63,30 +65,6 @@ const StyledBoxForShadow = styled('div')(({ theme }) => ({
     opacity: 1
   }
 }))
-
-const notifications: NotificationsType[] = [
-  {
-    avatarImage: '',
-    title: 'โปรดตรวจสอบและลงนาม',
-    subtitle: 'ขออนุมัติเบิกค่าเช่าบ้าน 6005',
-    time: '1h ago',
-    read: false
-  },
-  {
-    avatarImage: '',
-    title: 'โปรดตรวจสอบและลงนาม',
-    subtitle: 'ขออนุมัติเบิกค่าเช่าบ้าน 6005',
-    time: '12h ago',
-    read: false
-  },
-  {
-    avatarImage: '',
-    title: 'ดำเนินการเรียบร้อย',
-    subtitle: 'ขออนุมัติเบิกค่าเช่าบ้าน 6005',
-    time: 'May 18, 8:26 AM',
-    read: true
-  }
-]
 
 const Navigation = (props: Props) => {
   // Props
@@ -191,12 +169,12 @@ const Navigation = (props: Props) => {
           >
             <Link href='/'>
               <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='flex items-center justify-center'>
-                <Home sx={{ width: '24px', height: '24px', color: '#11151AE5' }} />
+                <Home sx={{ width: '24px', height: '24px' }} />
               </IconButton>
             </Link>
             <div className='flex '>
               {/* <NotificationAddOutlined sx={{ width: '24px', height: '24px', color: '#11151AE5' }} /> */}
-              <NotificationsDropdown notifications={notifications} />
+              <NotificationsDropdown />
               <IconButton
                 edge='end'
                 onMouseDown={e => e.preventDefault()}
@@ -209,7 +187,8 @@ const Navigation = (props: Props) => {
                   })
                 }}
               >
-                <CustomAvatar size={24}>{getInitials('Napat')}</CustomAvatar>
+                <AccountCircleIcon fontSize='medium' />
+                {/* <CustomAvatar size={24}>{getInitials('Napat')}</CustomAvatar> */}
               </IconButton>
             </div>
           </section>

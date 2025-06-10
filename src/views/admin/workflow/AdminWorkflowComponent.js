@@ -15,6 +15,8 @@ import NavBarFlow from '@components/workflow/navBar/NavBarFlow'
 import { toast } from 'react-toastify'
 import CustomAvatar from '@/@core/components/mui/Avatar'
 import { getInitials } from '@/utils/getInitials'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+
 import {
   useCreateFlowQueryOption,
   useUpdateFlowQueryOption,
@@ -1079,7 +1081,7 @@ export default function AdminWorkflowComponent() {
           >
             <Link href='/'>
               <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='flex items-center justify-center'>
-                <Home sx={{ width: '24px', height: '24px', color: '#11151AE5' }} />
+                <Home sx={{ width: '24px', height: '24px' }} />
               </IconButton>
             </Link>
             <div className='flex '>
@@ -1097,7 +1099,8 @@ export default function AdminWorkflowComponent() {
                   })
                 }}
               >
-                <CustomAvatar size={24}>{getInitials('Napat')}</CustomAvatar>
+                <AccountCircleIcon fontSize='medium' />
+                {/* <CustomAvatar size={24}>{getInitials('Napat')}</CustomAvatar> */}
               </IconButton>
             </div>
           </section>

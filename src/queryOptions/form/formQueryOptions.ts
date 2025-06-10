@@ -33,6 +33,7 @@ import {
   fetchFormName,
   fetchListComment,
   fetchMedia,
+  fetchNotification,
   fetchVariable,
   fetchWorkAll,
   fetchWorkInProgress,
@@ -45,6 +46,7 @@ import {
   getPositionList,
   getStartFlow,
   getUploadFile,
+  readNotificationRead,
   saveStartFlow,
   updateApi,
   updateDateFlow,
@@ -646,3 +648,33 @@ export const useViewFlowOption = () => {
     // },
   })
 }
+
+
+export function useFetchNotificationQueryOption(
+  page: number,
+  pageSize: number,
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ['notificationList', page, pageSize],
+    queryFn: () => fetchNotification({ page, pageSize }),
+    ...options
+  })
+}
+
+
+export const useReadNotification = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: readNotificationRead,
+    onError: error => {
+      console.error('Error read notification', error)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["notificationList"] });
+    },
+  })
+}
+
+

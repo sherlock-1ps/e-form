@@ -814,3 +814,35 @@ export const viewFlow = async (request: any) => {
     throw e
   }
 }
+
+export const fetchNotification = async ({ page, pageSize }: { page: number; pageSize: number; }) => {
+  try {
+    const response = await Axios.post('/notifications/list', {
+      page,
+      limit: pageSize,
+      order_by: "status ASC, created_at DESC"
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetch notification:', error)
+
+    const e = axiosErrorHandler(error, '/notifications/list')
+    throw e
+  }
+}
+
+export const readNotificationRead = async ({ id }: { id: number; }) => {
+  try {
+    const response = await Axios.post('/notifications/read', {
+      id,
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error read notification:', error)
+
+    const e = axiosErrorHandler(error, '/notifications/read')
+    throw e
+  }
+}
