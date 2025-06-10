@@ -79,3 +79,83 @@ export const updateFormValueByKey = (formDetails: any[], dataDetail: any) => {
     }))
   }))
 }
+
+export const applyKeyValueToForm = (
+  formDetails: any[],
+  values: Record<string, any>
+): any[] => {
+  return formDetails.map(section => ({
+    ...section,
+    fields: section.fields.map((field: any) => ({
+      ...field,
+      data: field.data.map((item: any) => {
+        const id = item.id
+        if (!id || !(id in values)) return item
+
+        const newValue = values[id]
+        const type = item.config?.details?.type
+
+        const newDetails = { ...item.config?.details }
+
+        if (type === 'dropdown') {
+          newDetails.keyValue = {
+            ...newDetails.keyValue,
+            realValue: newValue
+          }
+        } else if (type === 'checkbox') {
+          newDetails.value = {
+            ...newDetails.value,
+            checkedList: newValue
+          }
+        } else if (type === 'radio') {
+          newDetails.selectedValue = newValue
+        } else if (newDetails?.value?.value !== undefined) {
+          newDetails.value = {
+            ...newDetails.value,
+            value: newValue
+          }
+        }
+
+        return {
+          ...item,
+          config: {
+            ...item.config,
+            details: newDetails
+          }
+        }
+      })
+    }))
+  }))
+}
+
+export const updateSignature = (formDetails: any[], valuesToUpdate: Record<string, string>) => {
+  return formDetails.map(section => ({
+    ...section,
+    fields: section.fields.map((field: any) => ({
+      ...field,
+      data: field.data.map((item: any) => {
+        const id = item.id
+        const newValue = valuesToUpdate[id]
+
+        if (id && newValue !== undefined) {
+          return {
+            ...item,
+            config: {
+              ...item.config,
+              details: {
+                ...item.config?.details,
+                signer: {
+                  ...item.config?.details?.signer,
+                  imgValue: `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${newValue}`
+                }
+              }
+            }
+          }
+        }
+
+        return item
+      })
+    }))
+  }))
+}
+

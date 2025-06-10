@@ -83,8 +83,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
 
         <div className='flex min-w-[200px] relative'>
           <img
-            src='/images/signImg.png'
-            alt='ลายเซ็นต์จะปรากฏเมื่อลงนาม'
+            src={currentItem?.config?.details?.signer?.imgValue || '/images/signImg.png'}
+            alt='ลายเซ็นต์'
             style={{
               opacity: 1,
               width: '100%',

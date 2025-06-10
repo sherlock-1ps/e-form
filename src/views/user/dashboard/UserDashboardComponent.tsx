@@ -30,7 +30,7 @@ import { toast } from 'react-toastify'
 import { useFlowStore } from '@/store/useFlowStore'
 import { useFormStore } from '@/store/useFormStore'
 import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
-import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
+import { applyKeyValueToForm, updateFormValueByKey, updateSignature } from '@/utils/mapKeyValueForm'
 import UserDashboardTable from './UserDashboardTable'
 import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
@@ -55,11 +55,11 @@ const UserDashboardComponent = () => {
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
   const { mutateAsync: callStartFlow } = useStartFlowQueryOption()
 
-  const handleClickManange = async (id: number, status: any) => {
+  const handleClickManange = async (id: number, status: any, flowId?: any) => {
     try {
       let response
       if (status == 'draft') {
-        response = await callStartFlow({ id: id })
+        response = await callStartFlow({ id: flowId })
       } else {
         response = await callNextFlow({ form_data_id: id })
       }
@@ -73,7 +73,12 @@ const UserDashboardComponent = () => {
 
         const detailMerge = response?.result?.data?.current_data_detail_merge
         if (detailMerge?.data_detail) {
-          updateForm = updateFormValueByKey(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+          // updateForm = updateFormValueByKey(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+          updateForm = applyKeyValueToForm(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+        }
+
+        if (detailMerge?.signature) {
+          updateForm = updateSignature(updateForm, detailMerge?.signature)
         }
 
         const layoutValue =

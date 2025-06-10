@@ -28,7 +28,7 @@ import {
 import UserDashboardTable from '../dashboard/UserDashboardTable'
 import { useFlowStore } from '@/store/useFlowStore'
 import { useFormStore } from '@/store/useFormStore'
-import { updateFormValueByKey } from '@/utils/mapKeyValueForm'
+import { applyKeyValueToForm, updateFormValueByKey, updateSignature } from '@/utils/mapKeyValueForm'
 import { toast } from 'react-toastify'
 import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
 import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
@@ -64,7 +64,12 @@ const UserAllTaskComponent = () => {
 
         const detailMerge = response?.result?.data?.current_data_detail_merge
         if (detailMerge?.data_detail) {
-          updateForm = updateFormValueByKey(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+          // updateForm = updateFormValueByKey(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+          updateForm = applyKeyValueToForm(response?.result?.data?.form_detail?.detail?.data, detailMerge?.data_detail)
+        }
+
+        if (detailMerge?.signature) {
+          updateForm = updateSignature(updateForm, detailMerge?.signature)
         }
 
         const layoutValue =

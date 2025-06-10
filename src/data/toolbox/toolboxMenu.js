@@ -15,7 +15,8 @@ import {
   CheckBoxOutlined,
   RadioButtonCheckedOutlined,
   ToggleOnOutlined,
-  GridViewOutlined
+  GridViewOutlined,
+  GridOnOutlined
 } from '@mui/icons-material'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -406,7 +407,8 @@ export const toolboxCreateformMenu = [
         },
         signer: {
           isShow: true,
-          value: ''
+          value: '',
+          imgValue: ''
         },
         tag: {
           isShow: true,
@@ -427,26 +429,23 @@ export const toolboxCreateformMenu = [
         isRequired: true
       }
     }
+  },
+  {
+    id: 8,
+    icon: <GridOnOutlined />,
+    config: {
+      style: {
+        fontSize: 16
+      },
+      details: {
+        type: 'dataGrid',
+        label: 'Data Grid',
+        isUse: true,
+        isShow: true,
+        isRequired: true
+      }
+    }
   }
-  // {
-  //   id: 5,
-  //   icon: <TableChartOutlined />,
-  //   config: {
-  //     style: {
-  //       minWidth: '30px',
-  //       minHeight: '32px',
-  //       fontSize: 16,
-  //       color: '#000000',
-  //       textAlign: 'start'
-  //     },
-  //     details: {
-  //       type: 'text',
-  //       label: 'ตาราง',
-  //       value: '',
-  //       placeholder: 'พิมพ์ข้อความของคุณที่นี่'
-  //     }
-  //   }
-  // }
 ]
 export const toolboxOptionMenu = [
   {

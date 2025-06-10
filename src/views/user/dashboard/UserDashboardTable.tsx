@@ -139,6 +139,7 @@ interface TableRowData {
   f_last_name: any
   f_position_name: any
   department_name: any
+  flow_id: number
 }
 // Column Definitions
 const columnHelper = createColumnHelper<TableRowData>()
@@ -311,7 +312,7 @@ const UserDashboardTable = ({
                         id='alertDialogConfirmToggleTrigger'
                         title='จัดการ Flow'
                         content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
-                        onClick={() => onManage(row.original.id, row.original?.status)}
+                        onClick={() => onManage(row.original.id, row.original?.status, row.original.flow_id)}
                       />
                     ),
                     size: 'sm'
