@@ -24,14 +24,14 @@ const CheckboxForm = ({ item, parentKey, boxId, draft }: any) => {
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
-      <FormGroup row={item?.config?.details?.row}>
+      <FormGroup row={item?.config?.details?.row} className='w-full justify-between'>
         {options.map((data: any, idx: number) => {
           return (
             <FormControlLabel
               disabled={!item?.config?.details?.isUse}
               key={idx}
               label={data.name}
-              className='m-0'
+              className='m-0 '
               control={
                 <Checkbox
                   checked={item?.config?.details?.value?.checkedList?.includes(data.value) ?? false}

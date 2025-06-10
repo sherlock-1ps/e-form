@@ -36,7 +36,7 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
-      <FormControl className='flex-wrap flex-row'>
+      <FormControl className='flex-wrap flex-row  w-full '>
         <RadioGroup
           row={item?.config?.details?.row}
           defaultValue={''}
@@ -44,6 +44,7 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
           name='radio_form'
           aria-label='radio_form'
           onChange={handleChange}
+          className='w-full justify-between'
         >
           {options.map((data: any, idx: number) => (
             <FormControlLabel
