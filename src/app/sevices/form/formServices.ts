@@ -583,7 +583,14 @@ export const getPersonList = async ({
   try {
     const payload = { page, limit: pageSize, f_person_id, f_name }
     const response = await AxiosExternal.post('/api/service/core/get-person-lists', payload)
-    return response.data
+
+    const data = response?.data?.items?.data.map(i => ({
+      pk: `${i.F_PERSON_ID}-person`,
+      id: i.F_PERSON_ID,
+      name: `${i.F_FIRST_NAME} ${i.F_LAST_NAME}`.trim(),
+      type: 'บุคคล'
+    }))
+    return { data, total: response?.data?.items.total }
   } catch (error) {
     console.error('Error get person list:', error)
     const e = axiosErrorHandler(error, '/api/service/core/get-person-lists')
@@ -605,7 +612,14 @@ export const getPositionList = async ({
   try {
     const payload = { page, limit: pageSize, f_position_id, f_position_name }
     const response = await AxiosExternal.post('/api/service/core/get-position-lists', payload)
-    return response.data
+
+    const data = response?.data?.items?.data.map(i => ({
+      pk: `${i.F_POSITION_ID}-position`,
+      id: i.F_POSITION_ID,
+      name: `${i.F_POSITION_NAME}`.trim(),
+      type: 'ตำแหน่ง'
+    }))
+    return { data, total: response?.data?.items.total }
   } catch (error) {
     console.error('Error get position list:', error)
     const e = axiosErrorHandler(error, '/api/service/core/get-position-lists')
@@ -627,7 +641,13 @@ export const getDepartmentList = async ({
   try {
     const payload = { page, limit: pageSize, f_dept_id, department_name }
     const response = await AxiosExternal.post('/api/service/core/get-department-lists', payload)
-    return response.data
+    const data = response?.data?.items?.data.map(i => ({
+      pk: `${i.F_DEPT_ID}-department`,
+      id: i.F_DEPT_ID,
+      name: `${i.DEPARTMENT_NAME}`.trim(),
+      type: 'หน่วยงาน'
+    }))
+    return { data, total: response?.data?.items.total }
   } catch (error) {
     console.error('Error get department list:', error)
     const e = axiosErrorHandler(error, '/api/service/core/get-department-lists')
@@ -815,12 +835,12 @@ export const viewFlow = async (request: any) => {
   }
 }
 
-export const fetchNotification = async ({ page, pageSize }: { page: number; pageSize: number; }) => {
+export const fetchNotification = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
     const response = await Axios.post('/notifications/list', {
       page,
       limit: pageSize,
-      order_by: "status ASC, created_at DESC"
+      order_by: 'status ASC, created_at DESC'
     })
 
     return response.data
@@ -832,10 +852,10 @@ export const fetchNotification = async ({ page, pageSize }: { page: number; page
   }
 }
 
-export const readNotificationRead = async ({ id }: { id: number; }) => {
+export const readNotificationRead = async ({ id }: { id: number }) => {
   try {
     const response = await Axios.post('/notifications/read', {
-      id,
+      id
     })
 
     return response.data
