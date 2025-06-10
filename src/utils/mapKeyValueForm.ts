@@ -1,19 +1,47 @@
+
 export const mapKeyValueForm = (formDetails: any[]): Record<string, string> => {
   const result: Record<string, string> = {}
+  const excludedTypes = new Set(['text', 'editor', 'image', 'video', 'button', 'upload', 'link', 'signature'])
 
-  formDetails.forEach((section: any) => {
-    section.fields.forEach((field: any) => {
-      field.data.forEach((item: any) => {
-        const type = item.config?.details?.type
-        const id = item.id
-        const value = item.config?.details?.value?.value
+  for (const section of formDetails) {
+    for (const field of section.fields || []) {
+      for (const item of field.data || []) {
+        const { id, config } = item
+        const type = config?.details?.type
+        const value = config?.details?.value?.value
 
-        if (type !== 'text' && id) {
+        if (!id) continue
+
+        if (type === 'dropdown') {
+          const realValue = config?.details?.keyValue?.realValue
+          const defaultValue = config?.details?.value?.value?.defaultValue
+
+          if (realValue?.trim()) {
+            result[id] = realValue
+          } else if (defaultValue?.trim()) {
+            result[id] = defaultValue
+          } else {
+            result[id] = ''
+          }
+          continue
+        }
+        if (type === 'checkbox') {
+          result[id] = config?.details?.value?.checkedList
+          continue
+        }
+
+        if (type === 'radio') {
+          result[id] = config?.details?.selectedValue
+          continue
+        }
+
+
+        if (!excludedTypes.has(type)) {
           result[id] = value
         }
-      })
-    })
-  })
+      }
+    }
+  }
 
   return result
 }

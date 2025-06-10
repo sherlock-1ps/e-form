@@ -67,6 +67,7 @@ type flowType = {
   f_position_name: string
   form_data_id: number
   id: number
+  flow_activity_name: string
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -126,11 +127,11 @@ const FlowDocTable = ({ data }: any) => {
       columnHelper.accessor('comment', {
         header: 'ความคิดเห็น',
         cell: ({ row }) => <Typography variant='body1'>{row.original.comment}</Typography>
+      }),
+      columnHelper.accessor('flow_activity_name', {
+        header: 'สถานะ',
+        cell: ({ row }) => <Typography variant='body1'>{row.original.flow_activity_name}</Typography>
       })
-      // columnHelper.accessor('status', {
-      //   header: 'สถานะ',
-      //   cell: ({ row }) => <Typography variant='body1'>{row.original.status}</Typography>
-      // })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data]

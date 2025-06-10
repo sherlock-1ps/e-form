@@ -101,8 +101,6 @@ const NotificationDropdown = () => {
   // Vars
   const notificationCount = data?.result?.data?.filter((notification: any) => notification.status == 0).length || 0
 
-  console.log('notificationCount', notificationCount)
-
   // Refs
   const anchorRef = useRef<HTMLButtonElement>(null)
   const ref = useRef<HTMLDivElement | null>(null)

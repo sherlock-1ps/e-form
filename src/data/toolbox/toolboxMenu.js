@@ -464,7 +464,10 @@ export const toolboxOptionMenu = [
         },
         value: {
           valueType: 'custom',
-          value: ''
+          value: {
+            defaultValue: '',
+            options: []
+          }
         },
         isUse: true,
         isShow: true,
