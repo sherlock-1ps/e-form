@@ -103,7 +103,7 @@ const UserDashboardComponent = () => {
           } else {
             setCurrentSection('nextFlow')
           }
-        }, 350)
+        }, 150)
       }
     } catch (error) {
       console.log('error', error)

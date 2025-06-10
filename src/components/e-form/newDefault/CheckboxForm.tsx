@@ -34,7 +34,11 @@ const CheckboxForm = ({ item, parentKey, boxId, draft }: any) => {
               className='m-0 '
               control={
                 <Checkbox
-                  checked={item?.config?.details?.value?.checkedList?.includes(data.value) ?? false}
+                  checked={
+                    Array.isArray(item?.config?.details?.value?.checkedList)
+                      ? item.config.details.value.checkedList.includes(data.value)
+                      : false
+                  }
                   name={data.name}
                   onChange={e => {
                     if (!draft) return
