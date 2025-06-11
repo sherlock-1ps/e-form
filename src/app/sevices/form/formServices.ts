@@ -585,7 +585,8 @@ export const getPersonList = async ({
     const response = await AxiosExternal.post('/api/service/core/get-person-lists', payload)
 
     const data = response?.data?.items?.data.map((i: any) => ({
-      pk: `${i.F_PERSON_ID}-person`,
+      pk: `${i.F_PERSON_ID}-1`,
+      typeId: '1',
       id: i.F_PERSON_ID,
       name: `${i.F_FIRST_NAME} ${i.F_LAST_NAME}`.trim(),
       type: 'บุคคล'
@@ -614,7 +615,8 @@ export const getPositionList = async ({
     const response = await AxiosExternal.post('/api/service/core/get-position-lists', payload)
 
     const data = response?.data?.items?.data.map((i: any) => ({
-      pk: `${i.F_POSITION_ID}-position`,
+      pk: `${i.F_POSITION_ID}-2`,
+      typeId: '2',
       id: i.F_POSITION_ID,
       name: `${i.F_POSITION_NAME}`.trim(),
       type: 'ตำแหน่ง'
@@ -642,7 +644,8 @@ export const getDepartmentList = async ({
     const payload = { page, limit: pageSize, f_dept_id, department_name }
     const response = await AxiosExternal.post('/api/service/core/get-department-lists', payload)
     const data = response?.data?.items?.data.map((i: any) => ({
-      pk: `${i.F_DEPT_ID}-department`,
+      pk: `${i.F_DEPT_ID}-3`,
+      typeId: '3',
       id: i.F_DEPT_ID,
       name: `${i.DEPARTMENT_NAME}`.trim(),
       type: 'หน่วยงาน'
@@ -655,16 +658,11 @@ export const getDepartmentList = async ({
   }
 }
 
-export const logout = async ({
-
-}: {
-
-  }) => {
+export const logout = async ({}: {}) => {
   try {
     const response = await AxiosExternal.post('/api/service/logout')
 
     return response.data
-
   } catch (error) {
     console.error('Error logout:', error)
     const e = axiosErrorHandler(error, 'api/service/logout')
@@ -841,7 +839,15 @@ export const fetchWorkMy = async ({ page, pageSize, flow_id }: { page: number; p
   }
 }
 
-export const fetchWorkEnd = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
+export const fetchWorkEnd = async ({
+  page,
+  pageSize,
+  flow_id
+}: {
+  page: number
+  pageSize: number
+  flow_id: number
+}) => {
   try {
     const response = await Axios.post('/form-datas/work/end', {
       page,
@@ -901,8 +907,15 @@ export const readNotificationRead = async ({ id }: { id: number }) => {
   }
 }
 
-
-export const reportScore = async ({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) => {
+export const reportScore = async ({
+  form_version_id,
+  start_date,
+  end_date
+}: {
+  form_version_id: number
+  start_date: string
+  end_date: string
+}) => {
   try {
     const response = await Axios.post('/form-datas/report/score', {
       form_version_id,
@@ -919,7 +932,15 @@ export const reportScore = async ({ form_version_id, start_date, end_date }: { f
   }
 }
 
-export const reportMedical = async ({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) => {
+export const reportMedical = async ({
+  form_version_id,
+  start_date,
+  end_date
+}: {
+  form_version_id: number
+  start_date: string
+  end_date: string
+}) => {
   try {
     const response = await Axios.post('/form-datas/report/medical', {
       form_version_id,
