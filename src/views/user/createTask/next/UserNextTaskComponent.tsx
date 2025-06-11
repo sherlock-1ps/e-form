@@ -117,7 +117,6 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
       })
       .filter(Boolean)
 
-    // const currentKeys = currentFlow.map((flow: any) => flow.link_from)
     let currentNode = currentFlow
       .map((flow: any) => {
         const node = nodeData.find((node: any) => node.key === flow.link_from)
@@ -271,7 +270,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                                   หรือ
                                 </Typography>
                                 <Typography className='step-title'>{data?.text ?? ''}</Typography>
-                                <Typography className='step-subtitle'>{step?.action}</Typography>
+                                <Typography className='step-subtitle'>{data?.action}</Typography>
                               </div>
                             )
                           })}
