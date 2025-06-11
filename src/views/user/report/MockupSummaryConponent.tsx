@@ -47,6 +47,13 @@ const MockupSummaryConponent = ({ onBack }: any) => {
     '1.7 ภาพรวมการให้บริการ'
   ]
 
+  const departmentData = [
+    {
+      department_name: 'ศูนย์สารสนเทศการเจรจาการค้าระหว่างประเทศ',
+      count: 4
+    }
+  ]
+
   return (
     <div className=' w-full min-h-screen relative'>
       <div className=' absolute left-0 top-0'>
@@ -84,6 +91,41 @@ const MockupSummaryConponent = ({ onBack }: any) => {
                 onChange={(date: Date | null) => setDate(date)}
                 customInput={<CustomTextField label='เลือกวันที่' fullWidth />}
               />
+            </Grid>
+
+            <Grid item xs={12} className='my-4'>
+              <Typography variant='h6' gutterBottom>
+                จำนวนหนังสือตามหน่วยงาน
+              </Typography>
+              <TableContainer
+                component={Paper}
+                variant='outlined'
+                sx={{
+                  borderRadius: '0px',
+                  overflow: 'hidden'
+                }}
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ border: '1px solid #000000' }}>หน่วยงาน</TableCell>
+                      <TableCell align='right' sx={{ border: '1px solid #000000' }}>
+                        จำนวน
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {departmentData.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell sx={{ border: '1px solid #000000' }}>{item.department_name}</TableCell>
+                        <TableCell align='right' sx={{ border: '1px solid #000000' }}>
+                          {item.count}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
             <Grid item xs={12}>
               <Typography variant='h6' fontWeight={600}>
