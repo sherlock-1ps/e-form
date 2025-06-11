@@ -17,6 +17,7 @@ import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { useState } from 'react'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useFetchReportMedicalQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { format, formatDate } from 'date-fns'
 
 const houseData = [
   {
@@ -63,12 +64,17 @@ const houseData = [
 const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
 
 const MockupReportComponent = ({ onBack }: any) => {
-  const [date, setDate] = useState<Date | undefined | null>(null)
+  const [year, setYear] = useState<Date | undefined | null>(new Date())
+
+  const selectedYear = year ? year.getFullYear() : new Date().getFullYear()
+
+  const start_date = format(new Date(selectedYear - 1, 2, 13, 0, 0, 0), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+  const end_date = format(new Date(selectedYear, 7, 10, 15, 59, 59), "yyyy-MM-dd'T'HH:mm:ss'Z'")
 
   const { data: reportData, isPending: pendingReport } = useFetchReportMedicalQueryOption({
     form_version_id: 54,
-    start_date: `2024-03-13T00:00:00Z`,
-    end_date: `2025-06-10T15:59:59Z`
+    start_date,
+    end_date
   })
 
   return (
@@ -102,10 +108,11 @@ const MockupReportComponent = ({ onBack }: any) => {
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <AppReactDatepicker
-                selected={date}
-                dateFormat='dd/MM/yyyy'
-                onChange={(date: Date | null) => setDate(date)}
-                customInput={<CustomTextField label='เลือกวันที่' fullWidth />}
+                selected={year}
+                showYearPicker
+                dateFormat='yyyy'
+                onChange={(date: Date | null) => setYear(date)}
+                customInput={<CustomTextField label='เลือกปี' fullWidth />}
               />
             </Grid>
             <Grid item xs={12}>

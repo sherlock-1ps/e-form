@@ -1,7 +1,8 @@
 'use client'
+
 // MUI Imports
 import Button from '@mui/material/Button'
-import { Divider, Grid, IconButton, InputAdornment, MenuItem, Typography } from '@mui/material'
+import { Divider, Grid, Typography } from '@mui/material'
 
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
@@ -23,32 +24,18 @@ const OtpSignDialog = ({ id, onSave }: signProps) => {
   const [otp, setOtp] = useState(Array(6).fill(''))
   const [isCanResend, setIsCanResend] = useState(false)
   const [countdown, setCountdown] = useState(30)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleOtpChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return // รับเฉพาะตัวเลข
+    if (!/^\d*$/.test(value)) return
 
     const newOtp = [...otp]
     newOtp[index] = value.slice(-1)
     setOtp(newOtp)
 
-    // focus ช่องถัดไป
     if (value && index < 5) {
       const next = document.getElementById(`otp-${index + 1}`)
       next?.focus()
-    }
-  }
-
-  const handleConfirm = async () => {
-    try {
-      const response = await onSave(comment)
-      if (response?.code == 'SUCCESS') {
-        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
-        closeDialog(id)
-        router.push(`/${locale}/user/allTask`)
-      }
-    } catch (err) {
-      console.error('save failed', err)
-      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
     }
   }
 
@@ -56,6 +43,25 @@ const OtpSignDialog = ({ id, onSave }: signProps) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       const prev = document.getElementById(`otp-${index - 1}`)
       prev?.focus()
+    }
+  }
+
+  const handleConfirm = async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
+
+    try {
+      const response = await onSave(comment)
+      if (response?.code === 'SUCCESS') {
+        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
+        closeDialog(id)
+        router.push(`/${locale}/user/allTask`)
+      }
+    } catch (err) {
+      console.error('save failed', err)
+      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -100,6 +106,7 @@ const OtpSignDialog = ({ id, onSave }: signProps) => {
           />
         ))}
       </Grid>
+
       <Grid item xs={12}>
         {isCanResend ? (
           <Typography className='text-center'>
@@ -109,27 +116,16 @@ const OtpSignDialog = ({ id, onSave }: signProps) => {
             </Button>
           </Typography>
         ) : (
-          <Typography className='text-center'>ส่งอีกครั้งใน {countdown.toString()} วินาที</Typography>
+          <Typography className='text-center'>ส่งอีกครั้งใน {countdown} วินาที</Typography>
         )}
       </Grid>
 
-      <Grid item xs={12} className='flex items-center  justify-end gap-2'>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => {
-            closeDialog(id)
-          }}
-        >
+      <Grid item xs={12} className='flex items-center justify-end gap-2'>
+        <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
           ยกเลิก
         </Button>
-        <Button
-          variant='contained'
-          onClick={() => {
-            handleConfirm()
-          }}
-        >
-          ยืนยัน
+        <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
+          {isSubmitting ? 'กำลังยืนยัน...' : 'ยืนยัน'}
         </Button>
       </Grid>
     </Grid>

@@ -1,13 +1,10 @@
 'use client'
-// MUI Imports
+
 import Button from '@mui/material/Button'
 import { Grid, Typography } from '@mui/material'
-
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useState } from 'react'
-import { useFormStore } from '@/store/useFormStore'
-import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
 import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
 
@@ -23,16 +20,22 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
   const params = useParams()
   const { lang: locale } = params
   const { closeDialog } = useDialog()
+
   const [comment, setComment] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleConfirm = async () => {
     if (!comment) {
       toast.error('ต้องกรอกความคิดเห็น', { autoClose: 3000 })
       return
     }
+
+    if (isSubmitting) return
+    setIsSubmitting(true)
+
     try {
       const response = await onSave(comment, flowId)
-      if (response?.code == 'SUCCESS') {
+      if (response?.code === 'SUCCESS') {
         toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
         router.push(`/${locale}/user/followTask`)
         closeDialog(id)
@@ -40,6 +43,8 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
     } catch (err) {
       console.error('save failed', err)
       toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -50,6 +55,7 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
           {title}
         </Typography>
       </Grid>
+
       <Grid item xs={12}>
         <CustomTextField
           rows={5}
@@ -62,23 +68,12 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
         />
       </Grid>
 
-      <Grid item xs={12} className='flex items-center  justify-end gap-2'>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => {
-            closeDialog(id)
-          }}
-        >
+      <Grid item xs={12} className='flex items-center justify-end gap-2'>
+        <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
           ยกเลิก
         </Button>
-        <Button
-          variant='contained'
-          onClick={() => {
-            handleConfirm()
-          }}
-        >
-          ยืนยัน
+        <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
+          {isSubmitting ? 'กำลังบันทึก...' : 'ยืนยัน'}
         </Button>
       </Grid>
     </Grid>
