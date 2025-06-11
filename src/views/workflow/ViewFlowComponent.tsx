@@ -66,17 +66,22 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
       }
     }
 
-    setTimeout(() => {
-      let newColor = blue
-      setInterval(() => {
-        changeNodeColorByKey(lastId, newColor)
+    let newColor = blue
+    let countRunning = 0
+    clearInterval(window.flowAnimation)
+    window.flowAnimation = setInterval(() => {
+      changeNodeColorByKey(lastId, newColor)
 
-        if (newColor == blue) {
-          newColor = green
-        } else {
-          newColor = blue
-        }
-      }, 1000)
+      if (newColor == blue) {
+        newColor = green
+      } else {
+        newColor = blue
+      }
+      countRunning++
+
+      if (countRunning == 20) {
+        clearInterval(window.flowAnimation)
+      }
     }, 1000)
 
     console.log('flow', response.result)
