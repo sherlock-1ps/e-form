@@ -196,10 +196,11 @@ const UserDashboardTable = ({
       //     />
       //   )
       // },
-      columnHelper.accessor('created_at', {
-        header: 'วันที่สร้าง',
-        cell: ({ row }) => <Typography variant='body2'>{FormatShowDate(row.original.created_at)}</Typography>
-      }),
+      // columnHelper.accessor('created_at', {
+      //   header: 'วันที่สร้าง',
+      //   cell: ({ row }) => <Typography variant='body2'>{FormatShowDate(row.original.created_at)}</Typography>
+      // }),
+
       columnHelper.accessor('created_by', {
         header: 'เริ่มโดย',
         cell: ({ row }) => (
@@ -239,6 +240,10 @@ const UserDashboardTable = ({
           )
         },
         enableSorting: false
+      }),
+      columnHelper.accessor('current_activity_names', {
+        header: 'การเดินหนังสือล่าสุด',
+        cell: ({ row }) => <Typography variant='body2'>{row.original.current_activity_names ?? '-'}</Typography>
       }),
       columnHelper.accessor('current_assignees_user_names', {
         header: 'ผู้รับผิดชอบปัจจุบัน',
