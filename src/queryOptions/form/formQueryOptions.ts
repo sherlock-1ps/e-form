@@ -48,6 +48,8 @@ import {
   getStartFlow,
   getUploadFile,
   readNotificationRead,
+  reportMedical,
+  reportScore,
   saveStartFlow,
   updateApi,
   updateDateFlow,
@@ -684,5 +686,21 @@ export const useReadNotification = () => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['notificationList'] })
     }
+  })
+}
+
+
+export function useFetchReportScoreQueryOption({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) {
+  return useQuery({
+    queryKey: ['reportScore'],
+    queryFn: () => reportScore({ form_version_id, start_date, end_date })
+  })
+}
+
+
+export function useFetchReportMedicalQueryOption({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) {
+  return useQuery({
+    queryKey: ['reportMedical'],
+    queryFn: () => reportMedical({ form_version_id, start_date, end_date })
   })
 }

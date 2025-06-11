@@ -126,7 +126,7 @@ const UserDashboardComponent = () => {
   }
 
   if (currentSection === 'startFlow') return <UserStartTaskComponent data={dataNextFlow} />
-  if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} />
+  if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} isView={true} />
 
   return (
     <TabContext value={value}>
@@ -192,6 +192,7 @@ const UserDashboardComponent = () => {
                     count={workMyData?.result?.total}
                     onManage={handleClickManange}
                     onViewFlow={handleShowFlow}
+                    isView={false}
                   />
                 </Grid>
                 <Divider />

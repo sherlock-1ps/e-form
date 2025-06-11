@@ -163,7 +163,8 @@ const UserDashboardTable = ({
   setPageSize,
   count,
   onManage,
-  onViewFlow
+  onViewFlow,
+  isView = true
 }: any) => {
   const { showDialog } = useDialog()
   const profile = useAuthStore(state => state.profile)
@@ -357,7 +358,7 @@ const UserDashboardTable = ({
                   })
                 }}
               >
-                จัดการ
+                {isView ? 'ดูรายละเอียด' : 'จัดการ'}
               </Button>
             </div>
           )

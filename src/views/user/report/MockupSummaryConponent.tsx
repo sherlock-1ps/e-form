@@ -18,6 +18,7 @@ import { forwardRef, useState } from 'react'
 import { formatDate } from 'date-fns'
 import CustomTextField from '@/@core/components/mui/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
+import { useFetchReportScoreQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 const layout = 'vertical'
 type CustomInputProps = TextFieldProps & {
@@ -36,7 +37,14 @@ const CustomInput = forwardRef((props: CustomInputProps, ref) => {
 })
 
 const MockupSummaryConponent = ({ onBack }: any) => {
-  const [date, setDate] = useState<Date | undefined | null>(null)
+  const [year, setYear] = useState<Date | undefined | null>(new Date())
+
+  const { data: reportData, isPending: pendingReport } = useFetchReportScoreQueryOption({
+    form_version_id: 54,
+    start_date: `2024-03-13T00:00:00Z`,
+    end_date: `2025-06-10T15:59:59Z`
+  })
+
   const rows = [
     '1.1 การรับส่งเอกสาร ถูกต้องและรวดเร็ว',
     '1.2 ความรอบรู้ในการติดต่อประสานงาน',
@@ -54,9 +62,11 @@ const MockupSummaryConponent = ({ onBack }: any) => {
     }
   ]
 
+  console.log('reportData', reportData)
+
   return (
     <div className=' w-full min-h-screen relative'>
-      <div className=' absolute left-0 top-0'>
+      <div className=' absolute left-0 top-0 z-10'>
         <div className='bg-primaryLight  rounded-lg'>
           <Button
             color='primary'
@@ -86,10 +96,11 @@ const MockupSummaryConponent = ({ onBack }: any) => {
             {/* หัวข้อ */}
             <Grid item xs={4}>
               <AppReactDatepicker
-                selected={date}
-                dateFormat='dd/MM/yyyy'
-                onChange={(date: Date | null) => setDate(date)}
-                customInput={<CustomTextField label='เลือกวันที่' fullWidth />}
+                selected={year}
+                showYearPicker
+                dateFormat='yyyy'
+                onChange={(date: Date | null) => setYear(date)}
+                customInput={<CustomTextField label='เลือกปี' fullWidth />}
               />
             </Grid>
 

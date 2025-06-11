@@ -16,6 +16,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { useState } from 'react'
 import CustomTextField from '@/@core/components/mui/TextField'
+import { useFetchReportMedicalQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 const houseData = [
   {
@@ -63,6 +64,12 @@ const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.'
 
 const MockupReportComponent = ({ onBack }: any) => {
   const [date, setDate] = useState<Date | undefined | null>(null)
+
+  const { data: reportData, isPending: pendingReport } = useFetchReportMedicalQueryOption({
+    form_version_id: 54,
+    start_date: `2024-03-13T00:00:00Z`,
+    end_date: `2025-06-10T15:59:59Z`
+  })
 
   return (
     <div className=' w-full min-h-screen relative'>

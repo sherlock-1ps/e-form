@@ -900,3 +900,38 @@ export const readNotificationRead = async ({ id }: { id: number }) => {
     throw e
   }
 }
+
+
+export const reportScore = async ({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) => {
+  try {
+    const response = await Axios.post('/form-datas/report/score', {
+      form_version_id,
+      start_date,
+      end_date
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error report score:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/report/score')
+    throw e
+  }
+}
+
+export const reportMedical = async ({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) => {
+  try {
+    const response = await Axios.post('/form-datas/report/medical', {
+      form_version_id,
+      start_date,
+      end_date
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error report medical:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/report/medical')
+    throw e
+  }
+}
