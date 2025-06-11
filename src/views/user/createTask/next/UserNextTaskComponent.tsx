@@ -117,6 +117,9 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
       })
       .filter(Boolean)
 
+    const lastLinkTo = completedFlow[completedFlow.length - 1]?.link_to
+    const findEnd = currentFlow.length === 0 ? nodeData.filter((node: any) => node.key === lastLinkTo) : []
+
     let currentNode = currentFlow
       .map((flow: any) => {
         const node = nodeData.find((node: any) => node.key === flow.link_from)
@@ -134,7 +137,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
       ]
     }
 
-    const result = [...nodeOld, ...currentNode]
+    const result = [...nodeOld, ...currentNode, ...findEnd]
 
     setStartStep(result)
     setWatchFormTrue()
