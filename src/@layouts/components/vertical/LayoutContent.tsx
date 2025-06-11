@@ -35,7 +35,9 @@ const LayoutContent = ({ children }: ChildrenType) => {
       isContentCompact={contentCompact}
       className={classnames(verticalLayoutClasses.content, 'flex-auto', {
         [`${verticalLayoutClasses.contentCompact} is-full`]:
-          isBreakpointReached && isWatchForm ? contentWide : contentCompact,
+          (isBreakpointReached && isWatchForm) || (isWatchForm && pathname.includes('/user/report'))
+            ? contentWide
+            : contentCompact,
         // [`${verticalLayoutClasses.contentCompact} is-full`]: contentWide,
 
         [verticalLayoutClasses.contentWide]: contentWide

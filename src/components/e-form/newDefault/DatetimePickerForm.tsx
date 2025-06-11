@@ -27,7 +27,6 @@ const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
 
   const handleChange = (newDate: Dayjs | null) => {
     setDate(newDate)
-    setOpen(false)
     if (newDate) {
       const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
       updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', formattedDate)

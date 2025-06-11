@@ -15,25 +15,30 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { forwardRef, useState } from 'react'
-import { format, formatDate } from 'date-fns'
+import { format, formatDate, addDays, subDays, setHours, setMinutes } from 'date-fns'
+
 import CustomTextField from '@/@core/components/mui/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
 import { useFetchReportScoreQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import dayjs, { Dayjs } from 'dayjs'
+import 'dayjs/locale/th'
+import newAdapter from '@/libs/newAdapter'
 
 const layout = 'vertical'
-type CustomInputProps = TextFieldProps & {
-  label?: string
-  end: Date | number
-  start: Date | number
-}
 
 const MockupSummaryConponent = ({ onBack }: any) => {
-  const [year, setYear] = useState<Date | undefined | null>(new Date())
+  const [dateStart, setDateStart] = useState<Dayjs | null>(() => dayjs().subtract(10, 'day'))
+  const [dateEnd, setDateEnd] = useState<Dayjs | null>(() => dayjs())
+  const [openStartTime, setOpenStartTime] = useState(false)
+  const [openEndTime, setOpenEndTime] = useState(false)
 
-  const selectedYear = year ? year.getFullYear() : new Date().getFullYear()
+  const formatToISOStringNoMs = (date: Date) => {
+    return date.toISOString().split('.')[0] + 'Z'
+  }
 
-  const start_date = format(new Date(selectedYear - 1, 2, 13, 0, 0, 0), "yyyy-MM-dd'T'HH:mm:ss'Z'")
-  const end_date = format(new Date(selectedYear, 7, 10, 15, 59, 59), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+  const start_date = dateStart ? formatToISOStringNoMs(dateStart.toDate()) : ''
+  const end_date = dateEnd ? formatToISOStringNoMs(dateEnd.toDate()) : ''
 
   const { data: reportData, isPending: pendingReport } = useFetchReportScoreQueryOption({
     form_version_id: 54,
@@ -93,6 +98,20 @@ const MockupSummaryConponent = ({ onBack }: any) => {
     }
   })
 
+  const handleChangeStart = (newDate: Dayjs | null) => {
+    setDateStart(newDate)
+    if (newDate) {
+      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
+    }
+  }
+
+  const handleChangeEnd = (newDate: Dayjs | null) => {
+    setDateEnd(newDate)
+    if (newDate) {
+      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
+    }
+  }
+
   return (
     <div className=' w-full min-h-screen relative'>
       <div className=' absolute left-0 top-0 z-10'>
@@ -123,18 +142,108 @@ const MockupSummaryConponent = ({ onBack }: any) => {
           }}
         >
           <Grid container spacing={4}>
-            <Grid item xs={4}>
+            {/* <Grid item xs={6}>
               <AppReactDatepicker
-                selected={year}
-                showYearPicker
-                dateFormat='yyyy'
-                onChange={(date: Date | null) => setYear(date)}
-                customInput={<CustomTextField label='เลือกปี' fullWidth />}
+                showTimeSelect
+                id='exclude-time'
+                selected={timeStart}
+                dateFormat='dd/MM/yyyy h:mm aa'
+                onChange={(date: Date | null) => setTimeStart(date)}
+                customInput={<CustomTextField label='วันเวลาเริ่มต้น' fullWidth />}
+                excludeTimes={[
+                  setHours(setMinutes(new Date(), 0), 17),
+                  setHours(setMinutes(new Date(), 30), 18),
+                  setHours(setMinutes(new Date(), 30), 19),
+                  setHours(setMinutes(new Date(), 30), 17)
+                ]}
               />
+            </Grid> */}
+
+            <Grid item xs={6}>
+              <div className='w-full'>
+                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                  <MobileDateTimePicker
+                    open={openStartTime}
+                    onClose={() => setOpenStartTime(false)}
+                    value={dateStart}
+                    onChange={handleChangeStart}
+                    format='DD/MM/YYYY HH:mm'
+                    // label={date ? '' : item?.config?.details?.placeholder?.value}
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                        fullWidth: true,
+                        placeholder: 'วันเวลาเริ่มต้น',
+                        label: 'วันเวลาเริ่มต้น',
+                        onClick: () => setOpenStartTime(true),
+                        onFocus: () => {},
+                        onBlur: () => {},
+                        InputLabelProps: {},
+                        InputProps: {
+                          sx: {
+                            '& .MuiInputAdornment-root': {
+                              display: 'none'
+                            }
+                          }
+                        }
+                      }
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
             </Grid>
+            <Grid item xs={6}>
+              <div className='w-full'>
+                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                  <MobileDateTimePicker
+                    open={openEndTime}
+                    onClose={() => setOpenEndTime(false)}
+                    value={dateEnd}
+                    onChange={handleChangeEnd}
+                    format='DD/MM/YYYY HH:mm'
+                    // label={date ? '' : item?.config?.details?.placeholder?.value}
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                        fullWidth: true,
+                        placeholder: 'วันเวลาสิ้นสุด',
+                        label: 'วันเวลาสิ้นสุด',
+                        onClick: () => setOpenEndTime(true),
+                        onFocus: () => {},
+                        onBlur: () => {},
+                        InputLabelProps: {},
+                        InputProps: {
+                          sx: {
+                            '& .MuiInputAdornment-root': {
+                              display: 'none'
+                            }
+                          }
+                        }
+                      }
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+            </Grid>
+            {/* <Grid item xs={6}>
+              <AppReactDatepicker
+                showTimeSelect
+                id='exclude-time'
+                selected={timeEnd}
+                dateFormat='dd/MM/yyyy h:mm aa'
+                onChange={(date: Date | null) => setTimeEnd(date)}
+                customInput={<CustomTextField label='วันเวลาสิ้นสุด' fullWidth />}
+                excludeTimes={[
+                  setHours(setMinutes(new Date(), 0), 17),
+                  setHours(setMinutes(new Date(), 30), 18),
+                  setHours(setMinutes(new Date(), 30), 19),
+                  setHours(setMinutes(new Date(), 30), 17)
+                ]}
+              />
+            </Grid> */}
+
             {reportData?.result?.data?.score_by_group ? (
               <>
-                {' '}
                 <Grid item xs={12} className='my-4'>
                   <Typography variant='h6' gutterBottom>
                     จำนวนหนังสือตามหน่วยงาน
