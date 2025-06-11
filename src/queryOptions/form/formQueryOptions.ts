@@ -36,6 +36,7 @@ import {
   fetchNotification,
   fetchVariable,
   fetchWorkAll,
+  fetchWorkEnd,
   fetchWorkInProgress,
   fetchWorkMy,
   getDepartmentList,
@@ -620,6 +621,19 @@ export function useFetchWorkMyQueryOption(
   return useQuery({
     queryKey: ['workMy', page, pageSize, flow_id],
     queryFn: () => fetchWorkMy({ page, pageSize, flow_id }),
+    ...options
+  })
+}
+
+export function useFetchWorkEndQueryOption(
+  page: number,
+  pageSize: number,
+  flow_id: number,
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ['workEnd', page, pageSize, flow_id],
+    queryFn: () => fetchWorkEnd({ page, pageSize, flow_id }),
     ...options
   })
 }

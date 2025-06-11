@@ -87,7 +87,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
   }
 }
 
-const NotificationDropdown = () => {
+const NotificationDropdown = ({ iconColor = false }: any) => {
   const { showDialog } = useDialog()
   const router = useRouter()
   const { lang: locale } = useParams()
@@ -178,7 +178,13 @@ const NotificationDropdown = () => {
 
   return (
     <>
-      <IconButton ref={anchorRef} onClick={handleToggle}>
+      <IconButton
+        ref={anchorRef}
+        onClick={handleToggle}
+        className={classnames({
+          'text-backgroundDefault': !iconColor
+        })}
+      >
         <Badge
           color='error'
           className='cursor-pointer'

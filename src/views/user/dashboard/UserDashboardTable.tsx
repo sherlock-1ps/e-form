@@ -141,6 +141,15 @@ interface TableRowData {
   department_name: any
   flow_id: number
 }
+
+const statusMap: Record<
+  string,
+  { color: 'primary' | 'success' | 'warning' | 'error' | 'default' | 'secondary'; label?: string }
+> = {
+  draft: { color: 'primary', label: 'Draft' },
+  end: { color: 'secondary', label: 'End' },
+  active: { color: 'success', label: 'Active' }
+}
 // Column Definitions
 const columnHelper = createColumnHelper<TableRowData>()
 
@@ -212,15 +221,23 @@ const UserDashboardTable = ({
       }),
       columnHelper.accessor('status', {
         header: 'สถานะล่าสุด',
-        cell: ({ row }) => (
-          <div className='flex  gap-2'>
-            {row.original.status == 'draft' && (
-              <Chip className=' capitalize' label={row.original.status} size='small' variant='tonal' color='primary' />
-            )}
+        cell: ({ row }) => {
+          const status = row.original.status
+          const chipConfig = statusMap[status] || { color: 'default', label: status }
 
-            <Typography>{FormatShowDate(row.original.updated_at)}</Typography>
-          </div>
-        ),
+          return (
+            <div className='flex gap-2 items-center'>
+              <Chip
+                className='capitalize'
+                label={chipConfig.label}
+                size='small'
+                variant='tonal'
+                color={chipConfig.color}
+              />
+              <Typography>{FormatShowDate(row.original.updated_at)}</Typography>
+            </div>
+          )
+        },
         enableSorting: false
       }),
       columnHelper.accessor('current_assignees_user_names', {

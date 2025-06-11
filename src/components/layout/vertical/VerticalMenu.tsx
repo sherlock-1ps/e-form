@@ -4,6 +4,7 @@ import { useParams, usePathname } from 'next/navigation'
 
 // MUI Imports
 import { useTheme } from '@mui/material/styles'
+import LogoutIcon from '@mui/icons-material/Logout'
 
 // Third-party Imports
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -19,11 +20,13 @@ import {
   Task,
   Add,
   PushPin,
-  ViewList
+  ViewList,
+  AssignmentTurnedIn,
+  Assessment
 } from '@mui/icons-material'
 
 // Type Imports
-import { Divider, Typography } from '@mui/material'
+import { Button, Divider, Typography } from '@mui/material'
 
 import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
@@ -46,6 +49,8 @@ import menuSectionStyles from '@core/styles/vertical/menuSectionStyles'
 import { useHasPermission } from '@/hooks/useHasPermission'
 import ToolboxFormNavigation from './ToolboxFormNavigation/ToolboxFormNavigation'
 import { useMemo } from 'react'
+import { useDialog } from '@/hooks/useDialog'
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 
 // Menu Data Imports
 // import menuData from '@/data/navigation/verticalMenuData'
@@ -67,6 +72,8 @@ const RenderExpandIcon = ({ open, transitionDuration }: RenderExpandIconProps) =
 )
 
 const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
+  const { showDialog } = useDialog()
+
   // Hooks
   const theme = useTheme()
   const verticalNavOptions = useVerticalNav()
@@ -127,6 +134,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/user/dashboard`} icon={<Task style={{ width: '20px', height: '20px' }} />}>
             งานของฉัน
           </MenuItem>
+
           <Divider className='my-2' />
           <MenuItem href={`/${locale}/user/followTask`} icon={<PushPin style={{ width: '20px', height: '20px' }} />}>
             งานที่กำลังติดตาม
@@ -134,7 +142,17 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/user/allTask`} icon={<ViewList style={{ width: '20px', height: '20px' }} />}>
             งานทั้งหมด
           </MenuItem>
+          <MenuItem
+            href={`/${locale}/user/doneTask`}
+            icon={<AssignmentTurnedIn style={{ width: '20px', height: '20px' }} />}
+          >
+            งานที่จบแล้ว
+          </MenuItem>
+          <MenuItem href={`/${locale}/user/report`} icon={<Assessment style={{ width: '20px', height: '20px' }} />}>
+            รายงาน
+          </MenuItem>
         </SubMenu>
+
         <SubMenu label={'การจัดการ'} className='mt-4 p-4 rounded-lg bg-white shadow-lg'>
           <MenuItem
             href={`/${locale}/admin/dashboard`}
@@ -161,6 +179,31 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             จัดการคลังมีเดีย
           </MenuItem> */}
         </SubMenu>
+
+        <div className='w-full mt-4 px-4'>
+          <Button
+            variant='contained'
+            fullWidth
+            color='error'
+            startIcon={<LogoutIcon style={{ width: 20, height: 20 }} />}
+            onClick={() => {
+              showDialog({
+                id: 'alertLogout',
+                component: (
+                  <ConfirmAlert
+                    id='alertLogout'
+                    title={'ออกจากระบบ'}
+                    content1={'คุณต้องการออกจากระบบใช่หรือไม่ ?'}
+                    onClick={() => {}}
+                  />
+                ),
+                size: 'sm'
+              })
+            }}
+          >
+            ออกจากระบบ
+          </Button>
+        </div>
 
         {process.env.NEXT_PUBLIC_ENVIRONMENT == 'prod' ? null : (
           <>
@@ -497,7 +540,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             options: { wheelPropagation: false, suppressScrollX: true }
             // onScrollY: container => scrollMenu(container, true)
           })}
-      className=' bg-gray-100'
+      className=' bg-gray-100 h-full z-50'
     >
       {/* Vertical Menu */}
       {renderNavigationMenu}

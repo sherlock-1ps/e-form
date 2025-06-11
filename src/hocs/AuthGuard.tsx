@@ -25,6 +25,7 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const [mounted, setMounted] = useState(false)
+  const [urlRedirect, setUrlRedirect] = useState('')
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -47,6 +48,10 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
       if (response.code == 'SUCCESS') {
         useAuthStore.getState().setTokens(key ?? '')
         useAuthStore.getState().setProfile(response?.result?.data?.userLogin)
+      } else {
+        if (response?.url) {
+          setUrlRedirect(response.url)
+        }
       }
     } catch (error) {
       console.log('error', error)
@@ -59,7 +64,7 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
             title={'Invailid JWT'}
             content1={'please login again!'}
             onClick={() => {
-              alert('fill jwt in url')
+              window.location.href = urlRedirect
             }}
           />
         ),
@@ -78,12 +83,14 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
       const status = error?.response?.status ?? 500
       const code = error?.response?.data?.code ?? 'UNKNOWN'
       const message = error?.response?.data?.message ?? 'Internal Server Error'
+      const url = error?.response?.data?.result?.data?.url_redirect
 
       return {
         success: false,
         status,
         code,
-        message
+        message,
+        url
       }
     }
   }
@@ -97,7 +104,7 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
       {children}
     </PermissionRedirect>
   ) : (
-    <AuthRedirect />
+    <AuthRedirect url={urlRedirect} />
   )
 }
 

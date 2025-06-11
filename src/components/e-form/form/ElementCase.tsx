@@ -15,6 +15,7 @@ import SignatureForm from '../newDefault/SignatureForm'
 import UploadForm from '../newDefault/UploadForm'
 import EditorForm from '../newDefault/EditorForm'
 import DatePickerForm from '../newDefault/DatePickerForm'
+import DataGridForm from '../newDefault/DataGridForm'
 
 const ElementCase = ({ item, draft = false, parentKey, boxId }: any) => {
   const renderContent = (item: any) => {
@@ -41,6 +42,8 @@ const ElementCase = ({ item, draft = false, parentKey, boxId }: any) => {
         return <LinkForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
       case 'signature':
         return <SignatureForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
+      case 'dataGrid':
+        return <DataGridForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
       case 'dropdown':
         return <DropdownForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
       case 'checkbox':

@@ -5,11 +5,11 @@ import { useDialog } from '@/hooks/useDialog'
 import { useEffect } from 'react'
 import ConfirmAlert from './dialogs/alerts/ConfirmAlert'
 
-const AuthRedirect = () => {
+const AuthRedirect = ({ url }: any) => {
   const { showDialog } = useDialog()
 
   useEffect(() => {
-    const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_MAIN_URL
+    const redirectUrl = url
     if (redirectUrl) {
       showDialog({
         id: 'alertErrorToken',

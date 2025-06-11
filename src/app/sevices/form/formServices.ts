@@ -824,6 +824,23 @@ export const fetchWorkMy = async ({ page, pageSize, flow_id }: { page: number; p
   }
 }
 
+export const fetchWorkEnd = async ({ page, pageSize, flow_id }: { page: number; pageSize: number; flow_id: number }) => {
+  try {
+    const response = await Axios.post('/form-datas/work/end', {
+      page,
+      limit: pageSize,
+      flow_id
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetch work end:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/work/end')
+    throw e
+  }
+}
+
 export const viewFlow = async (request: any) => {
   try {
     const response = await Axios.post('/form-datas/view-flow', request)

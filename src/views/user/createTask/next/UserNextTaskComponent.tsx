@@ -114,7 +114,8 @@ const UserNextTaskComponent = ({ data }: any) => {
     const targetNodes =
       currentNodes.length > 1 ? [{ ...currentNodes[0], children: currentNodes.slice(1) }] : currentNodes
 
-    const result = [...filteredNodes, ...targetNodes]
+    // const result = [...filteredNodes, ...targetNodes]
+    const result = [...filteredNodes]
 
     setStartStep(result)
   }, [])

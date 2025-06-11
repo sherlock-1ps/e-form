@@ -55,7 +55,17 @@ const Navbar = (props: Props) => {
   return (
     <StyledHeader
       theme={theme}
-      overrideStyles={overrideStyles}
+      // overrideStyles={overrideStyles}
+      overrideStyles={{
+        ...overrideStyles,
+        ...(headerFloating && {
+          background: 'linear-gradient(to right, #47B0FF, #2D78DB, #1E69CB)',
+          borderRadius: '0px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          height: '80px'
+        })
+      }}
+      style={{ inlineSize: '100%' }}
       className={classnames(verticalLayoutClasses.header, {
         [verticalLayoutClasses.headerFixed]: headerFixed,
         [verticalLayoutClasses.headerStatic]: headerStatic,
@@ -68,7 +78,9 @@ const Navbar = (props: Props) => {
         scrolled: trigger
       })}
     >
-      <div className={classnames(verticalLayoutClasses.navbar, 'flex bs-full')}>{children}</div>
+      <div className={classnames(verticalLayoutClasses.navbar, 'flex bs-full bg-transparent shadow-none')}>
+        {children}
+      </div>
     </StyledHeader>
   )
 }

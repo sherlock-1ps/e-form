@@ -118,9 +118,10 @@ const ThemeProvider = (props: Props) => {
           <CssBaseline />
           <div
             style={{
-              background: pathName.includes('/admin/form')
-                ? '#E9EAEF'
-                : 'linear-gradient(to right, #47B0FF, #2D78DB, #1E69CB)'
+              // background: pathName.includes('/admin/form')
+              //   ? '#E9EAEF'
+              //   : 'linear-gradient(to right, #47B0FF, #2D78DB, #1E69CB)'
+              background: '#E9EAEF'
             }}
             className='min-h-screen'
           >
