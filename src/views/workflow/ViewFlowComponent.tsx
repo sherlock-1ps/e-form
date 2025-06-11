@@ -29,6 +29,7 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
 
     function changeNodeColorByKey(key: string, newColor: string) {
       const node = window.myDiagram.findNodeForKey(key)
+
       if (node) {
         window.myDiagram.model.startTransaction('change node color')
         window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
@@ -38,17 +39,20 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
 
     const green = '#53D28C'
     const blue = '#2c9afc'
+    let nodeColor = '#fff'
     const formDataDetails = response?.result?.data?.form_data_detail ?? []
     let lastId = 0
     window.myDiagram.links.each(function (link: any) {
       console.log('link', link.data)
 
       if (link.fromNode.data.key === -1) {
+        lastId = link.data.to
         // start
         window.myDiagram.model.setDataProperty(link.data, 'color', green)
       }
 
       for (const element of formDataDetails) {
+        // nodeColor = green
         lastId = element.link_to
         if (link.fromNode.data.key === element.link_from && link.toNode.data.key === element.link_to) {
           changeNodeColorByKey(link.fromNode.data.key, green)
@@ -57,8 +61,12 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
       }
     })
 
+    function getNode(key) {
+      return window.myDiagram.findNodeForKey(key)
+    }
+
     function changeNodeColorByKey(key, newColor) {
-      const node = window.myDiagram.findNodeForKey(key)
+      const node = getNode(key)
       if (node) {
         window.myDiagram.model.startTransaction('change node color')
         window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
@@ -69,20 +77,23 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
     let newColor = blue
     let countRunning = 0
     clearInterval(window.flowAnimation)
+    // setTimeout(() => {
+    const node = getNode(lastId)
+
+    nodeColor = node?.data?.fill || '#fff'
     window.flowAnimation = setInterval(() => {
       changeNodeColorByKey(lastId, newColor)
-
       if (newColor == blue) {
-        newColor = green
+        newColor = nodeColor
       } else {
         newColor = blue
       }
       countRunning++
-
-      if (countRunning == 20) {
+      if (countRunning == 51) {
         clearInterval(window.flowAnimation)
       }
     }, 1000)
+    // }, 500)
 
     console.log('flow', response.result)
   }
