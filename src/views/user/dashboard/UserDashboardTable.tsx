@@ -220,7 +220,11 @@ const UserDashboardTable = ({
       }),
       columnHelper.accessor('name', {
         header: 'ชื่องาน',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original?.name}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary' variant='body2'>
+            {row.original?.name}
+          </Typography>
+        )
       }),
       columnHelper.accessor('status', {
         header: 'สถานะล่าสุด',
