@@ -43,7 +43,9 @@ const ElementCase = ({ item, draft = false, parentKey, boxId }: any) => {
       case 'signature':
         return <SignatureForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
       case 'dataGrid':
-        return <DataGridForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
+        return
+      // return <DataGridForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
+
       case 'dropdown':
         return <DropdownForm item={item} parentKey={parentKey} boxId={boxId} draft={draft} />
       case 'checkbox':
