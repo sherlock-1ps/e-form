@@ -268,7 +268,9 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                           step.children?.map((data: any, index: number) => {
                             return (
                               <div className='step-label flex flex-col items-start' key={index}>
-                                <Typography className='step-title self-center'>หรือ</Typography>
+                                <Typography className='self-center' variant='body2'>
+                                  หรือ
+                                </Typography>
                                 <Typography className='step-title'>{data?.text ?? ''}</Typography>
                                 <Typography className='step-subtitle'>{step?.action}</Typography>
                               </div>
