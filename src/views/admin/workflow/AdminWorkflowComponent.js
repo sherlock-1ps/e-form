@@ -1062,7 +1062,7 @@ export default function AdminWorkflowComponent() {
             </Link>
             <div className='flex '>
               {/* <NotificationAddOutlined sx={{ width: '24px', height: '24px', color: '#11151AE5' }} /> */}
-              <NotificationsDropdown />
+              <NotificationsDropdown iconColor={true} />
               <IconButton
                 edge='end'
                 onMouseDown={e => e.preventDefault()}
