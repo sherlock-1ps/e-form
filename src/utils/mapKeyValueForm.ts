@@ -1,3 +1,5 @@
+import { formatThaiDate } from "./formatDateTime"
+import { FormatShowDate } from "./formatShowDate"
 
 export const mapKeyValueForm = (formDetails: any[]): Record<string, string> => {
   const result: Record<string, string> = {}
@@ -128,25 +130,78 @@ export const applyKeyValueToForm = (
   }))
 }
 
-export const updateSignature = (formDetails: any[], valuesToUpdate: Record<string, string>) => {
+// export const updateSignature = (formDetails: any[], valuesToUpdate: Record<string, string>) => {
+//   return formDetails.map(section => ({
+//     ...section,
+//     fields: section.fields.map((field: any) => ({
+//       ...field,
+//       data: field.data.map((item: any) => {
+//         const id = item.id
+//         const newValue = valuesToUpdate[id]
+
+//         if (id && newValue !== undefined) {
+//           return {
+//             ...item,
+//             config: {
+//               ...item.config,
+//               details: {
+//                 ...item.config?.details,
+//                 signer: {
+//                   ...item.config?.details?.signer,
+//                   imgValue: `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${newValue}`
+//                 }
+//               }
+//             }
+//           }
+//         }
+
+//         return item
+//       })
+//     }))
+//   }))
+// }
+
+
+export const updateSignature = (
+  formDetails: any[],
+  valuesToUpdate: Record<
+    string,
+    {
+      department_name: string
+      person_id: string
+      person_name: string
+      position_name: string
+      signed_date: string
+    }
+  >
+) => {
   return formDetails.map(section => ({
     ...section,
     fields: section.fields.map((field: any) => ({
       ...field,
       data: field.data.map((item: any) => {
         const id = item.id
-        const newValue = valuesToUpdate[id]
+        const signerInfo = valuesToUpdate[id]
 
-        if (id && newValue !== undefined) {
+        if (id && signerInfo) {
           return {
             ...item,
             config: {
               ...item.config,
               details: {
                 ...item.config?.details,
+                date: {
+                  ...item.config?.details?.date,
+                  value: formatThaiDate(signerInfo?.signed_date) ?? ""
+                },
+                position: {
+                  ...item.config?.details?.position,
+                  value: signerInfo?.position_name ?? ""
+                },
                 signer: {
                   ...item.config?.details?.signer,
-                  imgValue: `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${newValue}`
+                  value: signerInfo?.person_name ?? "",
+                  imgValue: `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${signerInfo?.person_id}`
                 }
               }
             }
@@ -158,4 +213,5 @@ export const updateSignature = (formDetails: any[], valuesToUpdate: Record<strin
     }))
   }))
 }
+
 

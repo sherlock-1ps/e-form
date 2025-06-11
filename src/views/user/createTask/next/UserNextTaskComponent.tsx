@@ -228,7 +228,10 @@ const UserNextTaskComponent = ({ data }: any) => {
                 </IconButton>
               </div>
               <StepperWrapper>
-                <Stepper activeStep={startStep.length - 1} orientation='vertical'>
+                <Stepper
+                  activeStep={startStep?.find(item => item.category == 'end') ? startStep.length : startStep.length - 1}
+                  orientation='vertical'
+                >
                   {startStep.map((step, index) => (
                     <Step key={index} className={classNames({})}>
                       <StepLabel StepIconComponent={iconProps => <StepperCustomDot {...iconProps} />}>
