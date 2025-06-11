@@ -41,6 +41,7 @@ import { useDialog } from '@/hooks/useDialog'
 import NormalSignDialog from '@/components/dialogs/sign/NormalSignDialog'
 import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
 import { useFetchNotificationQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 
 type Props = {
   dictionary: Awaited<ReturnType<typeof getDictionary>>
@@ -70,6 +71,7 @@ const Navigation = (props: Props) => {
   // Props
   const { showDialog } = useDialog()
   const { dictionary, mode, systemMode } = props
+  const setWatchFormFalse = useWatchFormStore(state => state.setWatchFormFalse)
 
   // Hooks
   const pathname = usePathname()
@@ -120,6 +122,7 @@ const Navigation = (props: Props) => {
   }, [settings.layout])
 
   const renderNavigationContent = useMemo(() => {
+    setWatchFormFalse()
     if (pathname.includes('/admin/form')) {
       return <ToolboxFormNavigation />
     } else {
@@ -163,33 +166,40 @@ const Navigation = (props: Props) => {
           />
         )} */}
           </NavHeader>
-          <section
-            className='w-full h-[54px] px-3 flex items-center justify-between bg-white'
-            style={{ borderBottom: '1px solid #11151A1F' }}
-          >
-            <Link href='/'>
-              <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='flex items-center justify-center'>
-                <Home sx={{ width: '24px', height: '24px' }} />
-              </IconButton>
-            </Link>
-            <div className='flex '>
-              <NotificationsDropdown iconColor={true} />
-              <IconButton
-                edge='end'
-                onMouseDown={e => e.preventDefault()}
-                className='flex items-center justify-center'
-                onClick={() => {
-                  showDialog({
-                    id: 'alertProfileDialog',
-                    component: <ProfileDialog id='alertProfileDialog' />,
-                    size: 'sm'
-                  })
-                }}
-              >
-                <AccountCircleIcon fontSize='medium' />
-              </IconButton>
-            </div>
-          </section>
+          {!isBreakpointReached && (
+            <section
+              className='w-full h-[54px] px-3 flex items-center justify-between bg-white'
+              style={{ borderBottom: '1px solid #11151A1F' }}
+            >
+              <Link href='/'>
+                <IconButton
+                  edge='end'
+                  onMouseDown={e => e.preventDefault()}
+                  className='flex items-center justify-center'
+                >
+                  <Home sx={{ width: '24px', height: '24px' }} />
+                </IconButton>
+              </Link>
+              <div className='flex '>
+                <NotificationsDropdown iconColor={true} />
+                <IconButton
+                  edge='end'
+                  onMouseDown={e => e.preventDefault()}
+                  className='flex items-center justify-center'
+                  onClick={() => {
+                    showDialog({
+                      id: 'alertProfileDialog',
+                      component: <ProfileDialog id='alertProfileDialog' />,
+                      size: 'sm'
+                    })
+                  }}
+                >
+                  <AccountCircleIcon fontSize='medium' />
+                </IconButton>
+              </div>
+            </section>
+          )}
+
           <StyledBoxForShadow ref={shadowRef} />
           {renderNavigationContent}
         </VerticalNav>

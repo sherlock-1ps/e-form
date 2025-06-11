@@ -56,6 +56,7 @@ import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
 import FlowDocFullTable from '../../followTask/FlowDocFullTable'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CommentSignDialog from '@/components/dialogs/sign/CommentSignDialog'
+import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 
 const allowedExtensions = [
   '.jpg',
@@ -77,6 +78,8 @@ const allowedExtensions = [
 ]
 
 const UserNextTaskComponent = ({ data }: any) => {
+  const setWatchFormFalse = useWatchFormStore(state => state.setWatchFormFalse)
+  const setWatchFormTrue = useWatchFormStore(state => state.setWatchFormTrue)
   const form = useFormStore(state => state.form)
   const router = useRouter()
   const { showDialog } = useDialog()
@@ -118,6 +121,7 @@ const UserNextTaskComponent = ({ data }: any) => {
     const result = [...filteredNodes]
 
     setStartStep(result)
+    setWatchFormTrue()
   }, [])
 
   const handleAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,7 +207,7 @@ const UserNextTaskComponent = ({ data }: any) => {
   }
 
   return (
-    <div className='flex flex-col md:flex-row items-center md:items-start gap-4 w-full min-h-[calc(100vh-3rem)] relative'>
+    <div className='flex flex-col md:flex-row  gap-4 w-full min-h-[calc(100vh-3rem)] relative'>
       <div
         className={`transition-all duration-75 z-20 ${collapsed ? 'w-[60px] min-w-[60px]' : 'w-[300px] min-w-[300px]'}`}
       >
@@ -260,6 +264,7 @@ const UserNextTaskComponent = ({ data }: any) => {
                   className='my-2'
                   startIcon={<FileOpen />}
                   onClick={() => {
+                    setWatchFormTrue()
                     setIsShowWorkFlow(!isShowWorkflow)
                   }}
                 >
@@ -273,6 +278,7 @@ const UserNextTaskComponent = ({ data }: any) => {
                   className='my-2'
                   startIcon={<AccountTree />}
                   onClick={() => {
+                    setWatchFormFalse()
                     setIsShowWorkFlow(!isShowWorkflow)
                   }}
                 >

@@ -655,6 +655,23 @@ export const getDepartmentList = async ({
   }
 }
 
+export const logout = async ({
+
+}: {
+
+  }) => {
+  try {
+    const response = await AxiosExternal.post('/api/service/logout')
+
+    return response.data
+
+  } catch (error) {
+    console.error('Error logout:', error)
+    const e = axiosErrorHandler(error, 'api/service/logout')
+    throw e
+  }
+}
+
 export const fetchFormName = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
     const response = await Axios.post('/forms/get-name', {

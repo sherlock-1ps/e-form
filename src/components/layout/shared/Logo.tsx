@@ -70,7 +70,7 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
   }, [isHovered, layout, isBreakpointReached])
 
   return (
-    <div className='flex items-center '>
+    <div className='flex items-center  justify-between'>
       <img src={'/images/dtn-logo.png'} alt={`logo_sarabun`} width={100} height={40} />
       {/* <VuexyLogo className='text-2xl text-primary' /> */}
       <LogoText
@@ -80,9 +80,10 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
         isCollapsed={layout === 'collapsed'}
         transitionDuration={transitionDuration}
         isBreakpointReached={isBreakpointReached}
+        className='ml-6 mt-1'
       >
+        Workflow
         {/* {themeConfig.templateName} */}
-        Sarabun
       </LogoText>
     </div>
   )
