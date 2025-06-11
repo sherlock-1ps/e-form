@@ -14,23 +14,95 @@ import {
   RadioGroup,
   Switch,
   TextField,
-  Typography
+  Typography,
+  Autocomplete
 } from '@mui/material'
-
+import { useFlowStore } from '@/store/useFlowStore'
+import { useFetchGetFormFieldsQueryOption } from '@/queryOptions/form/formQueryOptions'
 interface AddPathFlowDialogProps {
   id: string
+  // formFieldList: any
 }
 
 const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
   const { closeDialog } = useDialog()
   const [enabled, setEnabled] = useState(false)
-  const [minStep, setMinStep] = useState(1)
-  const [radioValue, setRadioValue] = useState<'sign' | 'custom'>('sign')
+  const [minimumProgress, setMinimumProgress] = useState(1)
+  const [radioValue, setRadioValue] = useState<'sign' | 'custom'>('custom')
+  const selectedField = useFlowStore(state => state.selectedField)
+  const myDiagram = useFlowStore(state => state.myDiagram)
+  const [linkName, setLinkName] = useState('')
+  const [signId, setSignId] = useState('')
 
+  const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
+  const { data: formFieldList } = useFetchGetFormFieldsQueryOption(nodeData.form)
+  // const [inputValueMinimumProgress, setInputValueMinimumProgress] = useState(1)
   useEffect(() => {
     setEnabled(false)
-    setMinStep(1)
+    setMinimumProgress(1)
   }, [radioValue])
+
+  function addLinkToCurrentNode() {
+    // const selectedNode = myDiagram.selection.first()
+
+    if (selectedField) {
+      const newLink = Date.now()
+
+      const model = myDiagram.model
+      // var location = selectedNode.data.location.split(' ')
+      const location = selectedField.data.location.split(' ')
+
+      let linkCount = 0
+      selectedField.linksConnected.map((a: any) => {
+        if (a.data.from == selectedField.key) {
+          linkCount++
+        }
+      })
+
+      location[1] = String(parseInt(location[1]) + 180)
+
+      if (linkCount > 0) {
+        if (linkCount % 2 == 0) {
+          location[0] = String(parseInt(location[0]) + Math.ceil(linkCount / 2) * 150)
+        } else {
+          location[0] = String(parseInt(location[0]) - Math.ceil(linkCount / 2) * 150)
+        }
+      }
+      const newPart = {
+        key: Date.now() + Math.floor(Math.random() * 1000),
+        text: 'Activity',
+        figure: 'Rectangle',
+        category: 'activity',
+        // components: JSON.stringify(['1', '2']),
+        location: location.join(' '),
+        form: nodeData.form,
+        assignees_requestor: false,
+        assignees_user: [],
+        assignees_department: [],
+        assignees_position: []
+      }
+      model.addNodeData(newPart)
+
+      const newLinkData = {
+        key: newLink,
+        toPort: 'T',
+        fromPort: 'B',
+        from: selectedField.data.key,
+        to: newPart.key,
+        text: linkName,
+        signId,
+        minimumProgress
+      }
+      // pushLinkData(newLinkData)
+      myDiagram.model.addLinkData(newLinkData)
+    } else {
+      console.log('No node is selected.')
+    }
+
+    closeDialog(id)
+  }
+
+  // console.log('formFieldList', formFieldList)
 
   return (
     <Grid container className='flex flex-col' spacing={2}>
@@ -52,21 +124,43 @@ const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
           name='path-type'
           onChange={e => setRadioValue(e.target.value as 'sign' | 'custom')}
         >
-          <FormControlLabel value='sign' control={<Radio />} label='ลงนาม' />
           <FormControlLabel value='custom' control={<Radio />} label='กำหนดเอง' />
+          <FormControlLabel value='sign' control={<Radio />} label='ลงนาม/ระบุจุดลงนาม' />
         </RadioGroup>
       </Grid>
 
       <Grid item xs={12}>
-        <CustomTextField fullWidth label='ชื่อเส้นทางงาน' placeholder='' />
+        <CustomTextField
+          fullWidth
+          label='ชื่อเส้นทางงาน'
+          placeholder=''
+          value={linkName}
+          onChange={e => {
+            setLinkName(e.target.value)
+          }}
+        />
       </Grid>
 
       {radioValue == 'sign' && (
         <Grid item xs={12}>
-          <CustomTextField fullWidth label='ระบุจุดที่ลงนาม' placeholder='' />
+          {/* <CustomTextField fullWidth label='ระบุจุดที่ลงนาม' placeholder='' /> */}
+
+          <Autocomplete
+            fullWidth
+            options={formFieldList?.result?.data || []}
+            getOptionLabel={option => option.id}
+            // value={(formFieldList?.result?.data || []).find((opt: any) => opt.id === selectedField?.data?.form) || null}
+            value={(formFieldList?.result?.data || []).find((opt: any) => opt.id === signId) || null}
+            // isOptionEqualToValue={(option, value) => option?.id === (typeof value === 'object' ? value?.id : value)}
+            onChange={(event, newValue) => {
+              console.log('newValue', newValue)
+              // handleUpdateForm(newValue?.id ?? null)
+              setSignId(newValue?.id ?? null)
+            }}
+            renderInput={params => <CustomTextField {...params} label='ระบุจุดที่ลงนาม' placeholder='เลือก...' />}
+          />
         </Grid>
       )}
-
       <Grid item xs={12}>
         <div className='flex items-center gap-3'>
           <Switch checked={enabled} onChange={e => setEnabled(e.target.checked)} color='primary' />
@@ -78,8 +172,8 @@ const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
               <Typography variant='body2'>การดำเนินการขั้นต่ำ</Typography>
               <TextField
                 type='number'
-                value={minStep}
-                onChange={e => setMinStep(Number(e.target.value))}
+                value={minimumProgress}
+                onChange={e => setMinimumProgress(Number(e.target.value))}
                 size='small'
                 inputProps={{ min: 1 }}
               />
@@ -116,12 +210,7 @@ const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
         >
           ยกเลิก
         </Button>
-        <Button
-          variant='contained'
-          onClick={() => {
-            closeDialog(id)
-          }}
-        >
+        <Button variant='contained' onClick={addLinkToCurrentNode}>
           ยืนยัน
         </Button>
       </Grid>

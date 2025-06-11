@@ -62,13 +62,12 @@ const ActivityFlowBar = () => {
 
   const handleUpdateForm = (id: any) => {
     if (!myDiagram || !selectedField) return
-
     const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
     if (!nodeData) return
-
     myDiagram.model.startTransaction('update form')
     myDiagram.model.setDataProperty(nodeData, 'form', id)
     myDiagram.model.commitTransaction('update form')
+    // setformVerionId(id)
   }
 
   function addLinkToCurrentNode() {
@@ -214,7 +213,7 @@ const ActivityFlowBar = () => {
               ))}
           </div>
 
-          <Button
+          {/* <Button
             variant='contained'
             fullWidth
             startIcon={<Add />}
@@ -223,7 +222,7 @@ const ActivityFlowBar = () => {
             }}
           >
             เพิ่มเส้นทางงานใหม่
-          </Button>
+          </Button> */}
 
           <Button
             variant='contained'
@@ -237,7 +236,7 @@ const ActivityFlowBar = () => {
               })
             }}
           >
-            ทดสอบ
+            เพิ่มเส้นทางงานใหม่
           </Button>
         </div>
       </div>

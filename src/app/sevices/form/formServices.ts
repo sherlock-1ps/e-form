@@ -956,3 +956,20 @@ export const reportMedical = async ({
     throw e
   }
 }
+
+export const getFormFields = async (id: number) => {
+  try {
+    if (id != 0 && id != null) {
+      const response = await Axios.post('/forms/get-fields', {
+        id,
+        type: ['signature']
+      })
+      return response.data
+    }
+  } catch (error) {
+    console.error('Error read notification:', error)
+
+    const e = axiosErrorHandler(error, '/forms/get-fields')
+    throw e
+  }
+}

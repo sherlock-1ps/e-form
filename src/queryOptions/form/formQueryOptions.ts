@@ -61,7 +61,8 @@ import {
   uploadAttachments,
   uploadFile,
   uploadMedia,
-  viewFlow
+  viewFlow,
+  getFormFields
 } from '@/app/sevices/form/formServices'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -689,18 +690,39 @@ export const useReadNotification = () => {
   })
 }
 
-
-export function useFetchReportScoreQueryOption({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) {
+export function useFetchReportScoreQueryOption({
+  form_version_id,
+  start_date,
+  end_date
+}: {
+  form_version_id: number
+  start_date: string
+  end_date: string
+}) {
   return useQuery({
     queryKey: ['reportScore', start_date, end_date],
     queryFn: () => reportScore({ form_version_id, start_date, end_date })
   })
 }
 
-
-export function useFetchReportMedicalQueryOption({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) {
+export function useFetchReportMedicalQueryOption({
+  form_version_id,
+  start_date,
+  end_date
+}: {
+  form_version_id: number
+  start_date: string
+  end_date: string
+}) {
   return useQuery({
     queryKey: ['reportMedical', start_date, end_date],
     queryFn: () => reportMedical({ form_version_id, start_date, end_date })
+  })
+}
+
+export function useFetchGetFormFieldsQueryOption(id: number) {
+  return useQuery({
+    queryKey: ['getFormFields', id],
+    queryFn: () => getFormFields(id)
   })
 }

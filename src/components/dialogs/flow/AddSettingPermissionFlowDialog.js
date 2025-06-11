@@ -153,7 +153,7 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
   const gridRefSelectingRemove = useRef(null)
   const [page, setPage] = useState(1)
   // const [selectedData, setSelectedData] = useState([])
-  const [selectedMoved, setSelectedMoved] = useState([...selectedField?.data?.assignees])
+  const [selectedMoved, setSelectedMoved] = useState([...(selectedField?.data?.assignees ?? [])])
 
   const columnDefs = useMemo(
     () => [
