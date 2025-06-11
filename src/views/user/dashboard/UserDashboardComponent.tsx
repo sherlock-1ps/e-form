@@ -126,7 +126,7 @@ const UserDashboardComponent = () => {
   }
 
   if (currentSection === 'startFlow') return <UserStartTaskComponent data={dataNextFlow} />
-  if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} isView={true} />
+  if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} isView={false} />
 
   return (
     <TabContext value={value}>
