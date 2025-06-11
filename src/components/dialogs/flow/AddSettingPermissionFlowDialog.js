@@ -57,10 +57,6 @@ ModuleRegistry.registerModules([
   ...(process.env.NODE_ENV !== 'production' ? [ValidationModule] : [])
 ])
 
-interface AddSettingPermissionFlowDialogProps {
-  id: string
-}
-
 const filterTypeOption = [
   {
     id: 1,
@@ -79,7 +75,7 @@ const filterTypeOption = [
   }
 ]
 
-const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }: any) => {
+const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -138,10 +134,10 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
   })
 */
 
-const AddSettingPermissionFlowDialog = ({ id }: AddSettingPermissionFlowDialogProps) => {
+const AddSettingPermissionFlowDialog = ({ id }) => {
   const { closeDialog } = useDialog()
-  const gridRefSelecting = useRef<any>(null)
-  const gridRefSelectingRemove = useRef<any>(null)
+  const gridRefSelecting = useRef(null)
+  const gridRefSelectingRemove = useRef(null)
   const [page, setPage] = useState(1)
   // const [selectedData, setSelectedData] = useState([])
   const [selectedMoved, setSelectedMoved] = useState([])
@@ -257,7 +253,7 @@ const AddSettingPermissionFlowDialog = ({ id }: AddSettingPermissionFlowDialogPr
               label='ค้นหา'
               placeholder={'....'}
               value={''}
-              onChange={(newText: any) => {
+              onChange={newText => {
                 setSearchText(newText)
               }}
             />
@@ -311,7 +307,7 @@ const AddSettingPermissionFlowDialog = ({ id }: AddSettingPermissionFlowDialogPr
               label='ค้นหา'
               placeholder={'....'}
               value={''}
-              onChange={(newText: any) => setSearchText(newText)}
+              onChange={newText => setSearchText(newText)}
             />
 
             <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[380px]'>
