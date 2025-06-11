@@ -540,7 +540,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             options: { wheelPropagation: false, suppressScrollX: true }
             // onScrollY: container => scrollMenu(container, true)
           })}
-      className=' bg-gray-100 h-full z-50'
+      className=' bg-gray-100 h-full '
     >
       {/* Vertical Menu */}
       {renderNavigationMenu}
