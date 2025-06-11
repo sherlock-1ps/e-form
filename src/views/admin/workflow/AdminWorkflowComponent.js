@@ -206,6 +206,7 @@ export default function AdminWorkflowComponent() {
 
   useEffect(() => {
     if (!diagramRef.current || !paletteRef.current || !window.go) return
+    if (window.go.Diagram.fromDiv(diagramRef.current)) return
 
     const go = window.go
     const $ = go.GraphObject.make

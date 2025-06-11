@@ -37,8 +37,9 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
     }
 
     const green = '#53D28C'
+    const blue = '#2c9afc'
     const formDataDetails = response?.result?.data?.form_data_detail ?? []
-
+    let lastId = 0
     window.myDiagram.links.each(function (link: any) {
       console.log('link', link.data)
 
@@ -48,12 +49,36 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
       }
 
       for (const element of formDataDetails) {
+        lastId = element.link_to
         if (link.fromNode.data.key === element.link_from && link.toNode.data.key === element.link_to) {
           changeNodeColorByKey(link.fromNode.data.key, green)
           window.myDiagram.model.setDataProperty(link.data, 'color', green)
         }
       }
     })
+
+    function changeNodeColorByKey(key, newColor) {
+      const node = window.myDiagram.findNodeForKey(key)
+      if (node) {
+        window.myDiagram.model.startTransaction('change node color')
+        window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
+        window.myDiagram.model.commitTransaction('change node color')
+      }
+    }
+
+    setTimeout(() => {
+      let newColor = blue
+      setInterval(() => {
+        changeNodeColorByKey(lastId, newColor)
+
+        if (newColor == blue) {
+          newColor = green
+        } else {
+          newColor = blue
+        }
+      }, 1000)
+    }, 1000)
+
     console.log('flow', response.result)
   }
 
