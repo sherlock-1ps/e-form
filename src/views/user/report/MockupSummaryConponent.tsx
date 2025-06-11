@@ -142,23 +142,6 @@ const MockupSummaryConponent = ({ onBack }: any) => {
           }}
         >
           <Grid container spacing={4}>
-            {/* <Grid item xs={6}>
-              <AppReactDatepicker
-                showTimeSelect
-                id='exclude-time'
-                selected={timeStart}
-                dateFormat='dd/MM/yyyy h:mm aa'
-                onChange={(date: Date | null) => setTimeStart(date)}
-                customInput={<CustomTextField label='วันเวลาเริ่มต้น' fullWidth />}
-                excludeTimes={[
-                  setHours(setMinutes(new Date(), 0), 17),
-                  setHours(setMinutes(new Date(), 30), 18),
-                  setHours(setMinutes(new Date(), 30), 19),
-                  setHours(setMinutes(new Date(), 30), 17)
-                ]}
-              />
-            </Grid> */}
-
             <Grid item xs={6}>
               <div className='w-full'>
                 <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
@@ -225,22 +208,6 @@ const MockupSummaryConponent = ({ onBack }: any) => {
                 </LocalizationProvider>
               </div>
             </Grid>
-            {/* <Grid item xs={6}>
-              <AppReactDatepicker
-                showTimeSelect
-                id='exclude-time'
-                selected={timeEnd}
-                dateFormat='dd/MM/yyyy h:mm aa'
-                onChange={(date: Date | null) => setTimeEnd(date)}
-                customInput={<CustomTextField label='วันเวลาสิ้นสุด' fullWidth />}
-                excludeTimes={[
-                  setHours(setMinutes(new Date(), 0), 17),
-                  setHours(setMinutes(new Date(), 30), 18),
-                  setHours(setMinutes(new Date(), 30), 19),
-                  setHours(setMinutes(new Date(), 30), 17)
-                ]}
-              />
-            </Grid> */}
 
             {reportData?.result?.data?.score_by_group ? (
               <>

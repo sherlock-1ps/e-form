@@ -19,6 +19,10 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import { useFetchReportMedicalQueryOption } from '@/queryOptions/form/formQueryOptions'
 import { format, formatDate, addDays, subDays, setHours, setMinutes } from 'date-fns'
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
+import { MobileDateTimePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
+import dayjs, { Dayjs } from 'dayjs'
+import 'dayjs/locale/th'
+import newAdapter from '@/libs/newAdapter'
 
 const houseData = [
   {
@@ -71,10 +75,10 @@ const cellStyle = { padding: '4px', border: '1px solid #ccc' }
 const MockupReportComponent = ({ onBack }: any) => {
   const setWatchFormTrue = useWatchFormStore(state => state.setWatchFormTrue)
   const setWatchFormFalse = useWatchFormStore(state => state.setWatchFormFalse)
+  const [dateStart, setDateStart] = useState<Dayjs | null>(() => dayjs().startOf('year'))
+  const [openStartTime, setOpenStartTime] = useState(false)
 
-  const [year, setYear] = useState<Date | undefined | null>(new Date())
-
-  const selectedYear = year ? year.getFullYear() : new Date().getFullYear()
+  const selectedYear = dateStart ? dateStart.year() : dayjs().year()
 
   const start_date = format(new Date(selectedYear - 1, 2, 13, 0, 0, 0), "yyyy-MM-dd'T'HH:mm:ss'Z'")
   const end_date = format(new Date(selectedYear, 7, 10, 15, 59, 59), "yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -84,6 +88,13 @@ const MockupReportComponent = ({ onBack }: any) => {
     start_date,
     end_date
   })
+
+  const handleChangeStart = (newDate: Dayjs | null) => {
+    setDateStart(newDate)
+    if (newDate) {
+      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
+    }
+  }
 
   useEffect(() => {
     setWatchFormTrue()
@@ -122,7 +133,7 @@ const MockupReportComponent = ({ onBack }: any) => {
           }}
         >
           <Grid container spacing={4}>
-            <Grid item xs={4}>
+            {/* <Grid item xs={4}>
               <AppReactDatepicker
                 selected={year}
                 showYearPicker
@@ -130,6 +141,41 @@ const MockupReportComponent = ({ onBack }: any) => {
                 onChange={(date: Date | null) => setYear(date)}
                 customInput={<CustomTextField label='เลือกปี' fullWidth />}
               />
+            </Grid> */}
+
+            <Grid item xs={4}>
+              <div className='w-full'>
+                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                  <MobileDatePicker
+                    open={openStartTime}
+                    onClose={() => setOpenStartTime(false)}
+                    value={dateStart}
+                    onChange={handleChangeStart}
+                    views={['year']} // ให้เลือกแค่ปี
+                    openTo='year' // เปิดที่หน้าปีเลย
+                    format='YYYY' // รูปแบบแสดงผล
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                        fullWidth: true,
+                        placeholder: 'เลือกปี',
+                        label: 'เลือกปี',
+                        onClick: () => setOpenStartTime(true),
+                        onFocus: () => {},
+                        onBlur: () => {},
+                        InputLabelProps: {},
+                        InputProps: {
+                          sx: {
+                            '& .MuiInputAdornment-root': {
+                              display: 'none'
+                            }
+                          }
+                        }
+                      }
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
             </Grid>
 
             <Grid item xs={12}>
