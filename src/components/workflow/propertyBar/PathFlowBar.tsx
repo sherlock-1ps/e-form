@@ -16,7 +16,7 @@ const PathFlowBar = () => {
   const updateFlowNodeText = useFlowStore(state => state.updateFlowNodeText)
   const selectedField = useFlowStore(state => state.selectedField)
   const updateFlowLinkText = useFlowStore(state => state.updateFlowLinkText)
-
+  const [inputValueMinimumProgress, setInputValueMinimumProgress] = useState(1)
   const clearSelectedField = useFlowStore(state => state.clearSelectedField)
   const [inputValue, setInputValue] = useState('')
 
@@ -86,6 +86,14 @@ const PathFlowBar = () => {
     }
   }
 
+  const handleInputValueMinimumProgressTextChange = (e: any) => {
+    const minimumProgress = parseInt(e.target.value)
+    setInputValueMinimumProgress(minimumProgress)
+    myDiagram.model.startTransaction('update minimum_progress')
+    myDiagram.model.setDataProperty(selectedField, 'minimumProgress', minimumProgress)
+    myDiagram.model.commitTransaction('update minimum_progress')
+  }
+
   return (
     <div className='w-[280px] min-w-[280px] bg-white flex flex-col transition-all border'>
       <section
@@ -103,6 +111,16 @@ const PathFlowBar = () => {
       <div className='w-full flex flex-col p-6 gap-4'>
         <div className='w-full flex flex-col pb-4 border-b'>
           <CustomTextField label='ข้อความกำกับ' value={inputValue} onChange={handleTextChange} />
+        </div>
+      </div>
+
+      <div className='w-full flex flex-col p-6 gap-4'>
+        <div className='w-full flex flex-col pb-4 border-b'>
+          <CustomTextField
+            label='การดำเนินการขั้นต่ำ'
+            value={inputValueMinimumProgress}
+            onChange={handleInputValueMinimumProgressTextChange}
+          />
         </div>
       </div>
     </div>

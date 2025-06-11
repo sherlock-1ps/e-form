@@ -19,6 +19,7 @@ const ActivityFlowBar = () => {
   const selectedField = useFlowStore(state => state.selectedField)
   const clearSelectedField = useFlowStore(state => state.clearSelectedField)
   const [inputValue, setInputValue] = useState('')
+
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(999)
   const { data: formList, isPending: pendingFormList } = useFetchFormQueryOption(page, pageSize)
@@ -51,7 +52,6 @@ const ActivityFlowBar = () => {
   const handleTextChange = (e: any) => {
     const newText = e.target.value
     setInputValue(newText)
-
     const nodeData = myDiagram?.model?.findNodeDataForKey(selectedField?.key)
     if (!nodeData || !myDiagram) return
     updateFlowNodeText(selectedField.key, newText)

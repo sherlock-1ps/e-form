@@ -21,7 +21,7 @@ import {
   useGetPersonExternalQueryOption,
   useGetPositionExternalQueryOption
 } from '@/queryOptions/form/formQueryOptions'
-
+import { useFlowStore } from '@/store/useFlowStore'
 import { createRoot } from 'react-dom/client'
 import { AgGridReact } from 'ag-grid-react'
 
@@ -72,23 +72,34 @@ const filterTypeOption = [
     id: 3,
     key: 'department',
     name: 'หน่วยงาน'
+  },
+  {
+    id: 4,
+    key: 'dataField',
+    name: 'ฟิวด์'
   }
 ]
+
+const dataFieldValue = [{ pk: '1-4', id: 1, name: 'เจ้าของเรื่อง', type: 'ฟิวด์', typeId: '4' }]
+const dataField = {
+  data: dataFieldValue,
+  total: dataFieldValue.length
+}
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
 
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
+  // useEffect(() => {
+  //   setValue(initialValue)
+  // }, [initialValue])
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     onChange(value)
+  //   }, debounce)
 
-    return () => clearTimeout(timeout)
-  }, [value])
+  //   return () => clearTimeout(timeout)
+  // }, [value])
 
   return (
     <CustomTextField
@@ -136,17 +147,19 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 
 const AddSettingPermissionFlowDialog = ({ id }) => {
   const { closeDialog } = useDialog()
+  const myDiagram = useFlowStore(state => state.myDiagram)
+  const selectedField = useFlowStore(state => state.selectedField)
   const gridRefSelecting = useRef(null)
   const gridRefSelectingRemove = useRef(null)
   const [page, setPage] = useState(1)
   // const [selectedData, setSelectedData] = useState([])
-  const [selectedMoved, setSelectedMoved] = useState([])
+  const [selectedMoved, setSelectedMoved] = useState([...selectedField?.data?.assignees])
 
   const columnDefs = useMemo(
     () => [
-      { headerName: 'รหัส', field: 'id', width: 70, filter: false },
       { headerName: 'ชื่อ', field: 'name', filter: false },
-      { headerName: 'ประเภท', field: 'type', filter: false }
+      { headerName: 'ประเภท', field: 'type', filter: false },
+      { headerName: 'รหัส', field: 'id', width: 70, filter: false }
     ],
     []
   )
@@ -170,7 +183,8 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
   const listData = {
     person,
     position,
-    department
+    department,
+    dataField
   }
 
   const lockRowSelectionByField = selectedData => {
@@ -217,6 +231,46 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
       return newItems
     })
   }
+
+  const handleUpdateActivity = () => {
+    if (!myDiagram || !selectedField) return
+
+    const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
+    if (!nodeData) return
+
+    // assignees_requestor: true,
+    // assignees_user: [1000,2000],
+    // assignees_department: [],
+    // assignees_position: []
+
+    const assigneesUser = [],
+      assigneesPosition = [],
+      assigneesDepartment = []
+
+    let assigneesRequestor = false
+
+    for (const item of selectedMoved) {
+      if (item.typeId == '1') assigneesUser.push(parseInt(item.id))
+      else if (item.typeId == '2') assigneesPosition.push(String(item.id))
+      else if (item.typeId == '3') assigneesDepartment.push(String(item.id))
+      else if (item.typeId == '4' && item.id === 1) {
+        assigneesRequestor = true
+      }
+    }
+    myDiagram.model.startTransaction('update activity')
+
+    myDiagram.model.setDataProperty(nodeData, 'assignees_user', assigneesUser)
+    myDiagram.model.setDataProperty(nodeData, 'assignees_position', assigneesPosition)
+    myDiagram.model.setDataProperty(nodeData, 'assignees_department', assigneesDepartment)
+    myDiagram.model.setDataProperty(nodeData, 'assignees_requestor', assigneesRequestor)
+    myDiagram.model.setDataProperty(nodeData, 'assignees', selectedMoved)
+
+    myDiagram.model.commitTransaction('update activity')
+    console.log('selectedMoved', selectedMoved)
+    closeDialog(id)
+  }
+
+  // console.log('selectedField', selectedField.data.assignees)
 
   return (
     <Grid container spacing={2} className='flex flex-col'>
@@ -310,7 +364,7 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
               onChange={newText => setSearchText(newText)}
             />
 
-            <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[380px]'>
+            <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[400px]'>
               <AgGridReact
                 ref={gridRefSelectingRemove}
                 rowData={selectedMoved}
@@ -334,7 +388,7 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)}>
           ยกเลิก
         </Button>
-        <Button variant='contained' onClick={() => closeDialog(id)}>
+        <Button variant='contained' onClick={handleUpdateActivity}>
           ยืนยัน
         </Button>
       </Grid>

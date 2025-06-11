@@ -894,16 +894,21 @@ export default function AdminWorkflowComponent() {
           text: 'Activity',
           figure: 'Rectangle',
           category: 'activity',
-          components: JSON.stringify(['1', '2']),
-          form: null
+          // components: JSON.stringify(['1', '2']),
+          form: null,
+          assignees_requestor: false,
+          assignees_user: [],
+          assignees_department: [],
+          assignees_position: []
+
           // components: JSON.stringify([{ pic: "1" }, { pic: "2" }])
         },
-        {
-          text: 'API',
-          figure: 'Rectangle',
-          category: 'api',
-          api: null
-        },
+        // { // ปิดไว้ก่อน
+        //   text: 'API',
+        //   figure: 'Rectangle',
+        //   category: 'api',
+        //   api: null
+        // },
         {
           text: 'Condition',
           figure: 'Diamond',
