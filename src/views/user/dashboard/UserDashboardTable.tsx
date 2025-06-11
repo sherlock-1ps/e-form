@@ -237,7 +237,7 @@ const UserDashboardTable = ({
                 variant='tonal'
                 color={chipConfig.color}
               />
-              <Typography>{FormatShowDate(row.original.updated_at)}</Typography>
+              <Typography variant='body2'>{FormatShowDate(row.original.updated_at)}</Typography>
             </div>
           )
         },
