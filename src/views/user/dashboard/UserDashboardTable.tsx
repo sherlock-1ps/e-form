@@ -262,12 +262,12 @@ const UserDashboardTable = ({
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             {row.original.status === 'draft' ? (
-              <Typography className='font-medium'>
+              <Typography className='font-medium' variant='body2'>
                 {profile?.userInformation?.F_FIRST_NAME || ''} {profile?.userInformation?.F_LAST_NAME || ''}
               </Typography>
             ) : (
               <>
-                <Typography className='font-medium truncate max-w-[220px] cursor-help'>
+                <Typography className='font-medium truncate max-w-[220px] cursor-help' variant='body2'>
                   {row.original.current_assignees_user_names ?? '-'}
                 </Typography>
                 <Tooltip title={(row.original.current_assignees_user_names || []).join(', ')}>
