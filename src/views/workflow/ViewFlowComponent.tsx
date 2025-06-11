@@ -43,7 +43,7 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
     const formDataDetails = response?.result?.data?.form_data_detail ?? []
     let lastId = 0
     window.myDiagram.links.each(function (link: any) {
-      console.log('link', link.data)
+      // console.log('link', link.data)
 
       if (link.fromNode.data.key === -1) {
         lastId = link.data.to
