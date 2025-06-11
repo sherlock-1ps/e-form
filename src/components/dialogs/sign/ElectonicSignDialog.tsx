@@ -29,10 +29,10 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
 
   const [comment, setComment] = useState('')
   const [canvasWidth, setCanvasWidth] = useState(800)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const downloadSignature = () => {
     const dataUrl = sigPadRef.current?.getCanvas().toDataURL('image/png')
-
     if (!dataUrl) return
 
     const link = document.createElement('a')
@@ -44,9 +44,12 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
   }
 
   const handleConfirm = async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
+
     try {
       const response = await onSave(comment)
-      if (response?.code == 'SUCCESS') {
+      if (response?.code === 'SUCCESS') {
         toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
         closeDialog(id)
         router.push(`/${locale}/user/allTask`)
@@ -54,10 +57,11 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
     } catch (err) {
       console.error('save failed', err)
       toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  // Resize canvas based on actual width
   useEffect(() => {
     if (containerRef.current) {
       setCanvasWidth(containerRef.current.offsetWidth)
@@ -70,13 +74,10 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
     }
 
     window.addEventListener('resize', handleResize)
-
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const clear = () => {
-    sigPadRef.current?.clear()
-  }
+  const clear = () => sigPadRef.current?.clear()
 
   return (
     <Grid container spacing={4}>
@@ -102,12 +103,7 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
         <Typography variant='body2' className=' text-textPrimary'>
           วาดลายเซ็น
         </Typography>
-
-        <div
-          id='signature-container'
-          ref={containerRef}
-          className='bg-gray-100 border border-gray-300 rounded-md overflow-hidden'
-        >
+        <div ref={containerRef} className='bg-gray-100 border border-gray-300 rounded-md overflow-hidden'>
           <SignatureCanvas
             penColor='black'
             ref={sigPadRef}
@@ -119,7 +115,6 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
             }}
           />
         </div>
-
         <div className='mt-2 flex justify-end gap-2'>
           <Button variant='outlined' color='primary' onClick={downloadSignature}>
             ดาวน์โหลดลายเซ็น
@@ -131,16 +126,11 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
       </Grid>
 
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
-        <Button variant='contained' color='secondary' onClick={() => closeDialog(id)}>
+        <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
           ยกเลิก
         </Button>
-        <Button
-          variant='contained'
-          onClick={() => {
-            handleConfirm()
-          }}
-        >
-          ยืนยัน
+        <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
+          {isSubmitting ? 'กำลังบันทึก...' : 'ยืนยัน'}
         </Button>
       </Grid>
     </Grid>

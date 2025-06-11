@@ -692,7 +692,7 @@ export const useReadNotification = () => {
 
 export function useFetchReportScoreQueryOption({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) {
   return useQuery({
-    queryKey: ['reportScore'],
+    queryKey: ['reportScore', start_date, end_date],
     queryFn: () => reportScore({ form_version_id, start_date, end_date })
   })
 }
@@ -700,7 +700,7 @@ export function useFetchReportScoreQueryOption({ form_version_id, start_date, en
 
 export function useFetchReportMedicalQueryOption({ form_version_id, start_date, end_date }: { form_version_id: number, start_date: string, end_date: string }) {
   return useQuery({
-    queryKey: ['reportMedical'],
+    queryKey: ['reportMedical', start_date, end_date],
     queryFn: () => reportMedical({ form_version_id, start_date, end_date })
   })
 }

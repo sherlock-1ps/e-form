@@ -401,12 +401,17 @@ const UserDashboardTable = ({
 
   return (
     <Card>
-      <DebouncedInput
-        value={globalFilter ?? ''}
-        onChange={value => setGlobalFilter(String(value))}
-        placeholder='ค้นหา'
-        className='p-4'
-      />
+      <div className='flex items-center justify-between p-4'>
+        <DebouncedInput
+          value={globalFilter ?? ''}
+          onChange={value => setGlobalFilter(String(value))}
+          placeholder='ค้นหา'
+          className='w-1/3'
+        />
+        <Typography variant='h6' className='text-right '>
+          ทั้งหมด <span className='font-bold text-primary'>{count}</span> รายการ
+        </Typography>
+      </div>
 
       <div className='overflow-x-auto'>
         <table className={tableStyles.table}>

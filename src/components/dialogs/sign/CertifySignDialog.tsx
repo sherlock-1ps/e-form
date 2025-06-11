@@ -1,5 +1,5 @@
 'use client'
-// MUI Imports
+
 import Button from '@mui/material/Button'
 import { Divider, Grid, IconButton, InputAdornment, MenuItem, Typography } from '@mui/material'
 
@@ -19,15 +19,20 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
   const params = useParams()
   const { lang: locale } = params
   const { closeDialog } = useDialog()
+
   const [comment, setComment] = useState('')
   const [isPasswordShown, setIsPasswordShown] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
   const handleConfirm = async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
+
     try {
       const response = await onSave(comment)
-      if (response?.code == 'SUCCESS') {
+      if (response?.code === 'SUCCESS') {
         toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
         closeDialog(id)
         router.push(`/${locale}/user/allTask`)
@@ -35,6 +40,8 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
     } catch (err) {
       console.error('save failed', err)
       toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -88,23 +95,12 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
         />
       </Grid>
 
-      <Grid item xs={12} className='flex items-center  justify-end gap-2'>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => {
-            closeDialog(id)
-          }}
-        >
+      <Grid item xs={12} className='flex items-center justify-end gap-2'>
+        <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
           ยกเลิก
         </Button>
-        <Button
-          variant='contained'
-          onClick={() => {
-            handleConfirm()
-          }}
-        >
-          ยืนยัน
+        <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
+          {isSubmitting ? 'กำลังบันทึก...' : 'ยืนยัน'}
         </Button>
       </Grid>
     </Grid>

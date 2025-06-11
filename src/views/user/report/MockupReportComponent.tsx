@@ -14,9 +14,15 @@ import {
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useFetchReportMedicalQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { format, formatDate, addDays, subDays, setHours, setMinutes } from 'date-fns'
+import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
+import { MobileDateTimePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers'
+import dayjs, { Dayjs } from 'dayjs'
+import 'dayjs/locale/th'
+import newAdapter from '@/libs/newAdapter'
 
 const houseData = [
   {
@@ -62,14 +68,40 @@ const houseData = [
 
 const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
 
+const monthKey = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+
+const cellStyle = { padding: '4px', border: '1px solid #ccc' }
+
 const MockupReportComponent = ({ onBack }: any) => {
-  const [date, setDate] = useState<Date | undefined | null>(null)
+  const setWatchFormTrue = useWatchFormStore(state => state.setWatchFormTrue)
+  const setWatchFormFalse = useWatchFormStore(state => state.setWatchFormFalse)
+  const [dateStart, setDateStart] = useState<Dayjs | null>(() => dayjs().startOf('year'))
+  const [openStartTime, setOpenStartTime] = useState(false)
+
+  const selectedYear = dateStart ? dateStart.year() : dayjs().year()
+
+  const start_date = format(new Date(selectedYear - 1, 2, 13, 0, 0, 0), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+  const end_date = format(new Date(selectedYear, 7, 10, 15, 59, 59), "yyyy-MM-dd'T'HH:mm:ss'Z'")
 
   const { data: reportData, isPending: pendingReport } = useFetchReportMedicalQueryOption({
-    form_version_id: 54,
-    start_date: `2024-03-13T00:00:00Z`,
-    end_date: `2025-06-10T15:59:59Z`
+    form_version_id: 47,
+    start_date,
+    end_date
   })
+
+  const handleChangeStart = (newDate: Dayjs | null) => {
+    setDateStart(newDate)
+    if (newDate) {
+      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
+    }
+  }
+
+  useEffect(() => {
+    setWatchFormTrue()
+    return () => setWatchFormFalse()
+  }, [])
+
+  console.log('reportData', reportData?.result?.data)
 
   return (
     <div className=' w-full min-h-screen relative'>
@@ -79,6 +111,7 @@ const MockupReportComponent = ({ onBack }: any) => {
             color='primary'
             variant='contained'
             onClick={() => {
+              setWatchFormFalse()
               onBack()
             }}
             startIcon={<ArrowBackIcon />}
@@ -96,69 +129,175 @@ const MockupReportComponent = ({ onBack }: any) => {
             position: 'relative',
             boxShadow: '0px 2px 8px 0px #11151A14',
             backgroundColor: 'white',
-            padding: '64px'
+            padding: '64px 48px 64px 48px'
           }}
         >
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
+          <Grid container spacing={4}>
+            {/* <Grid item xs={4}>
               <AppReactDatepicker
-                selected={date}
-                dateFormat='dd/MM/yyyy'
-                onChange={(date: Date | null) => setDate(date)}
-                customInput={<CustomTextField label='เลือกวันที่' fullWidth />}
+                selected={year}
+                showYearPicker
+                dateFormat='yyyy'
+                onChange={(date: Date | null) => setYear(date)}
+                customInput={<CustomTextField label='เลือกปี' fullWidth />}
               />
+            </Grid> */}
+
+            <Grid item xs={4}>
+              <div className='w-full'>
+                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                  <MobileDatePicker
+                    open={openStartTime}
+                    onClose={() => setOpenStartTime(false)}
+                    value={dateStart}
+                    onChange={handleChangeStart}
+                    views={['year']} // ให้เลือกแค่ปี
+                    openTo='year' // เปิดที่หน้าปีเลย
+                    format='YYYY' // รูปแบบแสดงผล
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                        fullWidth: true,
+                        placeholder: 'เลือกปี',
+                        label: 'เลือกปี',
+                        onClick: () => setOpenStartTime(true),
+                        onFocus: () => {},
+                        onBlur: () => {},
+                        InputLabelProps: {},
+                        InputProps: {
+                          sx: {
+                            '& .MuiInputAdornment-root': {
+                              display: 'none'
+                            }
+                          }
+                        }
+                      }
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
             </Grid>
+
             <Grid item xs={12}>
               <Typography variant='h6' fontWeight={600}>
-                เลขที่การเบิกจ่าย ปี 2568
+                เลขที่การเบิกจ่าย ปี {selectedYear + 543}
               </Typography>
             </Grid>
 
-            <Grid item xs={12}>
-              <TableContainer component={Paper} sx={{ border: '1px solid #ccc' }}>
-                <Table size='small'>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align='center'>ลำดับ</TableCell>
-                      <TableCell>ชื่อ - สกุล</TableCell>
-                      <TableCell>ตำแหน่งปัจจุบัน</TableCell>
-                      <TableCell>สำนัก</TableCell>
-                      <TableCell align='center'>เบอร์โทร</TableCell>
-                      <TableCell align='center'>อัตราค่าเช่าบ้าน</TableCell>
-                      <TableCell align='center'>เช่าบ้านใหม่</TableCell>
-                      {months.map((m, i) => (
-                        <TableCell key={i} align='center'>
-                          {m}
+            {reportData?.result?.data?.length > 0 ? (
+              <Grid item xs={12}>
+                <TableContainer
+                  component={Paper}
+                  variant='outlined'
+                  sx={{
+                    borderRadius: '0px',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <Table size='small'>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell rowSpan={2} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          ลำดับ
                         </TableCell>
-                      ))}
-                      <TableCell align='center'>จำนวนครั้งที่เบิก</TableCell>
-                      <TableCell align='center'>เบิกจ่ายแล้ว</TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {houseData.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell align='center'>{item.no}</TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell>{item.position}</TableCell>
-                        <TableCell>{item.org}</TableCell>
-                        <TableCell align='center'>{item.tel}</TableCell>
-                        <TableCell align='center'>{item.rent?.toLocaleString()}</TableCell>
-                        <TableCell align='center'>{item.note || '-'}</TableCell>
-                        {months.map((_, i) => (
-                          <TableCell key={i} align='center'>
-                            {i === 0 && item.jan ? item.jan : ''}
+                        <TableCell rowSpan={2} sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          ชื่อ - สกุล
+                        </TableCell>
+                        <TableCell rowSpan={2} sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          ตำแหน่งปัจจุบัน
+                        </TableCell>
+                        <TableCell rowSpan={2} sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          สำนัก
+                        </TableCell>
+                        <TableCell rowSpan={2} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          เบอร์โทร
+                        </TableCell>
+                        <TableCell rowSpan={2} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          อัตราค่าเช่าบ้าน
+                        </TableCell>
+                        <TableCell rowSpan={2} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          เช่าบ้านใหม่
+                        </TableCell>
+                        <TableCell colSpan={12} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          เลขฎีกาเบิกจ่าย ปี 2568
+                        </TableCell>
+                        <TableCell rowSpan={2} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          จำนวนครั้งที่เบิก
+                        </TableCell>
+                        <TableCell rowSpan={2} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                          เบิกจ่ายแล้ว
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        {months.map((month, i) => (
+                          <TableCell key={i} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
+                            {month}
                           </TableCell>
                         ))}
-                        <TableCell align='center'>{item.count || '-'}</TableCell>
-                        <TableCell align='center'>{item.paid || '-'}</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
+                    </TableHead>
+
+                    <TableBody>
+                      {houseData.map((item: any, index) => {
+                        return (
+                          <TableRow key={index}>
+                            <TableCell align='center' sx={cellStyle}>
+                              {item.no}
+                            </TableCell>
+                            <TableCell sx={cellStyle}>{item.name}</TableCell>
+                            <TableCell sx={cellStyle}>{item.position}</TableCell>
+                            <TableCell sx={cellStyle}>{item.org}</TableCell>
+                            <TableCell align='center' sx={cellStyle}>
+                              {item.tel}
+                            </TableCell>
+                            <TableCell align='center' sx={cellStyle}>
+                              {item.rent?.toLocaleString()}
+                            </TableCell>
+                            <TableCell align='center' sx={cellStyle}>
+                              {item.note || '-'}
+                            </TableCell>
+
+                            {/* เดือน ม.ค. - ธ.ค. */}
+                            {months.map((month, i) => {
+                              const key = monthKey[i] // เช่น ['jan', 'feb', ...]
+                              return (
+                                <TableCell key={i} align='center' sx={cellStyle}>
+                                  {item[key] || ''}
+                                </TableCell>
+                              )
+                            })}
+
+                            <TableCell align='center' sx={cellStyle}>
+                              {item.count || '-'}
+                            </TableCell>
+                            <TableCell align='center' sx={cellStyle}>
+                              {item.paid || '-'}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                      <TableRow>
+                        <TableCell colSpan={months.length + 8} align='right' sx={{ fontWeight: 'bold', ...cellStyle }}>
+                          รวม
+                        </TableCell>
+                        <TableCell align='center' sx={{ fontWeight: 'bold', ...cellStyle }}>
+                          {houseData
+                            .reduce((sum: number, item: any) => {
+                              const paid = parseFloat((item.paid || '0').replace(/,/g, ''))
+                              return sum + (isNaN(paid) ? 0 : paid)
+                            }, 0)
+                            .toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            ) : (
+              <Grid item xs={12}>
+                <Typography>ไม่พบรายการ</Typography>
+              </Grid>
+            )}
           </Grid>
         </div>
       </div>

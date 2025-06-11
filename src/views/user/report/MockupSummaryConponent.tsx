@@ -15,34 +15,35 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { forwardRef, useState } from 'react'
-import { formatDate } from 'date-fns'
+import { format, formatDate, addDays, subDays, setHours, setMinutes } from 'date-fns'
+
 import CustomTextField from '@/@core/components/mui/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
 import { useFetchReportScoreQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import dayjs, { Dayjs } from 'dayjs'
+import 'dayjs/locale/th'
+import newAdapter from '@/libs/newAdapter'
 
 const layout = 'vertical'
-type CustomInputProps = TextFieldProps & {
-  label?: string
-  end: Date | number
-  start: Date | number
-}
-
-const CustomInput = forwardRef((props: CustomInputProps, ref) => {
-  // Vars
-  const startDate = props.start !== null ? formatDate(props.start, 'MM/dd/yyyy') : ''
-  const endDate = props.end !== null ? ` - ${formatDate(props.end, 'MM/dd/yyyy')}` : null
-  const value = `${startDate}${endDate !== null ? endDate : ''}`
-
-  return <CustomTextField fullWidth inputRef={ref} label={props.label || ''} {...props} value={value} />
-})
 
 const MockupSummaryConponent = ({ onBack }: any) => {
-  const [year, setYear] = useState<Date | undefined | null>(new Date())
+  const [dateStart, setDateStart] = useState<Dayjs | null>(() => dayjs().subtract(10, 'day'))
+  const [dateEnd, setDateEnd] = useState<Dayjs | null>(() => dayjs())
+  const [openStartTime, setOpenStartTime] = useState(false)
+  const [openEndTime, setOpenEndTime] = useState(false)
+
+  const formatToISOStringNoMs = (date: Date) => {
+    return date.toISOString().split('.')[0] + 'Z'
+  }
+
+  const start_date = dateStart ? formatToISOStringNoMs(dateStart.toDate()) : ''
+  const end_date = dateEnd ? formatToISOStringNoMs(dateEnd.toDate()) : ''
 
   const { data: reportData, isPending: pendingReport } = useFetchReportScoreQueryOption({
     form_version_id: 54,
-    start_date: `2024-03-13T00:00:00Z`,
-    end_date: `2025-06-10T15:59:59Z`
+    start_date,
+    end_date
   })
 
   const rows = [
@@ -55,14 +56,61 @@ const MockupSummaryConponent = ({ onBack }: any) => {
     '1.7 ภาพรวมการให้บริการ'
   ]
 
-  const departmentData = [
+  const mockupData = [
     {
-      department_name: 'ศูนย์สารสนเทศการเจรจาการค้าระหว่างประเทศ',
-      count: 4
+      title: '1. นางสาววทันยา สัตยวณิช (แวว)',
+      subTitle: '(หน้าห้องอธิบดีฯ โชติมา)'
+    },
+    {
+      title: '2. นางสาวผุสรัตน์ ขวัญกุล (เพลง)',
+      subTitle: '(หน้าห้องอธิบดีฯ โชติมา)'
+    },
+    {
+      title: '3. นางสาววิรมน จันทร์เจริญ (วุ้น)',
+      subTitle: '(หน้าห้องรองฯ รัชวิชญ์)'
+    },
+    {
+      title: '4. นายพุฒิพงศ์ อินทร์ปรางค์ (ฟ้า)',
+      subTitle: '(หน้าห้องรองฯ บุณิกา)'
+    },
+    {
+      title: '5. นางสาวธารีรัตน์ ผดุงธรรม (บุ๋ม)',
+      subTitle: '(หน้าห้องรองฯ บุณิกา)'
+    },
+    {
+      title: '6. นางสาวเอื้อการย์ ตะสอน (ปลา)',
+      subTitle: '(หน้าห้องรองฯ ธัชชญาน์พล)'
     }
   ]
+  const mockupDataWithScores = mockupData.map((person, index) => {
+    const groupKey = `p${index + 1}`
+    const groupScores = reportData?.result?.data?.score_by_group?.[groupKey] || {}
+    const scores = Object.values(groupScores)
 
-  console.log('reportData', reportData)
+    const rowScores = rows.map((name, i) => ({
+      name,
+      score: scores[i] ?? 0
+    }))
+
+    return {
+      ...person,
+      rows: rowScores
+    }
+  })
+
+  const handleChangeStart = (newDate: Dayjs | null) => {
+    setDateStart(newDate)
+    if (newDate) {
+      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
+    }
+  }
+
+  const handleChangeEnd = (newDate: Dayjs | null) => {
+    setDateEnd(newDate)
+    if (newDate) {
+      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
+    }
+  }
 
   return (
     <div className=' w-full min-h-screen relative'>
@@ -80,6 +128,7 @@ const MockupSummaryConponent = ({ onBack }: any) => {
           </Button>
         </div>
       </div>
+
       <div className='flex flex-1 items-center justify-center'>
         <div
           style={{
@@ -92,119 +141,182 @@ const MockupSummaryConponent = ({ onBack }: any) => {
             padding: '64px'
           }}
         >
-          <Grid container spacing={2}>
-            {/* หัวข้อ */}
-            <Grid item xs={4}>
-              <AppReactDatepicker
-                selected={year}
-                showYearPicker
-                dateFormat='yyyy'
-                onChange={(date: Date | null) => setYear(date)}
-                customInput={<CustomTextField label='เลือกปี' fullWidth />}
-              />
+          <Grid container spacing={4}>
+            <Grid item xs={6}>
+              <div className='w-full'>
+                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                  <MobileDateTimePicker
+                    open={openStartTime}
+                    onClose={() => setOpenStartTime(false)}
+                    value={dateStart}
+                    onChange={handleChangeStart}
+                    format='DD/MM/YYYY HH:mm'
+                    // label={date ? '' : item?.config?.details?.placeholder?.value}
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                        fullWidth: true,
+                        placeholder: 'วันเวลาเริ่มต้น',
+                        label: 'วันเวลาเริ่มต้น',
+                        onClick: () => setOpenStartTime(true),
+                        onFocus: () => {},
+                        onBlur: () => {},
+                        InputLabelProps: {},
+                        InputProps: {
+                          sx: {
+                            '& .MuiInputAdornment-root': {
+                              display: 'none'
+                            }
+                          }
+                        }
+                      }
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+            </Grid>
+            <Grid item xs={6}>
+              <div className='w-full'>
+                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                  <MobileDateTimePicker
+                    open={openEndTime}
+                    onClose={() => setOpenEndTime(false)}
+                    value={dateEnd}
+                    onChange={handleChangeEnd}
+                    format='DD/MM/YYYY HH:mm'
+                    // label={date ? '' : item?.config?.details?.placeholder?.value}
+                    slotProps={{
+                      textField: {
+                        size: 'small',
+                        fullWidth: true,
+                        placeholder: 'วันเวลาสิ้นสุด',
+                        label: 'วันเวลาสิ้นสุด',
+                        onClick: () => setOpenEndTime(true),
+                        onFocus: () => {},
+                        onBlur: () => {},
+                        InputLabelProps: {},
+                        InputProps: {
+                          sx: {
+                            '& .MuiInputAdornment-root': {
+                              display: 'none'
+                            }
+                          }
+                        }
+                      }
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
             </Grid>
 
-            <Grid item xs={12} className='my-4'>
-              <Typography variant='h6' gutterBottom>
-                จำนวนหนังสือตามหน่วยงาน
-              </Typography>
-              <TableContainer
-                component={Paper}
-                variant='outlined'
-                sx={{
-                  borderRadius: '0px',
-                  overflow: 'hidden'
-                }}
-              >
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ border: '1px solid #000000' }}>หน่วยงาน</TableCell>
-                      <TableCell align='right' sx={{ border: '1px solid #000000' }}>
-                        จำนวน
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {departmentData.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell sx={{ border: '1px solid #000000' }}>{item.department_name}</TableCell>
-                        <TableCell align='right' sx={{ border: '1px solid #000000' }}>
-                          {item.count}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant='h6' fontWeight={600}>
-                1. นางสาววทันยา สัตยวณิช (แวว)
-              </Typography>
-              <Typography variant='body2' color='text.secondary'>
-                (หน้าห้องอธิบดีฯ โชติมา)
-              </Typography>
-            </Grid>
-
-            {/* ตาราง */}
-            <Grid item xs={12}>
-              <TableContainer
-                component={Paper}
-                elevation={0}
-                sx={{
-                  border: '1px solid #000000',
-                  borderRadius: '0px',
-                  overflow: 'hidden'
-                }}
-              >
-                <Table size='small'>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        rowSpan={2}
-                        sx={{ fontWeight: 'bold', borderRight: '1px solid #000000', borderBottom: '1px solid #000000' }}
-                      >
-                        หัวข้อการประเมิน
-                      </TableCell>
-                      <TableCell
-                        colSpan={5}
-                        align='center'
-                        sx={{ fontWeight: 'bold', borderBottom: '1px solid #000000' }}
-                      >
-                        ครั้งที่ถูกคะแนนที่ถูกมอบให้
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell align='center' sx={{ fontWeight: 'bold', borderBottom: '1px solid #000000' }}>
-                        คะแนนรวม
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((text, index) => (
-                      <TableRow key={index}>
-                        <TableCell sx={{ borderRight: '1px solid #f0f0f0' }}>{text}</TableCell>
-                        {[10].map((score, i) => (
-                          <TableCell key={i} align='center'>
-                            {score}
+            {reportData?.result?.data?.score_by_group ? (
+              <>
+                <Grid item xs={12} className='my-4'>
+                  <Typography variant='h6' gutterBottom>
+                    จำนวนหนังสือตามหน่วยงาน
+                  </Typography>
+                  <TableContainer
+                    component={Paper}
+                    variant='outlined'
+                    sx={{
+                      borderRadius: '0px',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ border: '1px solid #000000' }}>หน่วยงาน</TableCell>
+                          <TableCell align='right' sx={{ border: '1px solid #000000' }}>
+                            จำนวน
                           </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {reportData?.result?.data?.department_count?.map((item: any, index: number) => (
+                          <TableRow key={index}>
+                            <TableCell sx={{ border: '1px solid #000000' }}>{item.department_name}</TableCell>
+                            <TableCell align='right' sx={{ border: '1px solid #000000' }}>
+                              {item.count}
+                            </TableCell>
+                          </TableRow>
                         ))}
-                      </TableRow>
-                    ))}
-                    {/* รวม */}
-                    <TableRow>
-                      <TableCell align='center' sx={{ fontWeight: 'bold' }}>
-                        รวม
-                      </TableCell>
-                      <TableCell align='center' sx={{ fontWeight: 'bold' }}>
-                        70
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+                {mockupDataWithScores?.map((item: any, index: number) => {
+                  return (
+                    <Grid item xs={12} className='flex flex-col gap-1' key={index}>
+                      <Typography variant='h6' fontWeight={600}>
+                        {item.title}
+                      </Typography>
+                      <Typography variant='body2' color='text.secondary'>
+                        {item?.subTitle}
+                      </Typography>
+                      <TableContainer
+                        component={Paper}
+                        elevation={0}
+                        sx={{
+                          border: '1px solid #000000',
+                          borderRadius: '0px',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <Table size='small'>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell
+                                rowSpan={2}
+                                sx={{
+                                  fontWeight: 'bold',
+                                  borderRight: '1px solid #000000',
+                                  borderBottom: '1px solid #000000'
+                                }}
+                              >
+                                หัวข้อการประเมิน
+                              </TableCell>
+                              <TableCell
+                                colSpan={5}
+                                align='center'
+                                sx={{ fontWeight: 'bold', borderBottom: '1px solid #000000' }}
+                              >
+                                ครั้งที่ถูกคะแนนที่ถูกมอบให้
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell align='center' sx={{ fontWeight: 'bold', borderBottom: '1px solid #000000' }}>
+                                คะแนนรวม
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {item?.rows.map((text: any, index: number) => (
+                              <TableRow key={index}>
+                                <TableCell sx={{ borderRight: '1px solid #f0f0f0' }}>{text?.name}</TableCell>
+                                <TableCell align='center'>{text?.score}</TableCell>
+                              </TableRow>
+                            ))}
+                            <TableRow>
+                              <TableCell align='center' sx={{ fontWeight: 'bold' }}>
+                                รวม
+                              </TableCell>
+                              <TableCell align='center' sx={{ fontWeight: 'bold' }}>
+                                {item.rows.reduce((sum: number, row: any) => sum + row.score, 0)}
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                  )
+                })}
+              </>
+            ) : (
+              <Grid item xs={12}>
+                <Typography variant='h6'>ไม่มีข้อมูลที่ท่านค้นหา</Typography>
+              </Grid>
+            )}
           </Grid>
         </div>
       </div>
