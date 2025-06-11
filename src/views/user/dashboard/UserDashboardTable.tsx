@@ -273,9 +273,22 @@ const UserDashboardTable = ({
             ) : (
               <>
                 <Typography className='font-medium truncate max-w-[220px] cursor-help' variant='body2'>
-                  {row.original.current_assignees_user_names ?? '-'}
+                  {[
+                    ...(row.original.current_assignees_user_names || []),
+                    ...(row.original.current_assignees_position_names || []),
+                    ...(row.original.current_assignees_department_names || [])
+                  ].join(', ') || '-'}
                 </Typography>
-                <Tooltip title={(row.original.current_assignees_user_names || []).join(', ')}>
+
+                <Tooltip
+                  title={
+                    [
+                      ...(row.original.current_assignees_user_names || []),
+                      ...(row.original.current_assignees_position_names || []),
+                      ...(row.original.current_assignees_department_names || [])
+                    ].join(', ') || '-'
+                  }
+                >
                   <PeopleOutlineIcon className='text-primary cursor-help' fontSize='small' />
                 </Tooltip>
               </>
