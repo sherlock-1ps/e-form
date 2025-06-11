@@ -584,7 +584,7 @@ export const getPersonList = async ({
     const payload = { page, limit: pageSize, f_person_id, f_name }
     const response = await AxiosExternal.post('/api/service/core/get-person-lists', payload)
 
-    const data = response?.data?.items?.data.map(i => ({
+    const data = response?.data?.items?.data.map((i: any) => ({
       pk: `${i.F_PERSON_ID}-person`,
       id: i.F_PERSON_ID,
       name: `${i.F_FIRST_NAME} ${i.F_LAST_NAME}`.trim(),
@@ -613,7 +613,7 @@ export const getPositionList = async ({
     const payload = { page, limit: pageSize, f_position_id, f_position_name }
     const response = await AxiosExternal.post('/api/service/core/get-position-lists', payload)
 
-    const data = response?.data?.items?.data.map(i => ({
+    const data = response?.data?.items?.data.map((i: any) => ({
       pk: `${i.F_POSITION_ID}-position`,
       id: i.F_POSITION_ID,
       name: `${i.F_POSITION_NAME}`.trim(),
@@ -641,7 +641,7 @@ export const getDepartmentList = async ({
   try {
     const payload = { page, limit: pageSize, f_dept_id, department_name }
     const response = await AxiosExternal.post('/api/service/core/get-department-lists', payload)
-    const data = response?.data?.items?.data.map(i => ({
+    const data = response?.data?.items?.data.map((i: any) => ({
       pk: `${i.F_DEPT_ID}-department`,
       id: i.F_DEPT_ID,
       name: `${i.DEPARTMENT_NAME}`.trim(),
