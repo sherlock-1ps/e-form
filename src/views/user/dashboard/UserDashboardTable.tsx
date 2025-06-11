@@ -12,6 +12,8 @@ import CardHeader from '@mui/material/CardHeader'
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
+
+import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
 // Third-party Imports
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -243,7 +245,17 @@ const UserDashboardTable = ({
       }),
       columnHelper.accessor('current_activity_names', {
         header: 'การเดินหนังสือล่าสุด',
-        cell: ({ row }) => <Typography variant='body2'>{row.original.current_activity_names ?? '-'}</Typography>
+        cell: ({ row }) => (
+          <div className='flex items-center gap-3'>
+            <Typography variant='body2'>
+              {row.original.current_activity_names ? row.original.current_activity_names[0] : 'ยังไม่มีการเดินหนังสือ'}
+            </Typography>
+
+            <Tooltip title={(row.original.current_activity_names || []).join(', ')}>
+              <ForwardToInboxIcon className='text-primary cursor-help' fontSize='small' />
+            </Tooltip>
+          </div>
+        )
       }),
       columnHelper.accessor('current_assignees_user_names', {
         header: 'ผู้รับผิดชอบปัจจุบัน',
