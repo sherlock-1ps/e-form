@@ -296,7 +296,7 @@ const UserNextTaskComponent = ({ data }: any) => {
             <div className='flex flex-1 items-center justify-center'>
               <DraftFormComponent />
             </div>
-            <div className='fixed bottom-4 max-w-[calc(62vw)] w-full  right-6 '>
+            <div className='fixed bottom-4 max-w-[100vw] md:max-w-[calc(62vw)] w-full  right-0  md:right-6'>
               {!isExpanded ? (
                 <div className='w-full flex items-end justify-end'>
                   <div className=' '>
@@ -320,7 +320,7 @@ const UserNextTaskComponent = ({ data }: any) => {
                           การลงนามและการเดินหนังสือ
                         </Typography>
                       </Grid>
-                      <Grid item xs className='flex justify-end gap-2'>
+                      <Grid item xs className='flex flex-col md:flex-row justify-end gap-2'>
                         <Button
                           variant='outlined'
                           startIcon={<AttachFile />}
@@ -340,7 +340,7 @@ const UserNextTaskComponent = ({ data }: any) => {
                           ดูประวัติการดำเนินการทั้งหมด
                         </Button>
                         <Button
-                          className=''
+                          className='max-w-[150px] self-end'
                           variant='contained'
                           color='secondary'
                           onClick={() => {
