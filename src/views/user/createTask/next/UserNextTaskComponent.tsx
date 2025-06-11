@@ -117,12 +117,11 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
       })
       .filter(Boolean)
 
-    const currentKeys = currentFlow.map((flow: any) => flow.link_from)
-    let currentNode = currentKeys
-      .map((key: any) => {
-        const node = nodeData.find((node: any) => node.key === key)
-        const flow = currentFlow.find((flow: any) => flow.link_from === key)
-        return node && flow ? { ...node, action: flow.text } : null
+    // const currentKeys = currentFlow.map((flow: any) => flow.link_from)
+    let currentNode = currentFlow
+      .map((flow: any) => {
+        const node = nodeData.find((node: any) => node.key === flow.link_from)
+        return node ? { ...node, action: flow.text } : null
       })
       .filter(Boolean)
 
