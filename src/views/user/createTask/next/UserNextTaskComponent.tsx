@@ -203,7 +203,7 @@ const UserNextTaskComponent = ({ data }: any) => {
   }
 
   return (
-    <div className='flex gap-4 w-full min-h-[calc(100vh-3rem)] relative'>
+    <div className='flex flex-col md:flex-row items-center md:items-start gap-4 w-full min-h-[calc(100vh-3rem)] relative'>
       <div
         className={`transition-all duration-75 z-20 ${collapsed ? 'w-[60px] min-w-[60px]' : 'w-[300px] min-w-[300px]'}`}
       >
@@ -285,7 +285,7 @@ const UserNextTaskComponent = ({ data }: any) => {
       </div>
 
       {isShowWorkflow ? (
-        <div className='flex flex-1 w-full h-full  absolute top-0 left-0'>
+        <div className='flex flex-1 w-full h-full  md:absolute md:top-0 md:left-0'>
           {/* <ViewWorkflowComponent onBack={false} /> */}
 
           <ViewFlowComponent formDataId={formDataId} onBack={handleBackShowFlow} noBack={true} />

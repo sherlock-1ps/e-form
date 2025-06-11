@@ -227,7 +227,7 @@ const UserStartTaskComponent = ({ data }: any) => {
   }
 
   return (
-    <div className='flex gap-4 w-full min-h-[calc(100vh-3rem)] relative'>
+    <div className='flex flex-col md:flex-row items-center md:items-start gap-4 w-full min-h-[calc(100vh-3rem)] relative'>
       <div
         className={`transition-all duration-75 z-20 ${collapsed ? 'w-[60px] min-w-[60px]' : 'w-[300px] min-w-[300px]'}`}
       >
@@ -322,7 +322,7 @@ const UserStartTaskComponent = ({ data }: any) => {
       </div>
 
       {isShowWorkflow ? (
-        <div className='flex flex-1 w-full h-full  absolute top-0 left-0'>
+        <div className='flex flex-1 w-full h-full  md:absolute md:top-0 md:left-0'>
           {/* <ViewWorkflowComponent onBack={false} /> */}
 
           <ViewFlowComponent formDataId={formDataId} onBack={handleBackShowFlow} noBack={true} />
@@ -333,7 +333,7 @@ const UserStartTaskComponent = ({ data }: any) => {
             <div className='flex flex-1 items-center justify-center'>
               <DraftFormComponent />
             </div>
-            <div className='fixed bottom-4 max-w-[calc(62vw)] w-full  right-6 '>
+            <div className='fixed bottom-4 max-w-[100vw] md:max-w-[calc(62vw)] w-full  right-0  md:right-6'>
               {!isExpanded ? (
                 <div className='w-full flex items-end justify-end'>
                   <div className=' '>
