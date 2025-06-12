@@ -1,5 +1,6 @@
 import Axios from '@/libs/axios/axios'
 import AxiosExternal from '@/libs/axios/axiosExternal'
+import { useAuthStore } from '@/store/useAuthStore'
 import { axiosErrorHandler } from '@/utils/axiosErrorHandler'
 
 type VariableValue = {
@@ -658,9 +659,19 @@ export const getDepartmentList = async ({
   }
 }
 
-export const logout = async ({}: {}) => {
+export const logout = async () => {
   try {
-    const response = await AxiosExternal.post('/api/service/logout')
+    const accessToken = useAuthStore.getState().accessToken
+
+    const response = await AxiosExternal.post(
+      '/api/service/logout',
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    )
 
     return response.data
   } catch (error) {

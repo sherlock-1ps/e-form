@@ -429,23 +429,23 @@ export const toolboxCreateformMenu = [
         isRequired: true
       }
     }
-  },
-  {
-    id: 8,
-    icon: <GridOnOutlined />,
-    config: {
-      style: {
-        fontSize: 16
-      },
-      details: {
-        type: 'dataGrid',
-        label: 'Data Grid',
-        isUse: true,
-        isShow: true,
-        isRequired: true
-      }
-    }
   }
+  // {
+  //   id: 8,
+  //   icon: <GridOnOutlined />,
+  //   config: {
+  //     style: {
+  //       fontSize: 16
+  //     },
+  //     details: {
+  //       type: 'dataGrid',
+  //       label: 'Data Grid',
+  //       isUse: true,
+  //       isShow: true,
+  //       isRequired: true
+  //     }
+  //   }
+  // }
 ]
 export const toolboxOptionMenu = [
   {

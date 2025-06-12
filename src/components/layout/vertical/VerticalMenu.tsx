@@ -51,6 +51,8 @@ import ToolboxFormNavigation from './ToolboxFormNavigation/ToolboxFormNavigation
 import { useMemo } from 'react'
 import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import { useLogout } from '@/queryOptions/form/formQueryOptions'
+import { toast } from 'react-toastify'
 
 // Menu Data Imports
 // import menuData from '@/data/navigation/verticalMenuData'
@@ -79,6 +81,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
   const verticalNavOptions = useVerticalNav()
   const params = useParams()
   const pathname = usePathname()
+  const { mutateAsync } = useLogout()
   // const { hasPermission } = useHasPermission()
 
   // Vars
@@ -86,6 +89,18 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
   const { lang: locale } = params
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
+
+  const handleLogout = async () => {
+    try {
+      const response = await mutateAsync()
+      if (response.status == 'success') {
+        toast.success('ออกจากระบบสำเร็จ', { autoClose: 3000 })
+        window.location.href = 'https://dtn.igenco.dev/login'
+      }
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
 
   const renderNavigationMenu = useMemo(() => {
     if (pathname.includes('/dashboard/form')) {
@@ -194,7 +209,9 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
                     id='alertLogout'
                     title={'ออกจากระบบ'}
                     content1={'คุณต้องการออกจากระบบใช่หรือไม่ ?'}
-                    onClick={() => {}}
+                    onClick={() => {
+                      handleLogout()
+                    }}
                   />
                 ),
                 size: 'sm'

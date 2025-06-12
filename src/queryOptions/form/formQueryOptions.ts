@@ -63,7 +63,8 @@ import {
   uploadMedia,
   viewFlow,
   getFormSignatureFields,
-  getFormFields
+  getFormFields,
+  logout
 } from '@/app/sevices/form/formServices'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -735,6 +736,17 @@ export function useFetchGetFormFieldsQueryOption(id: number) {
   })
 }
 
+
+export const useLogout = () => {
+
+  return useMutation({
+    mutationFn: logout,
+    onError: error => {
+      console.error('Error logout', error)
+    },
+
+  })
+}
 // export function useFetchGetFormSignatureFieldsQueryOption(id: number) {
 //   return useQuery({
 //     queryKey: ['getFormFields', id],

@@ -65,7 +65,6 @@ export default function AdminWorkflowComponent() {
     const diagram = window.go.Diagram.fromDiv(diagramRef.current)
     // if (!diagram || !flow?.flow) return
 
-    console.log(JSON.stringify(flow.flow))
     try {
       diagram.model = window.go.Model.fromJson(JSON.stringify(flow.flow))
       diagram.model.linkFromPortIdProperty = 'fromPort'
@@ -74,7 +73,6 @@ export default function AdminWorkflowComponent() {
       console.error('Failed to load diagram model:', error)
     }
   }
-  console.log('main render')
 
   const createFlow = async () => {
     if (!window.go || !diagramRef.current) return
@@ -403,7 +401,7 @@ export default function AdminWorkflowComponent() {
       return JSON.parse(data)
     }
 
-    const nodeTemplatePanel = (option, isEdit = true) => {
+    const nodeTemplatePanel = (option, isEdit = false) => {
       return new go.Node('Spot', {
         locationSpot: go.Spot.Center,
         selectable: true,
@@ -582,7 +580,7 @@ export default function AdminWorkflowComponent() {
                       }).add(
                         new go.Panel(go.Panel.Horizontal, { row: 0 }).add(
                           new go.TextBlock({
-                            editable: true,
+                            editable: false,
                             minSize: new go.Size(10, 14),
                             textEdited: (textBlock, previousText, currentText) => {
                               var node = myDiagram.selection.first()
