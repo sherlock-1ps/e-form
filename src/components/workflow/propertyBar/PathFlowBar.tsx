@@ -9,6 +9,13 @@ import { useDialog } from '@/hooks/useDialog'
 import AddConditionFlowDialog from '@/components/dialogs/flow/AddConditionFlowDialog'
 import AddSettingPermissionFlowDialog from '@/components/dialogs/flow/AddSettingPermissionFlowDialog'
 
+type Condition = {
+  source1: string
+  value1: string
+  operator: string
+  source3: string
+  value3: string
+}
 const PathFlowBar = () => {
   const { showDialog } = useDialog()
   const myDiagram = useFlowStore(state => state.myDiagram)
@@ -133,14 +140,14 @@ const PathFlowBar = () => {
           <div className='w-full flex flex-col pb-4 border-b'>
             <h5>เงื่อนไข ({linkRule?.logicOperator})</h5>
             <ul>
-              {linkRule?.conditions?.map((condition, j) => {
-                const source1Text = condition.source1 == 'data' ? 'ฟิวด์: ' : 'ค่า: '
-                const source2Text = condition.source3 == 'data' ? 'ฟิวด์: ' : 'ค่า: '
+              {linkRule?.conditions?.map((condition: Condition, j: number) => {
+                const source1Text = condition.source1 === 'data' ? 'ฟิวด์: ' : 'ค่า: '
+                const source2Text = condition.source3 === 'data' ? 'ฟิวด์: ' : 'ค่า: '
 
                 return (
-                  <li
-                    key={j}
-                  >{`${source1Text}${condition.value1} ${condition.operator}  ${source2Text}${condition.value3} `}</li>
+                  <li key={j}>
+                    {`${source1Text}${condition.value1} ${condition.operator} ${source2Text}${condition.value3}`}
+                  </li>
                 )
               })}
             </ul>
