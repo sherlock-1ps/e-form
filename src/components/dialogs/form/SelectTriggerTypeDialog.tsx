@@ -17,7 +17,7 @@ interface triggerTypeProps {
 }
 
 const typeMenu = [
-  { id: 1, key: 'variable', name: 'Variable' },
+  // { id: 1, key: 'variable', name: 'Variable' },
   { id: 2, key: 'field', name: 'Field' },
   { id: 3, key: 'string', name: 'กำหนดเอง' }
 ]

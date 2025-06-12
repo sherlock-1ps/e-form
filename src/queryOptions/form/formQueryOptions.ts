@@ -62,6 +62,7 @@ import {
   uploadFile,
   uploadMedia,
   viewFlow,
+  getFormSignatureFields,
   getFormFields
 } from '@/app/sevices/form/formServices'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -720,9 +721,23 @@ export function useFetchReportMedicalQueryOption({
   })
 }
 
+export function useFetchGetFormSignatureFieldsQueryOption(id: number) {
+  return useQuery({
+    queryKey: ['getFormFields', id],
+    queryFn: () => getFormSignatureFields(id)
+  })
+}
+
 export function useFetchGetFormFieldsQueryOption(id: number) {
   return useQuery({
     queryKey: ['getFormFields', id],
     queryFn: () => getFormFields(id)
   })
 }
+
+// export function useFetchGetFormSignatureFieldsQueryOption(id: number) {
+//   return useQuery({
+//     queryKey: ['getFormFields', id],
+//     queryFn: () => getFormSignatureFields(id)
+//   })
+// }

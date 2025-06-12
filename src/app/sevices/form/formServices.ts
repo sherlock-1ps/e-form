@@ -957,7 +957,7 @@ export const reportMedical = async ({
   }
 }
 
-export const getFormFields = async (id: number) => {
+export const getFormSignatureFields = async (id: number) => {
   try {
     if (id != 0 && id != null) {
       const response = await Axios.post('/forms/get-fields', {
@@ -967,7 +967,24 @@ export const getFormFields = async (id: number) => {
       return response.data
     }
   } catch (error) {
-    console.error('Error read notification:', error)
+    console.error('Error read getFormSignatureFields:', error)
+
+    const e = axiosErrorHandler(error, '/forms/get-fields')
+    throw e
+  }
+}
+
+export const getFormFields = async (id: number) => {
+  try {
+    if (id != 0 && id != null) {
+      const response = await Axios.post('/forms/get-fields', {
+        id,
+        type: ['textfield', 'checkbox', 'redio', 'dropdown', 'switch']
+      })
+      return response.data
+    }
+  } catch (error) {
+    console.error('Error read getFormSignatureFields:', error)
 
     const e = axiosErrorHandler(error, '/forms/get-fields')
     throw e
