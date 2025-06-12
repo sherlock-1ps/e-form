@@ -101,7 +101,14 @@ const MockupReportComponent = ({ onBack }: any) => {
     return () => setWatchFormFalse()
   }, [])
 
-  console.log('reportData', reportData?.result?.data)
+  const enrichedData = reportData?.result?.data?.map((person: any) => ({
+    ...person,
+    data: person.data.map((detail: any) => {
+      const createdDate = new Date(detail.created_at)
+      const month = monthKey[createdDate.getMonth()]
+      return { ...detail, month }
+    })
+  }))
 
   return (
     <div className=' w-full min-h-screen relative'>
@@ -133,16 +140,6 @@ const MockupReportComponent = ({ onBack }: any) => {
           }}
         >
           <Grid container spacing={4}>
-            {/* <Grid item xs={4}>
-              <AppReactDatepicker
-                selected={year}
-                showYearPicker
-                dateFormat='yyyy'
-                onChange={(date: Date | null) => setYear(date)}
-                customInput={<CustomTextField label='เลือกปี' fullWidth />}
-              />
-            </Grid> */}
-
             <Grid item xs={4}>
               <div className='w-full'>
                 <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
@@ -184,7 +181,7 @@ const MockupReportComponent = ({ onBack }: any) => {
               </Typography>
             </Grid>
 
-            {reportData?.result?.data?.length > 0 ? (
+            {enrichedData?.length > 0 ? (
               <Grid item xs={12}>
                 <TableContainer
                   component={Paper}
@@ -219,7 +216,7 @@ const MockupReportComponent = ({ onBack }: any) => {
                           เช่าบ้านใหม่
                         </TableCell>
                         <TableCell colSpan={12} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
-                          เลขฎีกาเบิกจ่าย ปี 2568
+                          เลขฎีกาเบิกจ่าย ปี {selectedYear + 543}
                         </TableCell>
                         <TableCell rowSpan={2} align='center' sx={{ ...cellStyle, border: '1px solid #000000' }}>
                           จำนวนครั้งที่เบิก
@@ -238,31 +235,42 @@ const MockupReportComponent = ({ onBack }: any) => {
                     </TableHead>
 
                     <TableBody>
-                      {houseData.map((item: any, index) => {
+                      {enrichedData?.map((item: any, index: number) => {
                         return (
                           <TableRow key={index}>
                             <TableCell align='center' sx={cellStyle}>
-                              {item.no}
+                              {index + 1}
                             </TableCell>
-                            <TableCell sx={cellStyle}>{item.name}</TableCell>
-                            <TableCell sx={cellStyle}>{item.position}</TableCell>
-                            <TableCell sx={cellStyle}>{item.org}</TableCell>
+                            <TableCell sx={cellStyle}>
+                              {item.f_first_name} {item.f_last_name}
+                            </TableCell>
+                            <TableCell sx={cellStyle}>{item.f_position_name}</TableCell>
+                            <TableCell sx={cellStyle}>{item?.department_name}</TableCell>
                             <TableCell align='center' sx={cellStyle}>
                               {item.tel}
                             </TableCell>
                             <TableCell align='center' sx={cellStyle}>
-                              {item.rent?.toLocaleString()}
+                              {(() => {
+                                const totalRent = item.data.reduce((sum: number, detail: any) => {
+                                  const pay = parseFloat((detail.pay || '0').replace(/,/g, ''))
+                                  return sum + (!isNaN(pay) ? pay : 0)
+                                }, 0)
+                                return totalRent > 0 ? totalRent.toLocaleString() : '-'
+                              })()}
                             </TableCell>
                             <TableCell align='center' sx={cellStyle}>
-                              {item.note || '-'}
+                              -
                             </TableCell>
 
-                            {/* เดือน ม.ค. - ธ.ค. */}
                             {months.map((month, i) => {
-                              const key = monthKey[i] // เช่น ['jan', 'feb', ...]
+                              const key = monthKey[i]
+                              const monthData = item.data.find((detail: any) => {
+                                return detail.month === key && detail.deka_number
+                              })
+
                               return (
                                 <TableCell key={i} align='center' sx={cellStyle}>
-                                  {item[key] || ''}
+                                  {monthData?.deka_number || ''}
                                 </TableCell>
                               )
                             })}
@@ -271,7 +279,15 @@ const MockupReportComponent = ({ onBack }: any) => {
                               {item.count || '-'}
                             </TableCell>
                             <TableCell align='center' sx={cellStyle}>
-                              {item.paid || '-'}
+                              {(() => {
+                                const total = item?.data?.reduce((sum: number, detail: any) => {
+                                  const hasEnd = detail.current_activity_names?.includes('End')
+                                  const pay = parseFloat((detail.pay || '0').replace(/,/g, ''))
+                                  return sum + (hasEnd && !isNaN(pay) ? pay : 0)
+                                }, 0)
+
+                                return total > 0 ? total.toLocaleString() : '-'
+                              })()}
                             </TableCell>
                           </TableRow>
                         )
@@ -281,10 +297,16 @@ const MockupReportComponent = ({ onBack }: any) => {
                           รวม
                         </TableCell>
                         <TableCell align='center' sx={{ fontWeight: 'bold', ...cellStyle }}>
-                          {houseData
-                            .reduce((sum: number, item: any) => {
-                              const paid = parseFloat((item.paid || '0').replace(/,/g, ''))
-                              return sum + (isNaN(paid) ? 0 : paid)
+                          {enrichedData
+                            ?.reduce((sum: number, person: any) => {
+                              return (
+                                sum +
+                                person.data.reduce((innerSum: number, detail: any) => {
+                                  const hasEnd = detail.current_activity_names?.includes('End')
+                                  const pay = parseFloat((detail.pay || '0').replace(/,/g, ''))
+                                  return innerSum + (hasEnd && !isNaN(pay) ? pay : 0)
+                                }, 0)
+                              )
                             }, 0)
                             .toLocaleString()}
                         </TableCell>
