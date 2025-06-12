@@ -61,7 +61,7 @@ const UserDashboardComponent = () => {
   const handleClickManange = async (id: number, status: any, flowId?: any) => {
     try {
       let response
-      if (status == 'draft') {
+      if (status == 'draft' || status == 'start') {
         response = await callStartFlow({ id: flowId })
       } else {
         response = await callNextFlow({ form_data_id: id })
@@ -164,19 +164,19 @@ const UserDashboardComponent = () => {
               <Grid container spacing={4}>
                 <Grid item xs={12} className='flex items-center justify-between'>
                   <Typography variant='h5'>งานของฉัน</Typography>
-                  {/* <Button
+                  <Button
                     variant='contained'
                     startIcon={<Add style={{ width: '20px', height: '20px' }} />}
                     onClick={() => {
                       showDialog({
                         id: 'alertErrorToken',
-                        component: <UserCreateTaskDialog id='alertErrorToken' onClick={() => {}} />,
+                        component: <UserCreateTaskDialog id='alertErrorToken' onStartFlow={handleClickManange} />,
                         size: 'lg'
                       })
                     }}
                   >
                     สร้างงานใหม่
-                  </Button> */}
+                  </Button>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomTextField
