@@ -80,9 +80,9 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
         isCollapsed={layout === 'collapsed'}
         transitionDuration={transitionDuration}
         isBreakpointReached={isBreakpointReached}
-        className='ml-6 mt-1'
+        className='ml-3 mt-1'
       >
-        Workflow
+        E-Workflow
         {/* {themeConfig.templateName} */}
       </LogoText>
     </div>
