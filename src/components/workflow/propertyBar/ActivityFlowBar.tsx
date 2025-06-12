@@ -227,6 +227,7 @@ const ActivityFlowBar = () => {
           <Button
             variant='contained'
             fullWidth
+            autoFocus
             startIcon={<Add />}
             onClick={() => {
               showDialog({

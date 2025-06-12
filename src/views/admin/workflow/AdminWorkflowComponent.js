@@ -74,6 +74,7 @@ export default function AdminWorkflowComponent() {
       console.error('Failed to load diagram model:', error)
     }
   }
+  console.log('main render')
 
   const createFlow = async () => {
     if (!window.go || !diagramRef.current) return

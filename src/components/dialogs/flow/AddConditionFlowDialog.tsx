@@ -286,6 +286,7 @@ const AddConditionFlowDialog = ({ id }: AddConditionFlowDialogProps) => {
 
       <Grid item xs={12} className='flex items-center  justify-end gap-2'>
         <Button
+          autoFocus
           variant='contained'
           color='secondary'
           onClick={() => {

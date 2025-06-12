@@ -183,6 +183,7 @@ const ConditionFlowBar = () => {
 
           <Button
             variant='contained'
+            autoFocus
             fullWidth
             startIcon={<Add />}
             onClick={() => {
