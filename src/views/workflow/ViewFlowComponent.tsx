@@ -259,7 +259,7 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
-          <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
+          <CardContent className='min-h-[calc(100vh-20px)] flex flex-col gap-4'>
             <div className='flex gap-2 items-center'>
               {!noBack && (
                 <Button
