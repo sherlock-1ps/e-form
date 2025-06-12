@@ -341,7 +341,7 @@ const UserStartTaskComponent = ({ data }: any) => {
         </div>
       ) : (
         <>
-          <div className=' w-full min-h-screen pb-[460px] z-30'>
+          <div className={`w-full min-h-screen z-30 ${isShowWorkflow ? 'pb-[40px]' : 'pb-[460px]'}`}>
             <div className='flex flex-1 items-center justify-center'>
               <DraftFormComponent />
             </div>
