@@ -174,11 +174,11 @@ const ApiFlowBar = () => {
           <Button
             variant='contained'
             onClick={() => {
-              showDialog({
-                id: 'AddSettingPermissionFlowDialog',
-                component: <AddSettingPermissionFlowDialog id='AddSettingPermissionFlowDialog' />,
-                size: 'md'
-              })
+              // showDialog({
+              //   id: 'AddSettingPermissionFlowDialog',
+              //   component: <AddSettingPermissionFlowDialog id='AddSettingPermissionFlowDialog' />,
+              //   size: 'md'
+              // })
             }}
           >
             ตั้งค่าสิทธิ์
