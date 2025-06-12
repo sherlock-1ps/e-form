@@ -36,8 +36,8 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
     try {
       const response = await onSave(comment, flowId)
       if (response?.code === 'SUCCESS') {
+        router.push(`/${locale}/user/allTask`)
         toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
-        router.push(`/${locale}/user/followTask`)
         closeDialog(id)
       }
     } catch (err) {

@@ -32,9 +32,9 @@ const NormalSignDialog = ({ id, onSave }: signProps) => {
     try {
       const response = await onSave(comment)
       if (response?.code === 'SUCCESS') {
+        router.push(`/${locale}/user/allTask`)
         toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
         closeDialog(id)
-        router.push(`/${locale}/user/allTask`)
       }
     } catch (err) {
       console.error('save failed', err)

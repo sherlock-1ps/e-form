@@ -7,21 +7,14 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import { useFormStore } from '@/store/useFormStore'
 
 const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
-  const updateDetails = useFormStore(state => state.updateDetails)
-  const selectedField = useFormStore(state => state.selectedField)
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
+  const errors = useFormStore(state => state.errors)
+
+  const key = `${parentKey}-${boxId}-${item?.id}`
+  const errorInput = errors[key]
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
-
-    // updateDetails(
-    //   String(selectedField?.parentKey ?? ''),
-    //   selectedField?.boxId ?? '',
-    //   selectedField?.fieldId?.id ?? '',
-    //   {
-    //     value: newValue
-    //   }
-    // )
 
     updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', newValue)
   }
@@ -31,6 +24,7 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
       <CustomTextField
         fullWidth
         multiline
+        error={draft && item?.config?.details?.isShow && item?.config?.details?.isUse ? !!errorInput : false}
         minRows={1}
         value={
           item?.config?.details?.value?.valueType == 'variable'

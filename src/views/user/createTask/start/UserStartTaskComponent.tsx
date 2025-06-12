@@ -80,6 +80,7 @@ const allowedExtensions = [
 const UserStartTaskComponent = ({ data }: any) => {
   const setWatchFormFalse = useWatchFormStore(state => state.setWatchFormFalse)
   const setWatchFormTrue = useWatchFormStore(state => state.setWatchFormTrue)
+  const validateForm = useFormStore(state => state.validateForm)
   const form = useFormStore(state => state.form)
   const router = useRouter()
   const { showDialog } = useDialog()
@@ -195,6 +196,11 @@ const UserStartTaskComponent = ({ data }: any) => {
   }
 
   const handleSaveStartflow = async (comment: string, linkId?: any) => {
+    const isValid = validateForm()
+    if (!isValid) {
+      toast.error('โปรดกรอกข้อมูลให้ครบถ้วน')
+      return
+    }
     try {
       const resultMapValue = mapKeyValueForm(form?.form_details)
 

@@ -30,6 +30,10 @@ type FormState = {
   form: FormVersion
   selectedField: SelectedField | null
   setForm: (newForm: FormObject) => void
+  errors: Record<string, string>
+  setErrors: (errors: Record<string, string>) => void
+  clearErrors: () => void
+  validateForm: () => boolean
   updateFormByKey: (key: string, fields: any[]) => void
   updateFieldData: (parentKey: string, fieldId: string, newData: any) => void
   updateValue: (parentKey: string, fieldId: string, dataId: string, newValue: string) => void
@@ -87,6 +91,31 @@ export const useFormStore = create<FormState>()(
     (set, get) => ({
       form: { name: "", version: "", newVersion: "", formId: "", versionId: "", layout: "vertical", isContinue: false, form_details: [] },
       selectedField: null,
+      errors: {},
+      setErrors: (errors) => set({ errors }),
+      clearErrors: () => set({ errors: {} }),
+      validateForm: () => {
+        const { form } = get()
+        const errors: Record<string, string> = {}
+
+        form.form_details.forEach(section => {
+          section.fields.forEach(field => {
+            field.data?.forEach((item: any) => {
+              const isTextField = item?.config?.details?.type === 'textfield'
+              const isRequired = item?.config?.details?.isRequired
+              const value = item?.config?.details?.value?.value
+              const key = `${section.parentKey}-${field.i}-${item.id}`
+
+              if (isTextField && isRequired && !value) {
+                errors[key] = 'กรุณากรอกข้อมูล'
+              }
+            })
+          })
+        })
+
+        set({ errors })
+        return Object.keys(errors).length === 0
+      },
       setForm: (newForm) =>
         set((state) => ({
           form: {
@@ -222,7 +251,14 @@ export const useFormStore = create<FormState>()(
             }
           }
         }),
-      updateValueOnly: (parentKey: string, fieldId: string, dataId: string, newValue: string) =>
+
+      // updateValueOnly: (parentKey: string, fieldId: string, dataId: string, newValue: string) =>
+      //   set(state => {
+      //     const updatedFormDetails = state.form.form_details.map(formItem => {
+      //       if (formItem.parentKey !== parentKey) return formItem
+
+      //       const updatedFields = formItem.fields.map(field => {
+      updateValueOnly: (parentKey, fieldId, dataId, newValue) =>
         set(state => {
           const updatedFormDetails = state.form.form_details.map(formItem => {
             if (formItem.parentKey !== parentKey) return formItem
@@ -260,13 +296,58 @@ export const useFormStore = create<FormState>()(
             }
           })
 
+          // Construct the error key
+          const key = `${parentKey}-${fieldId}-${dataId}`
+          const updatedErrors = { ...state.errors }
+          if (updatedErrors[key]) delete updatedErrors[key]
+
           return {
             form: {
               ...state.form,
               form_details: updatedFormDetails
-            }
+            },
+            errors: updatedErrors
           }
-        }),
+        })      //         if (field.i !== fieldId) return field
+
+      //         const updatedData = field.data.map((dataItem: any) => {
+      //           if (dataItem.id !== dataId) return dataItem
+
+      //           return {
+      //             ...dataItem,
+      //             config: {
+      //               ...dataItem.config,
+      //               details: {
+      //                 ...dataItem.config.details,
+      //                 value: {
+      //                   ...dataItem.config.details.value,
+      //                   value: newValue
+      //                 }
+      //               }
+      //             }
+      //           }
+      //         })
+
+      //         return {
+      //           ...field,
+      //           data: updatedData
+      //         }
+      //       })
+
+      //       return {
+      //         ...formItem,
+      //         fields: updatedFields
+      //       }
+      //     })
+
+      //     return {
+      //       form: {
+      //         ...state.form,
+      //         form_details: updatedFormDetails
+      //       }
+      //     }
+      //   }),
+      ,
       updateStyle: (parentKey, fieldId, dataId, newStyle) =>
         set(state => {
           const updatedFormDetails = state.form.form_details.map(formItem => {
