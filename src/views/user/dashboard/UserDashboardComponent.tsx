@@ -18,7 +18,7 @@ import fetchProviderQueryOption, { fetchProviderTypeQueryOption } from '@/queryO
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
-import { DoneAll, PendingActions } from '@mui/icons-material'
+import { Add } from '@mui/icons-material'
 import EditorForm from '@/components/e-form/newDefault/EditorForm'
 import {
   useFetchFlowNnameQueryOption,
@@ -34,8 +34,11 @@ import { applyKeyValueToForm, updateFormValueByKey, updateSignature } from '@/ut
 import UserDashboardTable from './UserDashboardTable'
 import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
+import UserCreateTaskDialog from './UserCreateTaskDialog'
+import { useDialog } from '@/hooks/useDialog'
 
 const UserDashboardComponent = () => {
+  const { showDialog } = useDialog()
   const router = useRouter()
   const params = useParams()
   const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
@@ -159,8 +162,21 @@ const UserDashboardComponent = () => {
           <CardContent>
             <TabPanel value='1'>
               <Grid container spacing={4}>
-                <Grid item xs={12}>
+                <Grid item xs={12} className='flex items-center justify-between'>
                   <Typography variant='h5'>งานของฉัน</Typography>
+                  {/* <Button
+                    variant='contained'
+                    startIcon={<Add style={{ width: '20px', height: '20px' }} />}
+                    onClick={() => {
+                      showDialog({
+                        id: 'alertErrorToken',
+                        component: <UserCreateTaskDialog id='alertErrorToken' onClick={() => {}} />,
+                        size: 'lg'
+                      })
+                    }}
+                  >
+                    สร้างงานใหม่
+                  </Button> */}
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomTextField

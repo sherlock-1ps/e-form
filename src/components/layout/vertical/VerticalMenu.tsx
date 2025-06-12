@@ -53,6 +53,7 @@ import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useLogout } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
+import { useAuthStore } from '@/store/useAuthStore'
 
 // Menu Data Imports
 // import menuData from '@/data/navigation/verticalMenuData'
@@ -75,6 +76,7 @@ const RenderExpandIcon = ({ open, transitionDuration }: RenderExpandIconProps) =
 
 const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
   const { showDialog } = useDialog()
+  const profile = useAuthStore(state => state.profile)
 
   // Hooks
   const theme = useTheme()
@@ -96,6 +98,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
       if (response.status == 'success') {
         toast.success('ออกจากระบบสำเร็จ', { autoClose: 3000 })
         window.location.href = 'https://dtn.igenco.dev/login'
+        useAuthStore.getState().clearTokens()
       }
     } catch (error) {
       console.log('error', error)
@@ -168,32 +171,22 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </MenuItem>
         </SubMenu>
 
-        <SubMenu label={'การจัดการ'} className='mt-4 p-4 rounded-lg bg-white shadow-lg'>
-          <MenuItem
-            href={`/${locale}/admin/dashboard`}
-            icon={<InsertDriveFile style={{ width: '20px', height: '20px' }} />}
-          >
-            จัดการแบบฟอร์ม
-          </MenuItem>
-          <MenuItem
-            href={`/${locale}/workflow/dashboard`}
-            icon={<AccountTree style={{ width: '20px', height: '20px' }} />}
-          >
-            จัดการเวิร์กโฟลว์
-          </MenuItem>
-          {/* <MenuItem href='/workflow' icon={<SmsFailed style={{ width: '20px', height: '20px' }} />}>
-            จัดการป๊อปอัพ
-          </MenuItem>
-          <MenuItem href='/workflow' icon={<RuleFolder style={{ width: '20px', height: '20px' }} />}>
-            จัดการ App State
-          </MenuItem>
-          <MenuItem href='/workflow' icon={<Webhook style={{ width: '20px', height: '20px' }} />}>
-            จัดการ API Call
-          </MenuItem>
-          <MenuItem href='/workflow' icon={<PermMedia style={{ width: '20px', height: '20px' }} />}>
-            จัดการคลังมีเดีย
-          </MenuItem> */}
-        </SubMenu>
+        {profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
+          <SubMenu label={'การจัดการ'} className='mt-4 p-4 rounded-lg bg-white shadow-lg'>
+            <MenuItem
+              href={`/${locale}/admin/dashboard`}
+              icon={<InsertDriveFile style={{ width: '20px', height: '20px' }} />}
+            >
+              จัดการแบบฟอร์ม
+            </MenuItem>
+            <MenuItem
+              href={`/${locale}/workflow/dashboard`}
+              icon={<AccountTree style={{ width: '20px', height: '20px' }} />}
+            >
+              จัดการเวิร์กโฟลว์
+            </MenuItem>
+          </SubMenu>
+        ) : null}
 
         <div className='w-full mt-4 px-4'>
           <Button
