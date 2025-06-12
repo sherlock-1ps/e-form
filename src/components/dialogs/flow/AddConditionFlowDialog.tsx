@@ -208,7 +208,7 @@ const AddConditionFlowDialog = ({ id }: AddConditionFlowDialogProps) => {
                   />
                 ) : (
                   <Select value={cond.value1} onChange={e => handleChange(index, 'value1', e.target.value)} fullWidth>
-                    {formFieldList?.result?.data?.map(opt => (
+                    {formFieldList?.result?.data?.map((opt: any) => (
                       <MenuItem key={'value1' + opt.id} value={opt.id}>
                         {`${opt.type}: ${opt.id}`}
                       </MenuItem>
@@ -238,7 +238,7 @@ const AddConditionFlowDialog = ({ id }: AddConditionFlowDialogProps) => {
                   <MenuItem value='manual'>กำหนดเอง</MenuItem>
                   <MenuItem value='data'>ฟิวด์</MenuItem>
                 </Select>
-                {/* 
+                {/*
                 <Select value={cond.source3} onChange={e => handleChange(index, 'source3', e.target.value)} fullWidth>
                   <MenuItem value='manual'>กำหนดเอง</MenuItem>
                   <MenuItem value='data'>ฟิวด์</MenuItem>
@@ -254,7 +254,7 @@ const AddConditionFlowDialog = ({ id }: AddConditionFlowDialogProps) => {
                   />
                 ) : (
                   <Select value={cond.value3} onChange={e => handleChange(index, 'value3', e.target.value)} fullWidth>
-                    {formFieldList?.result?.data?.map(opt => (
+                    {formFieldList?.result?.data?.map((opt: any) => (
                       <MenuItem key={'value2' + opt.id} value={opt.id}>
                         {`${opt.type}: ${opt.id}`}
                       </MenuItem>
