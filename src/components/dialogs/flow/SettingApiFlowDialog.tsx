@@ -485,6 +485,7 @@ const SettingApiFlowDialog = ({ id }: TriggerProps) => {
         <Button
           variant='contained'
           color='secondary'
+          autoFocus
           onClick={() => {
             closeDialog(id)
           }}

@@ -385,7 +385,7 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
       </Grid>
 
       <Grid item xs={12} className='flex items-center justify-end gap-2 px-6'>
-        <Button variant='contained' color='secondary' onClick={() => closeDialog(id)}>
+        <Button variant='contained' color='secondary' autoFocus onClick={() => closeDialog(id)}>
           ยกเลิก
         </Button>
         <Button variant='contained' onClick={handleUpdateActivity}>
