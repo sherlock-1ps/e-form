@@ -132,8 +132,8 @@ const UserDonetaskComponent = () => {
                 onChange={e => setSelectedWorkflow(e.target.value)}
                 SelectProps={{ displayEmpty: true }}
               >
-                <MenuItem value={0} disabled>
-                  <em className='opacity-50'>เลือกเวิร์คโฟลว์</em>
+                <MenuItem value={0}>
+                  <em className='opacity-50'>เลือกเวิร์คโฟลว์ทั้งหมด</em>
                 </MenuItem>
 
                 {flowData?.result?.data?.map((item: any) => (
