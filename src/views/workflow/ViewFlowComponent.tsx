@@ -10,6 +10,7 @@ declare global {
   interface Window {
     go: any
     myDiagram: any
+    flowAnimation?: ReturnType<typeof setInterval> // ✅ เพิ่มตรงนี้
   }
 }
 
@@ -27,7 +28,7 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
     const response = await callViewFlow({ form_data_id })
     window.myDiagram.model = window.go.Model.fromJson(response.result.data.flow)
 
-    function changeNodeColorByKey(key: string, newColor: string) {
+    function changeNodeColorByKey(key: any, newColor: string) {
       const node = window.myDiagram.findNodeForKey(key)
 
       if (node) {
@@ -61,17 +62,8 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
       }
     })
 
-    function getNode(key) {
+    function getNode(key: any) {
       return window.myDiagram.findNodeForKey(key)
-    }
-
-    function changeNodeColorByKey(key, newColor) {
-      const node = getNode(key)
-      if (node) {
-        window.myDiagram.model.startTransaction('change node color')
-        window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
-        window.myDiagram.model.commitTransaction('change node color')
-      }
     }
 
     let newColor = blue
