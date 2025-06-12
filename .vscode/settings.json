@@ -46,4 +46,5 @@
   "editor.linkedEditing": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.enabled": false,
+  "typescript.updateImportsOnPaste.enabled": false
 }
