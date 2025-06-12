@@ -422,7 +422,7 @@ const UserDashboardTable = ({
           className='w-1/3'
         />
         <Typography variant='h6' className='text-right '>
-          ทั้งหมด <span className='font-bold text-primary'>{count}</span> รายการ
+          มีทั้งหมด <span className='font-bold text-primary'>{count}</span> รายการ
         </Typography>
       </div>
 
