@@ -36,6 +36,7 @@ import { useFlowStore } from '@/store/useFlowStore'
 import { Add, Delete } from '@mui/icons-material'
 interface AddConditionFlowDialogProps {
   id: string
+  onClose?: any
 }
 
 type Condition = {
@@ -48,7 +49,7 @@ type Condition = {
 
 const operatorOptions = ['=', '!=', '>', '<', '>=', '<=']
 
-const AddConditionFlowDialog = ({ id }: AddConditionFlowDialogProps) => {
+const AddConditionFlowDialog = ({ id, onClose }: AddConditionFlowDialogProps) => {
   const [conditions, setConditions] = useState<Condition[]>([
     { source1: 'manual', value1: '', operator: '=', source3: 'manual', value3: '' }
   ])
@@ -302,7 +303,8 @@ const AddConditionFlowDialog = ({ id }: AddConditionFlowDialogProps) => {
           variant='contained'
           color='secondary'
           onClick={() => {
-            closeDialog(id)
+            // closeDialog(id)
+            onClose()
           }}
         >
           ยกเลิก
@@ -311,7 +313,8 @@ const AddConditionFlowDialog = ({ id }: AddConditionFlowDialogProps) => {
           variant='contained'
           onClick={() => {
             addLinkToCurrentNode()
-            closeDialog(id)
+            // closeDialog(id)
+            onClose()
           }}
         >
           ยืนยัน

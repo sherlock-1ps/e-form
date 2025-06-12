@@ -20,11 +20,12 @@ import {
 import { useFlowStore } from '@/store/useFlowStore'
 import { useFetchGetFormSignatureFieldsQueryOption } from '@/queryOptions/form/formQueryOptions'
 interface AddPathFlowDialogProps {
-  id: string
+  id?: string
+  onClose?: any
   // formFieldList: any
 }
 
-const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
+const AddPathFlowDialog = ({ id, onClose }: AddPathFlowDialogProps) => {
   const { closeDialog } = useDialog()
   const [enabled, setEnabled] = useState(false)
   const [minimumProgress, setMinimumProgress] = useState(1)
@@ -100,7 +101,8 @@ const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
       console.log('No node is selected.')
     }
 
-    closeDialog(id)
+    // closeDialog(id)
+    onClose()
   }
 
   // console.log('formFieldList', formFieldList)
@@ -207,7 +209,8 @@ const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
           variant='contained'
           color='secondary'
           onClick={() => {
-            closeDialog(id)
+            // closeDialog(id)
+            onClose()
           }}
         >
           ยกเลิก

@@ -145,7 +145,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
   })
 */
 
-const AddSettingPermissionFlowDialog = ({ id }) => {
+const AddSettingPermissionFlowDialog = ({ onClose }) => {
   const { closeDialog } = useDialog()
   const myDiagram = useFlowStore(state => state.myDiagram)
   const selectedField = useFlowStore(state => state.selectedField)
@@ -267,7 +267,8 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
 
     myDiagram.model.commitTransaction('update activity')
     console.log('selectedMoved', selectedMoved)
-    closeDialog(id)
+    // closeDialog(id)
+    onClose()
   }
 
   // console.log('selectedField', selectedField.data.assignees)
@@ -385,7 +386,14 @@ const AddSettingPermissionFlowDialog = ({ id }) => {
       </Grid>
 
       <Grid item xs={12} className='flex items-center justify-end gap-2 px-6'>
-        <Button variant='contained' color='secondary' autoFocus onClick={() => closeDialog(id)}>
+        <Button
+          variant='contained'
+          color='secondary'
+          autoFocus
+          onClick={() => {
+            onClose()
+          }}
+        >
           ยกเลิก
         </Button>
         <Button variant='contained' onClick={handleUpdateActivity}>

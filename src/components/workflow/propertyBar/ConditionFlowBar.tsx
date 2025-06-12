@@ -1,18 +1,14 @@
 'use client'
 
-import { Typography, Button, Autocomplete, IconButton } from '@mui/material'
+import { Typography, Button, Autocomplete, IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material'
 import { Delete, Add, RouteOutlined } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { useFlowStore } from '@/store/useFlowStore'
 import CustomTextField from '@/@core/components/mui/TextField'
-import { useDialog } from '@/hooks/useDialog'
 import AddConditionFlowDialog from '@/components/dialogs/flow/AddConditionFlowDialog'
-import AddSettingPermissionFlowDialog from '@/components/dialogs/flow/AddSettingPermissionFlowDialog'
-import { nanoid } from 'nanoid'
 import { useFetchFormQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 const ConditionFlowBar = () => {
-  const { showDialog } = useDialog()
   const myDiagram = useFlowStore(state => state.myDiagram)
   const flow = useFlowStore(state => state.flow)
   const updateFlowNodeText = useFlowStore(state => state.updateFlowNodeText)
@@ -21,25 +17,18 @@ const ConditionFlowBar = () => {
   const [inputValue, setInputValue] = useState('')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(999)
-  const { data: formList, isPending: pendingFormList } = useFetchFormQueryOption(page, pageSize)
+  const { data: formList } = useFetchFormQueryOption(page, pageSize)
+  const [openConditionDialog, setOpenConditionDialog] = useState(false)
+
   useEffect(() => {
     if (selectedField?.key && myDiagram && flow) {
-      // const nodeData = myDiagram.model.findNodeDataForKey(selectedField.key)
-
       const result = flow?.flow?.nodeDataArray.find(item => item.key == selectedField.key)
-      // setInputValue(nodeData?.text || '')
-
       setInputValue(result?.text || '')
     }
   }, [selectedField, myDiagram, flow])
 
-  function generateUniqueKey() {
-    return Date.now() + Math.floor(Math.random() * 1000)
-  }
-
   const handleDelete = () => {
     if (!myDiagram) return
-
     const selectedNode = myDiagram.selection.first()
     if (selectedNode) {
       myDiagram.model.removeNodeData(selectedNode.data)
@@ -47,81 +36,9 @@ const ConditionFlowBar = () => {
     }
   }
 
-  function addLinkToCurrentNode() {
-    // const selectedNode = myDiagram.selection.first()
-
-    if (selectedField) {
-      const newLink = Date.now() // Create a unique ID for the new link
-
-      const model = myDiagram.model
-      // var location = selectedNode.data.location.split(' ')
-      const location = selectedField.data.location.split(' ')
-
-      let linkCount = 0
-      selectedField.linksConnected.map((a: any) => {
-        if (a.data.from == selectedField.key) {
-          linkCount++
-        }
-      })
-
-      location[1] = String(parseInt(location[1]) + 180)
-
-      if (linkCount > 0) {
-        if (linkCount % 2 == 0) {
-          location[0] = String(parseInt(location[0]) + Math.ceil(linkCount / 2) * 150)
-        } else {
-          location[0] = String(parseInt(location[0]) - Math.ceil(linkCount / 2) * 150)
-        }
-      }
-      const newPart = {
-        key: generateUniqueKey(),
-        text: 'Activity',
-        figure: 'Rectangle',
-        category: 'activity',
-        components: JSON.stringify(['1', '2']),
-        location: location.join(' ')
-      }
-      model.addNodeData(newPart)
-
-      const newLinkData = {
-        key: newLink,
-        toPort: 'T',
-        fromPort: 'B',
-        from: selectedField.data.key,
-        to: newPart.key,
-        text: nanoid(4)
-      }
-      // Add the new link to the diagram's model
-      // pushLinkData(newLinkData)
-      myDiagram.model.addLinkData(newLinkData)
-    } else {
-      console.log('No node is selected.')
-    }
-  }
-
-  const handleDeletePath = (data: any) => {
-    if (!myDiagram || !selectedField || !data) return
-
-    const isLink = 'from' in data && 'to' in data
-
-    myDiagram.startTransaction('delete selected')
-
-    if (isLink) {
-      const realLinkData = myDiagram.model.linkDataArray.find((l: any) => l.key == data.key)
-      const link = myDiagram.findLinkForData(realLinkData)
-
-      if (link) {
-        myDiagram.remove(link)
-      }
-    }
-
-    myDiagram.commitTransaction('delete selected')
-  }
-
   const handleTextChange = (e: any) => {
     const newText = e.target.value
     setInputValue(newText)
-
     const nodeData = myDiagram?.model?.findNodeDataForKey(selectedField?.key)
     if (!nodeData || !myDiagram) return
     updateFlowNodeText(selectedField.key, newText)
@@ -137,7 +54,18 @@ const ConditionFlowBar = () => {
     myDiagram.model.startTransaction('update form')
     myDiagram.model.setDataProperty(nodeData, 'form', id)
     myDiagram.model.commitTransaction('update form')
-    // setformVerionId(id)
+  }
+
+  const handleDeletePath = (data: any) => {
+    if (!myDiagram || !selectedField || !data) return
+    const isLink = 'from' in data && 'to' in data
+    myDiagram.startTransaction('delete selected')
+    if (isLink) {
+      const realLinkData = myDiagram.model.linkDataArray.find((l: any) => l.key == data.key)
+      const link = myDiagram.findLinkForData(realLinkData)
+      if (link) myDiagram.remove(link)
+    }
+    myDiagram.commitTransaction('delete selected')
   }
 
   return (
@@ -168,9 +96,7 @@ const ConditionFlowBar = () => {
             }
             value={(formList?.result?.data || []).find((opt: any) => opt.id === selectedField?.data?.form) || null}
             isOptionEqualToValue={(option, value) => option?.id === (typeof value === 'object' ? value?.id : value)}
-            onChange={(event, newValue) => {
-              handleUpdateForm(newValue?.id ?? null)
-            }}
+            onChange={(event, newValue) => handleUpdateForm(newValue?.id ?? null)}
             renderInput={params => <CustomTextField {...params} label='เลือกแบบฟอร์ม' placeholder='เลือก...' />}
           />
         </div>
@@ -194,39 +120,28 @@ const ConditionFlowBar = () => {
                 </div>
               ))}
           </div>
-
-          {/* <Button
-            variant='contained'
-            fullWidth
-            startIcon={<Add />}
-            onClick={() => {
-              addLinkToCurrentNode()
-            }}
-          >
-            เพิ่มเส้นทางงานใหม่
-          </Button> */}
         </div>
 
         <div className='w-full flex flex-col pb-4 border-b gap-2'>
           <Typography variant='h6'>เงื่อนไข</Typography>
-
           <Button
             variant='contained'
             autoFocus
             fullWidth
             startIcon={<Add />}
-            onClick={() => {
-              showDialog({
-                id: 'AddConditionFlowDialog',
-                component: <AddConditionFlowDialog id='AddConditionFlowDialog' />,
-                size: 'md'
-              })
-            }}
+            onClick={() => setOpenConditionDialog(true)}
           >
             เพิ่มเงื่อนไขใหม่
           </Button>
         </div>
       </div>
+
+      <Dialog open={openConditionDialog} onClose={() => setOpenConditionDialog(false)} maxWidth='md' fullWidth>
+        <DialogTitle>เพิ่มเงื่อนไข</DialogTitle>
+        <DialogContent>
+          <AddConditionFlowDialog id='inlineDialog' onClose={() => setOpenConditionDialog(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
