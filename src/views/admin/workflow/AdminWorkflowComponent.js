@@ -60,11 +60,12 @@ export default function AdminWorkflowComponent() {
   // }
 
   const load = () => {
-    if (!window.go || !diagramRef.current || !window.go.Diagram.fromDiv(diagramRef.current)) return
+    // if (!window.go || !diagramRef.current || !window.go.Diagram.fromDiv(diagramRef.current)) return
 
     const diagram = window.go.Diagram.fromDiv(diagramRef.current)
-    if (!diagram || !flow?.flow) return
+    // if (!diagram || !flow?.flow) return
 
+    console.log(JSON.stringify(flow.flow))
     try {
       diagram.model = window.go.Model.fromJson(JSON.stringify(flow.flow))
       diagram.model.linkFromPortIdProperty = 'fromPort'
@@ -221,7 +222,6 @@ export default function AdminWorkflowComponent() {
 
   useEffect(() => {
     if (!window.go || !diagramRef.current || window.go.Diagram.fromDiv(diagramRef.current)) return
-
     const go = window.go
     const $ = go.GraphObject.make
 
@@ -999,10 +999,8 @@ export default function AdminWorkflowComponent() {
   useEffect(() => {
     if (flow?.flow?.linkDataArray?.length > 0 || flow?.flow?.nodeDataArray?.length > 0) {
       setTimeout(() => {
-        if (!window.go) return
-        const diagram = window.go.Diagram.fromDiv(diagramRef.current)
-        if (!diagram) load()
-      }, 150)
+        load()
+      }, 1000)
     }
   }, [])
 
