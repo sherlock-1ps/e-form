@@ -51,12 +51,27 @@ export default function AdminWorkflowComponent() {
 
   const [goReady, setGoReady] = useState(false)
 
+  // const load = () => {
+  //   if (!window.go || !diagramRef.current) return
+  //   const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+  //   diagram.model = window.go.Model.fromJson(JSON.stringify(flow.flow))
+  //   diagram.model.linkFromPortIdProperty = 'fromPort'
+  //   diagram.model.linkToPortIdProperty = 'toPort'
+  // }
+
   const load = () => {
-    if (!window.go || !diagramRef.current) return
+    if (!window.go || !diagramRef.current || !window.go.Diagram.fromDiv(diagramRef.current)) return
+
     const diagram = window.go.Diagram.fromDiv(diagramRef.current)
-    diagram.model = window.go.Model.fromJson(JSON.stringify(flow.flow))
-    diagram.model.linkFromPortIdProperty = 'fromPort'
-    diagram.model.linkToPortIdProperty = 'toPort'
+    if (!diagram || !flow?.flow) return
+
+    try {
+      diagram.model = window.go.Model.fromJson(JSON.stringify(flow.flow))
+      diagram.model.linkFromPortIdProperty = 'fromPort'
+      diagram.model.linkToPortIdProperty = 'toPort'
+    } catch (error) {
+      console.error('Failed to load diagram model:', error)
+    }
   }
 
   const createFlow = async () => {
@@ -205,8 +220,7 @@ export default function AdminWorkflowComponent() {
   }
 
   useEffect(() => {
-    if (!diagramRef.current || !paletteRef.current || !window.go) return
-    if (window.go.Diagram.fromDiv(diagramRef.current)) return
+    if (!window.go || !diagramRef.current || window.go.Diagram.fromDiv(diagramRef.current)) return
 
     const go = window.go
     const $ = go.GraphObject.make
@@ -985,7 +999,9 @@ export default function AdminWorkflowComponent() {
   useEffect(() => {
     if (flow?.flow?.linkDataArray?.length > 0 || flow?.flow?.nodeDataArray?.length > 0) {
       setTimeout(() => {
-        load()
+        if (!window.go) return
+        const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+        if (!diagram) load()
       }, 150)
     }
   }, [])
