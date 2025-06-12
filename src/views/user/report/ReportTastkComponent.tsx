@@ -56,7 +56,7 @@ const ReportTastkComponent = () => {
           <Grid item xs={12} md={4}>
             <Card>
               <CardContent className='flex flex-col gap-6'>
-                <Typography variant='h6'>รายงานการประเมินแบบสำรวจ (พึงพอใจบริการของหน้าห้องผู้บริหาร)</Typography>
+                <Typography variant='h6'>รายงานแบบขอเบิกเงินค่าเช่าบ้าน 6006 (รายเดือน)</Typography>
 
                 <div className='flex flex-col gap-2'>
                   <Typography variant='body2'>คำบรรยาย</Typography>
