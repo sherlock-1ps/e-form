@@ -9,6 +9,7 @@ import { useDialog } from '@/hooks/useDialog'
 import AddConditionFlowDialog from '@/components/dialogs/flow/AddConditionFlowDialog'
 import AddSettingPermissionFlowDialog from '@/components/dialogs/flow/AddSettingPermissionFlowDialog'
 import { nanoid } from 'nanoid'
+import { useFetchFormQueryOption } from '@/queryOptions/form/formQueryOptions'
 
 const ConditionFlowBar = () => {
   const { showDialog } = useDialog()
@@ -18,7 +19,9 @@ const ConditionFlowBar = () => {
   const selectedField = useFlowStore(state => state.selectedField)
   const clearSelectedField = useFlowStore(state => state.clearSelectedField)
   const [inputValue, setInputValue] = useState('')
-
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(999)
+  const { data: formList, isPending: pendingFormList } = useFetchFormQueryOption(page, pageSize)
   useEffect(() => {
     if (selectedField?.key && myDiagram && flow) {
       // const nodeData = myDiagram.model.findNodeDataForKey(selectedField.key)
@@ -127,6 +130,16 @@ const ConditionFlowBar = () => {
     myDiagram.model.commitTransaction('update text')
   }
 
+  const handleUpdateForm = (id: any) => {
+    if (!myDiagram || !selectedField) return
+    const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
+    if (!nodeData) return
+    myDiagram.model.startTransaction('update form')
+    myDiagram.model.setDataProperty(nodeData, 'form', id)
+    myDiagram.model.commitTransaction('update form')
+    // setformVerionId(id)
+  }
+
   return (
     <div className='w-[280px] min-w-[280px] bg-white flex flex-col transition-all border'>
       <section
@@ -144,6 +157,22 @@ const ConditionFlowBar = () => {
       <div className='w-full flex flex-col p-6 gap-4'>
         <div className='w-full flex flex-col pb-4 border-b'>
           <CustomTextField label='ข้อความกำกับ' value={inputValue} onChange={handleTextChange} />
+        </div>
+
+        <div className='w-full flex flex-col pb-4 border-b'>
+          <Autocomplete
+            fullWidth
+            options={formList?.result?.data || []}
+            getOptionLabel={option =>
+              typeof option === 'object' && option !== null && 'name' in option ? option.name : ''
+            }
+            value={(formList?.result?.data || []).find((opt: any) => opt.id === selectedField?.data?.form) || null}
+            isOptionEqualToValue={(option, value) => option?.id === (typeof value === 'object' ? value?.id : value)}
+            onChange={(event, newValue) => {
+              handleUpdateForm(newValue?.id ?? null)
+            }}
+            renderInput={params => <CustomTextField {...params} label='เลือกแบบฟอร์ม' placeholder='เลือก...' />}
+          />
         </div>
 
         <div className='w-full flex flex-col pb-4 border-b gap-2'>
@@ -166,7 +195,7 @@ const ConditionFlowBar = () => {
               ))}
           </div>
 
-          <Button
+          {/* <Button
             variant='contained'
             fullWidth
             startIcon={<Add />}
@@ -175,7 +204,7 @@ const ConditionFlowBar = () => {
             }}
           >
             เพิ่มเส้นทางงานใหม่
-          </Button>
+          </Button> */}
         </div>
 
         <div className='w-full flex flex-col pb-4 border-b gap-2'>
@@ -190,7 +219,7 @@ const ConditionFlowBar = () => {
               showDialog({
                 id: 'AddConditionFlowDialog',
                 component: <AddConditionFlowDialog id='AddConditionFlowDialog' />,
-                size: 'sm'
+                size: 'md'
               })
             }}
           >

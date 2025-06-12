@@ -19,6 +19,7 @@ const PathFlowBar = () => {
   const [inputValueMinimumProgress, setInputValueMinimumProgress] = useState(1)
   const clearSelectedField = useFlowStore(state => state.clearSelectedField)
   const [inputValue, setInputValue] = useState('')
+  const [linkRule, setLinkRule] = useState({ conditions: [], logicOperator: '' })
 
   useEffect(() => {
     if (!selectedField || !myDiagram || !flow) return
@@ -31,6 +32,9 @@ const PathFlowBar = () => {
       )
 
       setInputValue(linkResult?.text || '')
+
+      setLinkRule(linkResult?.rule || { conditions: [], logicOperator: '' })
+      console.log(linkResult?.rule)
     } else {
       const nodeResult = flow?.flow?.nodeDataArray.find(item => item.key === selectedField.key)
       setInputValue(nodeResult?.text || '')
@@ -123,6 +127,28 @@ const PathFlowBar = () => {
           />
         </div>
       </div>
+      {/* { conditions: [], logicOperator: '' } */}
+      {linkRule?.logicOperator !== '' ? (
+        <div className='w-full flex flex-col p-6 gap-4'>
+          <div className='w-full flex flex-col pb-4 border-b'>
+            <h5>เงื่อนไข ({linkRule?.logicOperator})</h5>
+            <ul>
+              {linkRule?.conditions?.map((condition, j) => {
+                const source1Text = condition.source1 == 'data' ? 'ฟิวด์: ' : 'ค่า: '
+                const source2Text = condition.source3 == 'data' ? 'ฟิวด์: ' : 'ค่า: '
+
+                return (
+                  <li
+                    key={j}
+                  >{`${source1Text}${condition.value1} ${condition.operator}  ${source2Text}${condition.value3} `}</li>
+                )
+              })}
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   )
 }

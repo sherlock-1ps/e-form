@@ -18,7 +18,7 @@ import {
   Autocomplete
 } from '@mui/material'
 import { useFlowStore } from '@/store/useFlowStore'
-import { useFetchGetFormFieldsQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useFetchGetFormSignatureFieldsQueryOption } from '@/queryOptions/form/formQueryOptions'
 interface AddPathFlowDialogProps {
   id: string
   // formFieldList: any
@@ -29,13 +29,14 @@ const AddPathFlowDialog = ({ id }: AddPathFlowDialogProps) => {
   const [enabled, setEnabled] = useState(false)
   const [minimumProgress, setMinimumProgress] = useState(1)
   const [radioValue, setRadioValue] = useState<'sign' | 'custom'>('custom')
-  const selectedField = useFlowStore(state => state.selectedField)
+
   const myDiagram = useFlowStore(state => state.myDiagram)
   const [linkName, setLinkName] = useState('')
   const [signId, setSignId] = useState('')
 
+  const selectedField = useFlowStore(state => state.selectedField)
   const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
-  const { data: formFieldList } = useFetchGetFormFieldsQueryOption(nodeData.form)
+  const { data: formFieldList } = useFetchGetFormSignatureFieldsQueryOption(nodeData.form)
   // const [inputValueMinimumProgress, setInputValueMinimumProgress] = useState(1)
   useEffect(() => {
     setEnabled(false)
