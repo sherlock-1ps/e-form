@@ -2,7 +2,7 @@
 
 // MUI Imports
 import Button from '@mui/material/Button'
-import { Card, CardContent, Divider, Grid, MenuItem, Pagination, Typography } from '@mui/material'
+import { Card, CardContent, Divider, Grid, IconButton, MenuItem, Pagination, Typography } from '@mui/material'
 
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
@@ -17,6 +17,8 @@ import { useFetchFlowQueryOption, useGetFlowQueryOption } from '@/queryOptions/f
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useFlowStore } from '@/store/useFlowStore'
 import ViewWorkflowComponent from '../createTask/ViewWorkflowComponent'
+import ViewModuleIcon from '@mui/icons-material/ViewModule'
+import ViewListIcon from '@mui/icons-material/ViewList'
 
 interface confirmProps {
   id: string
@@ -36,6 +38,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
 
   const { data: flowNameData, isPending: pendingFlow } = useFetchFlowQueryOption(page, pageSize)
   const { mutateAsync: getFlow, isPending: pendingGetFlow } = useGetFlowQueryOption()
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const handleShowWorkflow = async (id: number) => {
     try {
@@ -67,9 +70,25 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
       />
     )
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Typography variant='h5'>สร้างงานใหม่</Typography>
+    <Grid container spacing={viewMode == 'list' ? 1 : 4}>
+      <Grid item xs={12} className='flex items-center justify-between'>
+        <Typography variant='h4'>สร้างงานใหม่</Typography>
+        <div className='flex gap-2  backdrop-blur-sm p-2 rounded-xl shadow-sm  items-center'>
+          <IconButton
+            onClick={() => setViewMode('grid')}
+            color={viewMode === 'grid' ? 'primary' : 'default'}
+            className='transition-all duration-200'
+          >
+            <i className='tabler tabler-layout-grid text-xl' />
+          </IconButton>
+          <IconButton
+            onClick={() => setViewMode('list')}
+            color={viewMode === 'list' ? 'primary' : 'default'}
+            className='transition-all duration-200'
+          >
+            <i className='tabler tabler-list text-xl' />
+          </IconButton>
+        </div>
       </Grid>
 
       {pendingFlow && (
@@ -79,59 +98,110 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
       )}
 
       {flowNameData?.result?.data?.length > 0 ? (
-        flowNameData.result.data.map((item: any, index: number) => (
-          <Grid item xs={12} md={4} key={index}>
-            <Card>
-              <CardContent className='flex flex-col gap-6'>
-                <Typography variant='h6'>{item.name}</Typography>
-
-                <div className='flex flex-col gap-2 mt-2'>
-                  <Typography variant='body2'>คำบรรยาย</Typography>
-                  <Typography variant='body2' className='break-words line-clamp-2 min-h-[2.5rem]'>
-                    .....
-                  </Typography>
+        viewMode === 'grid' ? (
+          viewMode === 'grid' &&
+          flowNameData.result.data.map((item: any, index: number) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Card>
+                <CardContent className='flex flex-col gap-2'>
+                  <Typography variant='h6'>{item.name}</Typography>
+                  <div className='flex flex-col gap-2 mt-2'>
+                    <Typography variant='body2'>คำบรรยาย</Typography>
+                    <Typography variant='body2' className='break-words line-clamp-2 min-h-[2.5rem]'>
+                      .....
+                    </Typography>
+                  </div>
+                  <div className='flex gap-4 items-center justify-end h-[40px] mt-4'>
+                    <Button
+                      variant='outlined'
+                      color='secondary'
+                      className='h-full text-sm'
+                      onClick={() => {
+                        setSelectedViewFlow(item?.name)
+                        handleShowWorkflow(item?.version?.[0]?.id)
+                      }}
+                    >
+                      ดูเวิร์คโฟลว์
+                    </Button>
+                    <Button
+                      variant='contained'
+                      className='h-full text-sm'
+                      onClick={() => {
+                        showDialog({
+                          id: 'alertDialogConfirmToggleTrigger',
+                          component: (
+                            <ConfirmAlert
+                              id='alertDialogConfirmToggleTrigger'
+                              title='เริ่มต้นใช้งาน'
+                              content1='คุณต้องการใช้งานโฟลว์นี้ ใช่หรือไม่'
+                              onClick={() => {
+                                onStartFlow('', 'start', item.id)
+                                closeDialog(id)
+                              }}
+                            />
+                          ),
+                          size: 'sm'
+                        })
+                      }}
+                    >
+                      เริ่มต้นใช้งาน
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        ) : (
+          viewMode === 'list' &&
+          flowNameData.result.data.map((item: any, index: number) => (
+            <Grid item xs={12} key={index} className='mt-2'>
+              <div className='w-full border p-4 rounded-md shadow-sm bg-white flex flex-col gap-2'>
+                <div className='flex justify-between items-center'>
+                  <Typography variant='h6'>{item.name}</Typography>
+                  <div className='flex gap-2'>
+                    <Button
+                      variant='outlined'
+                      color='secondary'
+                      size='small'
+                      onClick={() => {
+                        setSelectedViewFlow(item?.name)
+                        handleShowWorkflow(item?.version?.[0]?.id)
+                      }}
+                    >
+                      ดูเวิร์คโฟลว์
+                    </Button>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      onClick={() => {
+                        showDialog({
+                          id: 'alertDialogConfirmToggleTrigger',
+                          component: (
+                            <ConfirmAlert
+                              id='alertDialogConfirmToggleTrigger'
+                              title='เริ่มต้นใช้งาน'
+                              content1='คุณต้องการใช้งานโฟลว์นี้ ใช่หรือไม่'
+                              onClick={() => {
+                                onStartFlow('', 'start', item.id)
+                                closeDialog(id)
+                              }}
+                            />
+                          ),
+                          size: 'sm'
+                        })
+                      }}
+                    >
+                      เริ่มต้นใช้งาน
+                    </Button>
+                  </div>
                 </div>
-
-                <div className='flex gap-4 items-center justify-end h-[40px] mt-4'>
-                  <Button
-                    variant='outlined'
-                    color='secondary'
-                    className='h-full text-sm'
-                    onClick={() => {
-                      setSelectedViewFlow(item?.name)
-                      handleShowWorkflow(item?.version?.[0]?.id)
-                    }}
-                  >
-                    ดูเวิร์คโฟลว์
-                  </Button>
-                  <Button
-                    variant='contained'
-                    className='h-full text-sm'
-                    onClick={() => {
-                      showDialog({
-                        id: 'alertDialogConfirmToggleTrigger',
-                        component: (
-                          <ConfirmAlert
-                            id='alertDialogConfirmToggleTrigger'
-                            title='เริ่มต้นใช้งาน'
-                            content1='คุณต้องการใช้งานโฟลว์นี้ ใช่หรือไม่'
-                            onClick={() => {
-                              onStartFlow('', 'start', item.id)
-                              closeDialog(id)
-                            }}
-                          />
-                        ),
-                        size: 'sm'
-                      })
-                    }}
-                  >
-                    เริ่มต้นใช้งาน
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))
+                <Typography variant='body2' color='text.secondary'>
+                  คำบรรยาย: .....
+                </Typography>
+              </div>
+            </Grid>
+          ))
+        )
       ) : (
         <Grid item xs={12}>
           <Typography>ยังไม่มี Flow ที่สามารถสร้างงานได้</Typography>
