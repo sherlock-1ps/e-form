@@ -100,8 +100,12 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         window.location.href = 'https://dtn.igenco.dev/login'
         useAuthStore.getState().clearTokens()
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log('error', error)
+      if (error?.url_redirect) {
+        toast.success('ออกจากระบบสำเร็จ', { autoClose: 3000 })
+        window.location.href = error?.url_redirect
+      }
     }
   }
 
