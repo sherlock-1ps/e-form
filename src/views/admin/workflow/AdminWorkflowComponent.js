@@ -999,7 +999,7 @@ export default function AdminWorkflowComponent() {
     if (flow?.flow?.linkDataArray?.length > 0 || flow?.flow?.nodeDataArray?.length > 0) {
       setTimeout(() => {
         load()
-      }, 1000)
+      }, 680)
     }
   }, [])
 

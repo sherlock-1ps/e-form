@@ -41,15 +41,14 @@ const WorkflowComponent = () => {
   const { mutateAsync: getFlow, isPending: pendingGetFlow } = useGetFlowQueryOption()
 
   const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
-    <div className='flex flex-col p-4 bg-white rounded-md max-w-[220px] w-[220px] h-[275px] border shadow-md'>
-      {/* Header */}
-      <div className='flex items-center justify-between'>
-        <Typography variant='h6' className='text-start pb-2'>
+    <div className='flex flex-col p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-[220px] min-h-[275px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300'>
+      <div className='flex items-start justify-between mb-1'>
+        <Typography variant='h6' className='text-start font-semibold leading-snug break-words max-w-[150px]'>
           {title}
         </Typography>
         <OptionMenu
-          iconButtonProps={{ size: 'medium' }}
-          iconClassName='text-secondary'
+          iconButtonProps={{ size: 'small' }}
+          iconClassName='text-gray-500'
           options={[
             {
               text: 'แก้ไข',
@@ -65,13 +64,12 @@ const WorkflowComponent = () => {
               icon: <CreateNewFolder />,
               menuItemProps: {
                 className: 'text-secondary',
-                onClick: () => {
+                onClick: () =>
                   showDialog({
                     id: 'alertEditVersionFlowDialog',
                     component: <EditVersionFlowDialog id='alertEditVersionFlowDialog' data={data} onClick={() => {}} />,
                     size: 'sm'
                   })
-                }
               }
             },
             {
@@ -79,13 +77,12 @@ const WorkflowComponent = () => {
               icon: <EditCalendar />,
               menuItemProps: {
                 className: 'text-secondary',
-                onClick: () => {
+                onClick: () =>
                   showDialog({
                     id: 'alertDateUseFlowDialog',
                     component: <DateUseFlowDialog id='alertDateUseFlowDialog' data={data} />,
                     size: 'sm'
                   })
-                }
               }
             },
             {
@@ -93,48 +90,38 @@ const WorkflowComponent = () => {
               icon: <Delete />,
               menuItemProps: {
                 className: 'text-error',
-                onClick: () => {
+                onClick: () =>
                   showDialog({
                     id: 'alertDeleteForm',
                     component: (
                       <ConfirmAlert
                         id='alertDeleteForm'
-                        title={'ลบโฟลว์'}
-                        content1={`คุณต้องการลบโฟลว์นี้ใช่หรือไม่`}
+                        title='ลบโฟลว์'
+                        content1='คุณต้องการลบโฟลว์นี้ใช่หรือไม่'
                         onClick={() => onDelete(data?.id)}
-                        // onClick={() => onDelete(data?.version?.[0].id)}
                       />
                     ),
                     size: 'sm'
                   })
-                }
               }
             }
           ]}
         />
       </div>
 
-      {/* Version info */}
-      <div className='flex justify-between'>
-        <Typography className='text-start italic' variant='body2'>
-          เวอร์ชั่น
-        </Typography>
-        <Typography className='text-end italic' variant='body2'>
-          {version}
-        </Typography>
+      {/* Version */}
+      <div className='flex justify-between text-xs text-gray-500 mb-1'>
+        <span>เวอร์ชั่น</span>
+        <span>{version}</span>
       </div>
 
-      {/* Image container */}
-      <div className='flex-1 my-2 rounded overflow-hidden'>
-        {/* <img src={image} alt={title} className='w-full h-full object-cover' /> */}
-        <Typography className=' h-full bg-slate-100 flex items-center justify-center text-wrap px-2' variant='body2'>
-          {title}
-        </Typography>
-        {/* Or if you want just black placeholder: <div className='w-full h-full bg-black' /> */}
+      {/* Image or Placeholder */}
+      <div className='flex-1 my-2 bg-slate-100 rounded-md flex items-center justify-center text-center px-2 text-sm text-gray-600'>
+        <span className='line-clamp-3'>{title}</span>
       </div>
 
       {/* Date */}
-      <Typography variant='body2' className='text-end'>
+      <Typography variant='caption' className='text-end text-gray-500'>
         {date}
       </Typography>
     </div>
@@ -194,7 +181,7 @@ const WorkflowComponent = () => {
 
             <div className='flex gap-4 flex-wrap'>
               <Button
-                className={`w-[200px] h-[262px] rounded-md  flex  items-center justify-center`}
+                className={`w-[200px] min-h-[262px] rounded-md  flex  items-center justify-center`}
                 style={{ backgroundColor: '#0463EA14' }}
                 onClick={() => {
                   showDialog({
