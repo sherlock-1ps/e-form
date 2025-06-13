@@ -20,7 +20,7 @@ import ClientUserNavbar from './navbar/ClientUserNavbar'
 import NavToggle from './NavToggle'
 import { Typography, IconButton } from '@mui/material'
 import { useDialog } from '@/hooks/useDialog'
-import { Home, NotificationAddOutlined, SupervisedUserCircleOutlined } from '@mui/icons-material'
+import { Home, NotificationAddOutlined, HomeOutlined } from '@mui/icons-material'
 import NotificationsDropdown, { NotificationsType } from '../shared/NotificationsDropdown'
 import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
 
@@ -52,7 +52,7 @@ const NavbarContent: React.FC<NavbarContentProps> = () => {
         <div className='flex items-center gap-2'>
           <Link href='/'>
             <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='flex items-center justify-center'>
-              <Home sx={{ width: '24px', height: '24px' }} className=' text-backgroundDefault' />
+              <HomeOutlined sx={{ width: '24px', height: '24px' }} className=' text-backgroundDefault' />
             </IconButton>
           </Link>
           <NotificationsDropdown />

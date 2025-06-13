@@ -33,7 +33,7 @@ import { getLocalizedUrl } from '@/utils/i18n'
 import navigationCustomStyles from '@core/styles/vertical/navigationCustomStyles'
 import ToolboxFormNavigation from './ToolboxFormNavigation/ToolboxFormNavigation'
 import { IconButton } from '@mui/material'
-import { Home, NotificationAddOutlined, SupervisedUserCircleOutlined } from '@mui/icons-material'
+import { Home, NotificationAddOutlined, SupervisedUserCircleOutlined, HomeOutlined } from '@mui/icons-material'
 import CustomAvatar from '@/@core/components/mui/Avatar'
 import { getInitials } from '@/utils/getInitials'
 import NotificationsDropdown, { NotificationsType } from '../shared/NotificationsDropdown'
@@ -177,7 +177,7 @@ const Navigation = (props: Props) => {
                   onMouseDown={e => e.preventDefault()}
                   className='flex items-center justify-center'
                 >
-                  <Home sx={{ width: '24px', height: '24px' }} />
+                  <HomeOutlined sx={{ width: '24px', height: '24px' }} />
                 </IconButton>
               </Link>
               <div className='flex '>
