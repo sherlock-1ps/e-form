@@ -48,7 +48,7 @@ const Footer = (props: Props) => {
         [verticalLayoutClasses.footerAttached]: footerAttached,
         [verticalLayoutClasses.footerStatic]: footerStatic,
         [verticalLayoutClasses.footerFixed]: footerFixed,
-        [verticalLayoutClasses.footerContentCompact]: footerContentCompact,
+        [verticalLayoutClasses.footerContentCompact]: footerContentWide,
         [verticalLayoutClasses.footerContentWide]: footerContentWide
       })}
     >

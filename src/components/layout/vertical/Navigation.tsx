@@ -125,8 +125,10 @@ const Navigation = (props: Props) => {
     setWatchFormFalse()
     if (pathname.includes('/admin/form')) {
       return <ToolboxFormNavigation />
-    } else {
+    } else if (pathname.includes('/admin/form')) {
       return <VerticalMenu scrollMenu={scrollMenu} dictionary={dictionary} />
+    } else {
+      return null
     }
   }, [pathname])
 
@@ -137,7 +139,7 @@ const Navigation = (props: Props) => {
       return null
     } else if (pathname.includes('/user/viewPdf')) {
       return null
-    } else {
+    } else if (pathname.includes('/admin/form')) {
       return (
         <VerticalNav
           customStyles={navigationCustomStyles(verticalNavOptions, theme)}
@@ -153,20 +155,13 @@ const Navigation = (props: Props) => {
             })}
         >
           {/* Nav Header including Logo & nav toggle icons  */}
-          <NavHeader>
+          {/* <NavHeader>
             <Link href={getLocalizedUrl('/', locale as Locale)}>
               <Logo />
             </Link>
-            {/* {!(isCollapsed && !isHovered) && (
-          <NavCollapseIcons
-            lockedIcon={<i className='tabler-circle-dot text-xl' />}
-            unlockedIcon={<i className='tabler-circle text-xl' />}
-            closeIcon={<i className='tabler-x text-xl' />}
-            onClick={() => updateSettings({ layout: !isCollapsed ? 'collapsed' : 'vertical' })}
-          />
-        )} */}
-          </NavHeader>
-          {!isBreakpointReached && (
+
+          </NavHeader> */}
+          {/* {!isBreakpointReached && (
             <section
               className='w-full h-[54px] px-3 flex items-center justify-between bg-white'
               style={{ borderBottom: '1px solid #11151A1F' }}
@@ -198,12 +193,14 @@ const Navigation = (props: Props) => {
                 </IconButton>
               </div>
             </section>
-          )}
+          )} */}
 
           <StyledBoxForShadow ref={shadowRef} />
           {renderNavigationContent}
         </VerticalNav>
       )
+    } else {
+      return null
     }
   }, [pathname])
 

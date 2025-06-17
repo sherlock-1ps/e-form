@@ -469,7 +469,7 @@ export const getStartFlow = async ({ id }: { id: number }) => {
   }
 }
 
-export const getNextFlow = async ({ form_data_id }: { form_data_id: number }) => {
+export const getNextFlow = async ({ form_data_id }: { form_data_id: any }) => {
   try {
     const response = await Axios.post('/flows/get-next-flow', {
       form_data_id: form_data_id
@@ -998,6 +998,19 @@ export const getFormFields = async (id: number) => {
     console.error('Error read getFormSignatureFields:', error)
 
     const e = axiosErrorHandler(error, '/forms/get-fields')
+    throw e
+  }
+}
+
+export const fetchWorkCount = async () => {
+  try {
+    const response = await Axios.post('/form-datas/work/count')
+
+    return response.data
+  } catch (error) {
+    console.error('Error get work count:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/work/count')
     throw e
   }
 }

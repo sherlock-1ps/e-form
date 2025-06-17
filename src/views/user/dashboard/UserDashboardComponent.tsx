@@ -4,6 +4,8 @@
 
 import CustomTextField from '@/@core/components/mui/TextField'
 import { Button, Card, CardContent, Divider, IconButton, InputAdornment, MenuItem, Tab } from '@mui/material'
+import { InsertDriveFileOutlined, Task, PushPin, ViewList, AssignmentTurnedIn, Add } from '@mui/icons-material'
+
 import type { TextFieldProps } from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import type { SyntheticEvent } from 'react'
@@ -11,17 +13,17 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { searchProviders } from '@/app/sevices/provider/provider'
 import fetchProviderQueryOption, { fetchProviderTypeQueryOption } from '@/queryOptions/provider/providerQueryOptions'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
-import { Add } from '@mui/icons-material'
 import EditorForm from '@/components/e-form/newDefault/EditorForm'
 import {
   useFetchFlowNnameQueryOption,
+  useFetchWorkCountQueryOption,
   useFetchWorkMyQueryOption,
   useNextFlowQueryOption,
   useStartFlowQueryOption
@@ -36,11 +38,14 @@ import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import UserCreateTaskDialog from './UserCreateTaskDialog'
 import { useDialog } from '@/hooks/useDialog'
+import CardCount from '@/components/card/CardCount'
 
 const UserDashboardComponent = () => {
   const { showDialog } = useDialog()
   const router = useRouter()
   const params = useParams()
+  const searchParams = useSearchParams()
+  const flowId = searchParams.get('flow_id')
   const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
   const setFullForm = useFormStore(state => state.setFullForm)
   const { lang: locale } = params
@@ -58,7 +63,9 @@ const UserDashboardComponent = () => {
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
   const { mutateAsync: callStartFlow } = useStartFlowQueryOption()
 
-  const handleClickManange = async (id: number, status: any, flowId?: any) => {
+  const { data: countList } = useFetchWorkCountQueryOption()
+
+  const handleClickManange = async (id: number | null, status: any, flowId?: any) => {
     try {
       let response
       if (status == 'draft' || status == 'start') {
@@ -124,6 +131,12 @@ const UserDashboardComponent = () => {
     setCurrentSection('dashboard')
   }
 
+  useEffect(() => {
+    if (flowId) {
+      handleClickManange(null, 'start', Number(flowId))
+    }
+  }, [])
+
   if (currentSection === 'watchFlow' && viewFlowId !== null) {
     return <ViewFlowComponent formDataId={viewFlowId} onBack={handleBackShowFlow} />
   }
@@ -134,6 +147,48 @@ const UserDashboardComponent = () => {
   return (
     <TabContext value={value}>
       <div className='flex flex-col gap-6'>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={3}>
+            <CardCount
+              title='งานของฉัน'
+              count={countList?.result?.data[0]?.Total || 0}
+              baseColor='rgba(116, 198, 250, 0.25)'
+              textColor='rgb(116, 198, 250)'
+              icon={Task}
+              path='user/dashboard'
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <CardCount
+              title='งานที่กำลังติดตาม'
+              count={countList?.result?.data[1]?.Total || 0}
+              baseColor='rgba(67, 154, 226, 0.25)'
+              textColor='rgb(67, 154, 226)'
+              icon={PushPin}
+              path='user/followTask'
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <CardCount
+              title='งานทั้งหมด'
+              count={countList?.result?.data[2]?.Total || 0}
+              baseColor='rgba(30, 107, 175, 0.25)'
+              textColor='rgb(30, 107, 175)'
+              icon={ViewList}
+              path='user/allTask'
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <CardCount
+              title='งานที่จบแล้ว'
+              count={countList?.result?.data[3]?.Total || 0}
+              baseColor='rgba(23, 87, 155, 0.25)'
+              textColor='rgb(23, 87, 155)'
+              icon={AssignmentTurnedIn}
+              path='user/doneTask'
+            />
+          </Grid>
+        </Grid>
         {/* <Card>
           <CardContent>
             <Grid container>
@@ -158,7 +213,7 @@ const UserDashboardComponent = () => {
             </Grid>
           </CardContent>
         </Card> */}
-        <Card>
+        <Card className='min-h-[581px]'>
           <CardContent>
             <TabPanel value='1'>
               <Grid container spacing={4}>

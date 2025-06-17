@@ -18,11 +18,21 @@ import fetchProviderQueryOption, { fetchProviderTypeQueryOption } from '@/queryO
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
-import { DoneAll, PendingActions } from '@mui/icons-material'
 import EditorForm from '@/components/e-form/newDefault/EditorForm'
+import {
+  InsertDriveFileOutlined,
+  Task,
+  PushPin,
+  ViewList,
+  AssignmentTurnedIn,
+  Add,
+  DoneAll,
+  PendingActions
+} from '@mui/icons-material'
 import {
   useFetchFlowNnameQueryOption,
   useFetchWorkAllQueryOption,
+  useFetchWorkCountQueryOption,
   useNextFlowQueryOption
 } from '@/queryOptions/form/formQueryOptions'
 import UserDashboardTable from '../dashboard/UserDashboardTable'
@@ -33,6 +43,7 @@ import { toast } from 'react-toastify'
 import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
 import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
+import CardCount from '@/components/card/CardCount'
 
 const UserAllTaskComponent = () => {
   const router = useRouter()
@@ -50,6 +61,7 @@ const UserAllTaskComponent = () => {
   const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
   const { data: workAllData } = useFetchWorkAllQueryOption(page, pageSize, Number(selectedWorkflow))
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
+  const { data: countList } = useFetchWorkCountQueryOption()
 
   const handleClickManange = async (id: number) => {
     try {
@@ -116,7 +128,49 @@ const UserAllTaskComponent = () => {
 
   return (
     <div className='flex flex-col gap-6'>
-      <Card>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={3}>
+          <CardCount
+            title='งานของฉัน'
+            count={countList?.result?.data[0]?.Total || 0}
+            baseColor='rgba(116, 198, 250, 0.25)'
+            textColor='rgb(116, 198, 250)'
+            icon={Task}
+            path='user/dashboard'
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <CardCount
+            title='งานที่กำลังติดตาม'
+            count={countList?.result?.data[1]?.Total || 0}
+            baseColor='rgba(67, 154, 226, 0.25)'
+            textColor='rgb(67, 154, 226)'
+            icon={PushPin}
+            path='user/followTask'
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <CardCount
+            title='งานทั้งหมด'
+            count={countList?.result?.data[2]?.Total || 0}
+            baseColor='rgba(30, 107, 175, 0.25)'
+            textColor='rgb(30, 107, 175)'
+            icon={ViewList}
+            path='user/allTask'
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <CardCount
+            title='งานที่จบแล้ว'
+            count={countList?.result?.data[3]?.Total || 0}
+            baseColor='rgba(23, 87, 155, 0.25)'
+            textColor='rgb(23, 87, 155)'
+            icon={AssignmentTurnedIn}
+            path='user/doneTask'
+          />
+        </Grid>
+      </Grid>
+      <Card className='min-h-[581px]'>
         <CardContent>
           <Grid container spacing={4}>
             <Grid item xs={12}>

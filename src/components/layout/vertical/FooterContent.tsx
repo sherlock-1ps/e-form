@@ -11,6 +11,7 @@ import useVerticalNav from '@menu/hooks/useVerticalNav'
 
 // Util Imports
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
+import { Typography } from '@mui/material'
 
 const FooterContent = () => {
   // Hooks
@@ -18,9 +19,19 @@ const FooterContent = () => {
 
   return (
     <div
-      className={classnames(verticalLayoutClasses.footerContent, 'flex items-center justify-between flex-wrap gap-4')}
+      className={classnames(
+        verticalLayoutClasses.footerContent,
+        'flex items-center justify-between flex-wrap gap-4  h-[80px]'
+      )}
+      style={{
+        background: 'linear-gradient(to right, #1e69cb 10%, #2d78db 70%, #47b0ff 100%)'
+      }}
     >
-      <p>
+      <div className='max-w-[1440px] w-full mx-auto flex items-center justify-between  px-8 md:px-16'>
+        <Typography className='text-white'>© 2021 Copyright: กรมเจรจาการค้าระหว่างประเทศ</Typography>
+        <Typography className='text-white'>เวอร์ชัน 1.0.0</Typography>
+      </div>
+      {/* <p>
         <span className='text-textSecondary'>{`© ${new Date().getFullYear()}, Made with `}</span>
         <span>{`❤️`}</span>
         <span className='text-textSecondary'>{` by `}</span>
@@ -47,7 +58,7 @@ const FooterContent = () => {
             Support
           </Link>
         </div>
-      )}
+      )} */}
     </div>
   )
 }

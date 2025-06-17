@@ -196,7 +196,7 @@ const NotificationDropdown = ({ iconColor = false }: any) => {
           }}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <i className='tabler-bell' />
+          <i className='tabler-bell-filled w-[32px] h-[32px]' />
         </Badge>
       </IconButton>
       <Popper

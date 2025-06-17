@@ -1057,7 +1057,7 @@ export default function AdminWorkflowComponent() {
       <div className='flex w-full h-full'>
         {/* Sidebar */}
         <div className='w-[280px] min-w-[280px] bg-[#F1F0F2] flex flex-col transition-all duration-300 border-r'>
-          <div className='flex items-center justify-between py-4 px-6 bg-gradient-to-r from-[#47B0FF] via-[#2D78DB] to-[#1E69CB]'>
+          {/* <div className='flex items-center justify-between py-4 px-6 bg-gradient-to-r from-[#47B0FF] via-[#2D78DB] to-[#1E69CB]'>
             <div
               onClick={() => {
                 router.push(`/${locale}/workflow/dashboard`)
@@ -1069,19 +1069,17 @@ export default function AdminWorkflowComponent() {
             <Typography className='text-white' variant='h5'>
               E-flow
             </Typography>
-          </div>
+          </div> */}
           <section
-            className='w-full h-[54px] px-3 flex items-center justify-between bg-white'
-            style={{ borderBottom: '1px solid #11151A1F' }}
+            className='w-full px-3 flex items-center justify-between bg-white'
+            style={{ borderTop: '1px solid #11151A1F' }}
           >
-            <Link href='/'>
+            {/* <Link href='/'>
               <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='flex items-center justify-center'>
-                {/* <Home sx={{ width: '24px', height: '24px' }} /> */}
                 <HomeOutlined sx={{ width: '24px', height: '24px' }} />
               </IconButton>
             </Link>
             <div className='flex '>
-              {/* <NotificationAddOutlined sx={{ width: '24px', height: '24px', color: '#11151AE5' }} /> */}
               <NotificationsDropdown iconColor={true} />
               <IconButton
                 edge='end'
@@ -1096,9 +1094,8 @@ export default function AdminWorkflowComponent() {
                 }}
               >
                 <AccountCircleIcon fontSize='medium' />
-                {/* <CustomAvatar size={24}>{getInitials('Napat')}</CustomAvatar> */}
               </IconButton>
-            </div>
+            </div> */}
           </section>
 
           <div className='w-full flex-1 overflow-y-auto py-6 flex flex-col gap-4 bg-white px-4'>

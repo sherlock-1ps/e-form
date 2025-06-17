@@ -60,6 +60,29 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
     }
   }
 
+  const handleCopyUrl = (item: any) => {
+    const baseUrl = window.location.origin
+    const flowId = item?.version?.[0]?.flow_id
+
+    if (!flowId) {
+      console.warn('No flow_id found in item')
+      return
+    }
+
+    const fullUrl = `${baseUrl}/start-flow/?flow_id=${flowId}`
+
+    navigator.clipboard
+      .writeText(fullUrl)
+      .then(() => {
+        console.log('Copied URL:', fullUrl)
+        toast.success('คัดลอกลิงก์เรียบร้อยแล้ว!', { autoClose: 3000 })
+      })
+      .catch(err => {
+        console.error('Failed to copy:', err)
+        toast.error('เกิดข้อผิดพลาดในการคัดลอกลิงก์', { autoClose: 3000 })
+      })
+  }
+
   if (currentSection === 'viewFlow' && selectedViewFlow)
     return (
       <ViewWorkflowComponent
@@ -111,10 +134,20 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                       .....
                     </Typography>
                   </div>
-                  <div className='flex gap-4 items-center justify-end h-[40px] mt-4'>
+                  <div className='flex gap-2 items-center justify-end h-[40px] mt-4'>
                     <Button
                       variant='outlined'
                       color='secondary'
+                      className='h-full text-sm'
+                      onClick={() => {
+                        handleCopyUrl(item)
+                      }}
+                    >
+                      COPY
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      color='primary'
                       className='h-full text-sm'
                       onClick={() => {
                         setSelectedViewFlow(item?.name)
@@ -159,6 +192,16 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                 <div className='flex justify-between items-center'>
                   <Typography variant='h6'>{item.name}</Typography>
                   <div className='flex gap-2'>
+                    <Button
+                      variant='outlined'
+                      color='secondary'
+                      className='h-full text-sm'
+                      onClick={() => {
+                        handleCopyUrl(item)
+                      }}
+                    >
+                      COPY
+                    </Button>
                     <Button
                       variant='outlined'
                       color='secondary'
