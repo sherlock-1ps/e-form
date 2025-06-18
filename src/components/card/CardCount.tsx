@@ -3,6 +3,7 @@
 import { Typography } from '@mui/material'
 import { useParams, useRouter } from 'next/navigation'
 import type { SvgIconComponent } from '@mui/icons-material'
+import Link from 'next/link'
 
 type CardCountProps = {
   title: string
@@ -21,6 +22,7 @@ const CardCount = ({ title, count, baseColor, hoverColor, textColor, icon: Icon,
   const id = Math.random().toString(36).substring(2, 9)
   const className = `card-count-${id}`
   const computedHover = hoverColor || baseColor.replace(/[\d.]+\)$/g, '0.5)')
+  const computedActive = hoverColor || baseColor.replace(/[\d.]+\)$/g, '0.65)')
 
   return (
     <>
@@ -33,14 +35,19 @@ const CardCount = ({ title, count, baseColor, hoverColor, textColor, icon: Icon,
           .${className}:hover {
             background-color: ${computedHover};
           }
+            .${className}:active {
+            background-color: ${computedActive};
+             transform: translateY(2px);
+          }
         `}
       </style>
 
-      <div
+      <Link
         className={`${className} w-full rounded-sm px-6 py-4 flex items-center justify-between h-[115px] shadow-sm cursor-pointer`}
-        onClick={() => {
-          router.push(`/${locale}/${path}`)
-        }}
+        // onClick={() => {
+        //   router.push(`/${locale}/${path}`)
+        // }}
+        href={`/${locale}/${path}`}
       >
         <Icon style={{ fontSize: 64, color: textColor }} />
 
@@ -52,7 +59,7 @@ const CardCount = ({ title, count, baseColor, hoverColor, textColor, icon: Icon,
             {title}
           </Typography>
         </div>
-      </div>
+      </Link>
     </>
   )
 }
