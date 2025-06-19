@@ -1064,22 +1064,24 @@ export default function AdminWorkflowComponent() {
               }}
               className=' cursor-pointer'
             >
-              <img src='/images/dtn-logo.png' alt='logo' className='w-[114px] h-[48px]' />
+              <img src='https://dtn.igenco.dev/images/dtn/dtn-logo.png' alt='logo' className='h-[48px]' />
             </div>
             <Typography className='text-white' variant='h5'>
               E-flow
             </Typography>
           </div> */}
-          <section
-            className='w-full px-3 flex items-center justify-between bg-white'
-            style={{ borderTop: '1px solid #11151A1F' }}
+          {/* <section
+            className='w-full h-[54px] px-3 flex items-center justify-between bg-white'
+            style={{ borderBottom: '1px solid #11151A1F' }}
           >
-            {/* <Link href='/'>
+            <Link href='/'>
               <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='flex items-center justify-center'>
+
                 <HomeOutlined sx={{ width: '24px', height: '24px' }} />
               </IconButton>
             </Link>
             <div className='flex '>
+
               <NotificationsDropdown iconColor={true} />
               <IconButton
                 edge='end'
@@ -1094,9 +1096,10 @@ export default function AdminWorkflowComponent() {
                 }}
               >
                 <AccountCircleIcon fontSize='medium' />
+
               </IconButton>
-            </div> */}
-          </section>
+            </div>
+          </section> */}
 
           <div className='w-full flex-1 overflow-y-auto py-6 flex flex-col gap-4 bg-white px-4'>
             <Typography variant='h5' className='text-center'>

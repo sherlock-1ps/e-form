@@ -42,11 +42,12 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
     const blue = '#2c9afc'
     let nodeColor = '#fff'
     const formDataDetails = response?.result?.data?.form_data_detail ?? []
+    console.log('formDataDetails', formDataDetails)
     let lastId = 0
     window.myDiagram.links.each(function (link: any) {
       // console.log('link', link.data)
 
-      if (link.fromNode.data.key === -1) {
+      if (link?.fromNode?.data?.key === -1) {
         lastId = link.data.to
         // start
         window.myDiagram.model.setDataProperty(link.data, 'color', green)
@@ -54,11 +55,21 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
 
       for (const element of formDataDetails) {
         // nodeColor = green
+        // console.log(element)
         lastId = element.link_to
-        if (link.fromNode.data.key === element.link_from && link.toNode.data.key === element.link_to) {
+
+        // console.log('link?.fromNode?.data?.key', link?.fromNode?.data?.key)
+        console.log('link?.toNode?.data?.key', link?.toNode?.data?.key)
+
+        if (link?.toNode?.data?.key === element?.link_to) {
           changeNodeColorByKey(link.fromNode.data.key, green)
-          window.myDiagram.model.setDataProperty(link.data, 'color', green)
+          window.myDiagram.model.setDataProperty(link?.data, 'color', green)
         }
+
+        // if (link?.fromNode?.data?.key === element?.link_from && link?.toNode?.data?.key === element?.link_to) {
+        //   changeNodeColorByKey(link.fromNode.data.key, green)
+        //   window.myDiagram.model.setDataProperty(link?.data, 'color', green)
+        // }
       }
     })
 

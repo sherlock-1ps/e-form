@@ -178,7 +178,7 @@ const NotificationDropdown = ({ iconColor = false }: any) => {
 
   return (
     <>
-      <IconButton
+      {/* <IconButton
         ref={anchorRef}
         onClick={handleToggle}
         className={classnames({
@@ -198,7 +198,7 @@ const NotificationDropdown = ({ iconColor = false }: any) => {
         >
           <i className='tabler-bell-filled w-[32px] h-[32px]' />
         </Badge>
-      </IconButton>
+      </IconButton> */}
       <Popper
         open={open}
         transition

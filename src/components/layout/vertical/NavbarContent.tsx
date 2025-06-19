@@ -46,7 +46,13 @@ const NavbarContent: React.FC<NavbarContentProps> = () => {
           </div>
 
           <Link href='/'>
-            <img src={'/images/dtn-logo.png'} alt={`logo_sarabun`} width={100} height={40} className='mt-[-8px]' />
+            <img
+              src={'https://dtn.igenco.dev/images/dtn/dtn-logo.png'}
+              alt={`logo_sarabun`}
+              // width={100}
+              height={40}
+              className='mt-[-8px]'
+            />
           </Link>
         </div>
         <div className='flex items-center gap-2'>
