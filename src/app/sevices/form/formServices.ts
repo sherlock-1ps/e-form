@@ -573,16 +573,24 @@ export const getFlow = async (id: number) => {
 export const getPersonList = async ({
   page,
   pageSize,
-  f_person_id = '',
-  f_name = ''
+  text = '',
 }: {
   page: number
   pageSize: number
-  f_person_id?: string
-  f_name?: string
+  text?: string
 }) => {
   try {
-    const payload = { page, limit: pageSize, f_person_id, f_name }
+
+    const payload: Record<string, any> = { page, limit: pageSize }
+
+    if (text.trim() !== '') {
+      if (/^\d+$/.test(text)) {
+        payload.f_person_id = Number(text)
+      } else {
+        payload.f_name = text
+      }
+    }
+
     const response = await AxiosExternal.post('/api/service/core/get-person-lists', payload)
 
     const data = response?.data?.items?.data.map((i: any) => ({
@@ -603,16 +611,24 @@ export const getPersonList = async ({
 export const getPositionList = async ({
   page,
   pageSize,
-  f_position_id = '',
-  f_position_name = ''
+  text = ''
 }: {
   page: number
   pageSize: number
-  f_position_id?: string
-  f_position_name?: string
+  text?: string
 }) => {
   try {
-    const payload = { page, limit: pageSize, f_position_id, f_position_name }
+
+    const payload: Record<string, any> = { page, limit: pageSize }
+
+    if (text.trim() !== '') {
+      if (/^\d+$/.test(text)) {
+        payload.f_position_id = Number(text)
+      } else {
+        payload.f_position_name = text
+      }
+    }
+
     const response = await AxiosExternal.post('/api/service/core/get-position-lists', payload)
 
     const data = response?.data?.items?.data.map((i: any) => ({
@@ -633,16 +649,23 @@ export const getPositionList = async ({
 export const getDepartmentList = async ({
   page,
   pageSize,
-  f_dept_id = '',
-  department_name = ''
+  text = ''
 }: {
   page: number
   pageSize: number
-  f_dept_id?: string
-  department_name?: string
+  text?: string
 }) => {
   try {
-    const payload = { page, limit: pageSize, f_dept_id, department_name }
+    const payload: Record<string, any> = { page, limit: pageSize }
+
+    if (text.trim() !== '') {
+      if (/^\d+$/.test(text)) {
+        payload.f_dept_id = Number(text)
+      } else {
+        payload.department_name = text
+      }
+    }
+
     const response = await AxiosExternal.post('/api/service/core/get-department-lists', payload)
     const data = response?.data?.items?.data.map((i: any) => ({
       pk: `${i.F_DEPT_ID}-3`,

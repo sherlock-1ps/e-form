@@ -89,17 +89,17 @@ const dataField = {
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
 
-  // useEffect(() => {
-  //   setValue(initialValue)
-  // }, [initialValue])
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
 
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     onChange(value)
-  //   }, debounce)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
 
-  //   return () => clearTimeout(timeout)
-  // }, [value])
+    return () => clearTimeout(timeout)
+  }, [value])
 
   return (
     <CustomTextField
@@ -166,10 +166,10 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
 
   const [pageSize, setPageSize] = useState(10)
   const [filterType, setFilterType] = useState('person')
-
   const [searchText, setSearchText] = useState('')
+  const [searchTextSelected, setSearchTextSelected] = useState('')
 
-  const { data: person } = useGetPersonExternalQueryOption(page, pageSize, '', searchText, {
+  const { data: person } = useGetPersonExternalQueryOption(page, pageSize, searchText, {
     enabled: filterType === 'person'
   })
   const { data: position } = useGetPositionExternalQueryOption(page, pageSize, '', '', {
@@ -289,6 +289,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
             onChange={e => {
               setFilterType(e.target.value)
               setPage(1)
+              setSearchText('')
               // lockRowSelectionByField(selectedMoved)
             }}
           >
@@ -307,7 +308,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
             <DebouncedInput
               label='ค้นหา'
               placeholder={'....'}
-              value={''}
+              value={searchText}
               onChange={newText => {
                 setSearchText(newText)
               }}
@@ -361,8 +362,8 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
             <DebouncedInput
               label='ค้นหา'
               placeholder={'....'}
-              value={''}
-              onChange={newText => setSearchText(newText)}
+              value={searchTextSelected}
+              onChange={newText => setSearchTextSelected(newText)}
             />
 
             <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[400px]'>

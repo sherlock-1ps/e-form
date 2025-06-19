@@ -488,15 +488,13 @@ export const useGetFlowQueryOption = () => {
 export function useGetPersonExternalQueryOption(
   page: number,
   pageSize: number,
-  f_person_id: string,
-  f_name: string,
+  text: string,
   options?: { enabled?: boolean }
 ) {
-  console.log(f_person_id, f_name)
 
   return useQuery({
-    queryKey: ['person', page, pageSize],
-    queryFn: () => getPersonList({ page, pageSize, f_person_id, f_name }),
+    queryKey: ['person', page, pageSize, text],
+    queryFn: () => getPersonList({ page, pageSize, text }),
     ...options
   })
 }
@@ -504,13 +502,12 @@ export function useGetPersonExternalQueryOption(
 export function useGetPositionExternalQueryOption(
   page: number,
   pageSize: number,
-  f_position_id: string,
-  f_position_name: string,
+  text: string,
   options?: { enabled?: boolean }
 ) {
   return useQuery({
-    queryKey: ['position', page, pageSize, f_position_id, f_position_name],
-    queryFn: () => getPositionList({ page, pageSize, f_position_id, f_position_name }),
+    queryKey: ['position', page, pageSize, text],
+    queryFn: () => getPositionList({ page, pageSize, text }),
     ...options
   })
 }
@@ -518,13 +515,12 @@ export function useGetPositionExternalQueryOption(
 export function useGetDepartmentExternalQueryOption(
   page: number,
   pageSize: number,
-  f_dept_id: string,
-  department_name: string,
+  text: string,
   options?: { enabled?: boolean }
 ) {
   return useQuery({
-    queryKey: ['department', page, pageSize],
-    queryFn: () => getDepartmentList({ page, pageSize, f_dept_id, department_name }),
+    queryKey: ['department', page, pageSize, text],
+    queryFn: () => getDepartmentList({ page, pageSize, text }),
     ...options
   })
 }
