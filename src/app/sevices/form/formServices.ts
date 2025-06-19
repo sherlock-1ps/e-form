@@ -573,14 +573,13 @@ export const getFlow = async (id: number) => {
 export const getPersonList = async ({
   page,
   pageSize,
-  text = '',
+  text = ''
 }: {
   page: number
   pageSize: number
   text?: string
 }) => {
   try {
-
     const payload: Record<string, any> = { page, limit: pageSize }
 
     if (text.trim() !== '') {
@@ -618,7 +617,6 @@ export const getPositionList = async ({
   text?: string
 }) => {
   try {
-
     const payload: Record<string, any> = { page, limit: pageSize }
 
     if (text.trim() !== '') {
@@ -691,8 +689,8 @@ export const logout = async () => {
       {},
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+          Authorization: `Bearer ${accessToken}`
+        }
       }
     )
 
@@ -1000,6 +998,38 @@ export const getFormSignatureFields = async (id: number) => {
       })
       return response.data
     }
+  } catch (error) {
+    console.error('Error read getFormSignatureFields:', error)
+
+    const e = axiosErrorHandler(error, '/forms/get-fields')
+    throw e
+  }
+}
+
+export const getFormSignaturePermisionFields = async (id: number) => {
+  try {
+    // console.log('id: ', id)
+    let allItems = [{ pk: '1-4', id: 1, name: 'เจ้าของเรื่อง', type: 'ฟิวด์', typeId: '4' }]
+    if (id != 0 && id != null) {
+      const response = await Axios.post('/forms/get-fields', {
+        id,
+        type: ['signature']
+      })
+
+      console.log('response', response)
+
+      const dataResponse = response?.data.result.data.map((i: any, index: number) => ({
+        pk: `${i.id}`,
+        typeId: '4',
+        // id: i.id,
+        id: (index + 2) * -1,
+        name: `${i.id}`.trim(),
+        type: 'ลายเซ็น'
+      }))
+      allItems = [...allItems, ...dataResponse]
+      // console.log('dataResponse', dataResponse)
+    }
+    return { data: allItems, total: allItems.length }
   } catch (error) {
     console.error('Error read getFormSignatureFields:', error)
 

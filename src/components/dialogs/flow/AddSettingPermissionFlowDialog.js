@@ -19,7 +19,8 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import {
   useGetDepartmentExternalQueryOption,
   useGetPersonExternalQueryOption,
-  useGetPositionExternalQueryOption
+  useGetPositionExternalQueryOption,
+  useFetchGetFormSignaturePermisionFieldsQueryOption
 } from '@/queryOptions/form/formQueryOptions'
 import { useFlowStore } from '@/store/useFlowStore'
 import { createRoot } from 'react-dom/client'
@@ -80,11 +81,11 @@ const filterTypeOption = [
   }
 ]
 
-const dataFieldValue = [{ pk: '1-4', id: 1, name: 'เจ้าของเรื่อง', type: 'ฟิวด์', typeId: '4' }]
-const dataField = {
-  data: dataFieldValue,
-  total: dataFieldValue.length
-}
+// const dataFieldValue = [{ pk: '1-4', id: 1, name: 'เจ้าของเรื่อง', type: 'ฟิวด์', typeId: '4' }]
+// const dataField = {
+//   data: dataFieldValue,
+//   total: dataFieldValue.length
+// }
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
@@ -154,6 +155,8 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
   const [page, setPage] = useState(1)
   // const [selectedData, setSelectedData] = useState([])
 
+  const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
+
   const columnDefs = useMemo(
     () => [
       { headerName: 'ชื่อ', field: 'name', filter: false },
@@ -182,6 +185,8 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
   const { data: department } = useGetDepartmentExternalQueryOption(page, pageSize, '', '', {
     enabled: filterType === 'department'
   })
+
+  const { data: dataField } = useFetchGetFormSignaturePermisionFieldsQueryOption(nodeData.form)
 
   const listData = {
     person,

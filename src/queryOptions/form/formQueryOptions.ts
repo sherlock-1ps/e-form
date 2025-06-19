@@ -65,7 +65,8 @@ import {
   getFormSignatureFields,
   getFormFields,
   logout,
-  fetchWorkCount
+  fetchWorkCount,
+  getFormSignaturePermisionFields
 } from '@/app/sevices/form/formServices'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -491,7 +492,6 @@ export function useGetPersonExternalQueryOption(
   text: string,
   options?: { enabled?: boolean }
 ) {
-
   return useQuery({
     queryKey: ['person', page, pageSize, text],
     queryFn: () => getPersonList({ page, pageSize, text }),
@@ -732,16 +732,21 @@ export function useFetchGetFormFieldsQueryOption(id: number) {
     queryFn: () => getFormFields(id)
   })
 }
+export function useFetchGetFormSignaturePermisionFieldsQueryOption(id: number) {
+  return useQuery({
+    queryKey: ['getFormFields', id],
+    queryFn: () => getFormSignaturePermisionFields(id)
+  })
+}
 
+//
 
 export const useLogout = () => {
-
   return useMutation({
     mutationFn: logout,
     onError: error => {
       console.error('Error logout', error)
-    },
-
+    }
   })
 }
 export function useFetchWorkCountQueryOption() {
