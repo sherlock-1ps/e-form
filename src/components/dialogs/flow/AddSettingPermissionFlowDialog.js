@@ -153,7 +153,6 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
   const gridRefSelectingRemove = useRef(null)
   const [page, setPage] = useState(1)
   // const [selectedData, setSelectedData] = useState([])
-  const [selectedMoved, setSelectedMoved] = useState([...(selectedField?.data?.assignees ?? [])])
 
   const columnDefs = useMemo(
     () => [
@@ -167,7 +166,11 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
   const [pageSize, setPageSize] = useState(10)
   const [filterType, setFilterType] = useState('person')
   const [searchText, setSearchText] = useState('')
+  const [selectedMoved, setSelectedMoved] = useState([...(selectedField?.data?.assignees ?? [])])
   const [searchTextSelected, setSearchTextSelected] = useState('')
+  const filteredSelectedMoved = selectedMoved.filter(item =>
+    item.name.toLowerCase().includes(searchTextSelected.toLowerCase())
+  )
 
   const { data: person } = useGetPersonExternalQueryOption(page, pageSize, searchText, {
     enabled: filterType === 'person'
@@ -216,6 +219,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
   )
 
   const moveSelected = () => {
+    setSearchTextSelected('')
     const sel = gridRefSelecting.current?.api.getSelectedRows()
     setSelectedMoved(prev => {
       const newItems = [...prev, ...sel]
@@ -224,6 +228,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
     })
   }
   const removeSelected = () => {
+    setSearchTextSelected('')
     const sel = gridRefSelectingRemove.current?.api.getSelectedRows()
     setSelectedMoved(prev => {
       const newItems = prev.filter(item => !sel.some(remove => remove.pk === item.pk))
@@ -369,7 +374,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
             <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[400px]'>
               <AgGridReact
                 ref={gridRefSelectingRemove}
-                rowData={selectedMoved}
+                rowData={filteredSelectedMoved}
                 columnDefs={columnDefs}
                 rowSelection={rowRemoveSelection}
                 onRowSelected={event => {
