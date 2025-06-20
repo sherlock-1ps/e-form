@@ -19,7 +19,7 @@ import { useFlowStore } from '@/store/useFlowStore'
 import ViewWorkflowComponent from '../createTask/ViewWorkflowComponent'
 import ViewModuleIcon from '@mui/icons-material/ViewModule'
 import ViewListIcon from '@mui/icons-material/ViewList'
-
+import { FormatShowDate } from '@/utils/formatShowDate'
 interface confirmProps {
   id: string
   onStartFlow: any
@@ -38,7 +38,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
 
   const { data: flowNameData, isPending: pendingFlow } = useFetchFlowQueryOption(page, pageSize)
   const { mutateAsync: getFlow, isPending: pendingGetFlow } = useGetFlowQueryOption()
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
 
   const handleShowWorkflow = async (id: number) => {
     try {
@@ -129,9 +129,9 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                 <CardContent className='flex flex-col gap-2'>
                   <Typography variant='h6'>{item.name}</Typography>
                   <div className='flex flex-col gap-2 mt-2'>
-                    <Typography variant='body2'>คำบรรยาย</Typography>
+                    <Typography variant='body2'>วันที่แก้ไขล่าสุด</Typography>
                     <Typography variant='body2' className='break-words line-clamp-2 min-h-[2.5rem]'>
-                      .....
+                      {FormatShowDate(item.updated_at)}
                     </Typography>
                   </div>
                   <div className='flex gap-2 items-center justify-end h-[40px] mt-4'>
@@ -143,7 +143,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         handleCopyUrl(item)
                       }}
                     >
-                      COPY
+                      คัดลอกลิงก์
                     </Button>
                     <Button
                       variant='outlined'
@@ -200,7 +200,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         handleCopyUrl(item)
                       }}
                     >
-                      COPY
+                      คัดลอกลิงก์
                     </Button>
                     <Button
                       variant='outlined'
@@ -239,7 +239,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                   </div>
                 </div>
                 <Typography variant='body2' color='text.secondary'>
-                  คำบรรยาย: .....
+                  วันที่แก้ไขล่าสุด: {FormatShowDate(item.updated_at)}
                 </Typography>
               </div>
             </Grid>
