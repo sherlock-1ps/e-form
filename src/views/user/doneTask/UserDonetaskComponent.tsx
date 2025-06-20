@@ -131,7 +131,7 @@ const UserDonetaskComponent = () => {
       <Grid container spacing={4}>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='งานของฉัน'
+            title='เอกสารของฉัน'
             count={countList?.result?.data[0]?.Total || 0}
             baseColor='rgba(116, 198, 250, 0.25)'
             textColor='rgb(116, 198, 250)'
@@ -141,7 +141,7 @@ const UserDonetaskComponent = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='งานที่กำลังติดตาม'
+            title='เอกสารที่กำลังติดตาม'
             count={countList?.result?.data[1]?.Total || 0}
             baseColor='rgba(67, 154, 226, 0.25)'
             textColor='rgb(67, 154, 226)'
@@ -151,7 +151,7 @@ const UserDonetaskComponent = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='งานทั้งหมด'
+            title='เอกสารทั้งหมด'
             count={countList?.result?.data[2]?.Total || 0}
             baseColor='rgba(30, 107, 175, 0.25)'
             textColor='rgb(30, 107, 175)'
@@ -161,7 +161,7 @@ const UserDonetaskComponent = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='งานที่จบแล้ว'
+            title='เอกสารที่จบแล้ว'
             count={countList?.result?.data[3]?.Total || 0}
             baseColor='rgba(23, 87, 155, 0.25)'
             textColor='rgb(23, 87, 155)'
@@ -174,7 +174,7 @@ const UserDonetaskComponent = () => {
         <CardContent>
           <Grid container spacing={4}>
             <Grid item xs={12}>
-              <Typography variant='h5'>งานที่จบแล้ว</Typography>
+              <Typography variant='h5'>เอกสารที่จบแล้ว</Typography>
             </Grid>
             <Grid item xs={12} sm={4}>
               <CustomTextField

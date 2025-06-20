@@ -124,17 +124,17 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
     //     >
     //       <SubMenu label={'จัดการงาน'} className='mt-4 p-4 rounded-lg bg-white shadow-lg'>
     //         <MenuItem href={`/${locale}/user/dashboard`} icon={<Task style={{ width: '20px', height: '20px' }} />}>
-    //           งานของฉัน
+    //           เอกสารของฉัน
     //         </MenuItem>
     //         <MenuItem href={`/${locale}/user/createTask`} icon={<Add style={{ width: '20px', height: '20px' }} />}>
-    //           สร้างงานใหม่
+    //           สร้างเอกสารใหม่
     //         </MenuItem>
     //         <Divider className='my-2' />
     //         <MenuItem href={`/${locale}/user/followTask`} icon={<PushPin style={{ width: '20px', height: '20px' }} />}>
-    //           งานที่กำลังติดตาม
+    //           เอกสารที่กำลังติดตาม
     //         </MenuItem>
     //         <MenuItem href={`/${locale}/user/allTask`} icon={<ViewList style={{ width: '20px', height: '20px' }} />}>
-    //           งานทั้งหมด
+    //           เอกสารทั้งหมด
     //         </MenuItem>
     //       </SubMenu>
     //     </Menu>
@@ -151,24 +151,24 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
       >
         <SubMenu label={'จัดการงาน'} className='mt-4 p-4 rounded-lg bg-white shadow-lg'>
           {/* <MenuItem href={`/${locale}/user/createTask`} icon={<Add style={{ width: '20px', height: '20px' }} />}>
-            สร้างงานใหม่
+            สร้างเอกสารใหม่
           </MenuItem> */}
           <MenuItem href={`/${locale}/user/dashboard`} icon={<Task style={{ width: '20px', height: '20px' }} />}>
-            งานของฉัน
+            เอกสารของฉัน
           </MenuItem>
 
           <Divider className='my-2' />
           <MenuItem href={`/${locale}/user/followTask`} icon={<PushPin style={{ width: '20px', height: '20px' }} />}>
-            งานที่กำลังติดตาม
+            เอกสารที่กำลังติดตาม
           </MenuItem>
           <MenuItem href={`/${locale}/user/allTask`} icon={<ViewList style={{ width: '20px', height: '20px' }} />}>
-            งานทั้งหมด
+            เอกสารทั้งหมด
           </MenuItem>
           <MenuItem
             href={`/${locale}/user/doneTask`}
             icon={<AssignmentTurnedIn style={{ width: '20px', height: '20px' }} />}
           >
-            งานที่จบแล้ว
+            เอกสารที่จบแล้ว
           </MenuItem>
           <MenuItem href={`/${locale}/user/report`} icon={<Assessment style={{ width: '20px', height: '20px' }} />}>
             รายงาน
@@ -226,7 +226,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
                 label={dictionary['navigation'].dashboards}
                 icon={<i className='tabler-layout-dashboard' />}
 
-                // suffix={<CustomChip label='5' size='small' color='error' round='true' />}
+              // suffix={<CustomChip label='5' size='small' color='error' round='true' />}
               >
                 <MenuItem href={`/${locale}/dashboards/crm`}>{dictionary['navigation'].crm}</MenuItem>
                 <MenuItem href={`/${locale}/dashboards/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
@@ -547,13 +547,13 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
     <ScrollWrapper
       {...(isBreakpointReached
         ? {
-            className: 'bs-full overflow-y-auto overflow-x-hidden',
-            onScroll: container => scrollMenu(container, false)
-          }
+          className: 'bs-full overflow-y-auto overflow-x-hidden',
+          onScroll: container => scrollMenu(container, false)
+        }
         : {
-            options: { wheelPropagation: false, suppressScrollX: true }
-            // onScrollY: container => scrollMenu(container, true)
-          })}
+          options: { wheelPropagation: false, suppressScrollX: true }
+          // onScrollY: container => scrollMenu(container, true)
+        })}
       className=' bg-gray-100 h-full '
     >
       {/* Vertical Menu */}

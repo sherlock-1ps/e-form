@@ -1018,14 +1018,14 @@ export const getFormSignaturePermisionFields = async (id: number) => {
 
       console.log('response', response)
 
-      const dataResponse = response?.data.result.data.map((i: any, index: number) => ({
+      const dataResponse = response?.data?.result?.data?.map((i: any, index: number) => ({
         pk: `${i.id}`,
         typeId: '4',
         // id: i.id,
         id: (index + 2) * -1,
         name: `${i.id}`.trim(),
         type: 'ลายเซ็น'
-      }))
+      })) || []
       allItems = [...allItems, ...dataResponse]
       // console.log('dataResponse', dataResponse)
     }

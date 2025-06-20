@@ -95,7 +95,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
   return (
     <Grid container spacing={viewMode == 'list' ? 1 : 4}>
       <Grid item xs={12} className='flex items-center justify-between'>
-        <Typography variant='h4'>สร้างงานใหม่</Typography>
+        <Typography variant='h4'>สร้างเอกสารใหม่</Typography>
         <div className='flex gap-2  backdrop-blur-sm p-2 rounded-xl shadow-sm  items-center'>
           <IconButton
             onClick={() => setViewMode('grid')}

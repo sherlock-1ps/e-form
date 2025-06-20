@@ -150,7 +150,7 @@ const UserDashboardComponent = () => {
         <Grid container spacing={4}>
           <Grid item xs={12} md={3}>
             <CardCount
-              title='งานของฉัน'
+              title='เอกสารของฉัน'
               count={countList?.result?.data[0]?.Total || 0}
               baseColor='rgba(116, 198, 250, 0.25)'
               textColor='rgb(116, 198, 250)'
@@ -160,7 +160,7 @@ const UserDashboardComponent = () => {
           </Grid>
           <Grid item xs={12} md={3}>
             <CardCount
-              title='งานที่กำลังติดตาม'
+              title='เอกสารที่กำลังติดตาม'
               count={countList?.result?.data[1]?.Total || 0}
               baseColor='rgba(67, 154, 226, 0.25)'
               textColor='rgb(67, 154, 226)'
@@ -170,7 +170,7 @@ const UserDashboardComponent = () => {
           </Grid>
           <Grid item xs={12} md={3}>
             <CardCount
-              title='งานทั้งหมด'
+              title='เอกสารทั้งหมด'
               count={countList?.result?.data[2]?.Total || 0}
               baseColor='rgba(30, 107, 175, 0.25)'
               textColor='rgb(30, 107, 175)'
@@ -180,7 +180,7 @@ const UserDashboardComponent = () => {
           </Grid>
           <Grid item xs={12} md={3}>
             <CardCount
-              title='งานที่จบแล้ว'
+              title='เอกสารที่จบแล้ว'
               count={countList?.result?.data[3]?.Total || 0}
               baseColor='rgba(23, 87, 155, 0.25)'
               textColor='rgb(23, 87, 155)'
@@ -203,7 +203,7 @@ const UserDashboardComponent = () => {
                   />
                   <Tab
                     value='2'
-                    label='งานที่จบแล้ว'
+                    label='เอกสารที่จบแล้ว'
                     icon={<DoneAll />}
                     iconPosition={'start'}
                     className={value === '2' ? 'bg-primaryLighter' : ''}
@@ -218,7 +218,7 @@ const UserDashboardComponent = () => {
             <TabPanel value='1'>
               <Grid container spacing={4}>
                 <Grid item xs={12} className='flex items-center justify-between'>
-                  <Typography variant='h5'>งานของฉัน</Typography>
+                  <Typography variant='h5'>เอกสารของฉัน</Typography>
                   <Button
                     variant='contained'
                     startIcon={<Add style={{ width: '20px', height: '20px' }} />}
@@ -230,7 +230,7 @@ const UserDashboardComponent = () => {
                       })
                     }}
                   >
-                    สร้างงานใหม่
+                    สร้างเอกสารใหม่
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={4}>
