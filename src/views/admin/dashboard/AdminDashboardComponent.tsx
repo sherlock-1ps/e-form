@@ -11,7 +11,7 @@ import DashboardNavbarContent from '@/components/layout/vertical/navbar/Dashboar
 import { useDialog } from '@/hooks/useDialog'
 import CreateFormDialog from '@/components/dialogs/form/CreateFormDialog'
 import OptionMenu from '@/@core/components/option-menu'
-import { Edit, FileCopy, EditCalendar, Delete, CreateNewFolder, AccountTreeOutlined } from '@mui/icons-material'
+import { Edit, FileCopy, EditCalendar, Delete, CreateNewFolder, AccountTreeOutlined, ContentCopy } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import EditVersionFormDialog from '@/components/dialogs/form/EditVersionFormDialog'
 import DateUseFormDialog from '@/components/dialogs/form/DateUseFormDialog'
@@ -59,6 +59,15 @@ const AdminDashboardComponent = () => {
               }
             },
             {
+              text: 'สำเนา',
+              icon: pendingGetForm ? <CircularProgress size={20} /> : <ContentCopy />,
+              menuItemProps: {
+                disabled: pendingGetForm,
+                className: 'text-secondary',
+                onClick: () => onGetForm(data, true)
+              }
+            },
+            {
               text: 'เวอร์ชั่นใหม่',
               icon: <CreateNewFolder />,
               menuItemProps: {
@@ -66,7 +75,7 @@ const AdminDashboardComponent = () => {
                 onClick: () => {
                   showDialog({
                     id: 'alertEditVersionFormDialog',
-                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => {}} />,
+                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => { }} />,
                     size: 'sm'
                   })
                 }
@@ -141,7 +150,7 @@ const AdminDashboardComponent = () => {
     }
   }
 
-  const handleGetForm = async (data: any) => {
+  const handleGetForm = async (data: any, isCopy: boolean = false) => {
     const request = {
       id: data?.version?.[0]?.id
     }
@@ -152,7 +161,15 @@ const AdminDashboardComponent = () => {
         const layoutValue =
           response?.result?.data?.FormDetails?.[0]?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
 
+        const contentCopy = isCopy ? {
+          formId: undefined,
+          versionId: undefined,
+          version: "1.0.0",
+          name: `สำเนา_${data?.name}`
+        } : {}
+
         const formFromApi = {
+          isCopy: isCopy,
           isContinue: true,
           formId: data?.id,
           versionId: data?.version[0]?.id,
@@ -160,7 +177,8 @@ const AdminDashboardComponent = () => {
           version: response?.result?.data?.version,
           newVersion: response?.result?.data?.version,
           layout: layoutValue as 'vertical' | 'horizontal',
-          form_details: response?.result?.data?.FormDetails[0]?.detail?.data
+          form_details: response?.result?.data?.FormDetails[0]?.detail?.data,
+          ...contentCopy
         }
 
         setFullForm(formFromApi)
@@ -189,7 +207,7 @@ const AdminDashboardComponent = () => {
                 onClick={() => {
                   showDialog({
                     id: 'alertCreateFormDialog',
-                    component: <CreateFormDialog id='alertCreateFormDialog' onClick={() => {}} />,
+                    component: <CreateFormDialog id='alertCreateFormDialog' onClick={() => { }} />,
                     size: 'sm'
                   })
                 }}

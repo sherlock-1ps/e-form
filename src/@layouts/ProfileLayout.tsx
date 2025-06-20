@@ -46,13 +46,13 @@ const ProfileLayout = () => {
     <div className='flex items-center justify-between max-w-[1440px] w-full '>
       <div className='flex items-center gap-4 justify-center'>
         <Link href={'/'}>
-          <img src='/images/dtn_header.png' alt='dtn-header' className='w-[94px] h-auto cursor-pointer' />
+          <img src='https://dtn.igenco.dev/media/logos/dtn/dtn-logo.png' alt='dtn-header' className='w-[94px] h-auto cursor-pointer' />
         </Link>
         <Typography
           className='leading-tight text-white font-normal hidden sm:block'
           variant={isBreakpointReached ? 'h6' : 'h4'}
         >
-          ระบบสำนักงานอิเล็กทรอนิกส์ (DTN e-Workflow)
+          ระบบสำนักงานอิเล็กทรอนิกส์ (DTN e-Office : e-Workflow)
         </Typography>
       </div>
       <div className='flex items-center justify-center gap-1'>

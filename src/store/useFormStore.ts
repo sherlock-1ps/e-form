@@ -15,13 +15,16 @@ type FormObject = {
   fields: any[]
 }
 
+
+
 type FormVersion = {
+  isCopy?: boolean
   name?: string
   version?: string
   newVersion?: string
   isContinue: boolean
-  formId: string | number
-  versionId: string | number
+  formId?: string | number
+  versionId?: string | number
   layout: "vertical" | "horizontal"
   form_details: FormObject[]
 }
