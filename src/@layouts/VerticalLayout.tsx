@@ -40,8 +40,9 @@ import { useParams } from 'next/navigation'
 import FormFlowLayout from './FormFlowLayout'
 import ProfileLayout from './ProfileLayout'
 import { useDialog } from '@/hooks/useDialog'
-
+import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/useAuthStore'
+import { any } from 'valibot'
 type VerticalLayoutProps = ChildrenType & {
   navigation?: ReactNode
   navbar?: ReactNode
@@ -57,6 +58,18 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
   const profile = useAuthStore(state => state.profile)
   const urlBase = useAuthStore(state => state.urlBase)
   // const urlLogin = useAuthStore(state => state.urlLogin)
+
+  const pathname = usePathname()
+  const router = useRouter()
+  const target = '/th/user/dashboard'
+
+  const handleClick = e => {
+    // เปรียบเทียบเฉพาะ path ไม่รวม query string
+    if (pathname === target) {
+      e.preventDefault()
+      window.location.href = target // reload path (clear query too)
+    }
+  }
 
   return (
     <div className={classnames(verticalLayoutClasses.root, 'flex  flex-col flex-auto ')}>
@@ -99,10 +112,9 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
             </Typography>
           </Link>
 
-          <Link href={`/th/user/dashboard`} className='flex gap-2'>
-            <Dashboard style={{ width: '20px', height: '20px' }} className=' text-primary' />
-
-            <Typography variant='h6' className='font-normal  hover:text-primary '>
+          <Link href={target} onClick={handleClick} className='flex gap-2'>
+            <Dashboard style={{ width: '20px', height: '20px' }} className='text-primary' />
+            <Typography variant='h6' className='font-normal hover:text-primary'>
               {dictionary['navigation']?.dashboards}
             </Typography>
           </Link>

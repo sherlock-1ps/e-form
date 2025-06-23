@@ -384,10 +384,11 @@ export const useDeleteFileQueryOption = () => {
   })
 }
 
-export function useFetchFlowNnameQueryOption(page: number, pageSize: number) {
+export function useFetchFlowNnameQueryOption(page: number, pageSize: number, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ['flowName', page, pageSize],
-    queryFn: () => fetchFlowName({ page, pageSize })
+    queryFn: () => fetchFlowName({ page, pageSize }),
+    ...options
   })
 }
 
@@ -749,9 +750,10 @@ export const useLogout = () => {
     }
   })
 }
-export function useFetchWorkCountQueryOption() {
+export function useFetchWorkCountQueryOption(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ['fetchWorkCount'],
-    queryFn: () => fetchWorkCount()
+    queryFn: () => fetchWorkCount(),
+    ...options
   })
 }

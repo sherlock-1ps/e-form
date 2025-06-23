@@ -48,6 +48,9 @@ const UserDashboardComponent = () => {
   const { dictionary } = useDictionary()
   const searchParams = useSearchParams()
   const flowId = searchParams.get('flow_id')
+  const mode = searchParams.get('mode')
+  const dataId = searchParams.get('id')
+
   const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
   const setFullForm = useFormStore(state => state.setFullForm)
   const { lang: locale } = params
@@ -59,13 +62,19 @@ const UserDashboardComponent = () => {
   const [dataNextFlow, setDataNextFlow] = useState({})
   const [viewFlowId, setViewFlowId] = useState<number | null>(null)
 
-  const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
-  const { data: workMyData } = useFetchWorkMyQueryOption(page, pageSize, Number(selectedWorkflow))
+  const shouldSkip = Boolean(flowId || dataId)
 
+  const { data: flowData } = useFetchFlowNnameQueryOption(1, 999, {
+    enabled: !shouldSkip
+  })
+  const { data: workMyData } = useFetchWorkMyQueryOption(page, pageSize, Number(selectedWorkflow), {
+    enabled: !shouldSkip
+  })
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
   const { mutateAsync: callStartFlow } = useStartFlowQueryOption()
-
-  const { data: countList } = useFetchWorkCountQueryOption()
+  const { data: countList } = useFetchWorkCountQueryOption({
+    enabled: !shouldSkip
+  })
 
   const handleClickManange = async (id: number | null, status: any, flowId?: any) => {
     try {
@@ -133,9 +142,17 @@ const UserDashboardComponent = () => {
     setCurrentSection('dashboard')
   }
 
+  /*
+  #nin fix url params
+  ?mode=start&flow_id=96
+  ?mode=draft&flow_id=96
+  ?mode=active&id=156
+
+  */
+
   useEffect(() => {
-    if (flowId) {
-      handleClickManange(null, 'start', Number(flowId))
+    if (shouldSkip) {
+      handleClickManange(Number(dataId || 0), mode, Number(flowId))
     }
   }, [])
 
@@ -146,7 +163,7 @@ const UserDashboardComponent = () => {
   if (currentSection === 'startFlow') return <UserStartTaskComponent data={dataNextFlow} />
   if (currentSection === 'nextFlow') return <UserNextTaskComponent data={dataNextFlow} isView={false} />
 
-  return (
+  return shouldSkip ? null : (
     <TabContext value={value}>
       <div className='flex flex-col gap-6'>
         <Grid container spacing={4}>
@@ -191,30 +208,7 @@ const UserDashboardComponent = () => {
             />
           </Grid>
         </Grid>
-        {/* <Card>
-          <CardContent>
-            <Grid container>
-              <Grid item xs={12} sm={6}>
-                <TabList variant='fullWidth' onChange={handleChange} aria-label='full width tabs example'>
-                  <Tab
-                    value='1'
-                    label='งานที่อยู่ระหว่างดำเนินการ'
-                    icon={<PendingActions />}
-                    iconPosition={'start'}
-                    className={value === '1' ? 'bg-primaryLighter' : ''}
-                  />
-                  <Tab
-                    value='2'
-                    label='เอกสารที่จบแล้ว'
-                    icon={<DoneAll />}
-                    iconPosition={'start'}
-                    className={value === '2' ? 'bg-primaryLighter' : ''}
-                  />
-                </TabList>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card> */}
+
         <Card className='min-h-[581px]'>
           <CardContent>
             <TabPanel value='1'>
@@ -255,6 +249,7 @@ const UserDashboardComponent = () => {
                     ))}
                   </CustomTextField>
                 </Grid>
+
                 <Grid item xs={12}>
                   <UserDashboardTable
                     projectTable={workMyData?.result?.data || []}
@@ -271,36 +266,6 @@ const UserDashboardComponent = () => {
                 <Divider />
               </Grid>
             </TabPanel>
-            {/* <TabPanel value='2'>
-              <Grid container spacing={4}>
-                <Grid item xs={12} sm={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    defaultValue=''
-                    label='เลือกเวิร์คโฟลว์'
-                    SelectProps={{
-                      displayEmpty: true
-                    }}
-                  >
-                    <MenuItem value='' disabled>
-                      <em className=' opacity-50'>เลือกเวิร์คโฟลว์</em>
-                    </MenuItem>
-                    <MenuItem value={10}>ขอเบิกเงินค่าเช่า (6006)</MenuItem>
-                  </CustomTextField>
-                </Grid>
-                <Grid item xs={12}>
-                  <UserDashboardTable
-                    projectTable={workPregressData?.result || []}
-                    page={page}
-                    pageSize={pageSize}
-                    setPage={setPage}
-                    setPageSize={setPageSize}
-                  />
-                </Grid>
-                <Divider />
-              </Grid>
-            </TabPanel> */}
           </CardContent>
         </Card>
       </div>

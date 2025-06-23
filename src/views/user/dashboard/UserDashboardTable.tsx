@@ -171,6 +171,8 @@ const UserDashboardTable = ({
   const { showDialog } = useDialog()
   const profile = useAuthStore(state => state.profile)
 
+  // alert('')
+
   // States
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -311,7 +313,7 @@ const UserDashboardTable = ({
       }),
 
       columnHelper.accessor('name', {
-        header: 'ชื่องาน',
+        header: 'ชื่อเอกสาร',
         cell: ({ row }) => (
           <Typography color='text.primary' variant='body2'>
             {row.original?.name}
