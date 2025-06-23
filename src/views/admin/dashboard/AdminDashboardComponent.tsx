@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, Typography, Button, CardContent, Card, CircularProgress, Pagination } from '@mui/material'
+import { Grid, Typography, Button, CardContent, Card, CircularProgress, Pagination, IconButton } from '@mui/material'
 
 import AddIcon from '@mui/icons-material/Add'
 import { useDispatch } from 'react-redux'
@@ -20,6 +20,7 @@ import {
   AccountTreeOutlined,
   ContentCopy
 } from '@mui/icons-material'
+
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import EditVersionFormDialog from '@/components/dialogs/form/EditVersionFormDialog'
 import DateUseFormDialog from '@/components/dialogs/form/DateUseFormDialog'
@@ -42,17 +43,16 @@ const AdminDashboardComponent = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
   const { data, isPending } = useFetchFormQueryOption(page, pageSize)
-
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const { mutateAsync: deleteForm } = useDeleteFormQueryOption()
 
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
 
-  const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm }: any) => (
-    <div className='flex flex-col p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-[220px] min-h-[275px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300'>
-      <div className='flex items-start justify-between'>
-        <Typography variant='h6' className='text-start font-semibold leading-snug break-words max-w-[150px]'>
-          {title}
-        </Typography>
+  const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm, viewMode }: any) => {
+    const isGrid = viewMode === 'grid'
+
+    const OptionMenuCustom = () => {
+      return (
         <OptionMenu
           iconButtonProps={{ size: 'small' }}
           iconClassName='text-secondary'
@@ -126,22 +126,63 @@ const AdminDashboardComponent = () => {
             }
           ]}
         />
+      )
+    }
+
+    return (
+      <div
+        className={
+          isGrid
+            ? 'flex flex-col p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-[220px] min-h-[275px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300'
+            : 'flex flex-row items-start p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-full min-h-[70px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300 gap-4'
+        }
+      >
+        {/* Header Row: Title and OptionMenu */}
+        <div className={isGrid ? 'flex items-start justify-between' : 'flex items-start w-full'}>
+          {/* Title */}
+          <Typography
+            variant='h6'
+            className={`text-start font-semibold leading-snug break-words ${isGrid ? 'max-w-[150px]' : 'flex-grow'}`}
+          >
+            {title}
+          </Typography>
+
+          {isGrid ? (
+            <div className={'ml-auto'}>
+              <OptionMenuCustom />
+            </div>
+          ) : null}
+        </div>
+
+        {/* Version info */}
+        <div className='text-xs text-gray-500 flex justify-between w-full mt-1'>
+          <span>เวอร์ชั่น {version}</span>
+        </div>
+
+        {isGrid ? (
+          <div
+            className={
+              isGrid
+                ? 'flex-1 my-2 bg-slate-100 rounded-md flex items-center justify-center text-center px-2 py-2 text-sm text-gray-600'
+                : 'flex-1 bg-slate-100 rounded-md flex items-center justify-center px-4 py-2 text-sm text-gray-600'
+            }
+          >
+            <span className='line-clamp-3'>{title}</span>
+          </div>
+        ) : null}
+        {/* Date */}
+        <Typography variant='caption' className='text-xs text-gray-500 flex justify-between w-full mt-'>
+          {date}
+        </Typography>
+
+        {!isGrid ? (
+          <div className={'ml-auto'}>
+            <OptionMenuCustom />
+          </div>
+        ) : null}
       </div>
-      {/* Version info */}
-      <div className='flex justify-between mt-1 text-xs text-gray-500'>
-        <span>เวอร์ชั่น</span>
-        <span>{version}</span>
-      </div>
-      {/* Image or Placeholder */}
-      <div className='flex-1 my-2 bg-slate-100 rounded-md flex items-center justify-center text-center px-2 py-2 text-sm text-gray-600'>
-        <span className='line-clamp-3'>{title}</span>
-      </div>
-      {/* Date */}
-      <Typography variant='caption' className='text-right text-gray-500'>
-        {date}
-      </Typography>
-    </div>
-  )
+    )
+  }
 
   const handleDeleteForm = async (id: number) => {
     const request = {
@@ -210,11 +251,33 @@ const AdminDashboardComponent = () => {
       <Grid item xs={12}>
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
-            <Typography variant='h5'>จัดการแบบฟอร์ม</Typography>
+            <Grid item xs={12} className='flex items-center justify-between'>
+              <Typography variant='h4'>จัดการแบบฟอร์ม</Typography>
+              <div className='flex gap-2  backdrop-blur-sm p-2 rounded-xl shadow-sm  items-center'>
+                <IconButton
+                  onClick={() => setViewMode('grid')}
+                  color={viewMode === 'grid' ? 'primary' : 'default'}
+                  className='transition-all duration-200'
+                >
+                  <i className='tabler tabler-layout-grid text-xl' />
+                </IconButton>
+                <IconButton
+                  onClick={() => setViewMode('list')}
+                  color={viewMode === 'list' ? 'primary' : 'default'}
+                  className='transition-all duration-200'
+                >
+                  <i className='tabler tabler-list text-xl' />
+                </IconButton>
+              </div>
+            </Grid>
 
             <div className='flex gap-4 flex-wrap'>
               <Button
-                className={`w-[200px] min-h-[262px] rounded-md  flex  items-center justify-center`}
+                className={`rounded-md flex items-center justify-center transition-all duration-300 ${
+                  viewMode === 'grid'
+                    ? 'w-[200px] min-h-[262px] flex-col' // grid: square-like
+                    : 'w-full min-h-[80px] flex-row gap-2 px-4' // list: full width, shorter height
+                }`}
                 style={{ backgroundColor: '#0463EA14' }}
                 onClick={() => {
                   showDialog({
@@ -225,6 +288,7 @@ const AdminDashboardComponent = () => {
                 }}
               >
                 <AddIcon sx={{ color: '#0463EA' }} />
+                {viewMode === 'list' && <span className='text-[#0463EA] font-medium'>สร้างฟอร์มใหม่</span>}
               </Button>
               {isPending && <Typography>กำลังโหลด...</Typography>}
               {data?.code == 'SUCCESS' &&
@@ -242,6 +306,7 @@ const AdminDashboardComponent = () => {
                       status={'ใช้งานอยู่'}
                       onDelete={handleDeleteForm}
                       onGetForm={handleGetForm}
+                      viewMode={viewMode}
                     />
                   )
                 })}
