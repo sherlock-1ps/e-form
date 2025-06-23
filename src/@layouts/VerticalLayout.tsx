@@ -30,7 +30,7 @@ import {
   Assessment,
   Dashboard
 } from '@mui/icons-material'
-
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 // Styled Component Imports
 import StyledContentWrapper from './styles/vertical/StyledContentWrapper'
 import { IconButton, Typography } from '@mui/material'
@@ -39,6 +39,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import FormFlowLayout from './FormFlowLayout'
 import ProfileLayout from './ProfileLayout'
+import { useDialog } from '@/hooks/useDialog'
 
 import { useAuthStore } from '@/store/useAuthStore'
 type VerticalLayoutProps = ChildrenType & {
@@ -50,6 +51,7 @@ type VerticalLayoutProps = ChildrenType & {
 }
 
 const VerticalLayout = (props: VerticalLayoutProps) => {
+  const { showDialog } = useDialog()
   // Props
   const { navbar, footer, navigation, formPropertyBar, children, dictionary } = props
   const profile = useAuthStore(state => state.profile)
@@ -68,7 +70,28 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
       </div>
       <div className='w-full h-[64px] px-6 md:px-16 flex items-center justify-center bg-white shadow-sm'>
         <div className='w-full max-w-[1440px] flex gap-2 sm:gap-6 '>
-          <Link href={urlBase} className='flex gap-2'>
+          <Link
+            href='#'
+            // href={urlBase}
+            className='flex gap-2'
+            onClick={e => {
+              showDialog({
+                id: 'alertErrorToken',
+                component: (
+                  <ConfirmAlert
+                    id='alertErrorToken'
+                    title={'กลับสู่หน้าหลัก'}
+                    content1={'คุณต้องการดำเนินการต่อหรือไม่'}
+                    onClick={() => {
+                      window.location.href = urlBase
+                      // router.push(`/${locale}${notification?.data?.link}`)
+                    }}
+                  />
+                ),
+                size: 'sm'
+              })
+            }}
+          >
             <Home style={{ width: '20px', height: '20px' }} className=' text-primary' />
 
             <Typography variant='h6' className='font-normal  hover:text-primary '>
