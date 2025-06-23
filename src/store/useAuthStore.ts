@@ -4,8 +4,8 @@ import { persist } from 'zustand/middleware'
 type AuthState = {
   accessToken: string | null
   profile: any
-  urlBase: string | null
-  urlLogin: string | null
+  urlBase: string
+  urlLogin: string
 
   setTokens: (accessToken: string) => void
   setProfile: (profile: any) => void

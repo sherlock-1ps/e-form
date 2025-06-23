@@ -1,3 +1,4 @@
+'use client'
 // React Imports
 import type { ReactNode } from 'react'
 
@@ -26,7 +27,8 @@ import {
   PushPin,
   ViewList,
   AssignmentTurnedIn,
-  Assessment
+  Assessment,
+  Dashboard
 } from '@mui/icons-material'
 
 // Styled Component Imports
@@ -38,6 +40,7 @@ import { useParams } from 'next/navigation'
 import FormFlowLayout from './FormFlowLayout'
 import ProfileLayout from './ProfileLayout'
 
+import { useAuthStore } from '@/store/useAuthStore'
 type VerticalLayoutProps = ChildrenType & {
   navigation?: ReactNode
   navbar?: ReactNode
@@ -49,6 +52,9 @@ type VerticalLayoutProps = ChildrenType & {
 const VerticalLayout = (props: VerticalLayoutProps) => {
   // Props
   const { navbar, footer, navigation, formPropertyBar, children, dictionary } = props
+  const profile = useAuthStore(state => state.profile)
+  const urlBase = useAuthStore(state => state.urlBase)
+  // const urlLogin = useAuthStore(state => state.urlLogin)
 
   return (
     <div className={classnames(verticalLayoutClasses.root, 'flex  flex-col flex-auto ')}>
@@ -62,20 +68,30 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
       </div>
       <div className='w-full h-[64px] px-6 md:px-16 flex items-center justify-center bg-white shadow-sm'>
         <div className='w-full max-w-[1440px] flex gap-2 sm:gap-6 '>
-          <Link href={`/th/user/dashboard`} className='flex gap-2'>
+          <Link href={urlBase} className='flex gap-2'>
             <Home style={{ width: '20px', height: '20px' }} className=' text-primary' />
 
             <Typography variant='h6' className='font-normal  hover:text-primary '>
               {dictionary['navigation']?.frontPages}
             </Typography>
           </Link>
-          <Link href={`/th/user/report`} className='flex gap-2'>
-            <Assessment style={{ width: '20px', height: '20px' }} className=' text-primary' />
+
+          <Link href={`/th/user/dashboard`} className='flex gap-2'>
+            <Dashboard style={{ width: '20px', height: '20px' }} className=' text-primary' />
+
             <Typography variant='h6' className='font-normal  hover:text-primary '>
-              {dictionary['navigation']?.report}
+              {dictionary['navigation']?.dashboards}
             </Typography>
           </Link>
 
+          {profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
+            <Link href={`/th/user/report`} className='flex gap-2'>
+              <Assessment style={{ width: '20px', height: '20px' }} className=' text-primary' />
+              <Typography variant='h6' className='font-normal  hover:text-primary '>
+                {dictionary['navigation']?.report}
+              </Typography>
+            </Link>
+          ) : null}
           <FormFlowLayout />
         </div>
       </div>
