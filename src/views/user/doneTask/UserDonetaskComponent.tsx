@@ -44,10 +44,13 @@ import UserStartTaskComponent from '../createTask/start/UserStartTaskComponent'
 import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CardCount from '@/components/card/CardCount'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const UserDonetaskComponent = () => {
   const router = useRouter()
   const params = useParams()
+  const { dictionary } = useDictionary()
+
   const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
   const setFullForm = useFormStore(state => state.setFullForm)
   const { lang: locale } = params
@@ -131,7 +134,7 @@ const UserDonetaskComponent = () => {
       <Grid container spacing={4}>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='เอกสารของฉัน'
+            title={dictionary?.cardOwnWork}
             count={countList?.result?.data[0]?.Total || 0}
             baseColor='rgba(116, 198, 250, 0.25)'
             textColor='rgb(116, 198, 250)'
@@ -141,7 +144,7 @@ const UserDonetaskComponent = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='เอกสารที่กำลังติดตาม'
+            title={dictionary?.cardFollowWork}
             count={countList?.result?.data[1]?.Total || 0}
             baseColor='rgba(67, 154, 226, 0.25)'
             textColor='rgb(67, 154, 226)'
@@ -151,7 +154,7 @@ const UserDonetaskComponent = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='เอกสารทั้งหมด'
+            title={dictionary?.cardAllWork}
             count={countList?.result?.data[2]?.Total || 0}
             baseColor='rgba(30, 107, 175, 0.25)'
             textColor='rgb(30, 107, 175)'
@@ -161,7 +164,7 @@ const UserDonetaskComponent = () => {
         </Grid>
         <Grid item xs={12} md={3}>
           <CardCount
-            title='เอกสารที่จบแล้ว'
+            title={dictionary?.cardDoneWork}
             count={countList?.result?.data[3]?.Total || 0}
             baseColor='rgba(23, 87, 155, 0.25)'
             textColor='rgb(23, 87, 155)'

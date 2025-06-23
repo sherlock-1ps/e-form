@@ -226,7 +226,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
                 label={dictionary['navigation'].dashboards}
                 icon={<i className='tabler-layout-dashboard' />}
 
-              // suffix={<CustomChip label='5' size='small' color='error' round='true' />}
+                // suffix={<CustomChip label='5' size='small' color='error' round='true' />}
               >
                 <MenuItem href={`/${locale}/dashboards/crm`}>{dictionary['navigation'].crm}</MenuItem>
                 <MenuItem href={`/${locale}/dashboards/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
@@ -284,7 +284,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
                   {dictionary['navigation'].manageReviews}
                 </MenuItem>
                 <MenuItem href={`/${locale}/apps/ecommerce/referrals`}>{dictionary['navigation'].referrals}</MenuItem>
-                <MenuItem href={`/${locale}/apps/ecommerce/settings`}>{dictionary['navigation'].settings}</MenuItem>
+                {/* <MenuItem href={`/${locale}/apps/ecommerce/settings`}>{dictionary['navigation'].settings}</MenuItem> */}
               </SubMenu>
               <SubMenu label={dictionary['navigation'].academy} icon={<i className='tabler-school' />}>
                 <MenuItem href={`/${locale}/apps/academy/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
@@ -314,7 +314,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
               <MenuItem href={`/${locale}/apps/kanban`} icon={<i className='tabler-copy' />}>
                 {dictionary['navigation'].kanban}
               </MenuItem>
-              <SubMenu label={dictionary['navigation'].invoice} icon={<i className='tabler-file-description' />}>
+              {/* <SubMenu label={dictionary['navigation'].invoice} icon={<i className='tabler-file-description' />}>
                 <MenuItem href={`/${locale}/apps/invoice/list`}>{dictionary['navigation'].list}</MenuItem>
                 <MenuItem
                   href={`/${locale}/apps/invoice/preview/4987`}
@@ -327,15 +327,15 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
                   {dictionary['navigation'].edit}
                 </MenuItem>
                 <MenuItem href={`/${locale}/apps/invoice/add`}>{dictionary['navigation'].add}</MenuItem>
-              </SubMenu>
+              </SubMenu> */}
               <SubMenu label={dictionary['navigation'].user} icon={<i className='tabler-user' />}>
                 <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].list}</MenuItem>
                 <MenuItem href={`/${locale}/apps/user/view`}>{dictionary['navigation'].view}</MenuItem>
               </SubMenu>
-              <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>
+              {/* <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>
                 <MenuItem href={`/${locale}/apps/roles`}>{dictionary['navigation'].roles}</MenuItem>
                 <MenuItem href={`/${locale}/apps/permissions`}>{dictionary['navigation'].permissions}</MenuItem>
-              </SubMenu>
+              </SubMenu> */}
               <SubMenu label={dictionary['navigation'].pages} icon={<i className='tabler-file' />}>
                 <MenuItem href={`/${locale}/pages/user-profile`}>{dictionary['navigation'].userProfile}</MenuItem>
                 <MenuItem href={`/${locale}/pages/account-settings`}>
@@ -547,13 +547,13 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
     <ScrollWrapper
       {...(isBreakpointReached
         ? {
-          className: 'bs-full overflow-y-auto overflow-x-hidden',
-          onScroll: container => scrollMenu(container, false)
-        }
+            className: 'bs-full overflow-y-auto overflow-x-hidden',
+            onScroll: container => scrollMenu(container, false)
+          }
         : {
-          options: { wheelPropagation: false, suppressScrollX: true }
-          // onScrollY: container => scrollMenu(container, true)
-        })}
+            options: { wheelPropagation: false, suppressScrollX: true }
+            // onScrollY: container => scrollMenu(container, true)
+          })}
       className=' bg-gray-100 h-full '
     >
       {/* Vertical Menu */}
