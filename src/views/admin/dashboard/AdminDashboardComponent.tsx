@@ -48,138 +48,127 @@ const AdminDashboardComponent = () => {
 
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
 
-  const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm, viewMode }: any) => {
+  const ImageCard = ({ title, image, date, dateUpdate, status, version, onDelete, data, onGetForm, viewMode }: any) => {
     const isGrid = viewMode === 'grid'
+    const pendingGetForm = false // Replace if you manage this via props or state
 
-    const OptionMenuCustom = () => {
-      return (
-        <OptionMenu
-          iconButtonProps={{ size: 'small' }}
-          iconClassName='text-secondary'
-          options={[
-            {
-              text: 'แก้ไข',
-              icon: pendingGetForm ? <CircularProgress size={20} /> : <Edit />,
-              menuItemProps: {
-                disabled: pendingGetForm,
-                className: 'text-secondary',
-                onClick: () => onGetForm(data)
-              }
-            },
-            {
-              text: 'สำเนา',
-              icon: pendingGetForm ? <CircularProgress size={20} /> : <ContentCopy />,
-              menuItemProps: {
-                disabled: pendingGetForm,
-                className: 'text-secondary',
-                onClick: () => onGetForm(data, true)
-              }
-            },
-            {
-              text: 'เวอร์ชั่นใหม่',
-              icon: <CreateNewFolder />,
-              menuItemProps: {
-                className: 'text-secondary',
-                onClick: () => {
-                  showDialog({
-                    id: 'alertEditVersionFormDialog',
-                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => {}} />,
-                    size: 'sm'
-                  })
-                }
-              }
-            },
-            {
-              text: 'กำหนดวันใช้งาน',
-              icon: <EditCalendar />,
-              menuItemProps: {
-                className: 'text-secondary',
-                onClick: () => {
-                  showDialog({
-                    id: 'alertDateUseFormDialog',
-                    component: <DateUseFormDialog id='alertDateUseFormDialog' data={data} />,
-                    size: 'sm'
-                  })
-                }
-              }
-            },
-            {
-              text: 'ลบ',
-              icon: <Delete />,
-              menuItemProps: {
-                className: 'text-error',
-                onClick: () => {
-                  showDialog({
-                    id: 'alertDeleteForm',
-                    component: (
-                      <ConfirmAlert
-                        id='alertDeleteForm'
-                        title='ลบฟอร์ม'
-                        content1='คุณต้องการลบฟอร์มนี้ใช่หรือไม่'
-                        onClick={() => onDelete(data?.id)}
-                      />
-                    ),
-                    size: 'sm'
-                  })
-                }
+    const OptionMenuCustom = () => (
+      <OptionMenu
+        iconButtonProps={{ size: 'small' }}
+        iconClassName='text-secondary'
+        options={[
+          {
+            text: 'แก้ไข',
+            icon: pendingGetForm ? <CircularProgress size={20} /> : <Edit />,
+            menuItemProps: {
+              disabled: pendingGetForm,
+              className: 'text-secondary',
+              onClick: () => onGetForm(data)
+            }
+          },
+          {
+            text: 'สำเนา',
+            icon: pendingGetForm ? <CircularProgress size={20} /> : <ContentCopy />,
+            menuItemProps: {
+              disabled: pendingGetForm,
+              className: 'text-secondary',
+              onClick: () => onGetForm(data, true)
+            }
+          },
+          {
+            text: 'เวอร์ชั่นใหม่',
+            icon: <CreateNewFolder />,
+            menuItemProps: {
+              className: 'text-secondary',
+              onClick: () => {
+                showDialog({
+                  id: 'alertEditVersionFormDialog',
+                  component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => {}} />,
+                  size: 'sm'
+                })
               }
             }
-          ]}
-        />
-      )
-    }
+          },
+          {
+            text: 'กำหนดวันใช้งาน',
+            icon: <EditCalendar />,
+            menuItemProps: {
+              className: 'text-secondary',
+              onClick: () => {
+                showDialog({
+                  id: 'alertDateUseFormDialog',
+                  component: <DateUseFormDialog id='alertDateUseFormDialog' data={data} />,
+                  size: 'sm'
+                })
+              }
+            }
+          },
+          {
+            text: 'ลบ',
+            icon: <Delete />,
+            menuItemProps: {
+              className: 'text-error',
+              onClick: () => {
+                showDialog({
+                  id: 'alertDeleteForm',
+                  component: (
+                    <ConfirmAlert
+                      id='alertDeleteForm'
+                      title='ลบฟอร์ม'
+                      content1='คุณต้องการลบฟอร์มนี้ใช่หรือไม่'
+                      onClick={() => onDelete(data?.id)}
+                    />
+                  ),
+                  size: 'sm'
+                })
+              }
+            }
+          }
+        ]}
+      />
+    )
 
     return (
       <div
         className={
           isGrid
-            ? 'flex flex-col p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-[220px] min-h-[275px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300'
-            : 'flex flex-row items-start p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-full min-h-[70px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300 gap-4'
+            ? 'flex flex-col p-4 bg-white rounded-2xl w-[240px] min-h-[280px] border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300'
+            : 'flex flex-row items-start p-4 bg-white rounded-2xl w-full border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 gap-4'
         }
       >
-        {/* Header Row: Title and OptionMenu */}
-        <div className={isGrid ? 'flex items-start justify-between' : 'flex items-start w-full'}>
-          {/* Title */}
-          <Typography
-            variant='h6'
-            className={`text-start font-semibold leading-snug break-words ${isGrid ? 'max-w-[150px]' : 'flex-grow'}`}
-          >
-            {title}
-          </Typography>
-
-          {isGrid ? (
-            <div className={'ml-auto'}>
-              <OptionMenuCustom />
-            </div>
-          ) : null}
-        </div>
-
-        {/* Version info */}
-        <div className='text-xs text-gray-500 flex justify-between w-full mt-1'>
-          <span>เวอร์ชั่น {version}</span>
-        </div>
-
-        {isGrid ? (
-          <div
-            className={
-              isGrid
-                ? 'flex-1 my-2 bg-slate-100 rounded-md flex items-center justify-center text-center px-2 py-2 text-sm text-gray-600'
-                : 'flex-1 bg-slate-100 rounded-md flex items-center justify-center px-4 py-2 text-sm text-gray-600'
-            }
-          >
-            <span className='line-clamp-3'>{title}</span>
-          </div>
-        ) : null}
-        {/* Date */}
-        <Typography variant='caption' className='text-xs text-gray-500 flex justify-between w-full mt-'>
-          {date}
-        </Typography>
-
-        {!isGrid ? (
-          <div className={'ml-auto'}>
+        {/* Content Container */}
+        <div className='flex flex-col flex-grow gap-2 w-full'>
+          {/* Header: Title + Menu */}
+          <div className='flex items-start justify-between gap-2'>
+            <Typography
+              variant='h6'
+              className='text-base font-semibold text-gray-800 leading-snug truncate max-w-[calc(100%-30px)]'
+            >
+              {title}
+            </Typography>
             <OptionMenuCustom />
           </div>
-        ) : null}
+
+          {/* Version */}
+          <div className='text-xs text-gray-500'>
+            <span>
+              เวอร์ชั่น <b>{version}</b>
+            </span>
+          </div>
+
+          {/* Grid Preview */}
+          {isGrid && (
+            <div className='flex-1 my-2 bg-slate-100 rounded-md flex items-center justify-center text-center px-3 py-2 text-sm text-gray-600'>
+              <span className='line-clamp-3'>{title}</span>
+            </div>
+          )}
+
+          {/* Date Section */}
+          <div className='flex flex-col text-xs text-gray-500 leading-relaxed'>
+            <span>สร้างเมื่อ: {date}</span>
+            <span>แก้ไขล่าสุด: {dateUpdate}</span>
+          </div>
+        </div>
       </div>
     )
   }
@@ -302,7 +291,8 @@ const AdminDashboardComponent = () => {
                       version={item?.version?.[0]?.version ?? ''}
                       data={item}
                       image='/images/test/test01.png'
-                      date={`แก้ไขล่าสุด ${formatThaiDate(item?.created_at)}`}
+                      date={`${formatThaiDate(item?.created_at)}`}
+                      dateUpdate={`${formatThaiDate(item?.updated_at)}`}
                       status={'ใช้งานอยู่'}
                       onDelete={handleDeleteForm}
                       onGetForm={handleGetForm}
