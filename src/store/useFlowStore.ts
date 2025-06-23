@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 type Flow = {
+  isCopy?: boolean
   name: string
   flowId: string | number
   version: string | number
@@ -43,12 +44,12 @@ export const useFlowStore = create<FlowState>()(
     (set, get) => ({
       flow: {
         name: '',
-        flowId: "",
+        flowId: '',
         version: '',
         newVersion: '',
         versionId: '',
-        publicDate: "",
-        endDate: "",
+        publicDate: '',
+        endDate: '',
         isContinue: false,
         flow: {
           nodeDataArray: [],
@@ -57,22 +58,22 @@ export const useFlowStore = create<FlowState>()(
       },
 
       selectedField: null,
-      setSelectedField: (field) => set({ selectedField: field }),
+      setSelectedField: field => set({ selectedField: field }),
       clearSelectedField: () => set({ selectedField: null }),
 
       myDiagram: null,
-      setMyDiagram: (diagram) => set({ myDiagram: diagram }),
+      setMyDiagram: diagram => set({ myDiagram: diagram }),
 
       createFlow: (name, version) =>
         set(() => ({
           flow: {
             name,
             version,
-            flowId: "",
+            flowId: '',
             newVersion: '',
             versionId: '',
-            publicDate: "",
-            endDate: "",
+            publicDate: '',
+            endDate: '',
             isContinue: false,
             flow: {
               nodeDataArray: [],
@@ -81,17 +82,18 @@ export const useFlowStore = create<FlowState>()(
           }
         })),
 
-      updateFlowInfo: (info) =>
-        set((state) => ({
+      updateFlowInfo: info =>
+        set(state => ({
           flow: {
             ...state.flow,
             ...info
           }
         })),
 
-      setFullFlow: (payload) =>
-        set((state) => ({
+      setFullFlow: payload =>
+        set(state => ({
           flow: {
+            ...(payload ?? {}),
             name: payload.name ?? state.flow.name,
             flowId: payload.flowId ?? state.flow.flowId,
             version: payload.version ?? state.flow.version,
@@ -107,8 +109,8 @@ export const useFlowStore = create<FlowState>()(
           }
         })),
 
-      setFlowDiagramData: (payload) =>
-        set((state) => ({
+      setFlowDiagramData: payload =>
+        set(state => ({
           flow: {
             ...state.flow,
             flow: payload?.flow ?? {
@@ -118,8 +120,8 @@ export const useFlowStore = create<FlowState>()(
           }
         })),
 
-      setNodeDataArray: (nodes) =>
-        set((state) => ({
+      setNodeDataArray: nodes =>
+        set(state => ({
           flow: {
             ...state.flow,
             flow: {
@@ -129,8 +131,8 @@ export const useFlowStore = create<FlowState>()(
           }
         })),
 
-      setLinkDataArray: (links) =>
-        set((state) => ({
+      setLinkDataArray: links =>
+        set(state => ({
           flow: {
             ...state.flow,
             flow: {
@@ -139,8 +141,8 @@ export const useFlowStore = create<FlowState>()(
             }
           }
         })),
-      pushLinkData: (link) =>
-        set((state) => ({
+      pushLinkData: link =>
+        set(state => ({
           flow: {
             ...state.flow,
             flow: {
@@ -151,12 +153,12 @@ export const useFlowStore = create<FlowState>()(
         })),
 
       updateFlowNodeText: (key, newText) =>
-        set((state) => ({
+        set(state => ({
           flow: {
             ...state.flow,
             flow: {
               ...state.flow.flow,
-              nodeDataArray: state.flow.flow.nodeDataArray.map((node) =>
+              nodeDataArray: state.flow.flow.nodeDataArray.map(node =>
                 node.key === key ? { ...node, text: newText } : node
               )
             }
@@ -164,12 +166,12 @@ export const useFlowStore = create<FlowState>()(
         })),
 
       updateFlowLinkText: (key, newText) =>
-        set((state) => ({
+        set(state => ({
           flow: {
             ...state.flow,
             flow: {
               ...state.flow.flow,
-              linkDataArray: state.flow.flow.linkDataArray.map((link) =>
+              linkDataArray: state.flow.flow.linkDataArray.map(link =>
                 link.key === key ? { ...link, text: newText } : link
               )
             }
@@ -178,7 +180,7 @@ export const useFlowStore = create<FlowState>()(
     }),
     {
       name: 'flow-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         flow: state.flow
       })
     }

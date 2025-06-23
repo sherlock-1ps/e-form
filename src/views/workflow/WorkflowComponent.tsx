@@ -11,7 +11,15 @@ import DashboardNavbarContent from '@/components/layout/vertical/navbar/Dashboar
 import { useDialog } from '@/hooks/useDialog'
 import CreateFormDialog from '@/components/dialogs/form/CreateFormDialog'
 import OptionMenu from '@/@core/components/option-menu'
-import { Edit, FileCopy, EditCalendar, Delete, CreateNewFolder, AccountTreeOutlined } from '@mui/icons-material'
+import {
+  Edit,
+  FileCopy,
+  EditCalendar,
+  Delete,
+  CreateNewFolder,
+  AccountTreeOutlined,
+  ContentCopy
+} from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import EditVersionFlowDialog from '@/components/dialogs/flow/EditVersionFlowDialog'
 import DateUseFlowDialog from '@/components/dialogs/flow/DateUseFlowDialog'
@@ -57,6 +65,15 @@ const WorkflowComponent = () => {
                 disabled: pendingGetFlow,
                 className: 'text-secondary',
                 onClick: () => onGetForm(data)
+              }
+            },
+            {
+              text: 'สำเนา',
+              icon: <ContentCopy />,
+              menuItemProps: {
+                // disabled: pendingGetForm,
+                className: 'text-secondary',
+                onClick: () => onGetForm(data, true)
               }
             },
             {
@@ -142,11 +159,21 @@ const WorkflowComponent = () => {
     }
   }
 
-  const handleGetForm = async (data: any) => {
+  const handleGetForm = async (data: any, isCopy: boolean = false) => {
     try {
       const response = await getFlow(data?.version?.[0]?.id)
 
       if (response?.code == 'SUCCESS') {
+        const contentCopy = isCopy
+          ? {
+              flowId: undefined,
+              versionId: undefined,
+              version: '1.0.0',
+              name: `สำเนา_${data?.name}`,
+              isContinue: false
+            }
+          : {}
+
         const result = {
           isContinue: true,
           versionId: data?.version[0]?.id,
@@ -158,7 +185,8 @@ const WorkflowComponent = () => {
           endDate: '',
           flow: {
             ...response?.result?.data?.flow
-          }
+          },
+          ...contentCopy
         }
 
         setFullFlow(result)
