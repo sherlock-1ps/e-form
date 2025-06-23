@@ -31,11 +31,12 @@ import {
 } from '@mui/icons-material'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Typography } from '@mui/material'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const FormFlowLayout = () => {
   const { showDialog } = useDialog()
   const profile = useAuthStore(state => state.profile)
-
+  const { dictionary } = useDictionary()
   const { lang: locale } = useParams()
 
   return (
@@ -46,13 +47,13 @@ const FormFlowLayout = () => {
           <Link href={`/${locale}/admin/dashboard`} className='flex gap-2'>
             <InsertDriveFile style={{ width: '20px', height: '20px' }} className=' text-primary' />
             <Typography variant='h6' className='font-normal hover:text-primary '>
-              จัดการแบบฟอร์ม
+              {dictionary['navigation']?.manageForm}
             </Typography>
           </Link>
           <Link href={`/${locale}/workflow/dashboard`} className='flex gap-2'>
             <AccountTree style={{ width: '20px', height: '20px' }} className=' text-primary' />
             <Typography variant='h6' className='font-normal hover:text-primary '>
-              จัดการเวิร์กโฟลว์
+              {dictionary['navigation']?.manageFlow}
             </Typography>
           </Link>
         </>

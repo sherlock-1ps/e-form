@@ -21,6 +21,8 @@
   "newPassword": "New Password",
   "confirmPassword": "Confirm New Password",
   "enterEmail": "Enter your email",
+  "version": "Version",
+  "titleFooter": "Department of Trade Negotiations",
   "title": "Electronic Office System (DTN e-Office: e-Workflow)",
   "cardOwnWork": "My Documents",
   "cardFollowWork": "Followed Documents",
@@ -35,7 +37,7 @@
     "eCommerce": "อีคอมเมิร์ซ",
     "academy": "สถาบันการศึกษา",
     "logistics": "โลจิสติกส์",
-    "frontPages": "หน้าหลัก",
+    "frontPages": "Home",
     "landing": "หน้าแลนดิ้ง",
     "pricing": "การตั้งราคา",
     "payment": "การชำระเงิน",
@@ -126,6 +128,9 @@
     "menuLevel2": "เมนูระดับ 2",
     "menuLevel3": "เมนูระดับ 3",
     "disabledMenu": "เมนูที่ปิดใช้งาน",
-    "language": "ภาษา"
+    "language": "ภาษา",
+    "report": "Report",
+    "manageForm": "Form Management",
+    "manageFlow": "Workflow Management"
   }
 }

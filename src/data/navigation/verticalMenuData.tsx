@@ -144,10 +144,6 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
           {
             label: dictionary['navigation'].referrals,
             href: '/apps/ecommerce/referrals'
-          },
-          {
-            label: dictionary['navigation'].settings,
-            href: '/apps/ecommerce/settings'
           }
         ]
       },
@@ -205,36 +201,7 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
         icon: 'tabler-copy',
         href: '/apps/kanban'
       },
-      {
-        label: dictionary['navigation'].invoice,
-        icon: 'tabler-file-description',
-        children: [
-          {
-            label: dictionary['navigation'].list,
-            icon: 'tabler-circle',
-            href: '/apps/invoice/list'
-          },
-          {
-            label: dictionary['navigation'].preview,
-            icon: 'tabler-circle',
-            href: '/apps/invoice/preview/4987',
-            exactMatch: false,
-            activeUrl: '/apps/invoice/preview'
-          },
-          {
-            label: dictionary['navigation'].edit,
-            icon: 'tabler-circle',
-            href: '/apps/invoice/edit/4987',
-            exactMatch: false,
-            activeUrl: '/apps/invoice/edit'
-          },
-          {
-            label: dictionary['navigation'].add,
-            icon: 'tabler-circle',
-            href: '/apps/invoice/add'
-          }
-        ]
-      },
+
       {
         label: dictionary['navigation'].user,
         icon: 'tabler-user',
@@ -251,22 +218,7 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
           }
         ]
       },
-      {
-        label: dictionary['navigation'].rolesPermissions,
-        icon: 'tabler-lock',
-        children: [
-          {
-            label: dictionary['navigation'].roles,
-            icon: 'tabler-circle',
-            href: '/apps/roles'
-          },
-          {
-            label: dictionary['navigation'].permissions,
-            icon: 'tabler-circle',
-            href: '/apps/permissions'
-          }
-        ]
-      },
+
       {
         label: dictionary['navigation'].pages,
         icon: 'tabler-file',
@@ -281,11 +233,7 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
             icon: 'tabler-circle',
             href: '/pages/account-settings'
           },
-          {
-            label: dictionary['navigation'].faq,
-            icon: 'tabler-circle',
-            href: '/pages/faq'
-          },
+
           {
             label: dictionary['navigation'].pricing,
             icon: 'tabler-circle',

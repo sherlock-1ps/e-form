@@ -45,6 +45,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
           systemMode={systemMode}
           verticalLayout={
             <VerticalLayout
+              dictionary={dictionary}
               navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
               // navigation={<></>}
               navbar={<Navbar />}

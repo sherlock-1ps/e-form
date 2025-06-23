@@ -43,11 +43,12 @@ type VerticalLayoutProps = ChildrenType & {
   navbar?: ReactNode
   footer?: ReactNode
   formPropertyBar?: ReactNode
+  dictionary?: any
 }
 
 const VerticalLayout = (props: VerticalLayoutProps) => {
   // Props
-  const { navbar, footer, navigation, formPropertyBar, children } = props
+  const { navbar, footer, navigation, formPropertyBar, children, dictionary } = props
 
   return (
     <div className={classnames(verticalLayoutClasses.root, 'flex  flex-col flex-auto ')}>
@@ -65,13 +66,13 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
             <Home style={{ width: '20px', height: '20px' }} className=' text-primary' />
 
             <Typography variant='h6' className='font-normal  hover:text-primary '>
-              หนัาหลัก
+              {dictionary['navigation']?.frontPages}
             </Typography>
           </Link>
           <Link href={`/th/user/report`} className='flex gap-2'>
             <Assessment style={{ width: '20px', height: '20px' }} className=' text-primary' />
             <Typography variant='h6' className='font-normal  hover:text-primary '>
-              รายงาน
+              {dictionary['navigation']?.report}
             </Typography>
           </Link>
 

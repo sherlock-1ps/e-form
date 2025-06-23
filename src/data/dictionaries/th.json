@@ -21,6 +21,8 @@
   "newPassword": "New Password",
   "confirmPassword": "Confirm New Password",
   "enterEmail": "Enter your email",
+  "version": "เวอร์ชัน",
+  "titleFooter": "กรมเจรจาการค้าระหว่างประเทศ",
   "title": "ระบบสำนักงานอิเล็กทรอนิกส์ (DTN e-Office: e-Workflow)",
   "cardOwnWork": "เอกสารของฉัน",
   "cardFollowWork": "เอกสารที่กำลังติดตาม",
@@ -126,6 +128,9 @@
     "menuLevel2": "เมนูระดับ 2",
     "menuLevel3": "เมนูระดับ 3",
     "disabledMenu": "เมนูที่ปิดใช้งาน",
-    "language": "ภาษา"
+    "language": "ภาษา",
+    "report": "รายงาน",
+    "manageForm": "จัดการแบบฟอร์ม",
+    "manageFlow": "จัดการเวิร์กโฟลว์"
   }
 }

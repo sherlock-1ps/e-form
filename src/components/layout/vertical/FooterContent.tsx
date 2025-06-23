@@ -12,10 +12,12 @@ import useVerticalNav from '@menu/hooks/useVerticalNav'
 // Util Imports
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
 import { Typography } from '@mui/material'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const FooterContent = () => {
   // Hooks
   const { isBreakpointReached } = useVerticalNav()
+  const { dictionary } = useDictionary()
 
   return (
     <div
@@ -28,8 +30,8 @@ const FooterContent = () => {
       }}
     >
       <div className='max-w-[1440px] w-full mx-auto flex items-center justify-between  px-8 md:px-16'>
-        <Typography className='text-white'>© 2021 Copyright: กรมเจรจาการค้าระหว่างประเทศ</Typography>
-        <Typography className='text-white'>เวอร์ชัน 1.0.0</Typography>
+        <Typography className='text-white'>© 2021 Copyright: {dictionary?.titleFooter}</Typography>
+        <Typography className='text-white'>{dictionary?.version} 1.0.0</Typography>
       </div>
       {/* <p>
         <span className='text-textSecondary'>{`© ${new Date().getFullYear()}, Made with `}</span>
