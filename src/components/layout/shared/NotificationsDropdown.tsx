@@ -133,7 +133,7 @@ const NotificationDropdown = ({ iconColor = false }: any) => {
           component: (
             <ConfirmAlert
               id='alertErrorToken'
-              title={'นำทางไปดูงาน'}
+              title={'นำทางไปดูเอกสาร'}
               content1={'คุณต้องการดำเนินการต่อหรือไม่'}
               onClick={() => {
                 router.push(`/${locale}${notification?.data?.link}`)
