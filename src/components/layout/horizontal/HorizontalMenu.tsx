@@ -141,7 +141,7 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
               {dictionary['navigation'].manageReviews}
             </MenuItem>
             <MenuItem href={`/${locale}/apps/ecommerce/referrals`}>{dictionary['navigation'].referrals}</MenuItem>
-            <MenuItem href={`/${locale}/apps/ecommerce/settings`}>{dictionary['navigation'].settings}</MenuItem>
+            {/* <MenuItem href={`/${locale}/apps/ecommerce/settings`}>{dictionary['navigation'].settings}</MenuItem> */}
           </SubMenu>
           <SubMenu label={dictionary['navigation'].academy} icon={<i className='tabler-school' />}>
             <MenuItem href={`/${locale}/apps/academy/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
@@ -171,27 +171,10 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
           <MenuItem href={`/${locale}/apps/kanban`} icon={<i className='tabler-copy' />}>
             {dictionary['navigation'].kanban}
           </MenuItem>
-          <SubMenu label={dictionary['navigation'].invoice} icon={<i className='tabler-file-description' />}>
-            <MenuItem href={`/${locale}/apps/invoice/list`}>{dictionary['navigation'].list}</MenuItem>
-            <MenuItem
-              href={`/${locale}/apps/invoice/preview/4987`}
-              exactMatch={false}
-              activeUrl='/apps/invoice/preview'
-            >
-              {dictionary['navigation'].preview}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/invoice/edit/4987`} exactMatch={false} activeUrl='/apps/invoice/edit'>
-              {dictionary['navigation'].edit}
-            </MenuItem>
-            <MenuItem href={`/${locale}/apps/invoice/add`}>{dictionary['navigation'].add}</MenuItem>
-          </SubMenu>
+
           <SubMenu label={dictionary['navigation'].user} icon={<i className='tabler-user' />}>
             <MenuItem href={`/${locale}/apps/user/list`}>{dictionary['navigation'].list}</MenuItem>
             <MenuItem href={`/${locale}/apps/user/view`}>{dictionary['navigation'].view}</MenuItem>
-          </SubMenu>
-          <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>
-            <MenuItem href={`/${locale}/apps/roles`}>{dictionary['navigation'].roles}</MenuItem>
-            <MenuItem href={`/${locale}/apps/permissions`}>{dictionary['navigation'].permissions}</MenuItem>
           </SubMenu>
         </SubMenu>
         <SubMenu label={dictionary['navigation'].pages} icon={<i className='tabler-file' />}>
@@ -201,9 +184,7 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
           <MenuItem href={`/${locale}/pages/account-settings`} icon={<i className='tabler-settings' />}>
             {dictionary['navigation'].accountSettings}
           </MenuItem>
-          <MenuItem href={`/${locale}/pages/faq`} icon={<i className='tabler-help-circle' />}>
-            {dictionary['navigation'].faq}
-          </MenuItem>
+
           <MenuItem href={`/${locale}/pages/pricing`} icon={<i className='tabler-currency-dollar' />}>
             {dictionary['navigation'].pricing}
           </MenuItem>

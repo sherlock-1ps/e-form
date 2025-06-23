@@ -188,11 +188,18 @@ const NotificationDropdown = ({ iconColor = false }: any) => {
         <Badge
           color='error'
           className='cursor-pointer'
-          variant='dot'
           overlap='circular'
+          badgeContent={notificationCount}
           invisible={notificationCount === 0}
           sx={{
-            '& .MuiBadge-dot': { top: 6, right: 5, boxShadow: 'var(--mui-palette-background-paper) 0px 0px 0px 2px' }
+            '& .MuiBadge-badge': {
+              top: 6,
+              right: 5,
+              minWidth: 20,
+              height: 20,
+              fontSize: '0.75rem',
+              boxShadow: 'var(--mui-palette-background-paper) 0px 0px 0px 2px'
+            }
           }}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
