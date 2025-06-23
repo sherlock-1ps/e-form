@@ -63,7 +63,7 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
   const router = useRouter()
   const target = '/th/user/dashboard'
 
-  const handleClick = e => {
+  const handleClick = (e: any) => {
     // เปรียบเทียบเฉพาะ path ไม่รวม query string
     if (pathname === target) {
       e.preventDefault()
