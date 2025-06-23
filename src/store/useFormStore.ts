@@ -15,8 +15,6 @@ type FormObject = {
   fields: any[]
 }
 
-
-
 type FormVersion = {
   isCopy?: boolean
   name?: string
@@ -25,7 +23,7 @@ type FormVersion = {
   isContinue: boolean
   formId?: string | number
   versionId?: string | number
-  layout: "vertical" | "horizontal"
+  layout: 'vertical' | 'horizontal'
   form_details: FormObject[]
 }
 
@@ -44,7 +42,11 @@ type FormState = {
   updateStyle: (parentKey: string, fieldId: string, dataId: string, newStyle: Partial<any>) => void
   updateDetails: (parentKey: string, fieldId: string, dataId: string, newStyle: Partial<any>) => void
   updateFieldHeight: (parentKey: string, fieldId: string, newHeight: number) => void
-  updatePadding: (parentKey: string, boxId: string, newPadding: Partial<{ top: number; bottom: number; left: number; right: number, allPadding: string }>) => void
+  updatePadding: (
+    parentKey: string,
+    boxId: string,
+    newPadding: Partial<{ top: number; bottom: number; left: number; right: number; allPadding: string }>
+  ) => void
   updateFormMeta: (meta: Partial<{ name: string; version: string }>) => void
   updateId: (parentKey: string, fieldId: string, oldId: string, newId: string) => void
   createForm: (name: string, version: string) => void
@@ -65,7 +67,6 @@ const createField = (index: number) => {
   const { icon, ...baseConfig } = toolboxDocumentBaseMenu[0]
 
   return {
-
     // i: uuidv4(),
     i: nanoid(8),
 
@@ -80,7 +81,7 @@ const createField = (index: number) => {
     // data: [{ ...baseConfig, id: nanoid(8) }],
     data: [],
     padding: {
-      allPadding: "all",
+      allPadding: 'all',
       top: Number(process.env.NEXT_PUBLIC_DEFAULT_PADDING),
       bottom: Number(process.env.NEXT_PUBLIC_DEFAULT_PADDING),
       left: Number(process.env.NEXT_PUBLIC_DEFAULT_PADDING),
@@ -92,10 +93,19 @@ const createField = (index: number) => {
 export const useFormStore = create<FormState>()(
   persist(
     (set, get) => ({
-      form: { name: "", version: "", newVersion: "", formId: "", versionId: "", layout: "vertical", isContinue: false, form_details: [] },
+      form: {
+        name: '',
+        version: '',
+        newVersion: '',
+        formId: '',
+        versionId: '',
+        layout: 'vertical',
+        isContinue: false,
+        form_details: []
+      },
       selectedField: null,
       errors: {},
-      setErrors: (errors) => set({ errors }),
+      setErrors: errors => set({ errors }),
       clearErrors: () => set({ errors: {} }),
       validateForm: () => {
         const { form } = get()
@@ -119,36 +129,34 @@ export const useFormStore = create<FormState>()(
         set({ errors })
         return Object.keys(errors).length === 0
       },
-      setForm: (newForm) =>
-        set((state) => ({
+      setForm: newForm =>
+        set(state => ({
           form: {
             ...state.form,
             form_details: [...state.form.form_details, newForm]
           }
         })),
-      updateFormMeta: (meta) =>
-        set((state) => ({
+      updateFormMeta: meta =>
+        set(state => ({
           form: {
             ...state.form,
             ...meta
           }
         })),
       updateFormByKey: (parentKey: string, newFields: any[]) =>
-        set((state) => ({
+        set(state => ({
           form: {
             ...state.form,
-            form_details: state.form.form_details.map((formItem) => {
+            form_details: state.form.form_details.map(formItem => {
               if (formItem.parentKey !== parentKey) return formItem
 
-              const mergedFields = formItem.fields.map((oldField) => {
-                const updated = newFields.find((f) => f.i === oldField.i)
+              const mergedFields = formItem.fields.map(oldField => {
+                const updated = newFields.find(f => f.i === oldField.i)
 
                 return updated ? { ...oldField, ...updated } : oldField
               })
 
-              const newOnlyFields = newFields.filter(
-                (f) => !formItem.fields.some((old) => old.i === f.i)
-              )
+              const newOnlyFields = newFields.filter(f => !formItem.fields.some(old => old.i === f.i))
 
               return {
                 ...formItem,
@@ -311,7 +319,7 @@ export const useFormStore = create<FormState>()(
             },
             errors: updatedErrors
           }
-        })      //         if (field.i !== fieldId) return field
+        }), //         if (field.i !== fieldId) return field
 
       //         const updatedData = field.data.map((dataItem: any) => {
       //           if (dataItem.id !== dataId) return dataItem
@@ -350,7 +358,6 @@ export const useFormStore = create<FormState>()(
       //       }
       //     }
       //   }),
-      ,
       updateStyle: (parentKey, fieldId, dataId, newStyle) =>
         set(state => {
           const updatedFormDetails = state.form.form_details.map(formItem => {
@@ -395,7 +402,6 @@ export const useFormStore = create<FormState>()(
         }),
       updateDetails: (parentKey, fieldId, dataId, newDetails: Partial<any>) =>
         set(state => {
-
           const updatedFormDetails = state.form.form_details.map(formItem => {
             if (formItem.parentKey !== parentKey) return formItem
 
@@ -521,9 +527,7 @@ export const useFormStore = create<FormState>()(
             state.selectedField?.fieldId?.id === oldId
 
           if (isMatch) {
-            const updatedFieldData = state.selectedField?.fieldId
-              ? { ...state.selectedField.fieldId, id: newId }
-              : null
+            const updatedFieldData = state.selectedField?.fieldId ? { ...state.selectedField.fieldId, id: newId } : null
 
             updatedSelectedField = {
               parentKey: state.selectedField?.parentKey ?? null,
@@ -545,11 +549,11 @@ export const useFormStore = create<FormState>()(
           form: {
             name,
             version,
-            newVersion: "",
+            newVersion: '',
             isContinue: false,
-            formId: "",
-            versionId: "",
-            layout: "vertical",
+            formId: '',
+            versionId: '',
+            layout: 'vertical',
             form_details: []
           },
           selectedField: {
@@ -559,22 +563,18 @@ export const useFormStore = create<FormState>()(
           }
         })),
       addDefaultForm: () =>
-        set((state) => {
+        set(state => {
           const parentKey = nanoid(8)
 
-          const fields = Array.from(
-            { length: Number(process.env.NEXT_PUBLIC_GRID_LAYOUT_COL_NUMBER) },
-            (_, i) => createField(i)
+          const fields = Array.from({ length: Number(process.env.NEXT_PUBLIC_GRID_LAYOUT_COL_NUMBER) }, (_, i) =>
+            createField(i)
           )
 
           return {
             form: {
               ...state.form,
 
-              form_details: [
-                ...state.form.form_details,
-                { parentKey, fields }
-              ]
+              form_details: [...state.form.form_details, { parentKey, fields }]
             },
             selectedField: {
               parentKey,
@@ -593,7 +593,7 @@ export const useFormStore = create<FormState>()(
         return field?.data?.find((d: any) => d.id === selectedField?.fieldId?.id) ?? null
       },
       toggleLayout: () =>
-        set((state) => ({
+        set(state => ({
           form: {
             ...state.form,
             layout: state.form.layout === 'vertical' ? 'horizontal' : 'vertical'
@@ -602,6 +602,7 @@ export const useFormStore = create<FormState>()(
       setFullForm: (payload: FormVersion) =>
         set(state => ({
           form: {
+            ...(payload ?? {}),
             isContinue: true,
             formId: payload.formId ?? state.form.formId,
             versionId: payload.versionId ?? state.form.versionId,
@@ -613,11 +614,11 @@ export const useFormStore = create<FormState>()(
           }
         })),
       addFieldToForm: () =>
-        set((state) => {
+        set(state => {
           const parentKey = state.selectedField?.parentKey
           if (!parentKey) return {}
 
-          const updatedFormDetails = state.form.form_details.map((formItem) => {
+          const updatedFormDetails = state.form.form_details.map(formItem => {
             if (formItem.parentKey !== parentKey) return formItem
 
             const newField = createField(formItem.fields.length)
@@ -644,16 +645,14 @@ export const useFormStore = create<FormState>()(
           }
         }),
       deleteParentForm: (fieldId: string) =>
-        set((state) => {
-          const updatedFormDetails = state.form.form_details.map((formItem) => {
-            const filteredFields = formItem.fields.filter((field) => field.i !== fieldId)
+        set(state => {
+          const updatedFormDetails = state.form.form_details.map(formItem => {
+            const filteredFields = formItem.fields.filter(field => field.i !== fieldId)
 
             if (filteredFields.length === formItem.fields.length) return formItem
 
             const newWidth =
-              filteredFields.length > 0
-                ? Number(process.env.NEXT_PUBLIC_GRID_LAYOUT_COL) / filteredFields.length
-                : 3
+              filteredFields.length > 0 ? Number(process.env.NEXT_PUBLIC_GRID_LAYOUT_COL) / filteredFields.length : 3
 
             const resizedFields = filteredFields.map((field, index) => ({
               ...field,
@@ -678,10 +677,8 @@ export const useFormStore = create<FormState>()(
           }
         }),
       deleteFormByKey: (parentKey: string) =>
-        set((state) => {
-          const updatedFormDetails = state.form.form_details.filter(
-            (formItem) => formItem.parentKey !== parentKey
-          )
+        set(state => {
+          const updatedFormDetails = state.form.form_details.filter(formItem => formItem.parentKey !== parentKey)
 
           const isSelectedDeleted = state.selectedField?.parentKey === parentKey
 
@@ -733,17 +730,17 @@ export const useFormStore = create<FormState>()(
         set(() => ({
           form: {
             isContinue: false,
-            formId: "",
-            versionId: "",
-            name: "",
+            formId: '',
+            versionId: '',
+            name: '',
             version: '',
-            newVersion: "",
-            layout: "vertical",
+            newVersion: '',
+            layout: 'vertical',
             form_details: []
           }
         })),
-      setSelectedField: (field) =>
-        set((state) => ({
+      setSelectedField: field =>
+        set(state => ({
           selectedField: {
             parentKey: field?.parentKey ?? state?.selectedField?.parentKey ?? null,
             fieldId: field?.fieldId ?? null,
@@ -769,7 +766,7 @@ export const useFormStore = create<FormState>()(
     }),
     {
       name: 'form-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         form: state.form
       })
     }

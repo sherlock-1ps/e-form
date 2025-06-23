@@ -11,7 +11,15 @@ import DashboardNavbarContent from '@/components/layout/vertical/navbar/Dashboar
 import { useDialog } from '@/hooks/useDialog'
 import CreateFormDialog from '@/components/dialogs/form/CreateFormDialog'
 import OptionMenu from '@/@core/components/option-menu'
-import { Edit, FileCopy, EditCalendar, Delete, CreateNewFolder, AccountTreeOutlined, ContentCopy } from '@mui/icons-material'
+import {
+  Edit,
+  FileCopy,
+  EditCalendar,
+  Delete,
+  CreateNewFolder,
+  AccountTreeOutlined,
+  ContentCopy
+} from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import EditVersionFormDialog from '@/components/dialogs/form/EditVersionFormDialog'
 import DateUseFormDialog from '@/components/dialogs/form/DateUseFormDialog'
@@ -75,7 +83,7 @@ const AdminDashboardComponent = () => {
                 onClick: () => {
                   showDialog({
                     id: 'alertEditVersionFormDialog',
-                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => { }} />,
+                    component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => {}} />,
                     size: 'sm'
                   })
                 }
@@ -161,12 +169,14 @@ const AdminDashboardComponent = () => {
         const layoutValue =
           response?.result?.data?.FormDetails?.[0]?.detail?.layout === 'horizontal' ? 'horizontal' : 'vertical'
 
-        const contentCopy = isCopy ? {
-          formId: undefined,
-          versionId: undefined,
-          version: "1.0.0",
-          name: `สำเนา_${data?.name}`
-        } : {}
+        const contentCopy = isCopy
+          ? {
+              formId: undefined,
+              versionId: undefined,
+              version: '1.0.0',
+              name: `สำเนา_${data?.name}`
+            }
+          : {}
 
         const formFromApi = {
           isCopy: isCopy,
@@ -180,6 +190,8 @@ const AdminDashboardComponent = () => {
           form_details: response?.result?.data?.FormDetails[0]?.detail?.data,
           ...contentCopy
         }
+
+        // console.log('formFromApi', formFromApi, isCopy)
 
         setFullForm(formFromApi)
         router.push(`/${locale}/admin/form`)
@@ -207,7 +219,7 @@ const AdminDashboardComponent = () => {
                 onClick={() => {
                   showDialog({
                     id: 'alertCreateFormDialog',
-                    component: <CreateFormDialog id='alertCreateFormDialog' onClick={() => { }} />,
+                    component: <CreateFormDialog id='alertCreateFormDialog' onClick={() => {}} />,
                     size: 'sm'
                   })
                 }}

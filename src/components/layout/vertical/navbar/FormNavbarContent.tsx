@@ -38,7 +38,6 @@ const FormNavbarContent = () => {
   const [title, setTitle] = useState(form?.name)
   const [versionText, setVersionText] = useState(form?.version)
 
-
   const { mutateAsync, isPending } = useCreateFormQueryOption()
   const { mutateAsync: updateForm, isPending: pendingUpdate } = useUpdateFormQueryOption()
   const { mutateAsync: createNewVersion, isPending: pendingCreateNewVersion } = useCreateNewVersionFormQueryOption()
@@ -149,6 +148,8 @@ const FormNavbarContent = () => {
     })
   }
 
+  // console.log('form', form)
+
   return (
     <div className='w-full flex gap-2'>
       <div className='flex flex-col flex-1  '>
@@ -177,7 +178,8 @@ const FormNavbarContent = () => {
         <Button color='primary' variant='outlined' onClick={handleShowPreview} startIcon={<Preview />}>
           ดูแบบร่าง
         </Button>
-        {form?.isContinue ? (
+
+        {form?.isContinue && !form?.isCopy ? (
           <Button
             disabled={pendingUpdate || pendingCreateNewVersion}
             color='primary'
@@ -195,11 +197,9 @@ const FormNavbarContent = () => {
             onClick={handleClickSave}
             endIcon={<Publish />}
           >
-            บันทึก
+            {`บันทึก`}
           </Button>
         )}
-
-
 
         {/* {form?.isContinue && (
           <Button color='primary' variant='contained' endIcon={<NewReleasesOutlined />}>
