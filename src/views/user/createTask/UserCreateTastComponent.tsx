@@ -126,12 +126,12 @@ const UserCreateTastComponent = () => {
                     <CardContent className='flex flex-col gap-6'>
                       <Typography variant='h6'>{item.name}</Typography>
 
-                      <div className='flex flex-col gap-2'>
+                      {/* <div className='flex flex-col gap-2'>
                         <Typography variant='body2'>คำบรรยาย</Typography>
                         <Typography variant='body2' className='break-words line-clamp-2 min-h-[2.5rem]'>
                           .....
                         </Typography>
-                      </div>
+                      </div> */}
 
                       <div className='flex gap-4 items-center justify-end h-[40px]'>
                         <Button

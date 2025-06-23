@@ -58,12 +58,12 @@ const ReportTastkComponent = () => {
               <CardContent className='flex flex-col gap-6'>
                 <Typography variant='h6'>รายงานแบบขอเบิกเงินค่าเช่าบ้าน 6006 (รายเดือน)</Typography>
 
-                <div className='flex flex-col gap-2'>
+                {/* <div className='flex flex-col gap-2'>
                   <Typography variant='body2'>คำบรรยาย</Typography>
                   <Typography variant='body2' className='break-words line-clamp-2 min-h-[2.5rem]'>
                     .....
                   </Typography>
-                </div>
+                </div> */}
 
                 <div className='flex gap-4 items-center justify-end h-[40px]'>
                   <Button
@@ -75,7 +75,7 @@ const ReportTastkComponent = () => {
                         component: (
                           <ConfirmAlert
                             id='alertDialogConfirmToggleTrigger'
-                            title='ดูการประเมิน'
+                            title='ดูรายงานสรุป'
                             content1='คุณต้องการใช้ดูการประเมินนี้ ใช่หรือไม่'
                             onClick={() => {
                               setCurrentSection('summary')
@@ -86,7 +86,7 @@ const ReportTastkComponent = () => {
                       })
                     }}
                   >
-                    ดูการประเมิน
+                    ดูรายงานสรุป
                   </Button>
                 </div>
               </CardContent>
@@ -97,12 +97,12 @@ const ReportTastkComponent = () => {
               <CardContent className='flex flex-col gap-6'>
                 <Typography variant='h6'>รายงานสรุปแบบสำรวจ (พึงพอใจบริการของหน้าห้องผู้บริหาร)</Typography>
 
-                <div className='flex flex-col gap-2'>
+                {/* <div className='flex flex-col gap-2'>
                   <Typography variant='body2'>คำบรรยาย</Typography>
                   <Typography variant='body2' className='break-words line-clamp-2 min-h-[2.5rem]'>
                     .....
                   </Typography>
-                </div>
+                </div> */}
 
                 <div className='flex gap-4 items-center justify-end h-[40px]'>
                   <Button

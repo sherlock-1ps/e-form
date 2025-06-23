@@ -14,6 +14,8 @@ import type { TextFieldProps } from '@mui/material/TextField'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
+
+import { Directions, Preview, Pageview, PlayCircleOutline, Article, FindInPage, DeviceHub } from '@mui/icons-material'
 // Third-party Imports
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -174,6 +176,23 @@ const UserDashboardTable = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [globalFilter, setGlobalFilter] = useState('')
 
+  const viewClick = (row: any) => {
+    {
+      onManage(row.original.id, row.original?.status, row.original.flow_id)
+      // showDialog({
+      //   id: 'alertDialogConfirmToggleTrigger',
+      //   component: (
+      //     <ConfirmAlert
+      //       id='alertDialogConfirmToggleTrigger'
+      //       title='จัดการ Flow'
+      //       content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
+      //       onClick={() => onManage(row.original.id, row.original?.status, row.original.flow_id)}
+      //     />
+      //   ),
+      //   size: 'sm'
+      // })
+    }
+  }
   // Hooks
   const columns = useMemo<ColumnDef<TableRowData, any>[]>(
     () => [
@@ -204,21 +223,93 @@ const UserDashboardTable = ({
       //   cell: ({ row }) => <Typography variant='body2'>{FormatShowDate(row.original.created_at)}</Typography>
       // }),
 
-      columnHelper.accessor('created_by', {
-        header: 'เริ่มโดย',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            {/* <CustomAvatar src={row.original.startedBy.avatar} size={34} /> */}
-            {/* <CustomAvatar size={32}>{getInitials(row.original.startedBy.name)}</CustomAvatar> */}
-            <div className='flex flex-col'>
-              <Typography className='font-medium' color='text.primary'>
-                {row.original.created_by}
-              </Typography>
-              <Typography variant='body2'>{`${row.original.f_first_name} ${row.original.f_last_name}`}</Typography>
+      columnHelper.display({
+        id: 'action',
+        header: 'การดำเนินการ',
+        cell: ({ row }) => {
+          const options: OptionType[] = [
+            // {
+            //   text: 'แก้ไข',
+            //   menuItemProps: {
+            //     className: 'flex items-center  text-textSecondary',
+            //     onClick: () => {}
+            //   }
+            // }
+          ]
+
+          return (
+            <div className='flex gap-2 justify-between'>
+              <DeviceHub
+                color='warning'
+                fontSize='large'
+                titleAccess='ดูโฟลว์'
+                sx={{ cursor: 'pointer' }}
+                onClick={() => {
+                  onViewFlow(row.original.id)
+                }}
+              />
+              {isView ? (
+                <FindInPage
+                  color='info'
+                  titleAccess='ดูรายละเอียด'
+                  fontSize='large'
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    viewClick(row)
+                  }}
+                />
+              ) : (
+                <PlayCircleOutline
+                  color='primary'
+                  titleAccess='ดำเนินการ'
+                  fontSize='large'
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    viewClick(row)
+                  }}
+                />
+              )}
+
+              {/* <Button
+                title='ดูโฟลว์'
+                variant='text'
+                color='primary'
+                className=''
+                onClick={() => {
+                  onViewFlow(row.original.id)
+                }}
+              >
+                <Pageview fontSize='large' />
+              </Button>
+              <Button
+                title={isView ? 'ดูรายละเอียด' : 'จัดการ'}
+                variant='text'
+                color='primary'
+                className=''
+                onClick={() => {
+                  showDialog({
+                    id: 'alertDialogConfirmToggleTrigger',
+                    component: (
+                      <ConfirmAlert
+                        id='alertDialogConfirmToggleTrigger'
+                        title='จัดการ Flow'
+                        content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
+                        onClick={() => onManage(row.original.id, row.original?.status, row.original.flow_id)}
+                      />
+                    ),
+                    size: 'sm'
+                  })
+                }}
+              >
+                {isView ? <Article fontSize='large' /> : <PlayCircleOutline fontSize='large' />}
+              </Button>
+              */}
             </div>
-          </div>
-        )
+          )
+        },
+        enableSorting: false
       }),
+
       columnHelper.accessor('name', {
         header: 'ชื่องาน',
         cell: ({ row }) => (
@@ -226,27 +317,6 @@ const UserDashboardTable = ({
             {row.original?.name}
           </Typography>
         )
-      }),
-      columnHelper.accessor('status', {
-        header: 'สถานะล่าสุด',
-        cell: ({ row }) => {
-          const status = row.original.status
-          const chipConfig = statusMap[status] || { color: 'default', label: status }
-
-          return (
-            <div className='flex gap-2 items-center'>
-              <Chip
-                className='capitalize'
-                label={chipConfig.label}
-                size='small'
-                variant='tonal'
-                color={chipConfig.color}
-              />
-              <Typography variant='body2'>{FormatShowDate(row.original.updated_at)}</Typography>
-            </div>
-          )
-        },
-        enableSorting: false
       }),
       columnHelper.accessor('current_activity_names', {
         header: 'การเดินหนังสือล่าสุด',
@@ -262,6 +332,29 @@ const UserDashboardTable = ({
           </div>
         )
       }),
+      columnHelper.accessor('status', {
+        header: 'สถานะล่าสุด',
+        cell: ({ row }) => {
+          const status = row.original.status
+          const chipConfig = statusMap[status] || { color: 'default', label: status }
+
+          return (
+            <div className='flex gap-2 items-center'>
+              <Typography variant='body2'>{FormatShowDate(row.original.updated_at)}</Typography>
+              <Chip
+                className='capitalize'
+                // label={chipConfig.label}
+                label={chipConfig.label == 'Draft' ? 'ร่าง' : chipConfig.label == 'Active' ? 'ดำเนินการ' : 'สิ้นสุด'}
+                size='small'
+                variant='tonal'
+                color={chipConfig.color}
+              />
+            </div>
+          )
+        },
+        enableSorting: false
+      }),
+
       columnHelper.accessor('current_assignees_user_names', {
         header: 'ผู้รับผิดชอบปัจจุบัน',
         cell: ({ row }) => (
@@ -296,87 +389,20 @@ const UserDashboardTable = ({
           </div>
         )
       }),
-      columnHelper.display({
-        id: 'action',
-        header: 'การดำเนินการ',
-        cell: ({ row }) => {
-          const options: OptionType[] = [
-            // {
-            //   text: 'แก้ไข',
-            //   menuItemProps: {
-            //     className: 'flex items-center  text-textSecondary',
-            //     onClick: () => {}
-            //   }
-            // }
-          ]
-
-          return (
-            // <OptionMenu
-            //   options={options}
-            //   customTrigger={
-            //     <div className='flex items-center '>
-            //       <Button
-            //         variant='contained'
-            //         color='primary'
-            //         className=''
-            //         onClick={() => {
-            //           showDialog({
-            //             id: 'alertDialogConfirmToggleTrigger',
-            //             component: (
-            //               <ConfirmAlert
-            //                 id='alertDialogConfirmToggleTrigger'
-            //                 title='จัดการ Flow'
-            //                 content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
-            //                 onClick={() => handleClickManage(row.original.id)}
-            //               />
-            //             ),
-            //             size: 'sm'
-            //           })
-
-            //         }}
-            //       >
-            //         จัดการ
-            //       </Button>
-            //       {/* <OptionMenu iconButtonProps={{ size: 'medium' }} iconClassName='text-white' options={[]} /> */}
-            //     </div>
-            //   }
-            // />
-            <div className='flex gap-2'>
-              <Button
-                variant='outlined'
-                color='primary'
-                className=''
-                onClick={() => {
-                  onViewFlow(row.original.id)
-                }}
-              >
-                ดูโฟลว์
-              </Button>
-              <Button
-                variant='contained'
-                color='primary'
-                className=''
-                onClick={() => {
-                  showDialog({
-                    id: 'alertDialogConfirmToggleTrigger',
-                    component: (
-                      <ConfirmAlert
-                        id='alertDialogConfirmToggleTrigger'
-                        title='จัดการ Flow'
-                        content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
-                        onClick={() => onManage(row.original.id, row.original?.status, row.original.flow_id)}
-                      />
-                    ),
-                    size: 'sm'
-                  })
-                }}
-              >
-                {isView ? 'ดูรายละเอียด' : 'จัดการ'}
-              </Button>
+      columnHelper.accessor('created_by', {
+        header: 'เริ่มโดย',
+        cell: ({ row }) => (
+          <div className='flex items-center gap-3'>
+            {/* <CustomAvatar src={row.original.startedBy.avatar} size={34} /> */}
+            {/* <CustomAvatar size={32}>{getInitials(row.original.startedBy.name)}</CustomAvatar> */}
+            <div className='flex flex-col'>
+              <Typography className='font-medium' color='text.primary'>
+                {row.original.created_by}
+              </Typography>
+              <Typography variant='body2'>{`${row.original.f_first_name} ${row.original.f_last_name}`}</Typography>
             </div>
-          )
-        },
-        enableSorting: false
+          </div>
+        )
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
