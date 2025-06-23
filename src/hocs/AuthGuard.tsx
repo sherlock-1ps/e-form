@@ -48,6 +48,9 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
       if (response.code == 'SUCCESS') {
         useAuthStore.getState().setTokens(key ?? '')
         useAuthStore.getState().setProfile(response?.result?.data?.userLogin)
+
+        useAuthStore.getState().setUrlLogin(response?.result?.data?.url_login || '')
+        useAuthStore.getState().setUrlBase(response?.result?.data?.url_base || '')
       } else {
         if (response?.url) {
           setUrlRedirect(response.url)
