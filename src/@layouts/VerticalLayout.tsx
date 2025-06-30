@@ -53,6 +53,7 @@ type VerticalLayoutProps = ChildrenType & {
 
 const VerticalLayout = (props: VerticalLayoutProps) => {
   const { showDialog } = useDialog()
+  const { lang: locale } = useParams()
   // Props
   const { navbar, footer, navigation, formPropertyBar, children, dictionary } = props
   const profile = useAuthStore(state => state.profile)
@@ -61,7 +62,7 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
 
   const pathname = usePathname()
   const router = useRouter()
-  const target = '/th/user/dashboard'
+  const target = `/${locale}/user/dashboard`
 
   const handleClick = (e: any) => {
     // เปรียบเทียบเฉพาะ path ไม่รวม query string
@@ -120,7 +121,7 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
           </Link>
 
           {profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
-            <Link href={`/th/user/report`} className='flex gap-2'>
+            <Link href={`/${locale}/user/report`} className='flex gap-2'>
               <Assessment style={{ width: '20px', height: '20px' }} className=' text-primary' />
               <Typography variant='h6' className='font-normal  hover:text-primary '>
                 {dictionary['navigation']?.report}
