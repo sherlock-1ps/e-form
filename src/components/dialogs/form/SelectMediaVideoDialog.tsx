@@ -12,12 +12,14 @@ import OptionMenu from '@/@core/components/option-menu'
 import { PermMediaOutlined, PlayCircleOutline, Upload, Delete, Edit, DownloadOutlined } from '@mui/icons-material'
 import { toast } from 'react-toastify'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface selectMediaProps {
   id: string
 }
 
 const SelectMediaVideoDialog = ({ id }: selectMediaProps) => {
+  const { dictionary } = useDictionary()
   const { closeDialog } = useDialog()
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
@@ -48,7 +50,7 @@ const SelectMediaVideoDialog = ({ id }: selectMediaProps) => {
   return (
     <Grid container className='' spacing={2}>
       <Grid item xs={12}>
-        <Typography variant='h5'>เลือกรูปภาพ</Typography>
+        <Typography variant='h5'>{dictionary?.selectImage} </Typography>
       </Grid>
 
       <Grid item xs={12}>

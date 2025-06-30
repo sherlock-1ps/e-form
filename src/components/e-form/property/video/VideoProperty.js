@@ -26,10 +26,11 @@ import { toolboxDocumentBaseMenu } from '@/data/toolbox/toolboxMenu'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { toast } from 'react-toastify'
 import SelectMediaVideoDialog from '@/components/dialogs/form/SelectMediaVideoDialog'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
-
+  const { dictionary } = useDictionary()
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -62,6 +63,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLeng
 }
 
 const VideoProperty = ({ item }) => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -99,7 +101,7 @@ const VideoProperty = ({ item }) => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -118,7 +120,7 @@ const VideoProperty = ({ item }) => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -174,11 +176,11 @@ const VideoProperty = ({ item }) => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <Typography color='text.primary'>ขนาดการแสดงผล</Typography>
+        <Typography color='text.primary'>{dictionary?.displaySize} </Typography>
         <div className='flex gap-2'>
           <CustomTextField
             type='number'
-            label='กว้าง'
+            label={dictionary?.width}
             placeholder='100%'
             value={result?.config?.style?.width ?? ''}
             inputProps={{ max: formSizeConfig.width }}
@@ -199,7 +201,7 @@ const VideoProperty = ({ item }) => {
           />
           <CustomTextField
             type='number'
-            label='สูง'
+            label={dictionary?.height}
             placeholder='AUTO'
             value={result?.config?.style?.height ?? ''}
             InputProps={{
@@ -220,9 +222,11 @@ const VideoProperty = ({ item }) => {
         </div>
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>
-        <Typography variant='h6'>วีดีโอปัจจุบัน</Typography>
+        <Typography variant='h6'>{dictionary?.currentVideo} </Typography>
         <div className='flex items-center justify-between'>
-          <Typography variant='body2'>{result?.config?.details?.value?.name ?? 'ยังไม่มีวีดีโอ'}</Typography>
+          <Typography variant='body2'>
+            {result?.config?.details?.value?.name ?? dictionary?.noVideoAvailable}
+          </Typography>
           {result?.config?.details?.value?.value && (
             <Button
               variant='outlined'
@@ -270,11 +274,11 @@ const VideoProperty = ({ item }) => {
             })
           }}
         >
-          เลือกวีดีโอ
+          {dictionary?.selectVideo}
         </Button>
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เล่นอัตโนมัติ'
+            label={dictionary?.autoplay}
             control={
               <Checkbox
                 checked={result?.config?.style?.autoPlay}
@@ -291,7 +295,7 @@ const VideoProperty = ({ item }) => {
           />
 
           <FormControlLabel
-            label='วนซ้ำ'
+            label={dictionary?.loop}
             control={
               <Checkbox
                 checked={result?.config?.style?.loop}
@@ -307,39 +311,7 @@ const VideoProperty = ({ item }) => {
             }
           />
         </div>
-        {/* <div className='w-full flex items-center justify-between'>
-          <Typography color='text.primary'>การขยายภาพ</Typography>
-          <div className='flex items-center justify-center gap-2'>
-            <BaseButton
-              color={result?.config?.style?.objectFit == 'contain' ? 'primary' : 'secondary'}
-              text=''
-              icon={FitScreenOutlined}
-              sx={{ width: '26px', height: '26px' }}
-              onClick={() => {
-                updateStyle(
-                  String(selectedField?.parentKey ?? ''),
-                  selectedField?.boxId ?? '',
-                  selectedField?.fieldId?.id ?? '',
-                  { objectFit: 'contain' }
-                )
-              }}
-            />
-            <BaseButton
-              color={result?.config?.style?.objectFit == 'cover' ? 'primary' : 'secondary'}
-              text=''
-              icon={FullscreenExitOutlined}
-              sx={{ width: '26px', height: '26px' }}
-              onClick={() => {
-                updateStyle(
-                  String(selectedField?.parentKey ?? ''),
-                  selectedField?.boxId ?? '',
-                  selectedField?.fieldId?.id ?? '',
-                  { objectFit: 'cover' }
-                )
-              }}
-            />
-          </div>
-        </div> */}
+
         <div>
           <FormControlLabel
             control={

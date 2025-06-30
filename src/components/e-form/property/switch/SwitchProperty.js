@@ -22,7 +22,7 @@ import AddOptionDropdownDialog from '@/components/dialogs/form/AddOptionDropdown
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useDialog } from '@/hooks/useDialog'
 import { toolboxOptionMenu } from '@/data/toolbox/toolboxMenu'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
 
@@ -63,6 +63,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const SwitchProperty = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -116,7 +117,7 @@ const SwitchProperty = () => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -135,7 +136,7 @@ const SwitchProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -242,7 +243,7 @@ const SwitchProperty = () => {
           />
         ) : (
           <DebouncedInput
-            label='ข้อความ'
+            label={dictionary?.text}
             placeholder={'กรอกข้อความ'}
             value={result?.config?.details?.value?.name || ''}
             onChange={newText =>
@@ -260,66 +261,6 @@ const SwitchProperty = () => {
             }
           />
         )}
-        {/* <Card
-          elevation={3}
-          sx={{
-            borderRadius: 2,
-            padding: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-            border: '1px solid var(--mui-palette-primary-main)'
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1
-              }}
-            >
-              <Typography variant='body1' color={'text.primary'}>
-                ข้อความ
-              </Typography>
-            </Box>
-          </Box>
-
-          <RadioGroup row defaultValue='checked' name='basic-radio' aria-label='basic-radio'>
-            <FormControlLabel value='checked' control={<Radio />} label='String' />
-            <FormControlLabel value='unchecked' control={<Radio />} label='AppState' />
-            <FormControlLabel value='test' control={<Radio />} label='API' />
-          </RadioGroup>
-
-          <Box>
-            <Typography variant='body2' sx={{ marginBottom: 1 }}>
-              รายละเอียด
-            </Typography>
-            <TextField
-              fullWidth
-              variant='outlined'
-              size='small'
-              placeholder='Placeholder'
-              value={result?.config?.details?.text ?? ''}
-              onChange={e =>
-                updateDetails(
-                  String(selectedField?.parentKey ?? ''),
-                  selectedField?.boxId ?? '',
-                  selectedField?.fieldId?.id ?? '',
-                  {
-                    text: e.target.value
-                  }
-                )
-              }
-            />
-          </Box>
-        </Card> */}
       </section>
 
       {result?.config?.details?.value?.valueType == 'custom' && (

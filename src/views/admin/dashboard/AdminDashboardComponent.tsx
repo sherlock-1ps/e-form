@@ -34,7 +34,7 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useFormStore } from '@/store/useFormStore'
 import { formatThaiDate } from '@/utils/formatDateTime'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
 const AdminDashboardComponent = () => {
   const router = useRouter()
   const { lang: locale } = useParams()
@@ -46,6 +46,7 @@ const AdminDashboardComponent = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const { mutateAsync: deleteForm } = useDeleteFormQueryOption()
 
+  const { dictionary } = useDictionary()
   const { mutateAsync: getForm, isPending: pendingGetForm } = useGetFormQueryOption()
 
   const ImageCard = ({ title, image, date, dateUpdate, status, version, onDelete, data, onGetForm, viewMode }: any) => {
@@ -181,10 +182,10 @@ const AdminDashboardComponent = () => {
     try {
       const response = await deleteForm(request)
       if (response?.code == 'SUCCESS') {
-        toast.success('ลบฟอร์มสำเร็จแล้ว!', { autoClose: 3000 })
+        toast.success(dictionary?.formDeletedSuccess, { autoClose: 3000 })
       }
     } catch (error) {
-      toast.error('ลบฟอร์มล้มเหลว!', { autoClose: 3000 })
+      toast.error(dictionary?.formDeleteFailed, { autoClose: 3000 })
     }
   }
 
@@ -227,7 +228,7 @@ const AdminDashboardComponent = () => {
         router.push(`/${locale}/admin/form`)
       }
     } catch (error) {
-      toast.error('เรียกฟอร์มล้มเหลว!', { autoClose: 3000 })
+      toast.error(dictionary?.formLoadFailed, { autoClose: 3000 })
     }
   }
 
@@ -241,7 +242,7 @@ const AdminDashboardComponent = () => {
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
             <Grid item xs={12} className='flex items-center justify-between'>
-              <Typography variant='h4'>จัดการแบบฟอร์ม</Typography>
+              <Typography variant='h4'> {dictionary?.manageForm}</Typography>
               <div className='flex gap-2  backdrop-blur-sm p-2 rounded-xl shadow-sm  items-center'>
                 <IconButton
                   onClick={() => setViewMode('grid')}
@@ -277,9 +278,9 @@ const AdminDashboardComponent = () => {
                 }}
               >
                 <AddIcon sx={{ color: '#0463EA' }} />
-                {viewMode === 'list' && <span className='text-[#0463EA] font-medium'>สร้างฟอร์มใหม่</span>}
+                {viewMode === 'list' && <span className='text-[#0463EA] font-medium'>{dictionary?.createNewForm}</span>}
               </Button>
-              {isPending && <Typography>กำลังโหลด...</Typography>}
+              {isPending && <Typography>{dictionary?.loading}</Typography>}
               {data?.code == 'SUCCESS' &&
                 !isPending &&
                 data?.result?.data.length > 0 &&

@@ -214,7 +214,7 @@ const UserDashboardComponent = () => {
             <TabPanel value='1'>
               <Grid container spacing={4}>
                 <Grid item xs={12} className='flex items-center justify-between'>
-                  <Typography variant='h5'>เอกสารของฉัน</Typography>
+                  <Typography variant='h5'>{dictionary?.cardOwnWork}</Typography>
                   <Button
                     variant='contained'
                     startIcon={<Add style={{ width: '20px', height: '20px' }} />}
@@ -226,20 +226,20 @@ const UserDashboardComponent = () => {
                       })
                     }}
                   >
-                    สร้างเอกสารใหม่
+                    {dictionary?.createNewDocument}
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomTextField
                     select
                     fullWidth
-                    label='เลือกเวิร์คโฟลว์'
+                    label={dictionary?.selectWorkflow}
                     value={selectedWorkflow}
                     onChange={e => setSelectedWorkflow(e.target.value)}
                     SelectProps={{ displayEmpty: true }}
                   >
                     <MenuItem value={0}>
-                      <em className='opacity-50'>เลือกเวิร์คโฟลว์ทั้งหมด</em>
+                      <em className='opacity-50'>{dictionary?.selectAllWorkflow}</em>
                     </MenuItem>
 
                     {flowData?.result?.data?.map((item: any) => (

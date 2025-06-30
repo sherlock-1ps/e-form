@@ -22,11 +22,12 @@ import BaseButton from '@/components/ui/button/BaseButton'
 import BaseTitleProperty from '@components/e-form/property/BaseTitleProperty'
 import BaseFontSize from '@components/e-form/property/BaseFontSize'
 import { useFormStore } from '@/store/useFormStore.ts'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...props }) => {
   // States
   const [value, setValue] = useState(initialValue)
-
+  const { dictionary } = useDictionary()
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -44,6 +45,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...prop
 }
 
 const LinkProperty = () => {
+  const { dictionary } = useDictionary()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -80,7 +82,7 @@ const LinkProperty = () => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -99,7 +101,7 @@ const LinkProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -146,7 +148,7 @@ const LinkProperty = () => {
         />
         <div className='flex gap-1'>
           <BaseFontSize placeholder={result.config.style.fontSize} value={result.config.style.fontSize} />
-          <BaseColorPicker label='สี' defaultColor={result.config.style.color} />
+          <BaseColorPicker label={dictionary?.color} defaultColor={result.config.style.color} />
         </div>
         <FormatText item={result.config.style} />
         <FormatTextPosition item={result.config.style} />
@@ -157,8 +159,8 @@ const LinkProperty = () => {
           onChange={handleChange}
           aria-label='basic-radio'
         >
-          <FormControlLabel value={false} control={<Radio />} label='ขยายกล่องตามข้อความ' />
-          <FormControlLabel value={true} control={<Radio />} label='ตัดข้อความตามขนาดกล่อง' />
+          <FormControlLabel value={false} control={<Radio />} label={dictionary?.expandBoxWithText} />
+          <FormControlLabel value={true} control={<Radio />} label={dictionary?.truncateTextToFitBox} />
         </RadioGroup>
       </section>
 

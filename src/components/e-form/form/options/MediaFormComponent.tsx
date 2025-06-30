@@ -19,10 +19,12 @@ import CreateFolderMedia from '@/components/dialogs/form/CreateFolderMedia'
 import { toast } from 'react-toastify'
 import ShowImageDialog from '@/components/dialogs/form/ShowImageDialog'
 import ChangeNameImageMedia from '@/components/dialogs/form/ChangeNameImageMedia'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const acceptedFileTypes = ['.JPG', '.PNG', '.GIF', '.WEBP', '.BMP', '.AVI', '.MP4', '.MOV']
 
 const MediaFormComponent = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const inputRef = useRef<HTMLInputElement>(null)
   const [folderStack, setFolderStack] = useState<any>([])
@@ -162,7 +164,7 @@ const MediaFormComponent = () => {
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              <Typography>กำลังโหลด...</Typography>
+              <Typography>{dictionary?.loading}</Typography>
             </CardContent>
           </Card>
         </Grid>

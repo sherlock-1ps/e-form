@@ -24,10 +24,12 @@ import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import Autocomplete from '@mui/material/Autocomplete'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
 
+  const { dictionary } = useDictionary()
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -65,6 +67,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const CheckboxProperty = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -104,7 +107,7 @@ const CheckboxProperty = () => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -123,7 +126,7 @@ const CheckboxProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -259,8 +262,8 @@ const CheckboxProperty = () => {
           />
         ) : (
           <DebouncedInput
-            label='กำหนดค่า'
-            placeholder='กรอกค่า....'
+            label={dictionary?.configure}
+            placeholder={dictionary?.enterText}
             value={result?.config?.details?.keyValue?.realValue || ''}
             onChange={newText => {
               updateDetails(
@@ -283,10 +286,10 @@ const CheckboxProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <Typography>การตรวจสอบข้อมูล</Typography>
+        <Typography>{dictionary?.dataValidation} </Typography>
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.isRequired} />}
-          label='จำเป็นต้องกรอก'
+          label={dictionary?.required}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -300,7 +303,7 @@ const CheckboxProperty = () => {
         />
         <div className='flex w-full gap-2'>
           <CustomTextField
-            label='ขั้นต่ำ'
+            label={dictionary?.min}
             placeholder='Placeholder'
             value={result?.config?.details?.minCheckbox}
             type='number'
@@ -317,7 +320,7 @@ const CheckboxProperty = () => {
           />
           <CustomTextField
             type='number'
-            label='สูงสุดไม่เกิน'
+            label={dictionary?.maxLimit}
             placeholder='Placeholder'
             value={result?.config?.details?.maxCheckbox}
             onChange={e =>
@@ -376,7 +379,7 @@ const CheckboxProperty = () => {
         </div>
         {/* <ChoiceBox item={result} /> */}
         <div className='flex items-center justify-between'>
-          <Typography variant='h6'>ตัวเลือกที่แสดง</Typography>
+          <Typography variant='h6'>{dictionary?.displayOptions} </Typography>
 
           {options.length > 0 && (
             <IconButton
@@ -415,12 +418,12 @@ const CheckboxProperty = () => {
           ))
         ) : (
           <Typography variant='body2' className='my-2'>
-            ยังไม่มีตัวเลือก
+            {dictionary?.noOptionsAvailable}
           </Typography>
         )}
 
         <BaseButton
-          text={`${options.length > 0 ? 'เปลี่ยนตัวเลือก' : 'เพิ่มตัวเลือก'}`}
+          text={`${options.length > 0 ? dictionary?.changeOption : dictionary?.addOption}`}
           icon={Add}
           iconPosition='left'
           color='secondary'

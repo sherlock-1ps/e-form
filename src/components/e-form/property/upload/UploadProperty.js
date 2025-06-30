@@ -19,10 +19,11 @@ import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { toast } from 'react-toastify'
 import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 750, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
-
+  const { dictionary } = useDictionary()
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -60,6 +61,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const UploadProperty = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -97,10 +99,9 @@ const UploadProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        {/* <BaseDropdown label='ตำแหน่ง' options={options} defaultValue='canvas' /> */}
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -119,7 +120,7 @@ const UploadProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -178,7 +179,7 @@ const UploadProperty = () => {
       >
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.placeholder?.isShow} />}
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -194,7 +195,7 @@ const UploadProperty = () => {
           }
         />
         <CustomTextField
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           placeholder='Placeholder'
           value={result?.config?.details?.placeholder?.value}
           onChange={e =>
@@ -211,11 +212,11 @@ const UploadProperty = () => {
             )
           }
         />
-        <Typography color='text.primary'>ขนาดการแสดงผล</Typography>
+        <Typography color='text.primary'>{dictionary?.displaySize} </Typography>
         <div className='flex gap-2'>
           <CustomTextField
             type='number'
-            label='กว้าง'
+            label={dictionary?.width}
             placeholder='100%'
             value={result?.config?.style?.width ?? ''}
             inputProps={{ max: formSizeConfig.width }}
@@ -236,7 +237,7 @@ const UploadProperty = () => {
           />
           <CustomTextField
             type='number'
-            label='สูง'
+            label={dictionary?.height}
             placeholder='AUTO'
             value={result?.config?.style?.height ?? ''}
             InputProps={{
@@ -257,9 +258,9 @@ const UploadProperty = () => {
         </div>
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5 '>
-        <Typography color='text.primary'>การตรวจสอบข้อมูล</Typography>
+        <Typography color='text.primary'>{dictionary?.dataValidation} </Typography>
         <div className='flex  gap-2 justify-between items-center '>
-          <Typography variant='body1'>กำหนดประเภทไฟล์</Typography>
+          <Typography variant='body1'>{dictionary?.fileTypeDefinition} </Typography>
           <Button
             variant='contained'
             color='primary'
@@ -271,12 +272,12 @@ const UploadProperty = () => {
               })
             }}
           >
-            เลือก
+            {dictionary?.selectFile}
           </Button>
         </div>
         <div className='flex  gap-2 justify-between items-center '>
           <Typography variant='body1' className=' text-nowrap'>
-            ขนาดสูงสุดต่อไฟล์
+            {dictionary?.maxFileSize}
           </Typography>
           <CustomTextField
             type='number'
@@ -322,7 +323,7 @@ const UploadProperty = () => {
                 }}
               />
             }
-            label='รองรับอัปโหลดหลายไฟล์'
+            label={dictionary?.multipleFileUploadSupported}
             sx={{
               '& .MuiFormControlLabel-label': {
                 fontSize: '12.5px',
@@ -335,7 +336,7 @@ const UploadProperty = () => {
             value={result?.config?.details?.maxFileUpload ?? ''}
             fullWidth
             type='number'
-            label='จำนวนสูงสุด'
+            label={dictionary?.maxQuantity}
             onChange={e => {
               const value = Number(e.target.value)
               updateDetails(

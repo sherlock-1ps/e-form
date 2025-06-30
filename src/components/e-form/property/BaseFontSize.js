@@ -5,11 +5,12 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import Typography from '@mui/material/Typography'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const BaseFontSize = ({ placeholder, value }) => {
   const updateStyle = useFormStore(state => state.updateStyle)
   const selectedField = useFormStore(state => state.selectedField)
-
+  const { dictionary } = useDictionary()
   const handleChangeFontsize = e => {
     const rawValue = e.target.value
 
@@ -22,7 +23,7 @@ const BaseFontSize = ({ placeholder, value }) => {
   return (
     <div className='flex flex-col h-full'>
       <Typography fontSize={13} color='text.primary'>
-        ขนาดตัวอักษร
+        {dictionary?.fontSize}{' '}
       </Typography>
       <OutlinedInput
         placeholder={placeholder}

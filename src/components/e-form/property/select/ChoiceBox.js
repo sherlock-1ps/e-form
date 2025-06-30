@@ -15,8 +15,10 @@ import {
 } from '@mui/material'
 import { CancelOutlined, BuildCircleOutlined, Add, CheckCircleOutline } from '@mui/icons-material'
 import BaseButton from '@/components/ui/button/BaseButton'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const CustomOption = ({ label, onEdit, onDelete }) => {
+  const { dictionary } = useDictionary()
   return (
     <Box
       sx={{
@@ -42,6 +44,7 @@ const CustomOption = ({ label, onEdit, onDelete }) => {
 }
 
 const EnhancedOption = ({ label, index, item, selectedField, updateDetails, onBack, onDelete }) => {
+  const { dictionary } = useDictionary()
   const handleLabelChange = e => {
     const updatedList = [...item.config.details.itemList]
     updatedList[index].name = e.target.value
@@ -113,7 +116,7 @@ const EnhancedOption = ({ label, index, item, selectedField, updateDetails, onBa
 
       <Box>
         <Typography variant='body2' sx={{ marginBottom: 1 }}>
-          ข้อความ
+          {dictionary?.text}
         </Typography>
         <TextField fullWidth variant='outlined' size='small' value={label} onChange={handleLabelChange} />
       </Box>
@@ -187,7 +190,13 @@ const ChoiceBox = ({ item }) => {
           )}
         </Collapse>
       ))}
-      <BaseButton text='เพิ่มตัวเลือก' icon={Add} iconPosition='left' color='secondary' onClick={handleAddOption} />
+      <BaseButton
+        text={dictionary?.addOption}
+        icon={Add}
+        iconPosition='left'
+        color='secondary'
+        onClick={handleAddOption}
+      />
     </>
   )
 }

@@ -5,8 +5,10 @@ import { Typography } from '@mui/material'
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@mui/icons-material'
 import BaseButton from '@/components/ui/button/BaseButton'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const FormatTextPosition = ({ item, id }) => {
+  const { dictionary } = useDictionary()
   const updateStyle = useFormStore(state => state.updateStyle)
   const selectedField = useFormStore(state => state.selectedField)
 
@@ -23,7 +25,7 @@ const FormatTextPosition = ({ item, id }) => {
   return (
     <div className='flex flex-col'>
       <Typography color='text.primary' gutterBottom>
-        การจัดวาง
+        {dictionary?.layout}
       </Typography>
       <div className='flex gap-4'>
         <BaseButton

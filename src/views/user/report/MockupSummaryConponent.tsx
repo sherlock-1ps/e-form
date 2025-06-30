@@ -11,7 +11,7 @@ import {
   TableRow,
   Paper
 } from '@mui/material'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { forwardRef, useState } from 'react'
@@ -32,6 +32,7 @@ const MockupSummaryConponent = ({ onBack }: any) => {
   const [dateEnd, setDateEnd] = useState<Dayjs | null>(() => dayjs())
   const [openStartTime, setOpenStartTime] = useState(false)
   const [openEndTime, setOpenEndTime] = useState(false)
+  const { dictionary } = useDictionary()
 
   const formatToISOStringNoMs = (date: Date) => {
     return date.toISOString().split('.')[0] + 'Z'
@@ -314,7 +315,7 @@ const MockupSummaryConponent = ({ onBack }: any) => {
               </>
             ) : (
               <Grid item xs={12}>
-                <Typography variant='h6'>ไม่มีข้อมูลที่ท่านค้นหา</Typography>
+                <Typography variant='h6'>{dictionary?.noSearchResults}</Typography>
               </Grid>
             )}
           </Grid>

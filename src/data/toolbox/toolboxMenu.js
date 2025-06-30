@@ -40,7 +40,7 @@ export const toolboxLayoutMenu = [
         label: 'กล่องข้อความ',
         tag: '',
         value: '',
-        placeholder: 'พิมพ์ข้อความที่นี่',
+        placeholder: 'Type your text here',
         helperText: 'คำแนะนำ'
       }
     }
@@ -60,7 +60,7 @@ export const toolboxLayoutMenu = [
         type: 'text',
         label: 'ข้อความ',
         value: '',
-        placeholder: 'พิมพ์ข้อความของคุณที่นี่'
+        placeholder: 'Type your text here'
       }
     }
   }
@@ -100,7 +100,7 @@ export const toolboxDocumentBaseMenu = [
       details: {
         type: 'text',
         label: 'ข้อความ',
-        placeholder: 'พิมพ์ข้อความที่นี่',
+        placeholder: 'Type your text here',
         isUse: true,
         isShow: true,
         value: {

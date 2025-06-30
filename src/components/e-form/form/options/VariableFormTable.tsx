@@ -258,7 +258,7 @@ const VariableFormTable = ({ data, page, pageSize, setPage, setPageSize }: any) 
       <DebouncedInput
         value={globalFilter ?? ''}
         onChange={value => setGlobalFilter(String(value))}
-        placeholder='ค้นหา'
+        placeholder={dictionary?.search}
         className='p-4'
       />
 

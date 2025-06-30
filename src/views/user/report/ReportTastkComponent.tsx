@@ -18,8 +18,10 @@ import { useFlowStore } from '@/store/useFlowStore'
 import { useFormStore } from '@/store/useFormStore'
 import MockupSummaryConponent from './MockupSummaryConponent'
 import MockupReportComponent from './MockupReportComponent'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const ReportTastkComponent = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const router = useRouter()
   const params = useParams()
@@ -75,7 +77,7 @@ const ReportTastkComponent = () => {
                         component: (
                           <ConfirmAlert
                             id='alertDialogConfirmToggleTrigger'
-                            title='ดูรายงานสรุป'
+                            title={dictionary?.viewSummaryReport}
                             content1='คุณต้องการใช้ดูการประเมินนี้ ใช่หรือไม่'
                             onClick={() => {
                               setCurrentSection('summary')
@@ -86,7 +88,7 @@ const ReportTastkComponent = () => {
                       })
                     }}
                   >
-                    ดูรายงานสรุป
+                    {dictionary?.viewSummaryReport}
                   </Button>
                 </div>
               </CardContent>
@@ -114,7 +116,7 @@ const ReportTastkComponent = () => {
                         component: (
                           <ConfirmAlert
                             id='alertDialogConfirmToggleTrigger'
-                            title='ดูรายงานสรุป'
+                            title={dictionary?.viewSummaryReport}
                             content1='คุณต้องการดูรายงานสรุปนี้ ใช่หรือไม่'
                             onClick={() => {
                               setCurrentSection('report')
@@ -125,7 +127,7 @@ const ReportTastkComponent = () => {
                       })
                     }}
                   >
-                    ดูรายงานสรุป
+                    {dictionary?.viewSummaryReport}
                   </Button>
                 </div>
               </CardContent>

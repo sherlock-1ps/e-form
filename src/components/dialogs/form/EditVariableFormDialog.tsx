@@ -10,6 +10,7 @@ import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { useEditVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface EditVariableFormDialogProps {
   id: string
@@ -28,6 +29,7 @@ const dataTypes = [
 ]
 
 function EditVariableFormDialog({ id, data }: EditVariableFormDialogProps) {
+  const { dictionary } = useDictionary()
   const router = useRouter()
   const { closeDialog } = useDialog()
   const { lang: locale } = useParams()
@@ -143,8 +145,8 @@ function EditVariableFormDialog({ id, data }: EditVariableFormDialogProps) {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
-                    label='กำหนดข้อความ'
-                    placeholder='ใส่ข้อความ'
+                    label={dictionary?.setText}
+                    placeholder={dictionary?.enterText}
                     value={value}
                     onChange={e => setValue(e.target.value)}
                   />
@@ -201,7 +203,7 @@ function EditVariableFormDialog({ id, data }: EditVariableFormDialogProps) {
               return (
                 <>
                   <Grid item xs={12}>
-                    <Typography variant='body2'>เพิ่มตัวเลือก</Typography>
+                    <Typography variant='body2'>{dictionary?.addOption} </Typography>
                     <div className='flex gap-2'>
                       <CustomTextField
                         fullWidth

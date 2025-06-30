@@ -93,12 +93,6 @@ const GridProperty = ({ parentKey }: any) => {
               </div>
             )
           })}
-        {/* <BaseDropdown label='ตำแหน่ง' options={options} defaultValue='canvas' onChange={handleDropdownChange} />
-        <div className='w-full flex justify-around'>
-          <FormControlLabel label='เปิดใช้งาน' control={<Checkbox defaultChecked name='basic-checked' />} />
-          <FormControlLabel label='เปิดใช้งาน' control={<Checkbox defaultChecked name='basic-checked' />} />
-        </div>
-        <CustomTextField label='Component ID' placeholder='Placeholder' /> */}
 
         <Button variant='contained' fullWidth onClick={addFieldToForm} disabled={currentForm?.fields?.length == 12}>
           เพิ่มคอลัมน์

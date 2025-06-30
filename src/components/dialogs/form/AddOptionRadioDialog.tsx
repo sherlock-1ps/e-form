@@ -11,12 +11,14 @@ import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOption
 import { Form } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface AddOptionDropdownProps {
   id: string
 }
 
 const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
+  const { dictionary } = useDictionary()
   const { closeDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -92,7 +94,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
   return (
     <Grid container className='flex  items-end' spacing={2}>
       <Grid item xs={12}>
-        <Typography variant='h5'>เพิ่มตัวเลือก</Typography>
+        <Typography variant='h5'>{dictionary?.addOption} </Typography>
       </Grid>
       <Grid item xs={12}>
         <RadioGroup
@@ -120,19 +122,6 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
       </Grid>
       {result?.config?.details?.value?.valueType == 'custom' ? (
         <>
-          {/* {items?.length > 0 && (
-            <Grid item xs={12}>
-              <CustomTextField
-                fullWidth
-                label='Default Value'
-                placeholder='โปรดกรอกค่า Default ต้องตรงกับค่า value ที่เพิ่มด้านล่าง'
-                value={defaultValue}
-                onChange={e => {
-                  setDefaultValue(e.target.value)
-                }}
-              />
-            </Grid>
-          )} */}
           {items?.length > 0 &&
             items.map((data, index) => (
               <Grid item xs={12} className='flex gap-2 items-center' key={index}>
@@ -155,7 +144,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
                 <CustomTextField
                   fullWidth
                   label='value'
-                  placeholder='กรอกค่า'
+                  placeholder={dictionary?.enterText}
                   value={data?.value}
                   onChange={e => {
                     const newItems = [...items]
@@ -181,7 +170,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
                   <CustomTextField
                     fullWidth
                     label='value'
-                    placeholder='กรอกค่า'
+                    placeholder={dictionary?.enterText}
                     value={value}
                     onChange={e => setValue(e.target.value)}
                   />
@@ -225,7 +214,13 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
                     <CustomTextField fullWidth label='name' placeholder='กรอกชื่อ' value={item?.name} disabled />
                   </Grid>
                   <Grid item xs>
-                    <CustomTextField fullWidth label='value' placeholder='กรอกค่า' value={item?.value} disabled />
+                    <CustomTextField
+                      fullWidth
+                      label='value'
+                      placeholder={dictionary?.enterText}
+                      value={item?.value}
+                      disabled
+                    />
                   </Grid>
                 </Grid>
               )

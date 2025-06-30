@@ -112,7 +112,7 @@ export default function GridLayoutForm({ formElement }) {
           console.log('resized:', {
             layout,
             oldItem,
-            newItem, // ← ขนาดและตำแหน่งใหม่ของ item ที่ถูก resize
+            newItem,
             placeholder,
             e,
             element

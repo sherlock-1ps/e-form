@@ -11,12 +11,14 @@ import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOption
 import { Form } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface AddOptionDropdownProps {
   id: string
 }
 
 const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
+  const { dictionary } = useDictionary()
   const { closeDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -97,7 +99,7 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
   return (
     <Grid container className='flex  items-end' spacing={2}>
       <Grid item xs={12}>
-        <Typography variant='h5'>เพิ่มตัวเลือก</Typography>
+        <Typography variant='h5'>{dictionary?.addOption} </Typography>
       </Grid>
       <Grid item xs={12}>
         <RadioGroup
@@ -160,7 +162,7 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
                 <CustomTextField
                   fullWidth
                   label='value'
-                  placeholder='กรอกค่า'
+                  placeholder={dictionary?.enterText}
                   value={data?.value}
                   onChange={e => {
                     const newItems = [...items]
@@ -186,7 +188,7 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
                   <CustomTextField
                     fullWidth
                     label='value'
-                    placeholder='กรอกค่า'
+                    placeholder={dictionary?.enterText}
                     value={value}
                     onChange={e => setValue(e.target.value)}
                   />
@@ -233,7 +235,13 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
                     <CustomTextField fullWidth label='name' placeholder='กรอกชื่อ' value={item?.name} disabled />
                   </Grid>
                   <Grid item xs>
-                    <CustomTextField fullWidth label='value' placeholder='กรอกค่า' value={item?.value} disabled />
+                    <CustomTextField
+                      fullWidth
+                      label='value'
+                      placeholder={dictionary?.enterText}
+                      value={item?.value}
+                      disabled
+                    />
                   </Grid>
                 </Grid>
               )

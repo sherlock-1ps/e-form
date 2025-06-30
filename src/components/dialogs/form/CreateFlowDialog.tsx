@@ -10,6 +10,7 @@ import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutl
 import { useParams, useRouter } from 'next/navigation'
 import { useFormStore } from '@/store/useFormStore'
 import { useFlowStore } from '@/store/useFlowStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface createFormProps {
   id: string
@@ -60,7 +61,7 @@ const CreateFlowDialog = ({ id, onClick }: createFormProps) => {
   const { lang: locale } = useParams()
   const createFlow = useFlowStore(state => state.createFlow)
   const clearSelectedField = useFlowStore(state => state.clearSelectedField)
-
+  const { dictionary } = useDictionary()
   const handleCreateNewForm = () => {
     const shortId = Date.now().toString(36) // แปลง timestamp เป็น id สั้น
     createFlow(shortId, '1.0.0')
@@ -73,7 +74,7 @@ const CreateFlowDialog = ({ id, onClick }: createFormProps) => {
     <Grid container spacing={4}>
       <Grid item xs={12}>
         <Typography variant='h5' className=''>
-          สร้างโฟลว์ใหม่ | e-Flow
+          {dictionary?.createNewFlow} | e-Flow
         </Typography>
       </Grid>
 
@@ -85,7 +86,7 @@ const CreateFlowDialog = ({ id, onClick }: createFormProps) => {
         {/* <Typography variant='h6'>เลือกเทมเพลต</Typography> */}
       </Grid>
       <div className='flex items-center justify-center gap-4 flex-wrap w-full mt-4'>
-        <FormCard title='โฟลว์ว่าง' isEmpty onClick={handleCreateNewForm} />
+        <FormCard title={dictionary?.emptyFlow} isEmpty onClick={handleCreateNewForm} />
         {/* <FormCard title='ใบจัดซื้อ' image='/images/test/test01.png' onClick={() => console.log('Open form')} /> */}
       </div>
     </Grid>

@@ -34,8 +34,10 @@ import { useFormStore } from '@/store/useFormStore'
 import { formatThaiDate } from '@/utils/formatDateTime'
 import { useFlowStore } from '@/store/useFlowStore'
 import CreateFlowDialog from '@/components/dialogs/form/CreateFlowDialog'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const WorkflowComponent = () => {
+  const { dictionary } = useDictionary()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const router = useRouter()
   const { lang: locale } = useParams()
@@ -361,9 +363,8 @@ const WorkflowComponent = () => {
       <Grid item xs={12}>
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
-            {/* <Typography variant='h5'>จัดการเวิร์กโฟลว์</Typography> */}
             <Grid item xs={12} className='flex items-center justify-between'>
-              <Typography variant='h4'>จัดการเวิร์กโฟลว์</Typography>
+              <Typography variant='h4'>{dictionary?.manageFlow}</Typography>
               <div className='flex gap-2  backdrop-blur-sm p-2 rounded-xl shadow-sm  items-center'>
                 <IconButton
                   onClick={() => setViewMode('grid')}
@@ -413,9 +414,11 @@ const WorkflowComponent = () => {
                 }}
               >
                 <AddIcon sx={{ color: '#0463EA' }} />
-                {viewMode === 'list' && <span className='text-[#0463EA] font-medium'>สร้างโฟลว์ใหม่</span>}
+                {viewMode === 'list' && (
+                  <span className='text-[#0463EA] font-medium'> {dictionary?.createNewFlow}</span>
+                )}
               </Button>
-              {isPending && <Typography>กำลังโหลด...</Typography>}
+              {isPending && <Typography>{dictionary?.loading}</Typography>}
               {data?.code == 'SUCCESS' &&
                 !isPending &&
                 data?.result?.data.length > 0 &&

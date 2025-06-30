@@ -94,8 +94,8 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
                 component: (
                   <ConfirmAlert
                     id='alertErrorToken'
-                    title={'กลับสู่หน้าหลัก'}
-                    content1={'คุณต้องการดำเนินการต่อหรือไม่'}
+                    title={dictionary?.backToHome}
+                    content1={dictionary?.confirmContinue}
                     onClick={() => {
                       window.location.href = urlBase
                       // router.push(`/${locale}${notification?.data?.link}`)

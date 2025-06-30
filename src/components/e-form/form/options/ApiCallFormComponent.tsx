@@ -8,6 +8,7 @@ import { CreateApiCallFormComponent } from './CreateApiCallFormComponent'
 import { EditApiCallFormComponent } from './EditApiCallFormComponent'
 import ApiCallFormTable from './ApiCallFormTable'
 import { useFetchApiQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const mockDataApiCall = [
   {
@@ -33,6 +34,7 @@ const mockDataApiCall = [
 ]
 
 export const ApiCallFormComponent = () => {
+  const { dictionary } = useDictionary()
   const selectedApi = useApiCallStore(state => state.selectedApi)
   const addApis = useApiCallStore(state => state.addApis)
   const [isCreateApiCall, setIsCreateApiCall] = useState(false)
@@ -84,7 +86,7 @@ export const ApiCallFormComponent = () => {
             </Grid>
             {pendingApi && (
               <Grid item xs={12}>
-                <Typography>กำลังโหลด....</Typography>
+                <Typography>{dictionary?.loading}</Typography>
               </Grid>
             )}
 

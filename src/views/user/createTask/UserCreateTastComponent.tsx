@@ -18,8 +18,10 @@ import UserStartTaskComponent from './start/UserStartTaskComponent'
 import ViewWorkflowComponent from './ViewWorkflowComponent'
 import { useFlowStore } from '@/store/useFlowStore'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const UserCreateTastComponent = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
   const setFullForm = useFormStore(state => state.setFullForm)
@@ -115,7 +117,7 @@ const UserCreateTastComponent = () => {
         <Grid container spacing={4}>
           {pendingFlow && (
             <Grid item xs={12}>
-              <Typography>กำลังโหลด...</Typography>
+              <Typography>{dictionary?.loading}</Typography>
             </Grid>
           )}
           {flowNameData?.result?.data?.length > 0 ? (

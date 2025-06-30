@@ -47,13 +47,13 @@ const FormFlowLayout = () => {
           <Link href={`/${locale}/admin/dashboard`} className='flex gap-2'>
             <InsertDriveFile style={{ width: '20px', height: '20px' }} className=' text-primary' />
             <Typography variant='h6' className='font-normal hover:text-primary '>
-              {dictionary['navigation']?.manageForm}
+              {dictionary?.manageForm}
             </Typography>
           </Link>
           <Link href={`/${locale}/workflow/dashboard`} className='flex gap-2'>
             <AccountTree style={{ width: '20px', height: '20px' }} className=' text-primary' />
             <Typography variant='h6' className='font-normal hover:text-primary '>
-              {dictionary['navigation']?.manageFlow}
+              {dictionary?.manageFlow}
             </Typography>
           </Link>
         </>

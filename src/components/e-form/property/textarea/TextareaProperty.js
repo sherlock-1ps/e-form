@@ -22,8 +22,10 @@ import BaseButton from '@/components/ui/button/BaseButton'
 import BaseTitleProperty from '@components/e-form/property/BaseTitleProperty'
 import BaseFontSize from '@components/e-form/property/BaseFontSize'
 import { useDispatch } from 'react-redux'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const TextareaProperty = ({ item }) => {
+  const { dictionary } = useDictionary()
   const dispatch = useDispatch()
   const [selected, setSelected] = useState('')
 
@@ -55,10 +57,15 @@ const TextareaProperty = ({ item }) => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <BaseDropdown label='ตำแหน่ง' options={options} defaultValue='canvas' onChange={handleDropdownChange} />
+        <BaseDropdown
+          label={dictionary?.location}
+          options={options}
+          defaultValue='canvas'
+          onChange={handleDropdownChange}
+        />
         <div className='w-full flex justify-around'>
-          <FormControlLabel label='เปิดใช้งาน' control={<Checkbox defaultChecked name='basic-checked' />} />
-          <FormControlLabel label='เปิดใช้งาน' control={<Checkbox defaultChecked name='basic-checked' />} />
+          <FormControlLabel label={dictionary?.enable} control={<Checkbox defaultChecked name='basic-checked' />} />
+          <FormControlLabel label={dictionary?.enable} control={<Checkbox defaultChecked name='basic-checked' />} />
         </div>
         <CustomTextField label='Component ID' placeholder='Placeholder' value={item.id} />
       </section>
@@ -72,14 +79,14 @@ const TextareaProperty = ({ item }) => {
           <FormControlLabel value='test' control={<Radio />} label='API' />
         </RadioGroup>
         <CustomTextField
-          label='ข้อความ'
+          label={dictionary?.text}
           placeholder={item.config.details.placeholder}
           value={item.config.details.value || ''}
           onChange={handleChangeInput}
         />
         <div className='flex gap-1'>
           <BaseFontSize placeholder={item.config.style.fontSize} value={item.config.style.fontSize} id={item.id} />
-          <BaseColorPicker label='สี' defaultColor={item.config.style.color} id={item.id} />
+          <BaseColorPicker label={dictionary?.color} defaultColor={item.config.style.color} id={item.id} />
         </div>
         <div>
           <FormatText item={item.config.style} id={item.id} />

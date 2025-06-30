@@ -52,7 +52,8 @@ import { FormatShowDate } from '@/utils/formatShowDate'
 import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useAuthStore } from '@/store/useAuthStore'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
+import { viewFlow } from '@/app/sevices/form/formServices'
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>
@@ -178,6 +179,8 @@ const UserDashboardTable = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [globalFilter, setGlobalFilter] = useState('')
 
+  const { dictionary } = useDictionary()
+
   const viewClick = (row: any) => {
     {
       onManage(row.original.id, row.original?.status, row.original.flow_id)
@@ -198,36 +201,10 @@ const UserDashboardTable = ({
   // Hooks
   const columns = useMemo<ColumnDef<TableRowData, any>[]>(
     () => [
-      // {
-      //   id: 'select',
-      //   header: ({ table }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: table.getIsAllRowsSelected(),
-      //         indeterminate: table.getIsSomeRowsSelected(),
-      //         onChange: table.getToggleAllRowsSelectedHandler()
-      //       }}
-      //     />
-      //   ),
-      //   cell: ({ row }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: row.getIsSelected(),
-      //         disabled: !row.getCanSelect(),
-      //         indeterminate: row.getIsSomeSelected(),
-      //         onChange: row.getToggleSelectedHandler()
-      //       }}
-      //     />
-      //   )
-      // },
-      // columnHelper.accessor('created_at', {
-      //   header: 'วันที่สร้าง',
-      //   cell: ({ row }) => <Typography variant='body2'>{FormatShowDate(row.original.created_at)}</Typography>
-      // }),
-
       columnHelper.display({
         id: 'action',
-        header: 'การดำเนินการ',
+        header: dictionary?.action,
+
         cell: ({ row }) => {
           const options: OptionType[] = [
             // {
@@ -244,7 +221,7 @@ const UserDashboardTable = ({
               <DeviceHub
                 color='warning'
                 fontSize='large'
-                titleAccess='ดูโฟลว์'
+                titleAccess={dictionary?.viewFlow}
                 sx={{ cursor: 'pointer' }}
                 onClick={() => {
                   onViewFlow(row.original.id)
@@ -253,7 +230,7 @@ const UserDashboardTable = ({
               {isView ? (
                 <FindInPage
                   color='info'
-                  titleAccess='ดูรายละเอียด'
+                  titleAccess={dictionary?.viewDetail}
                   fontSize='large'
                   sx={{ cursor: 'pointer' }}
                   onClick={() => {
@@ -263,7 +240,7 @@ const UserDashboardTable = ({
               ) : (
                 <PlayCircleOutline
                   color='primary'
-                  titleAccess='ดำเนินการ'
+                  titleAccess={dictionary?.action}
                   fontSize='large'
                   sx={{ cursor: 'pointer' }}
                   onClick={() => {
@@ -271,41 +248,6 @@ const UserDashboardTable = ({
                   }}
                 />
               )}
-
-              {/* <Button
-                title='ดูโฟลว์'
-                variant='text'
-                color='primary'
-                className=''
-                onClick={() => {
-                  onViewFlow(row.original.id)
-                }}
-              >
-                <Pageview fontSize='large' />
-              </Button>
-              <Button
-                title={isView ? 'ดูรายละเอียด' : 'จัดการ'}
-                variant='text'
-                color='primary'
-                className=''
-                onClick={() => {
-                  showDialog({
-                    id: 'alertDialogConfirmToggleTrigger',
-                    component: (
-                      <ConfirmAlert
-                        id='alertDialogConfirmToggleTrigger'
-                        title='จัดการ Flow'
-                        content1='คุณต้องการจัดการ Flow นี้ใช่หรือไม่'
-                        onClick={() => onManage(row.original.id, row.original?.status, row.original.flow_id)}
-                      />
-                    ),
-                    size: 'sm'
-                  })
-                }}
-              >
-                {isView ? <Article fontSize='large' /> : <PlayCircleOutline fontSize='large' />}
-              </Button>
-              */}
             </div>
           )
         },
@@ -313,7 +255,7 @@ const UserDashboardTable = ({
       }),
 
       columnHelper.accessor('name', {
-        header: 'ชื่อเอกสาร',
+        header: dictionary?.docutmentName,
         cell: ({ row }) => (
           <Typography color='text.primary' variant='body2'>
             {row.original?.name}
@@ -321,7 +263,7 @@ const UserDashboardTable = ({
         )
       }),
       columnHelper.accessor('current_activity_names', {
-        header: 'การเดินหนังสือล่าสุด',
+        header: dictionary?.latestDocumentProcess,
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Typography variant='body2'>
@@ -335,7 +277,7 @@ const UserDashboardTable = ({
         )
       }),
       columnHelper.accessor('status', {
-        header: 'สถานะล่าสุด',
+        header: dictionary?.latestStatus,
         cell: ({ row }) => {
           const status = row.original.status
           const chipConfig = statusMap[status] || { color: 'default', label: status }
@@ -358,7 +300,7 @@ const UserDashboardTable = ({
       }),
 
       columnHelper.accessor('current_assignees_user_names', {
-        header: 'ผู้รับผิดชอบปัจจุบัน',
+        header: dictionary?.currentResponsible,
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             {row.original.status === 'draft' ? (
@@ -392,7 +334,7 @@ const UserDashboardTable = ({
         )
       }),
       columnHelper.accessor('created_by', {
-        header: 'เริ่มโดย',
+        header: dictionary?.startedBy,
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             {/* <CustomAvatar src={row.original.startedBy.avatar} size={34} /> */}
@@ -446,11 +388,11 @@ const UserDashboardTable = ({
         <DebouncedInput
           value={globalFilter ?? ''}
           onChange={value => setGlobalFilter(String(value))}
-          placeholder='ค้นหา'
+          placeholder={dictionary?.search}
           className='w-1/3'
         />
         <Typography variant='h6' className='text-right '>
-          มีทั้งหมด <span className='font-bold text-primary'>{count}</span> รายการ
+          {dictionary?.total} <span className='font-bold text-primary'>{count}</span> {dictionary?.item}
         </Typography>
       </div>
 

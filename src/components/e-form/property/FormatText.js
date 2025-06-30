@@ -6,8 +6,10 @@ import { Typography } from '@mui/material'
 import { FormatBold, FormatItalic, StrikethroughS, FormatUnderlined } from '@mui/icons-material'
 import BaseButton from '@/components/ui/button/BaseButton'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const FormatText = ({ item, id }) => {
+  const { dictionary } = useDictionary()
   const updateStyle = useFormStore(state => state.updateStyle)
   const getSelectedDataItem = useFormStore(state => state.getSelectedDataItem)
   const selectedField = useFormStore(state => state.selectedField)
@@ -27,6 +29,7 @@ const FormatText = ({ item, id }) => {
   }
 
   const handleSelectStyle = style => {
+    const { dictionary } = useDictionary()
     const selected = getSelectedDataItem()
     const currentStyle = selected?.config?.style || {}
 
@@ -52,7 +55,7 @@ const FormatText = ({ item, id }) => {
   return (
     <div className='flex flex-col'>
       <Typography color='text.primary' gutterBottom>
-        รูปแบบ
+        {dictionary?.style}
       </Typography>
       <div className='flex gap-4'>
         <BaseButton

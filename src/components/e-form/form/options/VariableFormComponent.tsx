@@ -7,8 +7,9 @@ import VariableFormTable from './VariableFormTable'
 import { useDialog } from '@/hooks/useDialog'
 import CreateVariableFormDialog from '@/components/dialogs/form/CreateVariableFormDialog'
 import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
 export const VariableFormComponent = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
@@ -50,7 +51,7 @@ export const VariableFormComponent = () => {
             </Grid>
             {pendingVariableData && (
               <Grid item xs={12}>
-                <Typography>กำลังโหลด....</Typography>
+                <Typography>{dictionary?.loading}</Typography>
               </Grid>
             )}
             {variableData?.code == 'SUCCESS' && !pendingVariableData && (

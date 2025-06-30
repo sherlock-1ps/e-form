@@ -12,29 +12,27 @@ import {
 } from '@/data/toolbox/toolboxMenu'
 
 // import ToolboxForm from '@/components/e-form/toolbox/ToolboxForm'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DocumentToolbox = () => {
+  const { dictionary } = useDictionary()
   return (
     <Grid container spacing={2} sx={{ p: 2 }}>
       <Grid item xs={12}>
-        <Typography variant='h5'>ออกแบบเอกสาร</Typography>
+        <Typography variant='h5'>{dictionary?.designDocument}</Typography>
       </Grid>
 
-      {/* <Grid item xs={12}>
-        <ToolboxButtonContainer menu={toolboxLayoutMenu} title={'เครื่องมือเอกสารพื้นฐาน'} />
-      </Grid> */}
-
       <Grid item xs={12}>
-        <ToolboxGrid menu={toolboxGridMenu} title={'เครื่องมือ GRID'} />
+        <ToolboxGrid menu={toolboxGridMenu} title={dictionary?.gridTool} />
       </Grid>
       <Grid item xs={12}>
-        <ToolboxButtonContainer menu={toolboxDocumentBaseMenu} title={'เครื่องมือเอกสารพื้นฐาน'} />
+        <ToolboxButtonContainer menu={toolboxDocumentBaseMenu} title={dictionary?.basicDocumentTools} />
       </Grid>
       <Grid item xs={12}>
-        <ToolboxButtonContainer menu={toolboxCreateformMenu} title={'เครื่องมือสร้างแบบฟอร์ม'} />
+        <ToolboxButtonContainer menu={toolboxCreateformMenu} title={dictionary?.formBuilderTools} />
       </Grid>
       <Grid item xs={12}>
-        <ToolboxButtonContainer menu={toolboxOptionMenu} title={'เครื่องมือสร้างตัวเลือก'} />
+        <ToolboxButtonContainer menu={toolboxOptionMenu} title={dictionary?.optionBuilderTool} />
       </Grid>
       {/* <ToolboxForm /> */}
     </Grid>

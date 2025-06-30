@@ -9,6 +9,7 @@ import { useState } from 'react'
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
 import { useParams, useRouter } from 'next/navigation'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface createFormProps {
   id: string
@@ -54,6 +55,7 @@ const FormCard = ({ title, image, isEmpty, onClick }: FormCardProps) => {
 }
 
 const CreateFormDialog = ({ id, onClick }: createFormProps) => {
+  const { dictionary } = useDictionary()
   const router = useRouter()
   const { closeDialog } = useDialog()
   const { lang: locale } = useParams()
@@ -70,7 +72,7 @@ const CreateFormDialog = ({ id, onClick }: createFormProps) => {
     <Grid container spacing={4}>
       <Grid item xs={12}>
         <Typography variant='h5' className=''>
-          สร้างฟอร์มใหม่ | e-Form
+          {dictionary?.createNewForm} | e-Form
         </Typography>
       </Grid>
 
@@ -82,7 +84,7 @@ const CreateFormDialog = ({ id, onClick }: createFormProps) => {
         {/* <Typography variant='h6'>เลือกเทมเพลต</Typography> */}
       </Grid>
       <div className='flex items-center justify-center gap-4 flex-wrap w-full mt-4'>
-        <FormCard title='ฟอร์มว่าง' isEmpty onClick={handleCreateNewForm} />
+        <FormCard title={dictionary?.emptyForm} isEmpty onClick={handleCreateNewForm} />
         {/* <FormCard title='ใบจัดซื้อ' image='/images/test/test01.png' onClick={() => console.log('Open form')} /> */}
       </div>
     </Grid>

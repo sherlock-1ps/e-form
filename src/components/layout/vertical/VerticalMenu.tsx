@@ -181,13 +181,13 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
               href={`/${locale}/admin/dashboard`}
               icon={<InsertDriveFile style={{ width: '20px', height: '20px' }} />}
             >
-              จัดการแบบฟอร์ม
+              {dictionary?.manageForm}
             </MenuItem>
             <MenuItem
               href={`/${locale}/workflow/dashboard`}
               icon={<AccountTree style={{ width: '20px', height: '20px' }} />}
             >
-              จัดการเวิร์กโฟลว์
+              {dictionary?.manageFlow}
             </MenuItem>
           </SubMenu>
         ) : null}

@@ -12,8 +12,10 @@ import BaseTitleProperty from '@components/e-form/property/BaseTitleProperty'
 import CustomTextField from '@core/components/mui/TextField'
 import BaseButton from '@/components/ui/button/BaseButton'
 import ChoiceBox from '@/components/e-form/property/select/ChoiceBox'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const SelectProperty = () => {
+  const { dictionary } = useDictionary()
   return (
     <div>
       <BaseTitleProperty
@@ -24,7 +26,7 @@ const SelectProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <CustomTextField select fullWidth defaultValue='' label='ตำแหน่ง' id='select-position'>
+        <CustomTextField select fullWidth defaultValue='' label={dictionary?.location} id='select-position'>
           <MenuItem value=''>
             <em>None</em>
           </MenuItem>
@@ -33,10 +35,9 @@ const SelectProperty = () => {
           <MenuItem value={30}>Thirty</MenuItem>
         </CustomTextField>
 
-        {/* <BaseDropdown label='ตำแหน่ง' options={options} defaultValue='canvas' /> */}
         <div className='w-full flex justify-around'>
-          <FormControlLabel label='เปิดใช้งาน' control={<Checkbox defaultChecked name='basic-checked' />} />
-          <FormControlLabel label='เปิดใช้งาน' control={<Checkbox defaultChecked name='basic-checked' />} />
+          <FormControlLabel label={dictionary?.enable} control={<Checkbox defaultChecked name='basic-checked' />} />
+          <FormControlLabel label={dictionary?.enable} control={<Checkbox defaultChecked name='basic-checked' />} />
         </div>
         <CustomTextField label='Component ID' placeholder='Placeholder' />
       </section>
@@ -57,18 +58,18 @@ const SelectProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <FormControlLabel control={<Switch defaultChecked />} label='ป้ายกำกับ' />
-        <CustomTextField label='ข้อความที่แสดง' placeholder='Placeholder' />
-        <FormControlLabel control={<Switch defaultChecked />} label='ข้อความตัวอย่าง' />
-        <CustomTextField label='ข้อความที่แสดง' placeholder='Placeholder' />
-        <FormControlLabel control={<Switch defaultChecked />} label='ข้อความช่วยเหลือ' />
-        <CustomTextField label='ข้อความที่แสดง' placeholder='Placeholder' />
+        <FormControlLabel control={<Switch defaultChecked />} label={dictionary?.label} />
+        <CustomTextField label={dictionary?.displayedText} placeholder='Placeholder' />
+        <FormControlLabel control={<Switch defaultChecked />} label={dictionary?.sampleText} />
+        <CustomTextField label={dictionary?.displayedText} placeholder='Placeholder' />
+        <FormControlLabel control={<Switch defaultChecked />} label={dictionary?.helpText} />
+        <CustomTextField label={dictionary?.displayedText} placeholder='Placeholder' />
       </section>
       <section
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <Typography>การตรวจสอบข้อมูล</Typography>
+        <Typography>{dictionary?.dataValidation} </Typography>
         <FormControlLabel control={<Switch defaultChecked />} label='จำเป็นต้องเลือก' />
       </section>
       <section

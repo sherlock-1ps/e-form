@@ -28,10 +28,11 @@ import SettingSignDialog from '@/components/dialogs/form/SettingSignDialog'
 import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }: any) => {
   const [value, setValue] = useState(initialValue)
-
+  const { dictionary } = useDictionary()
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -69,6 +70,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const SignatureProperty = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -105,7 +107,7 @@ const SignatureProperty = () => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -124,7 +126,7 @@ const SignatureProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -182,7 +184,7 @@ const SignatureProperty = () => {
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
         <Typography className='' variant='h6'>
-          เป็นจุดลงนามแบบ
+          {dictionary?.signatureField}
         </Typography>
         <RadioGroup
           row
@@ -209,8 +211,8 @@ const SignatureProperty = () => {
 
         {result?.config?.details?.signType?.type == 'clone' && (
           <DebouncedInput
-            label='ใช้การตั้งค่าเดียวกันกับ'
-            placeholder={'ระบุ ID ของ E-Signature ต้นฉบับ'}
+            label={dictionary?.useWithMasterId}
+            placeholder={dictionary?.specifyOriginalESignatureId}
             value={result?.config?.details?.signType?.formId || ''}
             onChange={(newText: any) =>
               updateDetails(
@@ -234,7 +236,7 @@ const SignatureProperty = () => {
       >
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.tag?.isShow} />}
-          label='ป้ายกำกับ'
+          label={dictionary?.label}
           onChange={() =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -250,7 +252,7 @@ const SignatureProperty = () => {
           }
         />
         <CustomTextField
-          label='ป้ายกำกับ'
+          label={dictionary?.label}
           placeholder='Placeholder'
           value={result?.config?.details?.tag?.value || ''}
           onChange={e =>
@@ -269,7 +271,7 @@ const SignatureProperty = () => {
         />
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.endTag?.isShow} />}
-          label='ท้ายป้ายกำกับ'
+          label={dictionary?.labelSuffix}
           onChange={() =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -285,7 +287,7 @@ const SignatureProperty = () => {
           }
         />
         <CustomTextField
-          label='ท้ายป้ายกำกับ'
+          label={dictionary?.labelSuffix}
           placeholder='Placeholder'
           value={result?.config?.details?.endTag?.value || ''}
           onChange={e =>
@@ -304,7 +306,7 @@ const SignatureProperty = () => {
         />
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.position?.isShow} />}
-          label='ตำแหน่ง'
+          label={dictionary?.displayPosition}
           onChange={() =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -320,7 +322,7 @@ const SignatureProperty = () => {
           }
         />
         <DebouncedInput
-          label='ตำแหน่ง'
+          label={dictionary?.position}
           placeholder={result?.config?.details?.position?.placeholder}
           value={result?.config?.details?.position?.value || ''}
           onChange={(newText: any) =>
@@ -365,32 +367,15 @@ const SignatureProperty = () => {
               }
             />
           }
-          label='แสดงชื่อ-สกุล ผู้ลงนาม'
+          label={dictionary?.signerFullName}
         />
         <div className='flex gap-1'>
           <BaseFontSize placeholder={result?.config?.style?.fontSize} value={result?.config?.style?.fontSize} />
         </div>
-        <FormControlLabel
-          control={<Switch checked={result?.config?.details?.position?.isShow} />}
-          label='แสดงตำแหน่ง ผู้ลงนาม'
-          onChange={() =>
-            updateDetails(
-              String(selectedField?.parentKey ?? ''),
-              selectedField?.boxId ?? '',
-              selectedField?.fieldId?.id ?? '',
-              {
-                position: {
-                  ...result?.config?.details?.position,
-                  isShow: !result?.config?.details?.position?.isShow
-                }
-              }
-            )
-          }
-        />
 
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.date?.isShow} />}
-          label='แสดงวันที่ลงนาม'
+          label={dictionary?.signatureDate}
           onChange={() =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),

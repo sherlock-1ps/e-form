@@ -25,8 +25,10 @@ import { toolboxOptionMenu } from '@/data/toolbox/toolboxMenu'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import Autocomplete from '@mui/material/Autocomplete'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
+  const { dictionary } = useDictionary()
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -66,6 +68,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const DropdownProperty = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
 
   const form = useFormStore(state => state.form)
@@ -106,7 +109,7 @@ const DropdownProperty = () => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -125,7 +128,7 @@ const DropdownProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -237,8 +240,8 @@ const DropdownProperty = () => {
           />
         ) : (
           <DebouncedInput
-            label='กำหนดค่า'
-            placeholder={'กรอกค่า....'}
+            label={dictionary?.configure}
+            placeholder={dictionary?.enterText}
             value={result?.config?.details?.keyValue?.realValue || ''}
             onChange={
               newText =>
@@ -270,7 +273,7 @@ const DropdownProperty = () => {
       >
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.tag?.isShow} />}
-          label='ป้ายกำกับ'
+          label={dictionary?.label}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -286,7 +289,7 @@ const DropdownProperty = () => {
           }
         />
         <CustomTextField
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           placeholder='Placeholder'
           value={result?.config?.details?.tag?.value}
           onChange={e =>
@@ -305,7 +308,7 @@ const DropdownProperty = () => {
         />
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.placeholder?.isShow} />}
-          label='ข้อความตัวอย่าง'
+          label={dictionary?.sampleText}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -321,7 +324,7 @@ const DropdownProperty = () => {
           }
         />
         <CustomTextField
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           placeholder='Placeholder'
           value={result?.config?.details?.placeholder?.name}
           onChange={e =>
@@ -340,7 +343,7 @@ const DropdownProperty = () => {
         />
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.helperText?.isShow} />}
-          label='ข้อความช่วยเหลือ'
+          label={dictionary?.helpText}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -356,7 +359,7 @@ const DropdownProperty = () => {
           }
         />
         <CustomTextField
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           placeholder='Placeholder'
           value={result?.config?.details?.helperText?.value}
           onChange={e =>
@@ -378,10 +381,10 @@ const DropdownProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <Typography>การตรวจสอบข้อมูล</Typography>
+        <Typography>{dictionary?.dataValidation} </Typography>
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.isRequired} />}
-          label='จำเป็นต้องกรอก'
+          label={dictionary?.required}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -399,7 +402,7 @@ const DropdownProperty = () => {
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
         <div className='flex items-center justify-between'>
-          <Typography variant='h6'>ตัวเลือกที่แสดง</Typography>
+          <Typography variant='h6'>{dictionary?.displayOptions} </Typography>
           {(result?.config?.details?.value?.value?.defaultValue ||
             result?.config?.details?.value?.value?.value?.value?.defaultValue) && (
             <IconButton
@@ -447,12 +450,12 @@ const DropdownProperty = () => {
           ))
         ) : (
           <Typography variant='body2' className='my-2'>
-            ยังไม่มีตัวเลือก
+            {dictionary?.noOptionsAvailable}
           </Typography>
         )}
 
         <BaseButton
-          text={`${result?.config?.details?.value?.value?.defaultValue ? 'เปลี่ยนตัวเลือก' : 'เพิ่มตัวเลือก'}`}
+          text={`${result?.config?.details?.value?.value?.defaultValue ? dictionary?.changeOption : dictionary?.addOption}`}
           icon={Add}
           iconPosition='left'
           color='secondary'

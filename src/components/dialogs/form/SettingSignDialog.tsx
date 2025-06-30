@@ -6,6 +6,7 @@ import { Grid, IconButton, InputAdornment, Typography } from '@mui/material'
 
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface settingSignDialogProps {
   id: string
@@ -14,7 +15,7 @@ interface settingSignDialogProps {
 
 const SettingSignDialog = ({ id, onClick }: settingSignDialogProps) => {
   const { closeDialog } = useDialog()
-
+  const { dictionary } = useDictionary()
   return (
     <Grid container className='flex flex-col' spacing={2}>
       <Grid item xs={12}>
@@ -44,7 +45,7 @@ const SettingSignDialog = ({ id, onClick }: settingSignDialogProps) => {
         <CustomTextField
           fullWidth
           value={''}
-          label='ตำแหน่ง'
+          label={dictionary?.position}
           placeholder='พิมพ์เพื่อเริ่มเลือก...'
           InputProps={{
             startAdornment: (

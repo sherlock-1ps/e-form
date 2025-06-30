@@ -18,8 +18,10 @@ import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import SelectMediaImgDialog from '@/components/dialogs/form/SelectMediaImgDialog'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLength, ...props }) => {
+  const { dictionary } = useDictionary()
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -54,6 +56,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLeng
 }
 
 const ImageProperty = ({ item }) => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -89,10 +92,9 @@ const ImageProperty = ({ item }) => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        {/* <BaseDropdown label='ตำแหน่ง' options={options} defaultValue='canvas' /> */}
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -111,7 +113,7 @@ const ImageProperty = ({ item }) => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -167,11 +169,11 @@ const ImageProperty = ({ item }) => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <Typography color='text.primary'>ขนาดการแสดงผล</Typography>
+        <Typography color='text.primary'>{dictionary?.displaySize} </Typography>
         <div className='flex gap-2'>
           <CustomTextField
             type='number'
-            label='กว้าง'
+            label={dictionary?.width}
             placeholder='100%'
             value={result?.config?.style?.width ?? ''}
             inputProps={{ max: formSizeConfig.width }}
@@ -192,7 +194,7 @@ const ImageProperty = ({ item }) => {
           />
           <CustomTextField
             type='number'
-            label='สูง'
+            label={dictionary?.height}
             placeholder='AUTO'
             value={result?.config?.style?.height ?? ''}
             InputProps={{
@@ -213,9 +215,11 @@ const ImageProperty = ({ item }) => {
         </div>
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>
-        <Typography variant='h6'>รูปภาพปัจจุบัน</Typography>
+        <Typography variant='h6'>{dictionary?.currentImage} </Typography>
         <div className='flex items-center justify-between'>
-          <Typography variant='body2'>{result?.config?.details?.value?.name ?? 'ยังไม่มีรูปภาพ'}</Typography>
+          <Typography variant='body2'>
+            {result?.config?.details?.value?.name ?? dictionary?.noImageAvailable}
+          </Typography>
           {result?.config?.details?.value?.value && (
             <Button
               variant='outlined'
@@ -263,10 +267,10 @@ const ImageProperty = ({ item }) => {
             })
           }}
         >
-          เลือกรูปภาพ
+          {dictionary?.selectImage}
         </Button>
         <div className='w-full flex items-center justify-between'>
-          <Typography color='text.primary'>การขยายภาพ</Typography>
+          <Typography color='text.primary'>{dictionary?.imageZoom} </Typography>
           <div className='flex items-center justify-center gap-2'>
             <BaseButton
               color={result?.config?.style?.objectFit == 'contain' ? 'primary' : 'secondary'}

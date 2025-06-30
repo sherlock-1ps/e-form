@@ -6,8 +6,10 @@ import SettingSignDialog from '@/components/dialogs/form/SettingSignDialog'
 import { DeleteOutlined } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   let currentItem = item
@@ -147,7 +149,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
                 fontSize: currentItem?.config?.style?.fontSize ?? 16
               }}
             >
-              ตำแหน่ง
+              {dictionary?.position}
             </Typography>
             {currentItem?.config?.details?.position?.value ? (
               <Typography

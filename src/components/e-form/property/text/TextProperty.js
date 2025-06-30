@@ -30,8 +30,9 @@ import TriggerEventDialog from '@/components/dialogs/form/TriggerEventDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { toast } from 'react-toastify'
 import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
+  const { dictionary } = useDictionary()
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -71,6 +72,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const TextProperty = ({ item }) => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -104,7 +106,7 @@ const TextProperty = ({ item }) => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -118,7 +120,7 @@ const TextProperty = ({ item }) => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -220,7 +222,7 @@ const TextProperty = ({ item }) => {
           />
         ) : (
           <DebouncedInput
-            label='ข้อความ'
+            label={dictionary?.text}
             placeholder={result?.config?.details?.placeholder}
             value={result?.config?.details?.value?.value || ''}
             onChange={newText =>
@@ -248,7 +250,7 @@ const TextProperty = ({ item }) => {
             value={result?.config?.style?.fontSize}
             id={item?.id}
           />
-          <BaseColorPicker label='สี' defaultColor={result?.config?.style?.color} id={item?.id} />
+          <BaseColorPicker label={dictionary?.color} defaultColor={result?.config?.style?.color} id={item?.id} />
         </div>
         <div>
           <FormatText item={result?.config?.style} id={item?.id} />

@@ -126,26 +126,6 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
   )
 }
 
-// const columnDefs: ColDef[] = [
-//   { headerName: 'เลือก', checkboxSelection: true },
-//   { headerName: 'ชื่อ', field: 'name', filter: true },
-//   { headerName: 'ตำแหน่ง', field: 'position', filter: true }
-// ]
-
-/*
-  const { data: personLists } = useGetPersonExternalQueryOption(page, pageSize, '', '', {
-    enabled: filterType === 'person'
-  })
-
-  const { data: positionLists } = useGetPositionExternalQueryOption(page, pageSize, '', '', {
-    enabled: filterType === 'position'
-  })
-
-  const { data: departmentLists } = useGetDepartmentExternalQueryOption(page, pageSize, '', '', {
-    enabled: filterType === 'department'
-  })
-*/
-
 const AddSettingPermissionFlowDialog = ({ onClose }) => {
   const { closeDialog } = useDialog()
   const myDiagram = useFlowStore(state => state.myDiagram)
@@ -316,7 +296,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
               รายการ
             </Typography>
             <DebouncedInput
-              label='ค้นหา'
+              label={dictionary?.search}
               placeholder={'....'}
               value={searchText}
               onChange={newText => {
@@ -370,7 +350,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
               รายการที่เลือก
             </Typography>
             <DebouncedInput
-              label='ค้นหา'
+              label={dictionary?.search}
               placeholder={'....'}
               value={searchTextSelected}
               onChange={newText => setSearchTextSelected(newText)}

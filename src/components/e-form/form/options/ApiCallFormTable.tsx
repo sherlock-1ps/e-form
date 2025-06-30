@@ -236,7 +236,7 @@ const ApiCallFormTable = ({ data, onEditApi, page, pageSize, setPage, setPageSiz
       <DebouncedInput
         value={globalFilter ?? ''}
         onChange={value => setGlobalFilter(String(value))}
-        placeholder='ค้นหา'
+        placeholder={dictionary?.search}
         className='p-4'
       />
 

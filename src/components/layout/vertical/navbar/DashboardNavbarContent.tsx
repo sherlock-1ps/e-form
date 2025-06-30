@@ -19,16 +19,16 @@ import {
   Typography
 } from '@mui/material'
 import { useParams, useRouter } from 'next/navigation'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
 const DashboardNavbarContent = () => {
   const router = useRouter()
   const { lang: locale } = useParams()
-
+  const { dictionary } = useDictionary()
   return (
     <Card>
       <CardContent className='flex gap-2 items-center justify-end'>
         <Button variant='contained' className='capitalize' startIcon={<InsertDriveFileOutlined />}>
-          จัดการแบบฟอร์ม
+          {dictionary?.manageForm}
         </Button>
         <Button
           color='secondary'
@@ -39,7 +39,7 @@ const DashboardNavbarContent = () => {
             router.push(`/${locale}/workflow`)
           }}
         >
-          จัดการเวิร์กโฟลว์
+          {dictionary?.manageFlow}
         </Button>
       </CardContent>
     </Card>

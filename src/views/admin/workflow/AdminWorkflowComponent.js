@@ -16,6 +16,7 @@ import { toast } from 'react-toastify'
 import CustomAvatar from '@/@core/components/mui/Avatar'
 import { getInitials } from '@/utils/getInitials'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 import {
   useCreateFlowQueryOption,
@@ -30,6 +31,7 @@ import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
 import { useDialog } from '@/hooks/useDialog'
 
 export default function AdminWorkflowComponent() {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const flow = useFlowStore(state => state.flow)
   const selectedField = useFlowStore(state => state.selectedField)
@@ -1103,9 +1105,9 @@ export default function AdminWorkflowComponent() {
 
           <div className='w-full flex-1 overflow-y-auto py-6 flex flex-col gap-4 bg-white px-4'>
             <Typography variant='h5' className='text-center'>
-              จัดการเวิร์คโฟลว์
+              {dictionary?.manageFlow}
             </Typography>
-            <p className='text-gray-700 px-4'>เครื่องมือ</p>
+            <p className='text-gray-700 px-4'>{dictionary?.tools}</p>
 
             <div ref={overviewRef} className='border border-black h-[100px]' />
 

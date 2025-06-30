@@ -20,8 +20,10 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { toast } from 'react-toastify'
 import dayjs from 'dayjs'
 import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 750, maxLength, ...props }) => {
+  const { dictionary } = useDictionary()
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -61,6 +63,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const DateProperty = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -99,7 +102,7 @@ const DateProperty = () => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -118,7 +121,7 @@ const DateProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -225,7 +228,7 @@ const DateProperty = () => {
           />
         ) : (
           <CustomTextField
-            label='ข้อความ'
+            label={dictionary?.text}
             placeholder={result?.config?.details?.placeholder?.value}
             value={
               result?.config?.details?.value?.value ? dayjs(result.config.details.value.value).format('DD/MM/YYYY') : ''
@@ -235,7 +238,7 @@ const DateProperty = () => {
         )}
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.tag?.isShow} />}
-          label='ป้ายกำกับ'
+          label={dictionary?.label}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -251,7 +254,7 @@ const DateProperty = () => {
           }
         />
         <CustomTextField
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           placeholder='Placeholder'
           value={result?.config?.details?.tag?.value}
           onChange={e =>
@@ -270,7 +273,7 @@ const DateProperty = () => {
         />
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.placeholder?.isShow} />}
-          label='ข้อความตัวอย่าง'
+          label={dictionary?.sampleText}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -286,7 +289,7 @@ const DateProperty = () => {
           }
         />
         <CustomTextField
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           placeholder='Placeholder'
           value={result?.config?.details?.placeholder?.value}
           onChange={e =>
@@ -305,7 +308,7 @@ const DateProperty = () => {
         />
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.helperText?.isShow} />}
-          label='ข้อความช่วยเหลือ'
+          label={dictionary?.helpText}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -321,7 +324,7 @@ const DateProperty = () => {
           }
         />
         <CustomTextField
-          label='ข้อความที่แสดง'
+          label={dictionary?.displayedText}
           placeholder='Placeholder'
           value={result?.config?.details?.helperText?.value}
           onChange={e =>
@@ -343,10 +346,10 @@ const DateProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <Typography variant='h6'>การตรวจสอบข้อมูล</Typography>
+        <Typography variant='h6'>{dictionary?.dataValidation} </Typography>
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.isRequired} />}
-          label='จำเป็นต้องกรอก'
+          label={dictionary?.required}
           onChange={e =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),

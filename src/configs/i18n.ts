@@ -3,9 +3,7 @@ export const i18n = {
   locales: ['th', 'en', 'fr', 'ar'],
   langDirection: {
     th: 'ltr',
-    en: 'ltr',
-    fr: 'ltr',
-    ar: 'rtl'
+    en: 'ltr'
   }
 } as const
 

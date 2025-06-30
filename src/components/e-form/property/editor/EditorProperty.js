@@ -22,8 +22,10 @@ import BaseButton from '@/components/ui/button/BaseButton'
 import BaseTitleProperty from '@components/e-form/property/BaseTitleProperty'
 import BaseFontSize from '@components/e-form/property/BaseFontSize'
 import { useFormStore } from '@/store/useFormStore.ts'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...props }) => {
+  const { dictionary } = useDictionary()
   // States
   const [value, setValue] = useState(initialValue)
 
@@ -44,6 +46,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 550, ...prop
 }
 
 const EditorProperty = ({ item }) => {
+  const { dictionary } = useDictionary()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -62,7 +65,7 @@ const EditorProperty = ({ item }) => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -76,7 +79,7 @@ const EditorProperty = ({ item }) => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}

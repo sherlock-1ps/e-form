@@ -23,8 +23,10 @@ import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { toast } from 'react-toastify'
 import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 750, maxLength, ...props }) => {
+  const { dictionary } = useDictionary()
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -64,6 +66,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const ButtonProperty = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -103,7 +106,7 @@ const ButtonProperty = () => {
       >
         <div className='w-full flex justify-around'>
           <FormControlLabel
-            label='เปิดใช้งาน'
+            label={dictionary?.enable}
             control={
               <Checkbox
                 checked={result?.config?.details?.isUse}
@@ -122,7 +125,7 @@ const ButtonProperty = () => {
           />
 
           <FormControlLabel
-            label='แสดงผล'
+            label={dictionary?.display}
             control={
               <Checkbox
                 checked={result?.config?.details?.isShow}
@@ -179,11 +182,11 @@ const ButtonProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <Typography>ขนาดการแสดงผล</Typography>
+        <Typography>{dictionary?.displaySize} </Typography>
         <div className='flex gap-2'>
           <CustomTextField
             type='number'
-            label='กว้าง'
+            label={dictionary?.width}
             placeholder='DEFAULT'
             value={result?.config?.style?.width ?? ''}
             inputProps={{ max: formSizeConfig.width }}
@@ -204,7 +207,7 @@ const ButtonProperty = () => {
           />
           <CustomTextField
             type='number'
-            label='สูง'
+            label={dictionary?.height}
             placeholder='AUTO'
             value={result?.config?.style?.height ?? ''}
             InputProps={{
@@ -228,7 +231,7 @@ const ButtonProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-        <CustomTextField select fullWidth defaultValue={10} label='ประเภทปุ่ม' id='select-position'>
+        <CustomTextField select fullWidth defaultValue={10} label={dictionary?.buttonType} id='select-position'>
           <MenuItem value={''}>
             <em>None</em>
           </MenuItem>
@@ -236,7 +239,7 @@ const ButtonProperty = () => {
           <MenuItem value={20}>ตัวเลข</MenuItem>
         </CustomTextField>
         <div className='p-2 bg-primaryLighter rounded-md'>
-          <Typography variant='body2'>ข้อความในปุ่ม</Typography>
+          <Typography variant='body2'>{dictionary?.buttonText} </Typography>
           <RadioGroup
             row
             value={result?.config?.details?.value?.valueType || 'string'}
@@ -286,7 +289,7 @@ const ButtonProperty = () => {
             />
           ) : (
             <DebouncedInput
-              label='ข้อความ'
+              label={dictionary?.text}
               placeholder={result?.config?.details?.placeholder}
               value={result?.config?.details?.value?.value || ''}
               onChange={newText =>
