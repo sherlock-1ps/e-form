@@ -1,13 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import CustomTextField from '@/@core/components/mui/TextField'
-import { useDialog } from '@/hooks/useDialog'
-import { Info } from '@mui/icons-material'
-import { nanoid } from 'nanoid'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { useState } from 'react'
 
-import AddIcon from '@mui/icons-material/Add'
+import { useDialog } from '@/hooks/useDialog'
+
 import { useDictionary } from '@/contexts/DictionaryContext'
 
 import {

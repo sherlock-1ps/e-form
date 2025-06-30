@@ -96,10 +96,11 @@ const MockupReportComponent = ({ onBack }: any) => {
     }
   }
 
+  // **แก้ไขที่นี่**
   useEffect(() => {
     setWatchFormTrue()
     return () => setWatchFormFalse()
-  }, [])
+  }, [setWatchFormTrue, setWatchFormFalse]) // <-- เพิ่ม dependencies เข้าไป
 
   const enrichedData = reportData?.result?.data?.map((person: any) => ({
     ...person,
@@ -113,7 +114,7 @@ const MockupReportComponent = ({ onBack }: any) => {
   return (
     <div className=' w-full min-h-screen relative'>
       <div className=' absolute left-0 top-0 z-30'>
-        <div className='bg-primaryLight  rounded-lg '>
+        <div className='bg-primaryLight  rounded-lg '>
           <Button
             color='primary'
             variant='contained'

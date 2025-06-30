@@ -1,12 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
-import {
-  changeRoleAccount,
-  createOperator,
-  fetchAccount,
-  searchAccount,
-  updateStatusAccount
-} from '@/app/sevices/account/account'
 import {
   changeNameFolder,
   changeNameImage,

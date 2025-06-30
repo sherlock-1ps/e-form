@@ -9,7 +9,7 @@ import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import CustomTextField from '@/@core/components/mui/TextField'
 import TabPanel from '@mui/lab/TabPanel'
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 import { useApiCallStore } from '@/store/useApiCallStore'
 import { toast } from 'react-toastify'
 import { useUpdateApiMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
@@ -98,7 +98,7 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
 
       setResponse(JSON.stringify(res.data, null, 2))
     } catch (error: any) {
-      if (axios.isAxiosError(error)) {
+      if (isAxiosError(error)) {
         if (error.response) {
           const status = error.response.status
           const statusText = error.response.statusText

@@ -26,20 +26,27 @@ import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOption
 import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
-  const { dictionary } = useDictionary()
+  const { dictionary } = useDictionary() // dictionary ถูกใช้ใน JSX ไม่ได้ใช้ใน effect นี้
   const [value, setValue] = useState(initialValue)
 
+  // Effect สำหรับอัปเดต internal state 'value' เมื่อ 'initialValue' เปลี่ยน
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
 
+  // Effect สำหรับ debounce
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onChange(value)
+      // เพิ่มการตรวจสอบ type ของ onChange เพื่อความปลอดภัย
+      if (typeof onChange === 'function') {
+        onChange(value)
+      } else {
+        console.warn('onChange prop is not a function in DebouncedInput')
+      }
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [value, onChange, debounce]) // <-- **แก้ไขตรงนี้: เพิ่ม onChange และ debounce**
 
   return (
     <CustomTextField
@@ -49,7 +56,6 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
         const input = e.target.value
         if (!isEng) {
           setValue(input)
-
           return
         }
         const isValid = /^[a-zA-Z0-9]*$/.test(input)
@@ -86,7 +92,8 @@ const TextfieldProperty = () => {
   }, [form])
 
   useEffect(() => {
-    if (isDuplicateId) {
+    if (selectedField) {
+      // เพิ่มเงื่อนไขตรวจสอบ selectedField เพื่อความปลอดภัย
       setIsDuplicatedId(false)
     }
   }, [selectedField])

@@ -33,17 +33,23 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }: any) => {
   const [value, setValue] = useState(initialValue)
   const { dictionary } = useDictionary()
+
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onChange(value)
+      // ตรวจสอบว่าเป็นฟังก์ชันก่อนเรียกใช้เสมอ
+      if (typeof onChange === 'function') {
+        onChange(value)
+      } else {
+        console.warn('onChange prop is not a function in DebouncedInput')
+      }
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [value, onChange, debounce]) // <-- **แก้ไขตรงนี้: เพิ่ม onChange และ debounce**
 
   return (
     <CustomTextField
@@ -53,7 +59,6 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
         const input = e.target.value
         if (!isEng) {
           setValue(input)
-
           return
         }
         const isValid = /^[a-zA-Z0-9]*$/.test(input)
@@ -89,10 +94,11 @@ const SignatureProperty = () => {
   }, [form])
 
   useEffect(() => {
-    if (isDuplicateId) {
+    if (selectedField) {
+      // เพิ่มเงื่อนไขตรวจสอบ selectedField เพื่อความปลอดภัย
       setIsDuplicatedId(false)
     }
-  }, [selectedField])
+  }, [selectedField]) // isDuplicateId ไม่จำเป็นต้องเป็น dependency ที่นี่ เพราะเราต้องการให้รันเมื่อ selectedField เปลี่ยนเท่านั้น
 
   return (
     <div>
@@ -326,14 +332,6 @@ const SignatureProperty = () => {
           placeholder={result?.config?.details?.position?.placeholder}
           value={result?.config?.details?.position?.value || ''}
           onChange={(newText: any) =>
-            // updateDetails(
-            //   String(selectedField?.parentKey ?? ''),
-            //   selectedField?.boxId ?? '',
-            //   selectedField?.fieldId?.id ?? '',
-            //   {
-            //     value: newText
-            //   }
-            // )
             updateDetails(
               String(selectedField?.parentKey ?? ''),
               selectedField?.boxId ?? '',
@@ -398,42 +396,42 @@ const SignatureProperty = () => {
           style={{ borderBottom: '1.5px solid #11151A1F' }}
         >
           {/* <RadioGroup
-          name='select-option'
-          value={result?.config?.details?.setting?.defaultAssign}
-          onChange={e =>
-            updateDetails(
-              String(selectedField?.parentKey ?? ''),
-              selectedField?.boxId ?? '',
-              selectedField?.fieldId?.id ?? '',
-              {
-                setting: {
-                  ...result?.config?.details?.setting,
-                  defaultAssign: e.target.value
+            name='select-option'
+            value={result?.config?.details?.setting?.defaultAssign}
+            onChange={e =>
+              updateDetails(
+                String(selectedField?.parentKey ?? ''),
+                selectedField?.boxId ?? '',
+                selectedField?.fieldId?.id ?? '',
+                {
+                  setting: {
+                    ...result?.config?.details?.setting,
+                    defaultAssign: e.target.value
+                  }
                 }
-              }
-            )
-          }
-        >
-          <div className='flex items-center justify-between gap-2'>
-            <FormControlLabel value='owner' control={<Radio />} label='กำหนดเอง' />
-            <Button
-              variant='contained'
-              color={result?.config?.details?.setting?.defaultAssign === 'owner' ? 'primary' : 'secondary'}
-              disabled={result?.config?.details?.setting?.defaultAssign !== 'owner'}
-              onClick={() => {
-                showDialog({
-                  id: 'alertSettingSignDialog',
-                  component: <SettingSignDialog id='alertSettingSignDialog' onClick={() => {}} />,
-                  size: 'sm'
-                })
-              }}
-            >
-              เลือก
-            </Button>
-          </div>
+              )
+            }
+          >
+            <div className='flex items-center justify-between gap-2'>
+              <FormControlLabel value='owner' control={<Radio />} label='กำหนดเอง' />
+              <Button
+                variant='contained'
+                color={result?.config?.details?.setting?.defaultAssign === 'owner' ? 'primary' : 'secondary'}
+                disabled={result?.config?.details?.setting?.defaultAssign === 'owner'}
+                onClick={() => {
+                  showDialog({
+                    id: 'alertSettingSignDialog',
+                    component: <SettingSignDialog id='alertSettingSignDialog' onClick={() => {}} />,
+                    size: 'sm'
+                  })
+                }}
+              >
+                เลือก
+              </Button>
+            </div>
 
-          <FormControlLabel value='clone' control={<Radio />} label='ให้ผู้ใช้กำหนด' />
-        </RadioGroup> */}
+            <FormControlLabel value='clone' control={<Radio />} label='ให้ผู้ใช้กำหนด' />
+          </RadioGroup> */}
 
           <FormControlLabel
             label={'ให้ผู้ใช้กำหนด'}

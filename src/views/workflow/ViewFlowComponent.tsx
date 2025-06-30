@@ -1,16 +1,17 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react' // เพิ่ม useCallback
 import { useSearchParams } from 'next/navigation'
 import { Grid, Typography, CardContent, Card, Button } from '@mui/material'
-import Script from 'next/script'
+import Script from 'next/script' // ไม่ได้ใช้ Script component นี้ในโค้ด
 import { useViewFlowOption } from '@/queryOptions/form/formQueryOptions'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { toast } from 'react-toastify'
+
 declare global {
   interface Window {
     go: any
     myDiagram: any
-    flowAnimation?: ReturnType<typeof setInterval> // ✅ เพิ่มตรงนี้
+    flowAnimation?: ReturnType<typeof setInterval>
   }
 }
 
@@ -19,91 +20,95 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
   const diagramRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
 
-  // const [formDataId, setFormDataId] = useState<string | null>(null)
   const { mutateAsync: callViewFlow } = useViewFlowOption()
-  const fetchData = async () => {
-    // const form_data_id = parseInt(searchParams.get('form_data_id') || '0')
+
+  // ใช้ useCallback ห่อ fetchData
+  const fetchData = useCallback(async () => {
+    // ตรวจสอบ myDiagram ก่อนใช้งาน เพื่อให้แน่ใจว่าถูกสร้างแล้ว
+    if (!window.myDiagram) {
+      console.warn('myDiagram is not yet initialized when fetchData is called.')
+      return
+    }
+
     const form_data_id = parseInt(formDataId || '0')
 
-    const response = await callViewFlow({ form_data_id })
-    window.myDiagram.model = window.go.Model.fromJson(response.result.data.flow)
+    try {
+      const response = await callViewFlow({ form_data_id })
+      window.myDiagram.model = window.go.Model.fromJson(response.result.data.flow)
 
-    function changeNodeColorByKey(key: any, newColor: string) {
-      const node = window.myDiagram.findNodeForKey(key)
-
-      if (node) {
-        window.myDiagram.model.startTransaction('change node color')
-        window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
-        window.myDiagram.model.commitTransaction('change node color')
-      }
-    }
-
-    const green = '#53D28C'
-    const blue = '#2c9afc'
-    let nodeColor = '#fff'
-    const formDataDetails = response?.result?.data?.form_data_detail ?? []
-    console.log('formDataDetails', formDataDetails)
-    let lastId = 0
-    window.myDiagram.links.each(function (link: any) {
-      // console.log('link', link.data)
-
-      if (link?.fromNode?.data?.key === -1) {
-        lastId = link.data.to
-        // start
-        window.myDiagram.model.setDataProperty(link.data, 'color', green)
+      function changeNodeColorByKey(key: any, newColor: string) {
+        const node = window.myDiagram.findNodeForKey(key)
+        if (node) {
+          window.myDiagram.model.startTransaction('change node color')
+          window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
+          window.myDiagram.model.commitTransaction('change node color')
+        }
       }
 
-      for (const element of formDataDetails) {
-        // nodeColor = green
-        // console.log(element)
-        lastId = element.link_to
-
-        // console.log('link?.fromNode?.data?.key', link?.fromNode?.data?.key)
-        console.log('link?.toNode?.data?.key', link?.toNode?.data?.key)
-
-        if (link?.toNode?.data?.key === element?.link_to) {
-          changeNodeColorByKey(link.fromNode.data.key, green)
-          window.myDiagram.model.setDataProperty(link?.data, 'color', green)
+      const green = '#53D28C'
+      const blue = '#2c9afc'
+      let nodeColor = '#fff'
+      const formDataDetails = response?.result?.data?.form_data_detail ?? []
+      console.log('formDataDetails', formDataDetails)
+      let lastId = 0
+      window.myDiagram.links.each(function (link: any) {
+        if (link?.fromNode?.data?.key === -1) {
+          lastId = link.data.to
+          window.myDiagram.model.setDataProperty(link.data, 'color', green)
         }
 
-        // if (link?.fromNode?.data?.key === element?.link_from && link?.toNode?.data?.key === element?.link_to) {
-        //   changeNodeColorByKey(link.fromNode.data.key, green)
-        //   window.myDiagram.model.setDataProperty(link?.data, 'color', green)
-        // }
-      }
-    })
+        for (const element of formDataDetails) {
+          lastId = element.link_to
+          console.log('link?.toNode?.data?.key', link?.toNode?.data?.key)
 
-    function getNode(key: any) {
-      return window.myDiagram.findNodeForKey(key)
+          if (link?.toNode?.data?.key === element?.link_to) {
+            changeNodeColorByKey(link.fromNode.data.key, green)
+            window.myDiagram.model.setDataProperty(link?.data, 'color', green)
+          }
+        }
+      })
+
+      function getNode(key: any) {
+        return window.myDiagram.findNodeForKey(key)
+      }
+
+      let newColor = blue
+      let countRunning = 0
+      clearInterval(window.flowAnimation)
+      const node = getNode(lastId)
+
+      nodeColor = node?.data?.fill || '#fff'
+      window.flowAnimation = setInterval(() => {
+        changeNodeColorByKey(lastId, newColor)
+        if (newColor == blue) {
+          newColor = nodeColor
+        } else {
+          newColor = blue
+        }
+        countRunning++
+        if (countRunning == 51) {
+          clearInterval(window.flowAnimation)
+        }
+      }, 1000)
+
+      console.log('flow', response.result)
+    } catch (error) {
+      console.error('Error fetching flow data:', error)
+      toast.error('เกิดข้อผิดพลาดในการดึงข้อมูล', { autoClose: 3000 })
     }
+  }, [formDataId, callViewFlow]) // Dependencies สำหรับ useCallback: formDataId และ callViewFlow
 
-    let newColor = blue
-    let countRunning = 0
-    clearInterval(window.flowAnimation)
-    // setTimeout(() => {
-    const node = getNode(lastId)
-
-    nodeColor = node?.data?.fill || '#fff'
-    window.flowAnimation = setInterval(() => {
-      changeNodeColorByKey(lastId, newColor)
-      if (newColor == blue) {
-        newColor = nodeColor
-      } else {
-        newColor = blue
-      }
-      countRunning++
-      if (countRunning == 51) {
-        clearInterval(window.flowAnimation)
-      }
-    }, 1000)
-    // }, 500)
-
-    console.log('flow', response.result)
-  }
-
+  // useEffect สำหรับการสร้าง Diagram และเรียก fetchData
   useEffect(() => {
     if (!goLoaded || !window.go || !diagramRef.current) return
-    if (window.go.Diagram.fromDiv(diagramRef.current)) return
+    // ตรวจสอบว่า myDiagram ถูกสร้างแล้วหรือยัง เพื่อป้องกันการสร้างซ้ำ
+    if (window.go.Diagram.fromDiv(diagramRef.current)) {
+      // หาก myDiagram มีอยู่แล้ว ให้เรียก fetchData ใหม่เท่านั้น
+      // เพื่ออัปเดตข้อมูลบน Diagram ที่มีอยู่แล้ว
+      fetchData()
+      return
+    }
+
     const go = window.go
     const $ = go.GraphObject.make
     const myDiagram = $(go.Diagram, diagramRef.current, {
@@ -237,8 +242,28 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
         segmentOffset: new go.Point(NaN, 10)
       }).bindTwoWay('text')
     ).bindTwoWay('points')
-    fetchData()
-  }, [goLoaded, formDataId])
+
+    fetchData() // เรียก fetchData หลังจาก myDiagram ถูกสร้างขึ้นแล้ว
+  }, [goLoaded, formDataId, fetchData]) // เพิ่ม fetchData เป็น dependency
+
+  // useEffect สำหรับโหลด GoJS script
+  useEffect(() => {
+    if (!window.go) {
+      // ใช้ next/script แทนการสร้าง script เองถ้าทำได้ (แต่โค้ดปัจจุบันใช้สร้างเอง)
+      // หากคุณไม่ได้ใช้ <Script> component จาก next/script ใน JSX
+      // การโหลดด้วย DOM API ตรงๆ แบบนี้ก็ใช้งานได้
+      loadScript('/lib/go.js')
+        .then(() => {
+          setGoLoaded(true)
+        })
+        .catch(() => {
+          console.error('❌ Failed to load go.js')
+          toast.error('ไม่สามารถโหลด script ได้', { autoClose: 3000 })
+        })
+    } else {
+      setGoLoaded(true)
+    }
+  }, []) // ไม่มี formDataId เป็น dependency เพราะการโหลด script ไม่ได้ขึ้นอยู่กับมัน
 
   const loadScript = (src: any) => {
     return new Promise<void>((resolve, reject) => {
@@ -251,20 +276,22 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
     })
   }
 
+  // Cleanup effect เมื่อ component unmount เพื่อล้าง clearInterval
   useEffect(() => {
-    if (!window.go) {
-      loadScript('/lib/go.js')
-        .then(() => {
-          setGoLoaded(true)
-        })
-        .catch(() => {
-          console.error('❌ Failed to load go.js')
-          toast.error('ไม่สามารถโหลด script ได้', { autoClose: 3000 })
-        })
-    } else {
-      setGoLoaded(true)
+    return () => {
+      if (window.flowAnimation) {
+        clearInterval(window.flowAnimation)
+        window.flowAnimation = undefined // Clear reference
+      }
+      // Optional: ถ้า myDiagram ยังคงมีอยู่และคุณต้องการล้างมัน
+      // if (window.myDiagram && window.myDiagram.div === diagramRef.current) {
+      //   window.myDiagram.div = null; // Detach from DOM
+      //   window.myDiagram.clear(); // Clear model
+      //   window.myDiagram.dispose(); // Dispose diagram
+      //   window.myDiagram = null;
+      // }
     }
-  }, [formDataId])
+  }, []) // รันครั้งเดียวเมื่อ mount และ cleanup เมื่อ unmount
 
   return (
     <Grid container spacing={6}>
@@ -283,7 +310,6 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
                   ย้อนกลับ
                 </Button>
               )}
-
               <Typography variant='h5'>เวิร์กโฟลว์ปัจจุบัน</Typography>
             </div>
             <div ref={diagramRef} style={{ flexGrow: 1, border: '1px solid black' }} />

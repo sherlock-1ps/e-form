@@ -29,21 +29,15 @@ import {
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
-// Component Imports
-import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
-import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+
 import { useDialog } from '@/hooks/useDialog'
-import { Chip, Switch, Tooltip } from '@mui/material'
-import { useResetPasswordOperatorMutationOption } from '@/queryOptions/operator/operatorQueryOptions'
-import { toast } from 'react-toastify'
+
 import { useDictionary } from '@/contexts/DictionaryContext'
-import CustomAvatar from '@/@core/components/mui/Avatar'
-import { useHasPermission } from '@/hooks/useHasPermission'
-import { OptionType } from '@/@core/components/option-menu/types'
+
 import { FormatShowDate } from '@/utils/formatShowDate'
 
 declare module '@tanstack/table-core' {

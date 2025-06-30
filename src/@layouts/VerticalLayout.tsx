@@ -36,11 +36,11 @@ import StyledContentWrapper from './styles/vertical/StyledContentWrapper'
 import { IconButton, Typography } from '@mui/material'
 import NotificationsDropdown from '@/components/layout/shared/NotificationsDropdown'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+
 import FormFlowLayout from './FormFlowLayout'
 import ProfileLayout from './ProfileLayout'
 import { useDialog } from '@/hooks/useDialog'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useParams } from 'next/navigation'
 import { useAuthStore } from '@/store/useAuthStore'
 import { any } from 'valibot'
 type VerticalLayoutProps = ChildrenType & {

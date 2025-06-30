@@ -1,6 +1,6 @@
 export const i18n = {
   defaultLocale: 'th',
-  locales: ['th', 'en', 'fr', 'ar'],
+  locales: ['th', 'en'],
   langDirection: {
     th: 'ltr',
     en: 'ltr'

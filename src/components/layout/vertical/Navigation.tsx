@@ -26,21 +26,12 @@ import Logo from '@components/layout/shared/Logo'
 import useVerticalNav from '@menu/hooks/useVerticalNav'
 import { useSettings } from '@core/hooks/useSettings'
 
-// Util Imports
-import { getLocalizedUrl } from '@/utils/i18n'
-
 // Style Imports
 import navigationCustomStyles from '@core/styles/vertical/navigationCustomStyles'
 import ToolboxFormNavigation from './ToolboxFormNavigation/ToolboxFormNavigation'
-import { IconButton } from '@mui/material'
-import { Home, NotificationAddOutlined, SupervisedUserCircleOutlined, HomeOutlined } from '@mui/icons-material'
-import CustomAvatar from '@/@core/components/mui/Avatar'
-import { getInitials } from '@/utils/getInitials'
-import NotificationsDropdown, { NotificationsType } from '../shared/NotificationsDropdown'
+
 import { useDialog } from '@/hooks/useDialog'
-import NormalSignDialog from '@/components/dialogs/sign/NormalSignDialog'
-import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
-import { useFetchNotificationQueryOption } from '@/queryOptions/form/formQueryOptions'
+
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 
 type Props = {

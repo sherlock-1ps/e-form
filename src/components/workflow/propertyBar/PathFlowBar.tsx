@@ -46,7 +46,7 @@ const PathFlowBar = () => {
       const nodeResult = flow?.flow?.nodeDataArray.find(item => item.key === selectedField.key)
       setInputValue(nodeResult?.text || '')
     }
-  }, [selectedField])
+  }, [selectedField, myDiagram, flow]) // <-- **เพิ่ม myDiagram และ flow ที่นี่**
 
   const handleDelete = () => {
     if (!myDiagram || !selectedField) return

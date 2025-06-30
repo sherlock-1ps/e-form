@@ -1,12 +1,11 @@
 import { useAuthStore } from '@/store/useAuthStore'
 import type { AxiosInstance } from 'axios'
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 
 const Axios: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_END_POINT_URL,
-  timeout: 15100,
+  timeout: 15100
 })
-
 
 let failedQueue: any[] = []
 
@@ -21,19 +20,14 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = []
 }
 
-
-
 Axios.interceptors.request.use(
   async reqConfig => {
     const config = reqConfig
     const accessToken = useAuthStore.getState().accessToken
 
-
-
     if (config.headers && accessToken && config.url !== '/auth/verify-ext') {
       config.headers['Authorization'] = `Bearer ${accessToken}`
     }
-
 
     return config
   },
@@ -48,7 +42,6 @@ Axios.interceptors.response.use(
     return res
   },
   async err => {
-
     // if (typeof window !== 'undefined') {
     //   const errorCode = err.response?.data?.code
     //   if (errorCode === 'TOKEN_IS_EXPIRED') {
@@ -59,21 +52,14 @@ Axios.interceptors.response.use(
     //       window.location.href = redirectUrl
     //     }
 
-
     //   }
     // }
-
-
 
     return Promise.reject(err)
   }
 )
 
 export default Axios
-
-
-
-
 
 // if (error?.code === ErrorCode.UNAUTHORIZED || error?.code === ErrorCode.INVALID_AUTHORIZATION) {
 //   useAuthStore.getState().clearAuth()

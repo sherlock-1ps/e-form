@@ -39,7 +39,7 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useDialog } from '@/hooks/useDialog'
 import { Button, Chip, IconButton, Switch, Tooltip } from '@mui/material'
 import type { TextFieldProps } from '@mui/material/TextField'
-import { useResetPasswordOperatorMutationOption } from '@/queryOptions/operator/operatorQueryOptions'
+
 import { toast } from 'react-toastify'
 import { useDictionary } from '@/contexts/DictionaryContext'
 import CustomAvatar from '@/@core/components/mui/Avatar'

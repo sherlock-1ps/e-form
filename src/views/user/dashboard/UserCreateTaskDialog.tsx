@@ -6,10 +6,7 @@ import { Card, CardContent, Divider, Grid, IconButton, MenuItem, Pagination, Typ
 
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
-import {
-  useChangeRoleAccountOwnerMutationOption,
-  useFetchRoleQueryOption
-} from '@/queryOptions/account/accountQueryOptions'
+
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useDictionary } from '@/contexts/DictionaryContext'

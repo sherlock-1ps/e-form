@@ -13,8 +13,6 @@ import HorizontalNav, { Menu, SubMenu, MenuItem } from '@menu/horizontal-menu'
 import VerticalNavContent from './VerticalNavContent'
 import CustomChip from '@core/components/mui/Chip'
 
-// import { GenerateHorizontalMenu } from '@components/GenerateMenu'
-
 // Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'
 

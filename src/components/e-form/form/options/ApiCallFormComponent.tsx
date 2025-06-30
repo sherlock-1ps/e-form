@@ -51,7 +51,7 @@ export const ApiCallFormComponent = () => {
     if (apiLists?.result?.data.length > 0) {
       addApis(apiLists?.result?.data)
     }
-  }, [apiLists])
+  }, [apiLists, addApis])
 
   useEffect(() => {
     setIsCreateApiCall(false)

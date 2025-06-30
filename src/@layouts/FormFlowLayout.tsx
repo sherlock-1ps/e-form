@@ -9,10 +9,7 @@ import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 
 import { useDialog } from '@/hooks/useDialog'
-import NormalSignDialog from '@/components/dialogs/sign/NormalSignDialog'
-import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
-import { useFetchNotificationQueryOption } from '@/queryOptions/form/formQueryOptions'
-import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
+
 import {
   ViewKanban,
   Draw,

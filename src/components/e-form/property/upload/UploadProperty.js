@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react' // ไม่จำเป็นต้อง import useCallback ถ้าไม่ได้ใช้
 
 import Checkbox from '@mui/material/Checkbox'
 
@@ -23,18 +23,26 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 750, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
-  const { dictionary } = useDictionary()
+  const { dictionary } = useDictionary() // dictionary ถูกใช้ใน JSX ไม่ได้ใช้ใน effect นี้
+
+  // Effect สำหรับอัปเดต internal state 'value' เมื่อ 'initialValue' เปลี่ยน
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
 
+  // Effect สำหรับ debounce
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onChange(value)
+      // 🚨 ตรวจสอบว่า onChange เป็นฟังก์ชันก่อนเรียกใช้
+      if (typeof onChange === 'function') {
+        onChange(value)
+      } else {
+        console.warn('onChange prop is not a function in DebouncedInput')
+      }
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [value, onChange, debounce]) // <-- **แก้ไขตรงนี้: เพิ่ม onChange และ debounce**
 
   return (
     <CustomTextField
@@ -44,7 +52,6 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
         const input = e.target.value
         if (!isEng) {
           setValue(input)
-
           return
         }
         const isValid = /^[a-zA-Z0-9]*$/.test(input)
@@ -82,10 +89,13 @@ const UploadProperty = () => {
   }, [form])
 
   useEffect(() => {
-    if (isDuplicateId) {
+    // ต้องการให้รีเซ็ต isDuplicateId เมื่อ selectedField เปลี่ยน
+    // และเมื่อ isDuplicateId เป็น true (หมายความว่าก่อนหน้านี้มี ID ซ้ำ)
+    if (selectedField) {
+      // เพิ่มเงื่อนไขตรวจสอบ selectedField เพื่อความปลอดภัย
       setIsDuplicatedId(false)
     }
-  }, [selectedField])
+  }, [selectedField]) // isDuplicateId ไม่จำเป็นต้องเป็น dependency ที่นี่ เพราะเราต้องการให้รันเมื่อ selectedField เปลี่ยนเท่านั้น
 
   return (
     <div>
@@ -160,7 +170,8 @@ const UploadProperty = () => {
 
               return
             }
-            if (isDuplicateId) {
+            // หาก isDuplicateId เป็น true แต่ newValue ไม่ซ้ำแล้ว ให้รีเซ็ตกลับเป็น false
+            if (isDuplicateId && !allIds.includes(newValue)) {
               setIsDuplicatedId(false)
             }
 
@@ -259,7 +270,7 @@ const UploadProperty = () => {
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5 '>
         <Typography color='text.primary'>{dictionary?.dataValidation} </Typography>
-        <div className='flex  gap-2 justify-between items-center '>
+        <div className='flex  gap-2 justify-between items-center '>
           <Typography variant='body1'>{dictionary?.fileTypeDefinition} </Typography>
           <Button
             variant='contained'
@@ -275,7 +286,7 @@ const UploadProperty = () => {
             {dictionary?.selectFile}
           </Button>
         </div>
-        <div className='flex  gap-2 justify-between items-center '>
+        <div className='flex  gap-2 justify-between items-center '>
           <Typography variant='body1' className=' text-nowrap'>
             {dictionary?.maxFileSize}
           </Typography>
@@ -306,7 +317,7 @@ const UploadProperty = () => {
           />
         </div>
 
-        <div className='flex  gap-1 justify-between items-center '>
+        <div className='flex  gap-1 justify-between items-center '>
           <FormControlLabel
             control={
               <Switch

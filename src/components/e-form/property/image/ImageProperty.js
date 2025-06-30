@@ -30,11 +30,16 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLeng
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onChange(value)
+      // ตรวจสอบว่าเป็นฟังก์ชันก่อนเรียกใช้เสมอ
+      if (typeof onChange === 'function') {
+        onChange(value)
+      } else {
+        console.warn('onChange prop is not a function in DebouncedInput')
+      }
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [value, onChange, debounce]) // <-- **แก้ไขตรงนี้: เพิ่ม onChange และ debounce**
 
   return (
     <CustomTextField
@@ -75,10 +80,12 @@ const ImageProperty = ({ item }) => {
   }, [form])
 
   useEffect(() => {
-    if (isDuplicateId) {
+    // รีเซ็ต isDuplicateId เมื่อ selectedField เปลี่ยน
+    if (selectedField) {
+      // ตรวจสอบ selectedField เพื่อความปลอดภัย
       setIsDuplicatedId(false)
     }
-  }, [selectedField])
+  }, [selectedField]) // isDuplicateId ไม่จำเป็นต้องเป็น dependency ที่นี่ เพราะเราต้องการให้รันเมื่อ selectedField เปลี่ยนเท่านั้น
 
   return (
     <div>

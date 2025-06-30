@@ -2,7 +2,7 @@
 
 // React & Libs
 import { useEffect, useRef, useState } from 'react'
-import SignatureCanvas from 'react-signature-canvas'
+import SignatureCanvasComponent from 'react-signature-canvas' // <-- แก้ไขตรงนี้: เปลี่ยนชื่อเป็น SignatureCanvasComponent
 
 // MUI
 import { Button, Grid, Typography } from '@mui/material'
@@ -26,7 +26,7 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
   const params = useParams()
   const { lang: locale } = params
   const { closeDialog } = useDialog()
-  const sigPadRef = useRef<SignatureCanvas>(null)
+  const sigPadRef = useRef<SignatureCanvasComponent>(null) // <-- อัปเดต type reference
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [comment, setComment] = useState('')
@@ -106,7 +106,7 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
           วาดลายเซ็น
         </Typography>
         <div ref={containerRef} className='bg-gray-100 border border-gray-300 rounded-md overflow-hidden'>
-          <SignatureCanvas
+          <SignatureCanvasComponent // <-- แก้ไขตรงนี้: ใช้ชื่อใหม่
             penColor='black'
             ref={sigPadRef}
             canvasProps={{

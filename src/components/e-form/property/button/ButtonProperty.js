@@ -35,11 +35,16 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onChange(value)
+      // ตรวจสอบว่าเป็นฟังก์ชันก่อนเรียกใช้เสมอ
+      if (typeof onChange === 'function') {
+        onChange(value)
+      } else {
+        console.warn('onChange prop is not a function in DebouncedInput')
+      }
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [value, onChange, debounce]) // <-- **แก้ไขตรงนี้: เพิ่ม onChange และ debounce**
 
   return (
     <CustomTextField
@@ -49,7 +54,6 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
         const input = e.target.value
         if (!isEng) {
           setValue(input)
-
           return
         }
         const isValid = /^[a-zA-Z0-9]*$/.test(input)
@@ -87,10 +91,11 @@ const ButtonProperty = () => {
   }, [form])
 
   useEffect(() => {
-    if (isDuplicateId) {
+    if (selectedField) {
+      // เพิ่มเงื่อนไขตรวจสอบ selectedField เพื่อความปลอดภัย
       setIsDuplicatedId(false)
     }
-  }, [selectedField])
+  }, [selectedField]) // isDuplicateId ไม่จำเป็นต้องเป็น dependency ที่นี่ เพราะเราต้องการให้รันเมื่อ selectedField เปลี่ยนเท่านั้น
 
   return (
     <div>

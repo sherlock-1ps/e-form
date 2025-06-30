@@ -125,6 +125,7 @@ const EnhancedOption = ({ label, index, item, selectedField, updateDetails, onBa
 }
 
 const ChoiceBox = ({ item }) => {
+  const { dictionary } = useDictionary()
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
 

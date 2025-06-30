@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react' // เพิ่ม useCallback
 
 import Checkbox from '@mui/material/Checkbox'
 
@@ -30,18 +30,21 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
-  const { dictionary } = useDictionary()
+  const { dictionary } = useDictionary() // dictionary ถูกใช้ใน JSX ไม่ได้ใช้ใน effect นี้ จึงไม่ต้องเป็น dependency
+
+  // Effect สำหรับอัปเดต internal state 'value' เมื่อ 'initialValue' เปลี่ยน
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
 
+  // Effect สำหรับ debounce
   useEffect(() => {
     const timeout = setTimeout(() => {
       onChange(value)
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [value, onChange, debounce]) // <-- **แก้ไขตรงนี้: เพิ่ม onChange และ debounce**
 
   return (
     <CustomTextField
@@ -49,6 +52,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 750, maxLeng
       value={value}
       onChange={e => {
         const input = e.target.value
+        // อนุญาตเฉพาะตัวอักษรและตัวเลข
         const isValid = /^[a-zA-Z0-9]*$/.test(input)
         if (isValid) {
           setValue(input)
@@ -82,10 +86,13 @@ const VideoProperty = ({ item }) => {
   }, [form])
 
   useEffect(() => {
-    if (isDuplicateId) {
+    // ต้องการให้รีเซ็ต isDuplicateId เมื่อ selectedField เปลี่ยน
+    // และเมื่อ isDuplicateId เป็น true (หมายความว่าก่อนหน้านี้มี ID ซ้ำ)
+    if (selectedField) {
+      // เพิ่มเงื่อนไขตรวจสอบ selectedField เพื่อความปลอดภัย
       setIsDuplicatedId(false)
     }
-  }, [selectedField])
+  }, [selectedField]) // isDuplicateId ไม่จำเป็นต้องเป็น dependency ที่นี่ เพราะเราต้องการให้รันเมื่อ selectedField เปลี่ยนเท่านั้น
 
   return (
     <div>

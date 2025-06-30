@@ -35,8 +35,6 @@ import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Me
 import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
 import CustomChip from '@core/components/mui/Chip'
 
-// import { GenerateVerticalMenu } from '@components/GenerateMenu'
-
 // Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'
 

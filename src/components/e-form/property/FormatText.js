@@ -29,7 +29,6 @@ const FormatText = ({ item, id }) => {
   }
 
   const handleSelectStyle = style => {
-    const { dictionary } = useDictionary()
     const selected = getSelectedDataItem()
     const currentStyle = selected?.config?.style || {}
 

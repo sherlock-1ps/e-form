@@ -34,7 +34,7 @@ import { toast } from 'react-toastify'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 import { useToolboxTabStore } from '@/store/useToolboxTabStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
 
@@ -286,7 +286,7 @@ const SettingApiFlowDialog = ({ id }: TriggerProps) => {
 
       setResponse(JSON.stringify(res.data, null, 2))
     } catch (error: any) {
-      if (axios.isAxiosError(error)) {
+      if (isAxiosError(error)) {
         if (error.response) {
           const status = error.response.status
           const statusText = error.response.statusText

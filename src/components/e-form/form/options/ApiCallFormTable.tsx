@@ -39,16 +39,12 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useDialog } from '@/hooks/useDialog'
 import { Chip, IconButton, Switch, Tooltip } from '@mui/material'
 import type { TextFieldProps } from '@mui/material/TextField'
-import { useResetPasswordOperatorMutationOption } from '@/queryOptions/operator/operatorQueryOptions'
+
 import { toast } from 'react-toastify'
 import { useDictionary } from '@/contexts/DictionaryContext'
-import CustomAvatar from '@/@core/components/mui/Avatar'
-import { useHasPermission } from '@/hooks/useHasPermission'
-import { OptionType } from '@/@core/components/option-menu/types'
-import { FormatShowDate } from '@/utils/formatShowDate'
+
 import CustomTextField from '@/@core/components/mui/TextField'
-import CreateVariableFormDialog from '@/components/dialogs/form/CreateVariableFormDialog'
-import EditVariableFormDialog from '@/components/dialogs/form/EditVariableFormDialog'
+
 import { useApiCallStore } from '@/store/useApiCallStore'
 import { useDeleteApiMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
 
