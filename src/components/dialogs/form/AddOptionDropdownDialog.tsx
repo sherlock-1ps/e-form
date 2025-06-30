@@ -283,7 +283,7 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -291,7 +291,7 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
             handleSubmit()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

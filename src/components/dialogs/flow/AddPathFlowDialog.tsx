@@ -19,6 +19,8 @@ import {
 } from '@mui/material'
 import { useFlowStore } from '@/store/useFlowStore'
 import { useFetchGetFormSignatureFieldsQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
+
 interface AddPathFlowDialogProps {
   id?: string
   onClose?: any
@@ -26,6 +28,7 @@ interface AddPathFlowDialogProps {
 }
 
 const AddPathFlowDialog = ({ id, onClose }: AddPathFlowDialogProps) => {
+  const { dictionary } = useDictionary()
   const { closeDialog } = useDialog()
   const [enabled, setEnabled] = useState(false)
   const [minimumProgress, setMinimumProgress] = useState(1)
@@ -213,10 +216,10 @@ const AddPathFlowDialog = ({ id, onClose }: AddPathFlowDialogProps) => {
             onClose()
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={addLinkToCurrentNode}>
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

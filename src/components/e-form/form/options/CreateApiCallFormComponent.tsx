@@ -12,6 +12,7 @@ import TabPanel from '@mui/lab/TabPanel'
 import axios from 'axios'
 import { useCreateApiMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const httpMethods = [
   { label: 'GET', value: 'GET' },
@@ -26,6 +27,7 @@ const httpMethods = [
 ]
 
 export const CreateApiCallFormComponent = ({ onStateCreateChange, onCreate }: any) => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const [mainTabValue, setMainTabValue] = useState('1')
   const [subTabValue, setSubTabValue] = useState('1')
@@ -265,7 +267,7 @@ export const CreateApiCallFormComponent = ({ onStateCreateChange, onCreate }: an
                 <Grid item xs={12}>
                   <div className='flex  justify-center  gap-2 mt-6'>
                     <Button variant='contained' color='secondary' onClick={onStateCreateChange}>
-                      ยกเลิก
+                      {dictionary?.cancel}
                     </Button>
                     <Button
                       variant='contained'

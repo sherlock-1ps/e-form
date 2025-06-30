@@ -295,7 +295,7 @@ const RadioProperty = () => {
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
         <div className='w-full flex items-center justify-between'>
-          <Typography color='text.primary'>การจัดเรียงตัวเลือก</Typography>
+          <Typography color='text.primary'>{dictionary?.optionOrdering} </Typography>
           <div className='flex items-center justify-center gap-2'>
             <BaseButton
               color={result?.config?.details?.row ? 'secondary' : 'primary'}
@@ -355,9 +355,11 @@ const RadioProperty = () => {
           )}
         </div>
         {result?.config?.details?.value?.valueType == 'custom' ? (
-          <Typography variant='body2'>ตัวเลือกจาก Custom</Typography>
+          <Typography variant='body2'>{dictionary?.customOptions} </Typography>
         ) : (
-          <Typography variant='h6'>ตัวเลือกจาก Variable {result?.config?.details?.value?.value?.name}</Typography>
+          <Typography variant='h6'>
+            {dictionary?.variableOptions} {result?.config?.details?.value?.value?.name}
+          </Typography>
         )}
         {options.length > 0 ? (
           options.map((item, index) => (
@@ -400,8 +402,8 @@ const RadioProperty = () => {
                     component: (
                       <ConfirmAlert
                         id='alertDialogConfirmToggleTrigger'
-                        title='เปลี่ยนสถานะ Trigger Event?'
-                        content1='คุณต้องการเปิดหรือปิด Trigger Event ใช่หรือไม่'
+                        title={dictionary?.changeTriggerEventStatus}
+                        content1={dictionary?.confirmToggleTriggerEvent}
                         onClick={() => {
                           updateDetails(
                             String(selectedField?.parentKey ?? ''),
@@ -437,7 +439,7 @@ const RadioProperty = () => {
               })
             }}
           >
-            ตั้งค่า Trigger Event
+            {dictionary?.configureTriggerEvent}
           </Button>
         )}
       </section>

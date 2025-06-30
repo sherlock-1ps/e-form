@@ -10,6 +10,7 @@ import { Grid, MenuItem, Typography } from '@mui/material'
 import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface triggerTypeProps {
   id: string
@@ -24,7 +25,7 @@ const typeMenu = [
 
 const SelectTriggerTypeDialog = ({ id, onAdd }: triggerTypeProps) => {
   const { closeDialog } = useDialog()
-
+  const { dictionary } = useDictionary()
   const [type1, setType1] = useState('')
   const [type2, setType2] = useState('')
 
@@ -90,10 +91,10 @@ const SelectTriggerTypeDialog = ({ id, onAdd }: triggerTypeProps) => {
 
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)}>
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleClickConfirm}>
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

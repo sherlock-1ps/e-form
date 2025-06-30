@@ -333,10 +333,10 @@ function EditVariableFormDialog({ id, data }: EditVariableFormDialogProps) {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleCreateVariable}>
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

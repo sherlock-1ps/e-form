@@ -12,6 +12,7 @@ import { useCreateNewVersionFormQueryOption, useGetFormQueryOption } from '@/que
 import { toast } from 'react-toastify'
 import { useFormStore } from '@/store/useFormStore'
 import { useParams, useRouter } from 'next/navigation'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface EditVersionProps {
   id: string
@@ -20,6 +21,7 @@ interface EditVersionProps {
 }
 
 const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
+  const { dictionary } = useDictionary()
   const router = useRouter()
   const { lang: locale } = useParams()
   const { closeDialog } = useDialog()
@@ -149,10 +151,10 @@ const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleClick} disabled={pendingGetForm}>
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

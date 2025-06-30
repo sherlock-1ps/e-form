@@ -100,7 +100,7 @@ const FlowDocTable = ({ data }: any) => {
   const columns = useMemo<ColumnDef<flowType, any>[]>(
     () => [
       columnHelper.accessor('f_first_name', {
-        header: 'ผู้ดำเนินการ',
+        header: dictionary?.operator,
         cell: ({ row }) => (
           <div className=' flex flex-col items-center'>
             <Typography variant='body1'>
@@ -111,7 +111,7 @@ const FlowDocTable = ({ data }: any) => {
         )
       }),
       columnHelper.accessor('department_name', {
-        header: 'หน่วยงาน / สังกัด',
+        header: dictionary?.departmentOrAffiliation,
         cell: ({ row }) => <Typography variant='body1'>{row.original.department_name}</Typography>
       }),
       // columnHelper.display({
@@ -121,15 +121,15 @@ const FlowDocTable = ({ data }: any) => {
       //   enableSorting: false
       // }),
       columnHelper.accessor('created_at', {
-        header: 'บันทึกเวลา',
+        header: dictionary?.timestamp,
         cell: ({ row }) => <Typography variant='body1'>{FormatShowDate(row.original.created_at)}</Typography>
       }),
       columnHelper.accessor('comment', {
-        header: 'ความคิดเห็น',
+        header: dictionary?.comment,
         cell: ({ row }) => <Typography variant='body1'>{row.original.comment}</Typography>
       }),
       columnHelper.accessor('flow_activity_name', {
-        header: 'สถานะ',
+        header: dictionary?.status,
         cell: ({ row }) => <Typography variant='body1'>{row.original.flow_activity_name}</Typography>
       })
     ],

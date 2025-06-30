@@ -276,8 +276,8 @@ const SwitchProperty = () => {
             aria-label='basic-radio'
             onChange={handleChange}
           >
-            <FormControlLabel value={false} control={<Radio />} label='ปิด' />
-            <FormControlLabel value={true} control={<Radio />} label='เปิด' />
+            <FormControlLabel value={false} control={<Radio />} label={dictionary?.on} />
+            <FormControlLabel value={true} control={<Radio />} label={dictionary?.off} />
           </RadioGroup>
         </section>
       )}
@@ -294,8 +294,8 @@ const SwitchProperty = () => {
                     component: (
                       <ConfirmAlert
                         id='alertDialogConfirmToggleTrigger'
-                        title='เปลี่ยนสถานะ Trigger Event?'
-                        content1='คุณต้องการเปิดหรือปิด Trigger Event ใช่หรือไม่'
+                        title={dictionary?.changeTriggerEventStatus}
+                        content1={dictionary?.confirmToggleTriggerEvent}
                         onClick={() => {
                           updateDetails(
                             String(selectedField?.parentKey ?? ''),
@@ -331,7 +331,7 @@ const SwitchProperty = () => {
               })
             }}
           >
-            ตั้งค่า Trigger Event
+            {dictionary?.configureTriggerEvent}
           </Button>
         )}
       </section>

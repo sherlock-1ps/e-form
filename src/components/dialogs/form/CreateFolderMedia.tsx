@@ -75,7 +75,7 @@ const CreateFolderMedia = ({ id, onClick, data }: confirmProps) => {
           }}
         >
           {/* {dictionary?.cancel} */}
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -84,7 +84,7 @@ const CreateFolderMedia = ({ id, onClick, data }: confirmProps) => {
           }}
         >
           {/* {dictionary?.confirm} */}
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

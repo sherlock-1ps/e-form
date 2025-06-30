@@ -5,8 +5,10 @@ import { MAX_FILE_IMAGE_SIZE_MB } from '@/data/toolbox/toolboxMenu'
 import { useFormStore } from '@/store/useFormStore'
 import { Button, IconButton, Typography } from '@mui/material'
 import CustomTextField from '@/@core/components/mui/TextField'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const UploadForm = ({ item, parentKey, boxId, draft }: any) => {
+  const { dictionary } = useDictionary()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -138,9 +140,9 @@ const UploadForm = ({ item, parentKey, boxId, draft }: any) => {
                       multiline
                       minRows={3}
                       value={data?.comment}
-                      label={'ความคิดเห็น'}
+                      label={dictionary?.comment}
                       disabled={!item?.config?.details?.isUse}
-                      placeholder={'กรอกความคิดเห็น'}
+                      placeholder={dictionary?.enterComment}
                       onChange={e => {
                         const newValue = [...item?.config?.details?.value]
                         newValue[index] = {

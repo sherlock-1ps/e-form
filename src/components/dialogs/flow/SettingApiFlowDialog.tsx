@@ -36,6 +36,7 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import axios from 'axios'
 import { useToolboxTabStore } from '@/store/useToolboxTabStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface TriggerProps {
   id: string
@@ -114,6 +115,7 @@ const getAllIdsFromData = (form: any) => {
 }
 
 const SettingApiFlowDialog = ({ id }: TriggerProps) => {
+  const { dictionary } = useDictionary()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -490,7 +492,7 @@ const SettingApiFlowDialog = ({ id }: TriggerProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -500,7 +502,7 @@ const SettingApiFlowDialog = ({ id }: TriggerProps) => {
           // }}
           onClick={handleClickSubmit}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

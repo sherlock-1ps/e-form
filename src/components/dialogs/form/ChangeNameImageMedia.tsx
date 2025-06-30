@@ -74,7 +74,7 @@ const ChangeNameImageMedia = ({ id, onClick, data }: confirmProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           disabled={isPending}
@@ -83,7 +83,7 @@ const ChangeNameImageMedia = ({ id, onClick, data }: confirmProps) => {
             handleSubmit()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

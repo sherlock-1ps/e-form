@@ -7,6 +7,7 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface commentSignProps {
   id: string
@@ -20,13 +21,13 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
   const params = useParams()
   const { lang: locale } = params
   const { closeDialog } = useDialog()
-
+  const { dictionary } = useDictionary()
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleConfirm = async () => {
     if (!comment) {
-      toast.error('ต้องกรอกความคิดเห็น', { autoClose: 3000 })
+      toast.error(dictionary?.commentRequired, { autoClose: 3000 })
       return
     }
 
@@ -37,12 +38,12 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
       const response = await onSave(comment, flowId)
       if (response?.code === 'SUCCESS') {
         router.push(`/${locale}/user/allTask`)
-        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
+        toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
       }
     } catch (err) {
       console.error('save failed', err)
-      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+      toast.error(dictionary?.saveFailed, { autoClose: 3000 })
     } finally {
       setIsSubmitting(false)
     }
@@ -61,8 +62,8 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
           rows={5}
           multiline
           fullWidth
-          label='ความคิดเห็น'
-          placeholder='ระบุความคิดเห็น...'
+          label={dictionary?.comment}
+          placeholder={dictionary?.typeYourCommentHere}
           value={comment}
           onChange={e => setComment(e.target.value)}
         />
@@ -70,10 +71,10 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
 
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
-          {isSubmitting ? 'กำลังบันทึก...' : 'ยืนยัน'}
+          {isSubmitting ? dictionary?.saving : dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

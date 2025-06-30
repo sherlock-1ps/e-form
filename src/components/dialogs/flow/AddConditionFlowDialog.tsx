@@ -8,6 +8,7 @@ import { nanoid } from 'nanoid'
 import DeleteIcon from '@mui/icons-material/Delete'
 
 import AddIcon from '@mui/icons-material/Add'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 import {
   Autocomplete,
@@ -50,6 +51,7 @@ type Condition = {
 const operatorOptions = ['=', '!=', '>', '<', '>=', '<=']
 
 const AddConditionFlowDialog = ({ id, onClose }: AddConditionFlowDialogProps) => {
+  const { dictionary } = useDictionary()
   const [conditions, setConditions] = useState<Condition[]>([
     { source1: 'manual', value1: '', operator: '=', source3: 'manual', value3: '' }
   ])
@@ -307,7 +309,7 @@ const AddConditionFlowDialog = ({ id, onClose }: AddConditionFlowDialogProps) =>
             onClose()
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -317,7 +319,7 @@ const AddConditionFlowDialog = ({ id, onClose }: AddConditionFlowDialogProps) =>
             onClose()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

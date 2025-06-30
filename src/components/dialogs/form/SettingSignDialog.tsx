@@ -84,7 +84,7 @@ const SettingSignDialog = ({ id, onClick }: settingSignDialogProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -92,7 +92,7 @@ const SettingSignDialog = ({ id, onClick }: settingSignDialogProps) => {
             closeDialog(id), onClick()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

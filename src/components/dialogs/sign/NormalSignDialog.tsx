@@ -10,6 +10,7 @@ import { useFormStore } from '@/store/useFormStore'
 import { mapKeyValueForm } from '@/utils/mapKeyValueForm'
 import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface signProps {
   id: string
@@ -17,6 +18,7 @@ interface signProps {
 }
 
 const NormalSignDialog = ({ id, onSave }: signProps) => {
+  const { dictionary } = useDictionary()
   const router = useRouter()
   const params = useParams()
   const { lang: locale } = params
@@ -33,12 +35,12 @@ const NormalSignDialog = ({ id, onSave }: signProps) => {
       const response = await onSave(comment)
       if (response?.code === 'SUCCESS') {
         router.push(`/${locale}/user/allTask`)
-        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
+        toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
       }
     } catch (err) {
       console.error('save failed', err)
-      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+      toast.error(dictionary?.saveFailed, { autoClose: 3000 })
     } finally {
       setIsSubmitting(false)
     }
@@ -56,8 +58,8 @@ const NormalSignDialog = ({ id, onSave }: signProps) => {
           rows={5}
           multiline
           fullWidth
-          label='ความคิดเห็น'
-          placeholder='ระบุความคิดเห็น...'
+          label={dictionary?.comment}
+          placeholder={dictionary?.typeYourCommentHere}
           value={comment}
           onChange={e => setComment(e.target.value)}
         />
@@ -65,10 +67,10 @@ const NormalSignDialog = ({ id, onSave }: signProps) => {
 
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
-          {isSubmitting ? 'กำลังบันทึก...' : 'ยืนยัน'}
+          {isSubmitting ? dictionary?.saving : dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

@@ -8,6 +8,7 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface signProps {
   id: string
@@ -15,6 +16,7 @@ interface signProps {
 }
 
 const CertifySignDialog = ({ id, onSave }: signProps) => {
+  const { dictionary } = useDictionary()
   const router = useRouter()
   const params = useParams()
   const { lang: locale } = params
@@ -33,13 +35,13 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
     try {
       const response = await onSave(comment)
       if (response?.code === 'SUCCESS') {
-        toast.success('บันทึกสำเร็จ', { autoClose: 3000 })
+        toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
         router.push(`/${locale}/user/allTask`)
       }
     } catch (err) {
       console.error('save failed', err)
-      toast.error('บันทึกล้มเหลว', { autoClose: 3000 })
+      toast.error(dictionary?.saveFailed, { autoClose: 3000 })
     } finally {
       setIsSubmitting(false)
     }
@@ -57,8 +59,8 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
           rows={4}
           multiline
           fullWidth
-          label='ความคิดเห็น'
-          placeholder='ระบุความคิดเห็น...'
+          label={dictionary?.comment}
+          placeholder={dictionary?.typeYourCommentHere}
           value={comment}
           onChange={e => setComment(e.target.value)}
         />
@@ -68,7 +70,7 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
       </Grid>
 
       <Grid item xs={12}>
-        <Typography variant='h6'>ยืนยันตัวตน</Typography>
+        <Typography variant='h6'>{dictionary?.authenticate}</Typography>
       </Grid>
       <Grid item xs={6}>
         <CustomTextField select fullWidth defaultValue='' label='เลือกใบรับรองอิเล็กทรอนิกส์'>
@@ -97,10 +99,10 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
 
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
-          {isSubmitting ? 'กำลังบันทึก...' : 'ยืนยัน'}
+          {isSubmitting ? dictionary?.saving : dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

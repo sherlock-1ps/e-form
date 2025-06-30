@@ -13,6 +13,7 @@ import axios from 'axios'
 import { useApiCallStore } from '@/store/useApiCallStore'
 import { toast } from 'react-toastify'
 import { useUpdateApiMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const httpMethods = [
   { label: 'GET', value: 'GET' },
@@ -27,6 +28,7 @@ const httpMethods = [
 ]
 
 export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const selectedApi = useApiCallStore(state => state.selectedApi)
   const setSelectedApi = useApiCallStore(state => state.setSelectedApi)
@@ -309,7 +311,7 @@ export const EditApiCallFormComponent = ({ onStateCreateChange }: any) => {
                         setSelectedApi(null)
                       }}
                     >
-                      ยกเลิก
+                      {dictionary?.cancel}
                     </Button>
                     <Button
                       variant='contained'

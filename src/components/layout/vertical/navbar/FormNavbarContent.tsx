@@ -26,8 +26,10 @@ import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
 import { useDialog } from '@/hooks/useDialog'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 const FormNavbarContent = () => {
+  const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const { lang: locale } = useParams()
   const router = useRouter()
@@ -137,7 +139,7 @@ const FormNavbarContent = () => {
       component: (
         <ConfirmAlert
           id='alertConfirmAlert'
-          title={`คุณต้องการเปลี่ยนเป็น ${form?.layout == 'horizontal' ? 'แนวตั้ง' : 'แนวนอน'}`}
+          title={`คุณต้องการเปลี่ยนเป็น ${form?.layout == 'horizontal' ? dictionary?.vertical : dictionary?.horizontal}`}
           content1='*จะส่งผลกระทบกับตำแหน่งที่มีอยู่ ดำเนินการต่อหรือไม่ ?'
           onClick={() => {
             toggleLayout()
@@ -172,11 +174,11 @@ const FormNavbarContent = () => {
           startIcon={form?.layout == 'horizontal' ? <SwapHorizontalCircleOutlined /> : <SwapVerticalCircleOutlined />}
           onClick={handleToggleLayout}
         >
-          {form?.layout == 'horizontal' ? 'แนวนอน' : 'แนวตั้ง'}
+          {form?.layout == 'horizontal' ? dictionary?.horizontal : dictionary?.vertical}
         </Button>
 
         <Button color='primary' variant='outlined' onClick={handleShowPreview} startIcon={<Preview />}>
-          ดูแบบร่าง
+          {dictionary?.viewDraft}
         </Button>
 
         {form?.isContinue && !form?.isCopy ? (
@@ -187,7 +189,7 @@ const FormNavbarContent = () => {
             endIcon={<SaveOutlined />}
             onClick={form?.version !== form?.newVersion ? handleCreateNewVersion : handleClickUpdate}
           >
-            บันทึก
+            {dictionary?.save}
           </Button>
         ) : (
           <Button
@@ -197,7 +199,7 @@ const FormNavbarContent = () => {
             onClick={handleClickSave}
             endIcon={<Publish />}
           >
-            {`บันทึก`}
+            {dictionary?.save}
           </Button>
         )}
 

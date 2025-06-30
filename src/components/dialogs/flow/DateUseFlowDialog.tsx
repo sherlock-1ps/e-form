@@ -10,6 +10,7 @@ import { useState } from 'react'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { toast } from 'react-toastify'
 import { useUpdateDateFlowQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface DateUseProps {
   id: string
@@ -21,7 +22,7 @@ const DateUseFlowDialog = ({ id, data }: DateUseProps) => {
   const [startDatetime, setStartDatetime] = useState<Date | null | undefined>(null)
   const [endDatetime, setEndDatetime] = useState<Date | null | undefined>(null)
   const { mutateAsync } = useUpdateDateFlowQueryOption()
-
+  const { dictionary } = useDictionary()
   const formatToUTC = (date: Date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z')
   const handleSubmit = async () => {
     try {
@@ -87,7 +88,7 @@ const DateUseFlowDialog = ({ id, data }: DateUseProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -96,7 +97,7 @@ const DateUseFlowDialog = ({ id, data }: DateUseProps) => {
             handleSubmit()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

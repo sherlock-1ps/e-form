@@ -18,6 +18,7 @@ import { useDialog } from '@/hooks/useDialog'
 import CustomTextField from '@/@core/components/mui/TextField'
 import { useState } from 'react'
 import { useFormStore } from '@/store/useFormStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface selectFileUploadDialogProps {
   id: string
@@ -39,6 +40,7 @@ const FILE_TYPES = {
 }
 
 const SelectFileUploadDialog = ({ id, onClick }: selectFileUploadDialogProps) => {
+  const { dictionary } = useDictionary()
   const { closeDialog } = useDialog()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
@@ -132,7 +134,7 @@ const SelectFileUploadDialog = ({ id, onClick }: selectFileUploadDialogProps) =>
 
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)}>
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -141,7 +143,7 @@ const SelectFileUploadDialog = ({ id, onClick }: selectFileUploadDialogProps) =>
             onClick()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

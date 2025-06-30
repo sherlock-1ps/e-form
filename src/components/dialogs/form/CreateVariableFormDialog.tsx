@@ -333,10 +333,10 @@ const CreateVariableFormDialog = ({ id, onClick }: createFormProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleCreateVariable}>
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

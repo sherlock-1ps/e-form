@@ -81,7 +81,7 @@ const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           disabled={isPending}
@@ -90,7 +90,7 @@ const ChangeNameFormMedia = ({ id, onClick, data }: confirmProps) => {
             handleSubmit()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

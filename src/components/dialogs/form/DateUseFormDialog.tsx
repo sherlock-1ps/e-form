@@ -10,6 +10,7 @@ import { useState } from 'react'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { useUpdateDateFormFormQueryOption } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface DateUseProps {
   id: string
@@ -17,6 +18,7 @@ interface DateUseProps {
 }
 
 const DateUseFormDialog = ({ id, data }: DateUseProps) => {
+  const { dictionary } = useDictionary()
   const { closeDialog } = useDialog()
   const [startDatetime, setStartDatetime] = useState<Date | null | undefined>(null)
   const [endDatetime, setEndDatetime] = useState<Date | null | undefined>(null)
@@ -85,7 +87,7 @@ const DateUseFormDialog = ({ id, data }: DateUseProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -94,7 +96,7 @@ const DateUseFormDialog = ({ id, data }: DateUseProps) => {
             handleSubmit()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

@@ -165,7 +165,7 @@ const SelectMediaImgDialog = ({ id }: selectMediaProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -173,7 +173,7 @@ const SelectMediaImgDialog = ({ id }: selectMediaProps) => {
             closeDialog(id)
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

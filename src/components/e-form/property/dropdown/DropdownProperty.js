@@ -480,8 +480,8 @@ const DropdownProperty = () => {
                     component: (
                       <ConfirmAlert
                         id='alertDialogConfirmToggleTrigger'
-                        title='เปลี่ยนสถานะ Trigger Event?'
-                        content1='คุณต้องการเปิดหรือปิด Trigger Event ใช่หรือไม่'
+                        title={dictionary?.changeTriggerEventStatus}
+                        content1={dictionary?.confirmToggleTriggerEvent}
                         onClick={() => {
                           updateDetails(
                             String(selectedField?.parentKey ?? ''),
@@ -517,7 +517,7 @@ const DropdownProperty = () => {
               })
             }}
           >
-            ตั้งค่า Trigger Event
+            {dictionary?.configureTriggerEvent}
           </Button>
         )}
       </section>

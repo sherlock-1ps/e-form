@@ -59,7 +59,7 @@ const ChangeNameImgFormMedia = ({ id, onClick, data }: confirmProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -67,7 +67,7 @@ const ChangeNameImgFormMedia = ({ id, onClick, data }: confirmProps) => {
             handleSubmit()
           }}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

@@ -42,6 +42,7 @@ import {
   // ContextMenuModule,
   //  RowGroupingModule
 } from 'ag-grid-community'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 // import 'ag-grid-community/styles/ag-grid.css'
 // import 'ag-grid-community/styles/ag-theme-alpine.css'
@@ -89,7 +90,7 @@ const filterTypeOption = [
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
   const [value, setValue] = useState(initialValue)
-
+  const { dictionary } = useDictionary()
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -127,6 +128,7 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
 }
 
 const AddSettingPermissionFlowDialog = ({ onClose }) => {
+  const { dictionary } = useDictionary()
   const { closeDialog } = useDialog()
   const myDiagram = useFlowStore(state => state.myDiagram)
   const selectedField = useFlowStore(state => state.selectedField)
@@ -385,10 +387,10 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
             onClose()
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button variant='contained' onClick={handleUpdateActivity}>
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

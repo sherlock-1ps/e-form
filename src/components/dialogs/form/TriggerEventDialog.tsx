@@ -37,6 +37,7 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import axios from 'axios'
 import { useToolboxTabStore } from '@/store/useToolboxTabStore'
+import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface TriggerProps {
   id: string
@@ -115,6 +116,7 @@ const getAllIdsFromData = (form: any) => {
 }
 
 const TriggerEventDialog = ({ id }: TriggerProps) => {
+  const { dictionary } = useDictionary()
   const form = useFormStore(state => state.form)
   const selectedField = useFormStore(state => state.selectedField)
   const updateDetails = useFormStore(state => state.updateDetails)
@@ -366,7 +368,7 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Typography variant='h5'>ตั้งค่า Trigger Event</Typography>
+        <Typography variant='h5'>{dictionary?.configureTriggerEvent}</Typography>
       </Grid>
 
       <Grid item xs={12}>
@@ -844,7 +846,7 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
             closeDialog(id)
           }}
         >
-          ยกเลิก
+          {dictionary?.cancel}
         </Button>
         <Button
           variant='contained'
@@ -854,7 +856,7 @@ const TriggerEventDialog = ({ id }: TriggerProps) => {
           // }}
           onClick={handleClickSubmit}
         >
-          ยืนยัน
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>
