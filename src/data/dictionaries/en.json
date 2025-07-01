@@ -1,4 +1,9 @@
 {
+  "getStarted": "Get Started",
+  "viewWorkflow": "View Workflow",
+  "copyLinkError": "Error copying link",
+  "linkCopiedSuccess": "Link copied successfully!",
+  "copyLink": "Copy Link",
   "disabled": "Disabled",
   "search": "Search",
   "loading": "Loading...",

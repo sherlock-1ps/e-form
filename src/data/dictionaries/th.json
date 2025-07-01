@@ -1,4 +1,9 @@
 {
+  "getStarted": "เริ่มต้นใช้งาน",
+  "viewWorkflow": "ดูเวิร์คโฟลว์",
+  "copyLinkError": "เกิดข้อผิดพลาดในการคัดลอกลิงก์",
+  "linkCopiedSuccess": "คัดลอกลิงก์เรียบร้อยแล้ว!",
+  "copyLink": "คัดลอกลิงก์",
   "disabled": "Disabled",
   "search": "ค้นหา",
   "loading": "กำลังโหลด...",

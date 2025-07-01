@@ -72,11 +72,11 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
       .writeText(fullUrl)
       .then(() => {
         console.log('Copied URL:', fullUrl)
-        toast.success('คัดลอกลิงก์เรียบร้อยแล้ว!', { autoClose: 3000 })
+        toast.success(dictionary?.linkCopiedSuccess, { autoClose: 3000 })
       })
       .catch(err => {
         console.error('Failed to copy:', err)
-        toast.error('เกิดข้อผิดพลาดในการคัดลอกลิงก์', { autoClose: 3000 })
+        toast.error(dictionary?.copyLinkError, { autoClose: 3000 })
       })
   }
 
@@ -140,7 +140,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         handleCopyUrl(item)
                       }}
                     >
-                      คัดลอกลิงก์
+                      {dictionary?.copyLink}
                     </Button>
                     <Button
                       variant='outlined'
@@ -151,7 +151,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         handleShowWorkflow(item?.version?.[0]?.id)
                       }}
                     >
-                      ดูเวิร์คโฟลว์
+                      {dictionary?.viewWorkflow}
                     </Button>
                     <Button
                       variant='contained'
@@ -162,7 +162,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                           component: (
                             <ConfirmAlert
                               id='alertDialogConfirmToggleTrigger'
-                              title='เริ่มต้นใช้งาน'
+                              title={dictionary?.getStarted}
                               content1='คุณต้องการใช้งานโฟลว์นี้ ใช่หรือไม่'
                               onClick={() => {
                                 onStartFlow('', 'start', item.id)
@@ -174,7 +174,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         })
                       }}
                     >
-                      เริ่มต้นใช้งาน
+                      {dictionary?.getStarted}
                     </Button>
                   </div>
                 </CardContent>
@@ -197,7 +197,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         handleCopyUrl(item)
                       }}
                     >
-                      คัดลอกลิงก์
+                      {dictionary?.copyLink}
                     </Button>
                     <Button
                       variant='outlined'
@@ -208,7 +208,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         handleShowWorkflow(item?.version?.[0]?.id)
                       }}
                     >
-                      ดูเวิร์คโฟลว์
+                      {dictionary?.viewWorkflow}
                     </Button>
                     <Button
                       variant='contained'
@@ -219,7 +219,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                           component: (
                             <ConfirmAlert
                               id='alertDialogConfirmToggleTrigger'
-                              title='เริ่มต้นใช้งาน'
+                              title={dictionary?.getStarted}
                               content1='คุณต้องการใช้งานโฟลว์นี้ ใช่หรือไม่'
                               onClick={() => {
                                 onStartFlow('', 'start', item.id)
@@ -231,7 +231,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
                         })
                       }}
                     >
-                      เริ่มต้นใช้งาน
+                      {dictionary?.getStarted}
                     </Button>
                   </div>
                 </div>

@@ -145,7 +145,7 @@ const UserCreateTastComponent = () => {
                             handleShowWorkflow(item?.version?.[0]?.id)
                           }}
                         >
-                          ดูเวิร์คโฟลว์
+                          {dictionary?.viewWorkflow}
                         </Button>
                         <Button
                           variant='contained'
@@ -156,7 +156,7 @@ const UserCreateTastComponent = () => {
                               component: (
                                 <ConfirmAlert
                                   id='alertDialogConfirmToggleTrigger'
-                                  title='เริ่มต้นใช้งาน'
+                                  title={dictionary?.getStarted}
                                   content1='คุณต้องการใช้งานโฟลว์นี้ ใช่หรือไม่'
                                   onClick={() => {
                                     handleStartFlow(item)
@@ -167,7 +167,7 @@ const UserCreateTastComponent = () => {
                             })
                           }}
                         >
-                          เริ่มต้นใช้งาน
+                          {dictionary?.getStarted}
                         </Button>
                       </div>
                     </CardContent>
