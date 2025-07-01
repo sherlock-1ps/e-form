@@ -17,22 +17,52 @@ interface AuthGuardProps extends PropsWithChildren {
   session: string | null
 }
 
+const getAuthFromStorage = () => {
+  const storedData = localStorage.getItem('auth-storage')
+  if (!storedData) {
+    return null
+  }
+  try {
+    return JSON.parse(storedData)
+  } catch (error) {
+    console.error("Error parsing 'auth-storage' from localStorage:", error)
+    return null
+  }
+}
+
+const redirectToEndPoint = () => {
+  window.location.href = `${String(process.env.NEXT_PUBLIC_DTN_BASE_URL)}/login?redirectUrl=${encodeURIComponent(window.location.href)}`
+}
+
 const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
   const { showDialog } = useDialog()
   const router = useRouter()
   const accessToken = useAuthStore(state => state.accessToken)
   const profile = useAuthStore(state => state.profile)
   const searchParams = useSearchParams()
-  const token = searchParams.get('token')
+  let token = searchParams.get('token')
+  const mode = searchParams.get('mode')
   const [mounted, setMounted] = useState(false)
   const [urlRedirect, setUrlRedirect] = useState('')
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const init = async () => {
+        if (!token) {
+          const authToken = getAuthFromStorage()
+          token = authToken?.state?.accessToken
+        }
+
         if (token) {
           await handleCallCheckAuth(token)
+        } else {
+          redirectToEndPoint()
         }
+
+        // console.log('accessToken', getAuthFromStorage())
+        // else if (!token && !accessToken) {
+        //   window.location.href = String(process.env.NEXT_PUBLIC_DTN_BASE_URL)
+        // }
 
         setMounted(true)
       }
@@ -79,9 +109,10 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
   const handleGetLogin = async (token: string) => {
     try {
       const response = await Axios.post('/auth/verify-ext', { token: token })
-
       return response.data
     } catch (error: any) {
+      redirectToEndPoint()
+
       console.error('error auth', error)
       const status = error?.response?.status ?? 500
       const code = error?.response?.data?.code ?? 'UNKNOWN'

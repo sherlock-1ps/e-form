@@ -66,7 +66,7 @@ const UserCreateTaskDialog = ({ id, onStartFlow }: confirmProps) => {
       return
     }
 
-    const fullUrl = `${baseUrl}/start-flow/?flow_id=${flowId}`
+    const fullUrl = `${baseUrl}/?mode=start&flow_id=${flowId}`
 
     navigator.clipboard
       .writeText(fullUrl)
