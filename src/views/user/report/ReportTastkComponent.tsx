@@ -72,20 +72,21 @@ const ReportTastkComponent = () => {
                     variant='contained'
                     className='h-full text-sm'
                     onClick={() => {
-                      showDialog({
-                        id: 'alertDialogConfirmToggleTrigger',
-                        component: (
-                          <ConfirmAlert
-                            id='alertDialogConfirmToggleTrigger'
-                            title={dictionary?.viewSummaryReport}
-                            content1='คุณต้องการใช้ดูการประเมินนี้ ใช่หรือไม่'
-                            onClick={() => {
-                              setCurrentSection('summary')
-                            }}
-                          />
-                        ),
-                        size: 'sm'
-                      })
+                      setCurrentSection('summary')
+                      // showDialog({
+                      //   id: 'alertDialogConfirmToggleTrigger',
+                      //   component: (
+                      //     <ConfirmAlert
+                      //       id='alertDialogConfirmToggleTrigger'
+                      //       title={dictionary?.viewSummaryReport}
+                      //       content1='คุณต้องการใช้ดูการประเมินนี้ ใช่หรือไม่'
+                      //       onClick={() => {
+                      //         setCurrentSection('summary')
+                      //       }}
+                      //     />
+                      //   ),
+                      //   size: 'sm'
+                      // })
                     }}
                   >
                     {dictionary?.viewSummaryReport}
@@ -111,20 +112,21 @@ const ReportTastkComponent = () => {
                     variant='contained'
                     className='h-full text-sm'
                     onClick={() => {
-                      showDialog({
-                        id: 'alertDialogConfirmToggleTrigger',
-                        component: (
-                          <ConfirmAlert
-                            id='alertDialogConfirmToggleTrigger'
-                            title={dictionary?.viewSummaryReport}
-                            content1='คุณต้องการดูรายงานสรุปนี้ ใช่หรือไม่'
-                            onClick={() => {
-                              setCurrentSection('report')
-                            }}
-                          />
-                        ),
-                        size: 'sm'
-                      })
+                      setCurrentSection('report')
+                      // showDialog({
+                      //   id: 'alertDialogConfirmToggleTrigger',
+                      //   component: (
+                      //     <ConfirmAlert
+                      //       id='alertDialogConfirmToggleTrigger'
+                      //       title={dictionary?.viewSummaryReport}
+                      //       content1='คุณต้องการดูรายงานสรุปนี้ ใช่หรือไม่'
+                      //       onClick={() => {
+                      //         setCurrentSection('report')
+                      //       }}
+                      //     />
+                      //   ),
+                      //   size: 'sm'
+                      // })
                     }}
                   >
                     {dictionary?.viewSummaryReport}
