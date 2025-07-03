@@ -8,16 +8,6 @@ import type { TextFieldProps } from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import type { SyntheticEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-
-import Typography from '@mui/material/Typography'
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-
-import TabContext from '@mui/lab/TabContext'
-import TabList from '@mui/lab/TabList'
-import TabPanel from '@mui/lab/TabPanel'
-import EditorForm from '@/components/e-form/newDefault/EditorForm'
 import {
   InsertDriveFileOutlined,
   Task,
@@ -28,10 +18,20 @@ import {
   DoneAll,
   PendingActions
 } from '@mui/icons-material'
+import Typography from '@mui/material/Typography'
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
+import EditorForm from '@/components/e-form/newDefault/EditorForm'
 import {
   useFetchFlowNnameQueryOption,
   useFetchWorkAllQueryOption,
   useFetchWorkCountQueryOption,
+  useFetchWorkAllSysDocQueryOption,
   useNextFlowQueryOption
 } from '@/queryOptions/form/formQueryOptions'
 import UserDashboardTable from '../dashboard/UserDashboardTable'
@@ -44,12 +44,12 @@ import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CardCount from '@/components/card/CardCount'
 import { useDictionary } from '@/contexts/DictionaryContext'
-
 import WorkLabel from '@/views/user/@components/workLabel'
-
-const UserAllTaskComponent = () => {
+const UserAllSystemDocComponent = () => {
   const router = useRouter()
   const params = useParams()
+  const { dictionary } = useDictionary()
+
   const setFlowDiagramData = useFlowStore(state => state.setFlowDiagramData)
   const setFullForm = useFormStore(state => state.setFullForm)
   const { lang: locale } = params
@@ -59,10 +59,9 @@ const UserAllTaskComponent = () => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<any>(0)
   const [dataNextFlow, setDataNextFlow] = useState({})
   const [viewFlowId, setViewFlowId] = useState<number | null>(null)
-  const { dictionary } = useDictionary()
 
   const { data: flowData } = useFetchFlowNnameQueryOption(1, 999)
-  const { data: workAllData } = useFetchWorkAllQueryOption(page, pageSize, Number(selectedWorkflow))
+  const { data: workAllSysDocData } = useFetchWorkAllSysDocQueryOption(page, pageSize, Number(selectedWorkflow))
   const { mutateAsync: callNextFlow } = useNextFlowQueryOption()
   const { data: countList } = useFetchWorkCountQueryOption()
 
@@ -132,7 +131,7 @@ const UserAllTaskComponent = () => {
   return (
     <div className='flex flex-col gap-6'>
       {/* <Grid container spacing={4}>
-        <Grid item xs={12} md={4}>
+       <Grid item xs={12} md={4}>
           <CardCount
             title={dictionary?.cardOwnWork}
             count={countList?.result?.data[0]?.Total || 0}
@@ -142,6 +141,7 @@ const UserAllTaskComponent = () => {
             path='user/dashboard'
           />
         </Grid>
+        <WorkLabel countList={countList} />
         <Grid item xs={12} md={4}>
           <CardCount
             title={dictionary?.cardAllWork}
@@ -168,7 +168,7 @@ const UserAllTaskComponent = () => {
         <CardContent>
           <Grid container spacing={4}>
             <Grid item xs={12}>
-              <Typography variant='h5'>{dictionary?.cardAllWork}</Typography>
+              <Typography variant='h5'>{dictionary?.allDocumentsInTheSystem}</Typography>
             </Grid>
             <Grid item xs={12} sm={4}>
               <CustomTextField
@@ -192,12 +192,12 @@ const UserAllTaskComponent = () => {
             </Grid>
             <Grid item xs={12}>
               <UserDashboardTable
-                projectTable={workAllData?.result?.data || []}
+                projectTable={workAllSysDocData?.result?.data || []}
                 page={page}
                 pageSize={pageSize}
                 setPage={setPage}
                 setPageSize={setPageSize}
-                count={workAllData?.result?.total}
+                count={workAllSysDocData?.result?.total}
                 onManage={handleClickManange}
                 onViewFlow={handleShowFlow}
               />
@@ -210,4 +210,4 @@ const UserAllTaskComponent = () => {
   )
 }
 
-export default UserAllTaskComponent
+export default UserAllSystemDocComponent

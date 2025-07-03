@@ -1,4 +1,10 @@
 {
+  "allDocumentsInTheSystem": "เอกสารทั้งหมดในระบบ",
+  "confirmDeleteItem": "คุณต้องการที่จะลบรายการนี้หรือไม่ ?",
+  "confirmDelete": "ยืนยันการลบ",
+  "draft": "ร่าง",
+  "finished": "สิ้นสุด",
+  "inProgress": "กำลังดำเนินการ",
   "getStarted": "เริ่มต้นใช้งาน",
   "viewWorkflow": "ดูเวิร์คโฟลว์",
   "copyLinkError": "เกิดข้อผิดพลาดในการคัดลอกลิงก์",

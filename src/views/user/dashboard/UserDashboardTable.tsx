@@ -15,7 +15,11 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
 
-import { Directions, Preview, Pageview, PlayCircleOutline, Article, FindInPage, DeviceHub } from '@mui/icons-material'
+import { Directions, Preview, Pageview, PlayCircleOutline, Article, FindInPage, DeviceHub, Delete } from '@mui/icons-material'
+
+import {
+  useDeleteFormDataQueryOption
+} from '@/queryOptions/form/formQueryOptions'
 // Third-party Imports
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -167,6 +171,9 @@ const UserDashboardTable = ({
 }: any) => {
   const { showDialog } = useDialog()
   const profile = useAuthStore(state => state.profile)
+  const { mutateAsync: deleteFormData } = useDeleteFormDataQueryOption()
+
+  const isAdmin = profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id))
 
   // alert('')
 
@@ -194,6 +201,11 @@ const UserDashboardTable = ({
       // })
     }
   }
+
+  const onDelete = (row: any) => {
+    deleteFormData({ form_data_id: row.original.id })
+  }
+
   // Hooks
   const columns = useMemo<ColumnDef<TableRowData, any>[]>(
     () => [
@@ -202,15 +214,8 @@ const UserDashboardTable = ({
         header: dictionary?.action,
 
         cell: ({ row }) => {
-          const options: OptionType[] = [
-            // {
-            //   text: 'แก้ไข',
-            //   menuItemProps: {
-            //     className: 'flex items-center  text-textSecondary',
-            //     onClick: () => {}
-            //   }
-            // }
-          ]
+          const status = row.original.status
+
 
           return (
             <div className='flex gap-2 justify-between'>
@@ -244,7 +249,37 @@ const UserDashboardTable = ({
                   }}
                 />
               )}
+
+
+
+              {status == "draft" || isAdmin ? (
+                <Delete
+                  color='secondary'
+                  fontSize='large'
+                  titleAccess={dictionary?.viewFlow}
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    showDialog({
+                      id: 'alertDialogConfirmToggleTrigger',
+                      component: (
+                        <ConfirmAlert
+                          id='alertDialogConfirmToggleTrigger'
+                          title={dictionary?.confirmDelete}
+                          content1={dictionary?.confirmDeleteItem}
+                          onClick={() => onDelete(row)}
+                        />
+                      ),
+                      size: 'sm'
+                    })
+                  }}
+                />
+              ) : null}
+
             </div>
+
+
+
+
           )
         },
         enableSorting: false
@@ -284,7 +319,7 @@ const UserDashboardTable = ({
               <Chip
                 className='capitalize'
                 // label={chipConfig.label}
-                label={chipConfig.label == 'Draft' ? 'ร่าง' : chipConfig.label == 'Active' ? 'ดำเนินการ' : 'สิ้นสุด'}
+                label={chipConfig.label == 'Draft' ? dictionary?.draft : chipConfig.label == 'Active' ? dictionary?.inProgress : dictionary?.finished}
                 size='small'
                 variant='tonal'
                 color={chipConfig.color}

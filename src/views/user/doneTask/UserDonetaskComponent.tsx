@@ -44,7 +44,7 @@ import UserNextTaskComponent from '../createTask/next/UserNextTaskComponent'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CardCount from '@/components/card/CardCount'
 import { useDictionary } from '@/contexts/DictionaryContext'
-
+import WorkLabel from '@/views/user/@components/workLabel'
 const UserDonetaskComponent = () => {
   const router = useRouter()
   const params = useParams()
@@ -130,8 +130,8 @@ const UserDonetaskComponent = () => {
 
   return (
     <div className='flex flex-col gap-6'>
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={3}>
+      {/* <Grid container spacing={4}>
+       <Grid item xs={12} md={4}>
           <CardCount
             title={dictionary?.cardOwnWork}
             count={countList?.result?.data[0]?.Total || 0}
@@ -141,37 +141,29 @@ const UserDonetaskComponent = () => {
             path='user/dashboard'
           />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <CardCount
-            title={dictionary?.cardFollowWork}
-            count={countList?.result?.data[1]?.Total || 0}
-            baseColor='rgba(67, 154, 226, 0.25)'
-            textColor='rgb(67, 154, 226)'
-            icon={PushPin}
-            path='user/followTask'
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
+        <WorkLabel countList={countList} />
+        <Grid item xs={12} md={4}>
           <CardCount
             title={dictionary?.cardAllWork}
-            count={countList?.result?.data[2]?.Total || 0}
+            count={countList?.result?.data[1]?.Total || 0}
             baseColor='rgba(30, 107, 175, 0.25)'
             textColor='rgb(30, 107, 175)'
             icon={ViewList}
             path='user/allTask'
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={4}>
           <CardCount
             title={dictionary?.cardDoneWork}
-            count={countList?.result?.data[3]?.Total || 0}
+            count={countList?.result?.data[2]?.Total || 0}
             baseColor='rgba(23, 87, 155, 0.25)'
             textColor='rgb(23, 87, 155)'
             icon={AssignmentTurnedIn}
             path='user/doneTask'
           />
         </Grid>
-      </Grid>
+      </Grid> */}
+      <WorkLabel countList={countList} />
       <Card className='min-h-[581px]'>
         <CardContent>
           <Grid container spacing={4}>

@@ -12,6 +12,7 @@ import {
   deleteFlow,
   deleteFolder,
   deleteForm,
+  deleteFormData,
   deleteMedia,
   deleteUploadFile,
   deleteVariable,
@@ -57,7 +58,8 @@ import {
   getFormFields,
   logout,
   fetchWorkCount,
-  getFormSignaturePermisionFields
+  getFormSignaturePermisionFields,
+  fetchWorkAllSysDoc
 } from '@/app/sevices/form/formServices'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -136,6 +138,8 @@ export const useDeleteFormQueryOption = () => {
     }
   })
 }
+
+
 
 export function useFetchVariableQueryOption(page: number, pageSize: number) {
   return useQuery({
@@ -580,6 +584,29 @@ export const useSaveStartFlowQueryOption = () => {
   })
 }
 
+
+export const useDeleteFormDataQueryOption = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: deleteFormData,
+    onError: error => {
+      console.error('Error delete form:', error)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['workMy'] })
+      queryClient.invalidateQueries({ queryKey: ['workAllSysDoc'] })
+      queryClient.invalidateQueries({ queryKey: ['workAll'] })
+      queryClient.invalidateQueries({ queryKey: ['workEnd'] })
+
+      queryClient.invalidateQueries({ queryKey: ['fetchWorkCount'] })
+
+
+
+    }
+  })
+}
+
 export function useFetchWorkInProgressQueryOption(
   page: number,
   pageSize: number,
@@ -631,6 +658,23 @@ export function useFetchWorkEndQueryOption(
     ...options
   })
 }
+
+
+export function useFetchWorkAllSysDocQueryOption(
+  page: number,
+  pageSize: number,
+  flow_id: number,
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ['workAllSysDoc', page, pageSize, flow_id],
+    queryFn: () => fetchWorkAllSysDoc({ page, pageSize, flow_id }),
+    ...options
+  })
+}
+
+
+
 
 export const useNextFlowQueryOption = () => {
   // const queryClient = useQueryClient();

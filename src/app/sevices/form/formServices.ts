@@ -114,6 +114,19 @@ export const deleteForm = async ({ id }: { id: number }) => {
   }
 }
 
+export const deleteFormData = async ({ form_data_id }: { form_data_id: number }) => {
+  try {
+    const response = await Axios.post('/form-datas/work/delete', { form_data_id })
+
+    return response.data
+  } catch (error) {
+    console.error('Error delete form:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/work/delete')
+    throw e
+  }
+}
+
 export const fetchVariable = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
     const response = await Axios.post('/variable/list', {
@@ -892,6 +905,31 @@ export const fetchWorkEnd = async ({
     console.error('Error fetch work end:', error)
 
     const e = axiosErrorHandler(error, '/form-datas/work/end')
+    throw e
+  }
+}
+
+export const fetchWorkAllSysDoc = async ({
+  page,
+  pageSize,
+  flow_id
+}: {
+  page: number
+  pageSize: number
+  flow_id: number
+}) => {
+  try {
+    const response = await Axios.post('/form-datas/work/all-sys-doc', {
+      page,
+      limit: pageSize,
+      flow_id
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetch work all-sys-doc:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/work/all-sys-doc')
     throw e
   }
 }
