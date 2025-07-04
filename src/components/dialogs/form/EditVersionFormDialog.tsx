@@ -68,7 +68,8 @@ const EditVersionFormDialog = ({ id, onClick, data }: EditVersionProps) => {
           version: data?.version[0]?.version,
           newVersion: version,
           layout: layoutValue as 'vertical' | 'horizontal',
-          form_details: resultForm?.result?.data?.FormDetails[0]?.detail?.data
+          form_details: resultForm?.result?.data?.FormDetails[0]?.detail?.data,
+          // form_data_id: response?.result?.data?.form_data_detail?.id
         }
 
         setFullForm(formFromApi)

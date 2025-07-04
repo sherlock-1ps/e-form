@@ -46,6 +46,7 @@ import {
   updateApi,
   updateDateFlow,
   updateDateForm,
+  updateSignatrueForm,
   updateFile,
   updateFlow,
   updateForm,
@@ -92,6 +93,21 @@ export const useUpdateDateFormFormQueryOption = () => {
     }
   })
 }
+export const useUpdateSignatrueFormQueryOption = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateSignatrueForm,
+    onError: error => {
+      console.error('Error update signatrue form:', error)
+    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ['signatrue-form'] })
+    // }
+  })
+}
+
+
 
 export const useCreateNewVersionFormQueryOption = () => {
   const queryClient = useQueryClient()

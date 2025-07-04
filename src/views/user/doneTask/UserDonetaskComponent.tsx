@@ -95,7 +95,8 @@ const UserDonetaskComponent = () => {
           formId: response?.result?.data?.form_detail?.id,
           versionId: response?.result?.data?.form_detail?.form_version_id,
           layout: layoutValue as 'vertical' | 'horizontal',
-          form_details: updateForm
+          form_details: updateForm,
+          formDataId: response?.result?.data?.form_data_id,
         }
 
         setFlowDiagramData(resultFlow)

@@ -44,7 +44,7 @@ const ProfileLayout = () => {
       <div className='flex items-center gap-4 justify-center'>
         <Link href={'/'}>
           <img
-            src='https://dtn.igenco.dev/media/logos/dtn/dtn-logo.png'
+            src='https://dtn.igenco.dev/media/logos/dtn/DTN_logo_blue.gif'
             alt='dtn-header'
             className='w-[94px] h-auto cursor-pointer'
           />

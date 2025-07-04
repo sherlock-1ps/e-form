@@ -1,4 +1,6 @@
 {
+  "updatefailed": "อัพเดทล้มเหลว",
+  "updateSuccessful": "อัพเดทสำเร็จ",
   "allDocumentsInTheSystem": "เอกสารทั้งหมดในระบบ",
   "confirmDeleteItem": "คุณต้องการที่จะลบรายการนี้หรือไม่ ?",
   "confirmDelete": "ยืนยันการลบ",
@@ -112,7 +114,7 @@
   "truncateTextToFitBox": "ตัดข้อความตามขนาดกล่อง",
   "color": "สี",
   "signatureField": "จุดลงนามแบบ",
-  "position": "ตำแหน่งหน้าที่",
+  "position": "ตำแหน่ง",
   "location": "ตำแหน่ง",
   "displayPosition": "แสดงตำแหน่งหน้าที่",
   "signerFullName": "แสดงชื่อ-สกุล ผู้ลงนาม",

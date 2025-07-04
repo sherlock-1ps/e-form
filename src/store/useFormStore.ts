@@ -16,6 +16,7 @@ type FormObject = {
 }
 
 type FormVersion = {
+  formDataId?: number
   isCopy?: boolean
   name?: string
   version?: string

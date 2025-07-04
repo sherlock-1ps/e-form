@@ -55,7 +55,7 @@ export default function GridLayoutDraft({ formElement }: any) {
     updateFormByKey(formElement.parentKey, newLayout)
   }
 
-  const handleClickContainer = (key: any) => {}
+  const handleClickContainer = (key: any) => { }
 
   useEffect(() => {
     setLayout(formElement?.fields || [])
@@ -104,6 +104,7 @@ export default function GridLayoutDraft({ formElement }: any) {
           }
         }}
       >
+
         {layout?.map((item: any) => (
           <Box key={item.i} className=' relative min-h-[12px] w-full'>
             <div className='w-full'>

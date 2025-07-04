@@ -38,12 +38,12 @@ const DateUseFormDialog = ({ id, data }: DateUseProps) => {
       }
       const response = await mutateAsync({ request })
       if (response?.code == 'SUCCESS') {
-        toast.success('อัพเดทสำเร็จ', { autoClose: 3000 })
+        toast.success(dictionary?.updateSuccessful, { autoClose: 3000 })
         closeDialog(id)
       }
     } catch (error) {
       console.log('error', error)
-      toast.error('อัพเดทล้มเหลว', { autoClose: 3000 })
+      toast.error(dictionary?.updatefailed, { autoClose: 3000 })
     }
   }
 

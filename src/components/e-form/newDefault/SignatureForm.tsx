@@ -1,17 +1,22 @@
 'use client'
-import { useEffect, useRef } from 'react'
-import { Button, Typography } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
+import { Button, Typography, TextField } from '@mui/material'
 import { useDialog } from '@/hooks/useDialog'
 import SettingSignDialog from '@/components/dialogs/form/SettingSignDialog'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined, Check } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useFormStore } from '@/store/useFormStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
-
+import { useUpdateSignatrueFormQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { toast } from 'react-toastify'
 const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
+  const { mutateAsync } = useUpdateSignatrueFormQueryOption()
+
   const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
+
+
   let currentItem = item
 
   if (item?.config?.details?.signType?.type === 'clone' && item?.config?.details?.signType?.formId) {
@@ -24,6 +29,63 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
       currentItem = cloned
     }
   }
+
+  // console.log("form", form)
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState(currentItem?.config?.details?.position?.value || "จะปรากฏเมื่อลงนาม");
+  const [editedText, setEditedText] = useState(currentItem?.config?.details?.position?.value || "จะปรากฏเมื่อลงนาม");
+
+  // console.log("currentItem?.config?.details", currentItem)
+
+
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+    setEditedText(text); // Initialize editedText with current text
+  };
+
+  const handleChange = (event: any) => {
+    setEditedText(event.target.value);
+  };
+
+  const handleSave = async () => {
+    setText(editedText);
+    setIsEditing(false);
+
+    try {
+      const request = {
+        form_data_id: form.formDataId,
+        signature_id: currentItem.id,
+        signature_key: "position_name",
+        signature_value: editedText || "",
+      }
+      const response = await mutateAsync({ request })
+      if (response?.code == 'SUCCESS') {
+        toast.success(dictionary?.updateSuccessful, { autoClose: 3000 })
+      }
+    } catch (error) {
+      console.log('error', error)
+      toast.error(dictionary?.updatefailed, { autoClose: 3000 })
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedText(text); // Revert to original text
+  };
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      handleSave();
+    } else if (event.key === 'Escape') {
+      handleCancel();
+    }
+  };
+
+
+  // console.log("currentItem?.config?.details?.endTag?.value", currentItem?.config?.details?.endTag?.value)
+
 
   return (
     <div className='w-full mx-auto ' style={{ opacity: currentItem?.config?.details?.isShow ? 1 : 0 }}>
@@ -102,7 +164,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
               onClick={() => {
                 showDialog({
                   id: 'alertSettingSignDialog',
-                  component: <SettingSignDialog id='alertSettingSignDialog' onClick={() => {}} />,
+                  component: <SettingSignDialog id='alertSettingSignDialog' onClick={() => { }} />,
                   size: 'sm'
                 })
               }}
@@ -141,7 +203,9 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
       )}
 
       <div className='mt-2 space-y-2  flex items-center flex-col'>
-        {currentItem?.config?.details?.position?.isShow && (
+
+
+        {/* {currentItem?.config?.details?.position?.isShow && (
           <div className='flex gap-4 justify-start'>
             <Typography
               variant='h6'
@@ -166,14 +230,75 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
                 className='text-center italic text-textDisabled'
                 variant='body2'
                 style={{
-                  fontSize: currentItem?.config?.style?.fontSize ?? 16
+                  fontSize: currentItem?.config?.style?.fontSize ?? 16,
                 }}
               >
                 จะปรากฏเมื่อลงนาม
               </Typography>
-            )}
+            )
+
+            }
+          </div>
+        )} */}
+
+
+
+        {currentItem?.config?.details?.position?.isShow && (
+          <div className='flex gap-4 justify-start'>
+            <Typography
+              variant='h6'
+              style={{
+                fontSize: currentItem?.config?.style?.fontSize ?? 16
+              }}
+            >
+              {/* {dictionary?.position} */}
+              ตำแหน่ง
+            </Typography>
+            {
+
+              isEditing ? (
+                <>
+                  <TextField
+                    //  variant='body2'
+                    value={editedText}
+                    onChange={handleChange}
+                    onBlur={handleSave} // Save on blur (optional, you might prefer explicit save)
+                    onKeyDown={handleKeyDown}
+                    variant="standard" // Or "outlined", "filled"
+                    autoFocus // Focus the input when it appears
+                    size="small"
+                    sx={{ flexGrow: 1 }}
+                    style={{
+                      fontSize: currentItem?.config?.style?.fontSize ?? 16,
+                    }}
+                  />
+                  <Button onClick={handleSave} size="small">
+                    <Check />
+                  </Button>
+
+                </>
+              ) : (
+                <Typography
+
+                  // className='text-center'
+                  // className='text-center italic text-textDisabled'
+                  className={`text-center text-textPrimary${(currentItem?.config?.details?.position?.value) ? "" : ' italic text-textDisabled'}`}
+                  variant='body2'
+                  // onDoubleClick={handleDoubleClick}
+                  onClick={handleDoubleClick}
+                  sx={{ cursor: 'pointer', flexGrow: 1 }}
+                  style={{
+                    fontSize: currentItem?.config?.style?.fontSize ?? 16,
+                  }}
+                >
+                  {text}
+                </Typography>
+              )
+            }
           </div>
         )}
+
+
         {currentItem?.config?.details?.date?.isShow && (
           <div className='flex gap-4 justify-start'>
             <Typography

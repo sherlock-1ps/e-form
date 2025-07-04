@@ -26,6 +26,7 @@ import { frontLayoutClasses } from '@layouts/utils/layoutClasses'
 
 // Styles Imports
 import styles from './styles.module.css'
+// import frontCommonStyles from '.views/front-pages/styles.module.css'
 import frontCommonStyles from '@views/front-pages/styles.module.css'
 
 const Footer = ({ mode }: { mode: Mode }) => {

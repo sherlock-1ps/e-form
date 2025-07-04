@@ -25,11 +25,13 @@ const DraftFormComponent = () => {
         backgroundColor: 'white'
       }}
     >
+
       {form?.form_details?.length > 0 && (
         <>
           {form?.form_details?.length > 0 &&
             form?.form_details?.map(item => {
               {
+                // console.log("item", item)
                 return <GridLayoutDraft formElement={item} key={item.parentKey} />
               }
             })}

@@ -1062,7 +1062,7 @@ export default function AdminWorkflowComponent() {
               }}
               className=' cursor-pointer'
             >
-              <img src='https://dtn.igenco.dev/images/dtn/dtn-logo.png' alt='logo' className='h-[48px]' />
+              <img src='https://dtn.igenco.dev/media/logos/dtn/DTN_logo_blue.gif' alt='logo' className='h-[48px]' />
             </div>
             <Typography className='text-white' variant='h5'>
               E-flow
