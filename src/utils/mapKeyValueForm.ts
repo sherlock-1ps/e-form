@@ -163,6 +163,7 @@ export const updateSignature = (
       person_name: string
       position_name: string
       signed_date: string
+      is_current: boolean
     }
   >
 ) => {
@@ -190,6 +191,7 @@ export const updateSignature = (
                   value: signerInfo?.position_name ?? ''
                 },
                 signer: {
+                  ...signerInfo,
                   ...item.config?.details?.signer,
                   value: signerInfo?.person_name ?? '',
                   imgValue: `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${signerInfo?.person_id}`

@@ -7,10 +7,10 @@ import { DeleteOutlined, Check } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useFormStore } from '@/store/useFormStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
-import { useUpdateSignatrueFormQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useReplaceSignatrueFormQueryOption } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
 const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
-  const { mutateAsync } = useUpdateSignatrueFormQueryOption()
+  const { mutateAsync } = useReplaceSignatrueFormQueryOption()
 
   const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
@@ -41,8 +41,11 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
 
 
   const handleDoubleClick = () => {
-    setIsEditing(true);
-    setEditedText(text); // Initialize editedText with current text
+    if (currentItem?.config?.details?.signer?.is_current) {
+      setIsEditing(true);
+      setEditedText(text); // Initialize editedText with current text
+    }
+
   };
 
   const handleChange = (event: any) => {
@@ -57,8 +60,9 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
       const request = {
         form_data_id: form.formDataId,
         signature_id: currentItem.id,
-        signature_key: "position_name",
-        signature_value: editedText || "",
+        data: {
+          position_name: editedText || ""
+        }
       }
       const response = await mutateAsync({ request })
       if (response?.code == 'SUCCESS') {
@@ -86,10 +90,29 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
 
   // console.log("currentItem?.config?.details?.endTag?.value", currentItem?.config?.details?.endTag?.value)
 
+  let isCurrenStyle = {}
+  let isCurrenStyleImage = {}
+
+  if (currentItem?.config?.details?.signer?.is_current) {
+    isCurrenStyleImage = { opacity: .3 }
+    isCurrenStyle = {
+      borderColor: 'blue',
+      borderWidth: '2px'
+    }
+  }
 
   return (
-    <div className='w-full mx-auto ' style={{ opacity: currentItem?.config?.details?.isShow ? 1 : 0 }}>
-      <div className='bg-gray-100 rounded-sm text-start  p-4 border-b-2 relative border-gray-500 flex items-end justify-center gap-2'>
+    <div
+      className='w-full mx-auto ' style={
+        {
+          opacity: currentItem?.config?.details?.isShow ? 1 : 0,
+          ...isCurrenStyle
+        }
+      }
+
+    >
+      {/* bg-gray-100 */}
+      <div className='rounded-sm text-start  p-4 border-b-2 relative border-gray-500 flex items-end justify-center gap-2'>
         {currentItem?.config?.details?.tag?.isShow && (
           <Typography
             variant='h6'
@@ -153,7 +176,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
               opacity: 1,
               width: '100%',
               height: '40px',
-              objectFit: 'contain'
+              objectFit: 'contain',
+              // ...isCurrenStyleImage
             }}
           />
           {currentItem?.config?.details?.setting?.isUserUse && (

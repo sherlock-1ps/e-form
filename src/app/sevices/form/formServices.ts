@@ -75,6 +75,19 @@ export const updateSignatrueForm = async ({ request }: { request: any }) => {
   }
 }
 
+export const replaceSignatrueForm = async ({ request }: { request: any }) => {
+  try {
+    const response = await Axios.post('/form-datas/signature/replace', request)
+
+    return response.data
+  } catch (error) {
+    console.error('Error replace signatrue form:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/signature/replace')
+    throw e
+  }
+}
+
 export const createForm = async ({ request }: { request: any }) => {
   try {
     const response = await Axios.post('/forms/create', request)

@@ -60,7 +60,8 @@ import {
   logout,
   fetchWorkCount,
   getFormSignaturePermisionFields,
-  fetchWorkAllSysDoc
+  fetchWorkAllSysDoc,
+  replaceSignatrueForm
 } from '@/app/sevices/form/formServices'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -98,6 +99,19 @@ export const useUpdateSignatrueFormQueryOption = () => {
 
   return useMutation({
     mutationFn: updateSignatrueForm,
+    onError: error => {
+      console.error('Error update signatrue form:', error)
+    },
+    // onSettled: () => {
+    //   queryClient.invalidateQueries({ queryKey: ['signatrue-form'] })
+    // }
+  })
+}
+export const useReplaceSignatrueFormQueryOption = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: replaceSignatrueForm,
     onError: error => {
       console.error('Error update signatrue form:', error)
     },
