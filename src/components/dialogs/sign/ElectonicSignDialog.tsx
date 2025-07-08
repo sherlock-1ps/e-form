@@ -17,10 +17,12 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 // Props
 interface signProps {
   id: string
-  onSave: (comment: string) => Promise<any>
+  onSave: (comment: string, signType: string, base64Signature: string) => Promise<any>
+  signType: string
+
 }
 
-const ElectonicSignDialog = ({ id, onSave }: signProps) => {
+const ElectonicSignDialog = ({ id, onSave, signType }: signProps) => {
   const { dictionary } = useDictionary()
   const router = useRouter()
   const params = useParams()
@@ -32,6 +34,8 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
   const [comment, setComment] = useState('')
   const [canvasWidth, setCanvasWidth] = useState(800)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // const [base64Sing, setBase64Sing] = useState("")
 
   const downloadSignature = () => {
     const dataUrl = sigPadRef.current?.getCanvas().toDataURL('image/png')
@@ -45,12 +49,35 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
     document.body.removeChild(link)
   }
 
+
+
+  const getSignature = () => {
+
+    if (sigPadRef.current?.isEmpty()) {
+      alert("Please draw something before process!");
+      return { status: false, base64: "" }
+    }
+    const dataURL = sigPadRef.current?.toDataURL('image/png');
+
+    // setSignatureBase64(dataURL)
+    // setBase64Sing(dataURL || "")
+
+    return { status: true, base64: dataURL || "" }
+  };
+
   const handleConfirm = async () => {
+
+    // console.log(getSignature())
+
+    // return;
+    const base64Value = getSignature()
+    if (!base64Value.status) return
+
     if (isSubmitting) return
     setIsSubmitting(true)
 
     try {
-      const response = await onSave(comment)
+      const response = await onSave(comment, signType, base64Value.base64)
       if (response?.code === 'SUCCESS') {
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
@@ -105,6 +132,8 @@ const ElectonicSignDialog = ({ id, onSave }: signProps) => {
         <Typography variant='body2' className=' text-textPrimary'>
           วาดลายเซ็น
         </Typography>
+        {/* <button onClick={() => { saveSignature() }}>xxx</button> */}
+        {/* <img src={base64Sing}></img> */}
         <div ref={containerRef} className='bg-gray-100 border border-gray-300 rounded-md overflow-hidden'>
           <SignatureCanvasComponent // <-- แก้ไขตรงนี้: ใช้ชื่อใหม่
             penColor='black'

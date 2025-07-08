@@ -13,10 +13,11 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface signProps {
   id: string
-  onSave: (comment: string) => Promise<any>
+  onSave: (comment: string, signType: string) => Promise<any>
+  signType: string
 }
 
-const OtpSignDialog = ({ id, onSave }: signProps) => {
+const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
   const { dictionary } = useDictionary()
   const router = useRouter()
   const params = useParams()
@@ -53,7 +54,7 @@ const OtpSignDialog = ({ id, onSave }: signProps) => {
     setIsSubmitting(true)
 
     try {
-      const response = await onSave(comment)
+      const response = await onSave(comment, signType)
       if (response?.code === 'SUCCESS') {
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)

@@ -32,6 +32,23 @@ export function formatToLocalEndOfDay(date: Date): string {
   return `${year}-${month}-${day}T23:59:59${offset}`
 }
 
+export function getCurrentFormattedDate() {
+  const now = new Date();
+
+  // Get year, month, day
+  const year = now.getUTCFullYear();
+  const month = (now.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+  const day = now.getUTCDate().toString().padStart(2, '0');
+
+  // Get hours, minutes, seconds
+  const hours = now.getUTCHours().toString().padStart(2, '0');
+  const minutes = now.getUTCMinutes().toString().padStart(2, '0');
+  const seconds = now.getUTCSeconds().toString().padStart(2, '0');
+
+  // Combine into the desired format
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+}
+
 export function formatThaiDate(isoString: any, isTime = true, format: 'short' | 'full' = 'full') {
   if (!isoString) return '-'
 

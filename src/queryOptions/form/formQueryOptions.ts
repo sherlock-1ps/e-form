@@ -37,6 +37,8 @@ import {
   getNextFlow,
   getPersonList,
   getPositionList,
+  getCertificates,
+  verifyCertificate,
   getStartFlow,
   getUploadFile,
   readNotificationRead,
@@ -524,6 +526,44 @@ export function useGetPersonExternalQueryOption(
     ...options
   })
 }
+
+export function useGetCertificatesExternalQueryOption(
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ['certificates'],
+    queryFn: () => getCertificates(),
+    ...options
+  })
+}
+
+
+
+// export const useReadNotification = () => {
+//   const queryClient = useQueryClient()
+
+//   return useMutation({
+//     mutationFn: readNotificationRead,
+//     onError: error => {
+//       console.error('Error read notification', error)
+//     },
+//     onSettled: () => {
+//       queryClient.invalidateQueries({ queryKey: ['notificationList'] })
+//     }
+//   })
+// }
+
+export function useVerifyCertificateExternalQueryOption() {
+  return useMutation({
+    mutationFn: verifyCertificate,
+    onError: error => {
+      console.error('Error Verify Certificate:', error)
+    }
+  })
+}
+//
+
+
 
 export function useGetPositionExternalQueryOption(
   page: number,

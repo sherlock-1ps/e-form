@@ -164,6 +164,7 @@ export const updateSignature = (
       position_name: string
       signed_date: string
       is_current: boolean
+      signature_base64: string
     }
   >
 ) => {

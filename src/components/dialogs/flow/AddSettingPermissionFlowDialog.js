@@ -22,6 +22,7 @@ import {
   useGetPositionExternalQueryOption,
   useFetchGetFormSignaturePermisionFieldsQueryOption
 } from '@/queryOptions/form/formQueryOptions'
+import { ArrowCircleLeft, ArrowCircleRight } from '@mui/icons-material'
 import { useFlowStore } from '@/store/useFlowStore'
 import { createRoot } from 'react-dom/client'
 import { AgGridReact } from 'ag-grid-react'
@@ -160,11 +161,11 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
   const { data: person } = useGetPersonExternalQueryOption(page, pageSize, searchText, {
     enabled: filterType === 'person'
   })
-  const { data: position } = useGetPositionExternalQueryOption(page, pageSize, '', '', {
+  const { data: position } = useGetPositionExternalQueryOption(page, pageSize, '', {
     enabled: filterType === 'position'
   })
 
-  const { data: department } = useGetDepartmentExternalQueryOption(page, pageSize, '', '', {
+  const { data: department } = useGetDepartmentExternalQueryOption(page, pageSize, '', {
     enabled: filterType === 'department'
   })
 
@@ -338,11 +339,11 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
           {/* Buttons */}
           <div className='flex flex-col justify-center items-center gap-4'>
             <Button variant='text' onClick={moveSelected}>
-              {'▶'}
+              <ArrowCircleRight fontSize='large' />
             </Button>
 
             <Button variant='text' onClick={removeSelected}>
-              {'◀'}
+              <ArrowCircleLeft fontSize='large' />
             </Button>
           </div>
 

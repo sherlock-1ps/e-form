@@ -408,7 +408,13 @@ export const toolboxCreateformMenu = [
         signer: {
           isShow: true,
           value: '',
-          imgValue: ''
+          imgValue: '',
+          signature_base64: null
+        },
+        workers: {
+          persons: [{ id: 1, text: "001" }],
+          positions: [{ id: 1, text: "001" }],
+          departments: [{ id: 1, text: "001" }]
         },
         tag: {
           isShow: true,

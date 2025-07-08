@@ -10,12 +10,20 @@ import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { useDictionary } from '@/contexts/DictionaryContext'
 
+import {
+  useGetCertificatesExternalQueryOption, useVerifyCertificateExternalQueryOption
+} from '@/queryOptions/form/formQueryOptions'
+
 interface signProps {
   id: string
-  onSave: (comment: string) => Promise<any>
+
+
+  onSave: (comment: string, signType: string) => Promise<any>
+  signType: string
 }
 
-const CertifySignDialog = ({ id, onSave }: signProps) => {
+
+const CertifySignDialog = ({ id, onSave, signType }: signProps) => {
   const { dictionary } = useDictionary()
   const router = useRouter()
   const params = useParams()
@@ -23,17 +31,40 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
   const { closeDialog } = useDialog()
 
   const [comment, setComment] = useState('')
+  const [password, setPassword] = useState('')
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
+
+  const { data: certificates } = useGetCertificatesExternalQueryOption({
+    enabled: true
+  })
+
+
+  const { mutateAsync: VerifyCertificate } = useVerifyCertificateExternalQueryOption()
+
+
+
+  // console.log("Certificates", certificates?.data[0]?.F_DIGITAL_CERTIFICATE_ID)
+
   const handleConfirm = async () => {
+
+
+    const response: any = await VerifyCertificate({ password })
+
+
+    if (!response?.data?.result) {
+      toast.error(dictionary?.invalidPassword, { autoClose: 3000 })
+      return
+    }
+
     if (isSubmitting) return
     setIsSubmitting(true)
 
     try {
-      const response = await onSave(comment)
+      const response = await onSave(comment, signType)
       if (response?.code === 'SUCCESS') {
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
@@ -73,11 +104,18 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
         <Typography variant='h6'>{dictionary?.authenticate}</Typography>
       </Grid>
       <Grid item xs={6}>
-        <CustomTextField select fullWidth defaultValue='' label='เลือกใบรับรองอิเล็กทรอนิกส์'>
+        <CustomTextField select fullWidth defaultValue={''} label='เลือกใบรับรองอิเล็กทรอนิกส์'>
           <MenuItem value=''>
             <em>None</em>
           </MenuItem>
-          <MenuItem value={10}>978-1-4565-8759-8</MenuItem>
+          {
+            certificates?.data?.map((i: any) => {
+              return <MenuItem value={i.F_DIGITAL_CERTIFICATE_ID}>{i.F_SUBJECT}</MenuItem>
+            })
+          }
+
+
+
         </CustomTextField>
       </Grid>
       <Grid item xs={6}>
@@ -85,6 +123,8 @@ const CertifySignDialog = ({ id, onSave }: signProps) => {
           fullWidth
           label='รหัสผ่าน'
           type={isPasswordShown ? 'text' : 'password'}
+          onChange={(e) => { setPassword(e.target.value) }}
+          value={password}
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>

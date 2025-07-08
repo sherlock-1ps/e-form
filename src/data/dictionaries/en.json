@@ -1,4 +1,5 @@
 {
+  "invalidPassword": "Invalid password.",
   "updatefailed": "Update failed",
   "updateSuccessful": "Update successful",
   "allDocumentsInTheSystem": "All documents in the system",

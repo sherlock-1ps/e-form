@@ -170,7 +170,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
 
         <div className='flex min-w-[200px] relative'>
           <img
-            src={currentItem?.config?.details?.signer?.imgValue || '/images/signImg.png'}
+            src={currentItem?.config?.details?.signer?.signature_base64 || currentItem?.config?.details?.signer?.imgValue || '/images/signImg.png'}
             alt='ลายเซ็นต์'
             style={{
               opacity: 1,
@@ -188,8 +188,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
               onClick={() => {
                 showDialog({
                   id: 'alertSettingSignDialog',
-                  component: <SettingSignDialog id='alertSettingSignDialog' onClick={() => { }} />,
-                  size: 'sm'
+                  component: <SettingSignDialog id='alertSettingSignDialog' />,
+                  size: 'md'
                 })
               }}
             >

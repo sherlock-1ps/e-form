@@ -20,6 +20,19 @@ type CreateVariablePayload = {
   value: VariableValue
 }
 
+const getAuthFromStorage = () => {
+  const storedData = localStorage.getItem('auth-storage')
+  if (!storedData) {
+    return null
+  }
+  try {
+    return JSON.parse(storedData)
+  } catch (error) {
+    console.error("Error parsing 'auth-storage' from localStorage:", error)
+    return null
+  }
+}
+
 export const fetchForm = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
     const response = await Axios.post('/forms/list', {
@@ -645,6 +658,46 @@ export const getPersonList = async ({
     throw e
   }
 }
+
+
+
+export const getCertificates = async () => {
+  try {
+    const auth = getAuthFromStorage()
+    const response = await AxiosExternal.post('/api/service/core/get-certificate-info', { f_person_id: auth?.state?.profile?.F_PERSON_ID || "" })
+    const data = response?.data?.items;
+    return { data }
+  } catch (error) {
+    console.error('Error get Certificate list:', error)
+    const e = axiosErrorHandler(error, '/api/service/core/get-certificate-info')
+    throw e
+  }
+}
+
+
+
+
+export const verifyCertificate = async ({
+  password = ''
+}: {
+  password: string
+}) => {
+  try {
+    const auth = getAuthFromStorage()
+    const response = await AxiosExternal.post('/api/service/core/verify-pass-certificate', { f_person_id: auth?.state?.profile?.F_PERSON_ID || "", password })
+    const data = response?.data;
+
+
+    return { data }
+  } catch (error) {
+    console.error('Error verify Certificate list:', error)
+    const e = axiosErrorHandler(error, '/api/service/core/verify-pass-certificate')
+    throw e
+  }
+}
+
+
+
 
 export const getPositionList = async ({
   page,

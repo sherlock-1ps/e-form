@@ -1,4 +1,5 @@
 {
+  "invalidPassword": "รหัสผ่านไม่ถูกต้อง",
   "updatefailed": "อัพเดทล้มเหลว",
   "updateSuccessful": "อัพเดทสำเร็จ",
   "allDocumentsInTheSystem": "เอกสารทั้งหมดในระบบ",

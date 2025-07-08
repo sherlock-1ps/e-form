@@ -58,6 +58,8 @@ import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CommentSignDialog from '@/components/dialogs/sign/CommentSignDialog'
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 
+import { getCurrentFormattedDate } from '@/utils/formatDateTime'
+
 const allowedExtensions = [
   '.jpg',
   '.jpeg',
@@ -195,7 +197,10 @@ const UserStartTaskComponent = ({ data }: any) => {
     }
   }
 
-  const handleSaveStartflow = async (comment: string, linkId?: any) => {
+  const handleSaveStartflow = async (comment: string, signType: string, signatureBase64?: string) => {
+
+
+    const valueSignatureBase64 = signType === '7' ? signatureBase64 : ""
     const isValid = validateForm()
     if (!isValid) {
       toast.error('โปรดกรอกข้อมูลให้ครบถ้วน')
@@ -207,15 +212,17 @@ const UserStartTaskComponent = ({ data }: any) => {
       const request = {
         id: data?.form_data_id, // มี FormData id ตลอดแล้วว
         // "form_data_detail_id": 22, // ตอนมี id
-        flow_activity_link_id: linkIdButton || linkId,
+        flow_activity_link_id: linkIdButton,
         form_version_id: data?.form_detail?.form_version_id, //กรณีตรงนี้ คือ เขาจะส่งform ต่อไปที่เชื่อมมาหรือ
-        is_sign: false,
-        // "sign_date": "2025-12-31T23:59:59Z", // false ไม่ส่ง
-        // "sign": { // false ไม่ส่ง
-        //     "data": "xxx"
+        // is_sign: true,
+        // sign_date: getCurrentFormattedDate(),
+        // sign: {
+        //   sign_type: signType,
         // },
         data_detail: resultMapValue,
-        comment: comment ?? ''
+        comment: comment ?? '',
+        sign_type: signType,
+        signature_base64: valueSignatureBase64
       }
       const response = await callSaveStartflow(request)
 
@@ -422,9 +429,10 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
+
                                   showDialog({
                                     id: 'alertSignDialog',
-                                    component: <NormalSignDialog id='alertSignDialog' onSave={handleSaveStartflow} />,
+                                    component: <NormalSignDialog id='alertSignDialog' onSave={handleSaveStartflow} signType="6" />,
                                     size: 'sm'
                                   })
                                 }}
@@ -436,12 +444,14 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
+
                                   showDialog({
                                     id: 'alertSignElectonicSignDialog',
                                     component: (
                                       <ElectonicSignDialog
                                         id='alertSignElectonicSignDialog'
                                         onSave={handleSaveStartflow}
+                                        signType="7"
                                       />
                                     ),
                                     size: 'sm'
@@ -455,10 +465,11 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
+
                                   showDialog({
                                     id: 'alertCertifySignDialog',
                                     component: (
-                                      <CertifySignDialog id='alertCertifySignDialog' onSave={handleSaveStartflow} />
+                                      <CertifySignDialog id='alertCertifySignDialog' onSave={handleSaveStartflow} signType="1" />
                                     ),
                                     size: 'sm'
                                   })
@@ -471,10 +482,11 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
+
                                   showDialog({
                                     id: 'alertSignOtpSignDialog',
                                     component: (
-                                      <OtpSignDialog id='alertSignOtpSignDialog' onSave={handleSaveStartflow} />
+                                      <OtpSignDialog id='alertSignOtpSignDialog' onSave={handleSaveStartflow} signType="8" />
                                     ),
                                     size: 'sm'
                                   })
@@ -491,6 +503,13 @@ const UserStartTaskComponent = ({ data }: any) => {
                                     key={index}
                                     variant='contained'
                                     onClick={() => {
+
+                                      const isValid = validateForm()
+                                      if (!isValid) {
+                                        toast.error('โปรดกรอกข้อมูลให้ครบถ้วน')
+                                        return
+                                      }
+
                                       if (item?.signId) {
                                         setLinkIdButton(item?.link_id)
                                         setIsStartSign(true)
