@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, Typography, TextField } from '@mui/material'
 import { useDialog } from '@/hooks/useDialog'
 import SettingSignDialog from '@/components/dialogs/form/SettingSignDialog'
-import { DeleteOutlined, Check } from '@mui/icons-material'
+import { DeleteOutlined, Check, CheckCircle } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
+import Alert from '@/components/dialogs/alerts/Alert'
 import { useFormStore } from '@/store/useFormStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
 import { useReplaceSignatrueFormQueryOption } from '@/queryOptions/form/formQueryOptions'
@@ -179,7 +180,27 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
               objectFit: 'contain',
               // ...isCurrenStyleImage
             }}
+
           />
+
+          {currentItem?.config?.details?.signer?.signature ?
+            <CheckCircle color='success' className='mt-2 cursor-pointer' titleAccess={currentItem?.config?.details?.signer?.signature} onClick={() => {
+              showDialog({
+                id: 'alertDialogConfirmToggleTrigger',
+                component: (
+                  <Alert
+                    id='alertDialogConfirmToggleTrigger'
+                    title='Signature'
+                    content1={currentItem?.config?.details?.signer?.signature}
+                    onClick={() => {
+                    }}
+                  />
+                ),
+                size: 'sm'
+              })
+            }} />
+            : null}
+
           {currentItem?.config?.details?.setting?.isUserUse && (
             <Button
               variant='contained'

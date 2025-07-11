@@ -10,7 +10,9 @@ import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
 import { useDictionary } from '@/contexts/DictionaryContext'
-
+import {
+  useVerifyFortitokenExternalQueryOption
+} from '@/queryOptions/form/formQueryOptions'
 interface signProps {
   id: string
   onSave: (comment: string, signType: string) => Promise<any>
@@ -28,6 +30,10 @@ const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
   const [isCanResend, setIsCanResend] = useState(false)
   const [countdown, setCountdown] = useState(30)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const { mutateAsync: VerifyFortitoken } = useVerifyFortitokenExternalQueryOption()
+
+
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return
@@ -50,6 +56,19 @@ const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
   }
 
   const handleConfirm = async () => {
+
+    if (otp.join('').length < 6) {
+      toast.error(dictionary?.pleaseEnterTheOTPCompletely, { autoClose: 3000 })
+      return
+    }
+
+    const responseOtp: any = await VerifyFortitoken({ password: otp.join('') })
+
+    if (!responseOtp?.data?.result) {
+      toast.error(dictionary?.invalidOTP, { autoClose: 3000 })
+      return
+    }
+
     if (isSubmitting) return
     setIsSubmitting(true)
 
@@ -110,18 +129,7 @@ const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
         ))}
       </Grid>
 
-      <Grid item xs={12}>
-        {isCanResend ? (
-          <Typography className='text-center'>
-            ไม่ได้รับ OTP
-            <Button type='button' className='text-primary'>
-              ส่งอีกครั้ง
-            </Button>
-          </Typography>
-        ) : (
-          <Typography className='text-center'>ส่งอีกครั้งใน {countdown} วินาที</Typography>
-        )}
-      </Grid>
+
 
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>

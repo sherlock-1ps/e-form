@@ -1,4 +1,6 @@
 {
+  "invalidOTP": "invalid OTP",
+  "pleaseEnterTheOTPCompletely": "Please enter the OTP completely",
   "invalidPassword": "Invalid password.",
   "updatefailed": "Update failed",
   "updateSuccessful": "Update successful",

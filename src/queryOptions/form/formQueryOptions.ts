@@ -39,6 +39,7 @@ import {
   getPositionList,
   getCertificates,
   verifyCertificate,
+  verifyFortitoken,
   getStartFlow,
   getUploadFile,
   readNotificationRead,
@@ -561,7 +562,19 @@ export function useVerifyCertificateExternalQueryOption() {
     }
   })
 }
-//
+
+
+export function useVerifyFortitokenExternalQueryOption() {
+  return useMutation({
+    mutationFn: verifyCertificate,
+    onError: error => {
+      console.error('Error Verify Fortitoken:', error)
+    }
+  })
+}
+
+
+
 
 
 

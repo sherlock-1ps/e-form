@@ -677,6 +677,9 @@ export const getCertificates = async () => {
 
 
 
+
+
+
 export const verifyCertificate = async ({
   password = ''
 }: {
@@ -692,6 +695,25 @@ export const verifyCertificate = async ({
   } catch (error) {
     console.error('Error verify Certificate list:', error)
     const e = axiosErrorHandler(error, '/api/service/core/verify-pass-certificate')
+    throw e
+  }
+}
+
+export const verifyFortitoken = async ({
+  password = ''
+}: {
+  password: string
+}) => {
+  try {
+    const auth = getAuthFromStorage()
+    const response = await AxiosExternal.post('/api/service/core/verify-fortitoken', { f_person_id: auth?.state?.profile?.F_PERSON_ID || "", fortitoken: password })
+    const data = response?.data;
+
+
+    return { data }
+  } catch (error) {
+    console.error('Error verify Fortitoken list:', error)
+    const e = axiosErrorHandler(error, '/api/service/core/verify-fortitoken')
     throw e
   }
 }

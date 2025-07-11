@@ -110,7 +110,7 @@ const CertifySignDialog = ({ id, onSave, signType }: signProps) => {
           </MenuItem>
           {
             certificates?.data?.map((i: any) => {
-              return <MenuItem value={i.F_DIGITAL_CERTIFICATE_ID}>{i.F_SUBJECT}</MenuItem>
+              return <MenuItem key={i.F_DIGITAL_CERTIFICATE_ID} value={i.F_DIGITAL_CERTIFICATE_ID}>{i.F_SUBJECT}</MenuItem>
             })
           }
 

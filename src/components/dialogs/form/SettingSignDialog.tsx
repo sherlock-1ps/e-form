@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useEffect, useState, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef, useMemo, InputHTMLAttributes } from 'react'
 import {
   Button,
   Grid,
@@ -36,8 +36,8 @@ import {
   CustomFilterModule,
   NumberFilterModule,
   DateFilterModule,
-  ColDef, // Import ColDef for column definitions
-  IsRowSelectable
+  // ColDef, // Import ColDef for column definitions
+  // IsRowSelectable
 } from 'ag-grid-community'
 import { useDictionary } from '@/contexts/DictionaryContext'
 
@@ -100,7 +100,7 @@ interface DebouncedInputProps {
   maxLength?: number
   label?: string
   placeholder?: string
-  inputProps?: React.InputHTMLAttributes<HTMLInputElement>
+  inputProps?: InputHTMLAttributes<HTMLInputElement>
 }
 
 const DebouncedInput = ({
@@ -172,7 +172,7 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
   // Use optional chaining for nodeData to prevent errors if selectedField or its data is null/undefined
   const nodeData = myDiagram?.model?.findNodeDataForKey(selectedField?.data?.key)
 
-  const columnDefs = useMemo<ColDef<DataItem>[]>(
+  const columnDefs = useMemo<any[]>(
     () => [
       { headerName: 'ชื่อ', field: 'name', filter: false, flex: 1 },
       { headerName: 'ประเภท', field: 'type', filter: false, width: 100 },
@@ -216,7 +216,7 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
   }
 
   const lockRowSelectionByField = (currentSelectedData: DataItem[]) => {
-    const isRowSelectable: IsRowSelectable = node => {
+    const isRowSelectable = (node: any) => {
       // Ensure node.data is of type DataItem
       const nodeDataItem = node.data as DataItem;
       return currentSelectedData.findIndex(item => item.pk === nodeDataItem.pk) === -1;
@@ -228,22 +228,22 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
 
 
   const rowSelection = useMemo(
-    () => ({
-      mode: 'singleRow' as 'singleRow', // Explicitly type for safety
-
-
+    () =>
+    ({
+      mode: 'singleRow',
       hideDisabledCheckboxes: true,
-      isRowSelectable: ((node: any) =>
-        node.data ? selectedMoved.map(item => item.pk).indexOf(node.data.pk) === -1 : false) as IsRowSelectable
-    }),
+      isRowSelectable: (node: any) =>
+        node.data ? selectedMoved.map(item => item.pk).indexOf(node.data.pk) === -1 : false
+    } as const), // Apply 'as const' to the entire object
     [selectedMoved]
   )
 
   const rowRemoveSelection = useMemo(
-    () => ({
-      mode: 'singleRow' as 'singleRow',
+    () =>
+    ({
+      mode: 'singleRow',
       hideDisabledCheckboxes: true
-    }),
+    } as const), // Apply 'as const' to the entire object
     []
   )
 
