@@ -78,7 +78,7 @@ const SelectProperty = () => {
       >
         <ChoiceBox />
       </section>
-      <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>
+      <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5 hidden'>
         <div>
           <FormControlLabel control={<Switch defaultChecked />} label='Trigger Event' />
         </div>

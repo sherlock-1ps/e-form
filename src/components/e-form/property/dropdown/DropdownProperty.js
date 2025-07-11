@@ -405,24 +405,24 @@ const DropdownProperty = () => {
           <Typography variant='h6'>{dictionary?.displayOptions} </Typography>
           {(result?.config?.details?.value?.value?.defaultValue ||
             result?.config?.details?.value?.value?.value?.value?.defaultValue) && (
-            <IconButton
-              className=' bg-slate-200'
-              onClick={() => {
-                updateDetails(
-                  String(selectedField?.parentKey ?? ''),
-                  selectedField?.boxId ?? '',
-                  selectedField?.fieldId?.id ?? '',
-                  {
-                    value: {
-                      ...toolboxOptionMenu[3]?.config?.details?.value
+              <IconButton
+                className=' bg-slate-200'
+                onClick={() => {
+                  updateDetails(
+                    String(selectedField?.parentKey ?? ''),
+                    selectedField?.boxId ?? '',
+                    selectedField?.fieldId?.id ?? '',
+                    {
+                      value: {
+                        ...toolboxOptionMenu[3]?.config?.details?.value
+                      }
                     }
-                  }
-                )
-              }}
-            >
-              <DeleteOutlined style={{ color: 'red', fontSize: '20px' }} />
-            </IconButton>
-          )}
+                  )
+                }}
+              >
+                <DeleteOutlined style={{ color: 'red', fontSize: '20px' }} />
+              </IconButton>
+            )}
         </div>
 
         {/* <ChoiceBox item={result} /> */}
@@ -468,7 +468,7 @@ const DropdownProperty = () => {
           }}
         />
       </section>
-      <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>
+      <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5 hidden'>
         <div>
           <FormControlLabel
             control={

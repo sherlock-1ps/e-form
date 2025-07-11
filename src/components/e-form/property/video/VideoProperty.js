@@ -319,7 +319,7 @@ const VideoProperty = ({ item }) => {
           />
         </div>
 
-        <div>
+        <div className='hidden'>
           <FormControlLabel
             control={
               <Switch

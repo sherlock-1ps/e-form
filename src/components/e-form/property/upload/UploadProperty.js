@@ -278,7 +278,7 @@ const UploadProperty = () => {
             onClick={() => {
               showDialog({
                 id: 'alertSelectFileUploadDialog',
-                component: <SelectFileUploadDialog id='alertSelectFileUploadDialog' onClick={() => {}} />,
+                component: <SelectFileUploadDialog id='alertSelectFileUploadDialog' onClick={() => { }} />,
                 size: 'sm'
               })
             }}
@@ -372,7 +372,7 @@ const UploadProperty = () => {
           </CustomTextField>
         </div>
 
-        <div>
+        <div className='hidden'>
           <FormControlLabel
             control={
               <Switch
