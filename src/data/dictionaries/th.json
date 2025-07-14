@@ -1,4 +1,5 @@
 {
+  "actingOfDepartment": "รักษาราชการแทน",
   "invalidOTP": "รหัส otp ไม่ถูกต้อง",
   "pleaseEnterTheOTPCompletely": "กรุณากรอก OTP ให้ครบถ้วน",
   "invalidPassword": "รหัสผ่านไม่ถูกต้อง",

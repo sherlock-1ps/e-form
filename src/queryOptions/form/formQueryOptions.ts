@@ -35,6 +35,7 @@ import {
   getFlow,
   getForm,
   getNextFlow,
+  getActingList,
   getPersonList,
   getPositionList,
   getCertificates,
@@ -515,6 +516,19 @@ export const useGetFlowQueryOption = () => {
   })
 }
 
+
+
+export function useGetActingListQueryOption(
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ['acting'],
+    queryFn: () => getActingList(),
+    ...options
+  })
+}
+
+
 export function useGetPersonExternalQueryOption(
   page: number,
   pageSize: number,
@@ -527,6 +541,8 @@ export function useGetPersonExternalQueryOption(
     ...options
   })
 }
+
+
 
 export function useGetCertificatesExternalQueryOption(
   options?: { enabled?: boolean }

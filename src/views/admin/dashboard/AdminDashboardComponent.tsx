@@ -236,10 +236,6 @@ const AdminDashboardComponent = () => {
 
   return (
     <Grid container spacing={6}>
-      {/* <Grid item xs={12}>
-        <DashboardNavbarContent />
-      </Grid> */}
-
       <Grid item xs={12}>
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>

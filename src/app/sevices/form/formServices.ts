@@ -622,6 +622,23 @@ export const getFlow = async (id: number) => {
   }
 }
 
+
+
+export const getActingList = async () => {
+  try {
+
+    const response = await Axios.post('/auth/acting/list', {})
+    const data = response?.data?.result?.data || []
+
+    return { data, total: data.length }
+  } catch (error) {
+    console.error('Error get ฟcting list:', error)
+    const e = axiosErrorHandler(error, '/auth/acting/list')
+    throw e
+  }
+}
+
+
 export const getPersonList = async ({
   page,
   pageSize,

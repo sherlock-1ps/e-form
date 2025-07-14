@@ -24,7 +24,8 @@ import {
   PushPin,
   ViewList,
   AssignmentTurnedIn,
-  Assessment
+  Assessment,
+  SupervisedUserCircle
 } from '@mui/icons-material'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Typography } from '@mui/material'
@@ -51,6 +52,12 @@ const FormFlowLayout = () => {
             <AccountTree style={{ width: '20px', height: '20px' }} className=' text-primary' />
             <Typography variant='h6' className='font-normal hover:text-primary '>
               {dictionary?.manageFlow}
+            </Typography>
+          </Link>
+          <Link href={`/${locale}/admin/acting`} className='flex gap-2'>
+            <SupervisedUserCircle style={{ width: '20px', height: '20px' }} className=' text-primary' />
+            <Typography variant='h6' className='font-normal hover:text-primary '>
+              {dictionary?.actingOfDepartment}
             </Typography>
           </Link>
         </>
