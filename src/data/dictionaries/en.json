@@ -1,4 +1,12 @@
 {
+  "setATimeFrame": "Set a time frame",
+  "back": "Back",
+  "finish": "Finish",
+  "selectActingPerson": "Select Acting Person",
+  "SelectThePersonPositionOrganization": "Select the person, position, or organization that will act on behalf.",
+  "selectPerson": "Select Person",
+  "selectActingAssignment": "Select Acting Assignment",
+  "addPerson": "Add Person",
   "actingOfDepartment": "Acting of Department",
   "invalidOTP": "invalid OTP",
   "pleaseEnterTheOTPCompletely": "Please enter the OTP completely",

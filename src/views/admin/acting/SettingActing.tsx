@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-
+// FormatShowDate(row.original.updated_at)
 import { useEffect, useState, useRef, useMemo, InputHTMLAttributes, Fragment } from 'react'
 import {
   Button,
@@ -14,19 +14,31 @@ import {
   Checkbox,
   Pagination,
   CardContent,
-  Card
+  Card,
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Paper
 } from '@mui/material'
 
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 // import { Grid, Typography, Button, CardContent, Card, CircularProgress, Pagination, IconButton } from '@mui/material'
 import { useDialog } from '@/hooks/useDialog'
+
+import SelectActing from '@/views/admin/acting/SelectActing'
+
+import DateEffective from '@/views/admin/acting/DateEffective'
+
 import CustomTextField from '@/@core/components/mui/TextField'
 import {
   useGetDepartmentExternalQueryOption,
   useGetPersonExternalQueryOption,
   useGetPositionExternalQueryOption,
   useFetchGetFormSignaturePermisionFieldsQueryOption,
-  useGetActingListQueryOption
+  useGetActingListQueryOption,
+  useSaveActingQueryOption,
+  useDeleteActingQueryOption
 } from '@/queryOptions/form/formQueryOptions'
 import { useFlowStore } from '@/store/useFlowStore'
 import { createRoot } from 'react-dom/client'
@@ -41,11 +53,15 @@ import {
   TextFilterModule,
   CustomFilterModule,
   NumberFilterModule,
-  DateFilterModule,
+  DateFilterModule
   // ColDef, // Import ColDef for column definitions
   // IsRowSelectable
 } from 'ag-grid-community'
 import { useDictionary } from '@/contexts/DictionaryContext'
+import { formatToUTC } from '@/utils/formatDateTime'
+import { FormatShowDate } from '@/utils/formatShowDate'
+import data from '@/data/searchData'
+import { date } from 'valibot'
 
 ModuleRegistry.registerModules([
   RowSelectionModule,
@@ -80,7 +96,7 @@ const filterTypeOption: FilterOption[] = [
     id: 3,
     key: 'department',
     name: 'หน่วยงาน'
-  },
+  }
   // {
   //   id: 4,
   //   key: 'dataField',
@@ -161,90 +177,76 @@ const DebouncedInput = ({
 // }
 
 const ActingsCellRenderer = (props: any) => {
-  const { value } = props;
+  const { value } = props
 
   // Ensure value is an array before trying to map it
   if (!Array.isArray(value)) {
-    return null; // or return some default text
+    return null // or return some default text
   }
 
   return (
-
     <div className='max-h-[100px] overflow-y-auto'>
-
       {value.map((acting, index) => (
         <div className='h-[25px] flex items-center mb-1' key={acting.pk}>
-          {
-            acting.typeId == '1' ? <Person titleAccess={acting.type} /> : acting.typeId == '2' ? <Work titleAccess={acting.type} /> : <OtherHouses titleAccess={acting.type} />
-          }
-          <span className="ml-2">{acting.name}</span>
+          {acting.typeId == '1' ? (
+            <Person titleAccess={acting.type} />
+          ) : acting.typeId == '2' ? (
+            <Work titleAccess={acting.type} />
+          ) : (
+            <OtherHouses titleAccess={acting.type} />
+          )}
+          <span className='ml-2'>{acting.name}</span>
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
+
+const ActingDateCellRenderer = (props: any) => {
+  const { value } = props
+
+  return <>{FormatShowDate(value)}</>
+}
 
 const SettingActing = () => {
   const { dictionary } = useDictionary()
-
-  const { closeDialog } = useDialog() // Assuming useDialog provides a closeDialog function
-  const myDiagram = useFlowStore(state => state.myDiagram)
-  const selectedField = useFlowStore(state => state.selectedField)
   const gridRefSelectingMain = useRef<AgGridReact>(null)
-  const gridRefSelecting = useRef<AgGridReact>(null)
-  const gridRefSelectingRemove = useRef<AgGridReact>(null)
-  const [page, setPage] = useState<number>(1)
+  const { closeDialog, showDialog } = useDialog() // Assuming useDialog provides a closeDialog function
+  const { mutateAsync: callDeleteActing } = useDeleteActingQueryOption()
+  const { data: acting } = useGetActingListQueryOption({
+    enabled: true
+  })
 
-  // Use optional chaining for nodeData to prevent errors if selectedField or its data is null/undefined
-  const nodeData = myDiagram?.model?.findNodeDataForKey(selectedField?.data?.key)
-
-  const columnDefs = useMemo<any[]>(
-    () => [
-      { headerName: 'ชื่อ', field: 'name', filter: false, flex: 1 },
-      { headerName: 'ประเภท', field: 'type', filter: false, width: 100 },
-      { headerName: 'รหัส', field: 'id', width: 70, filter: false }
-    ],
-    []
-  )
-  /*
-
-                  "f_first_name": "อนุรักษ์",
-                  "f_last_name": "ทองฤกษ์ฤทธิ์",
-                  "f_position_name": "นักวิชาการพัสดุปฏิบัติการ",
-                  "f_position_id": 1019,
-                  "f_dept_id": 10000033,
-                  "department_name": "ส่วน RCEP",
-                  "id": 9,
-                  "created_at": "2025-07-11T16:43:49.573767+07:00",
-                  "updated_at": "2025-07-11T16:43:49.573767+07:00",
-                   "start_effective_date": "2025-03-13T07:00:00+07:00",
-                "end_effective_date": "2026-03-13T07:00:00+07:00",
-  */
+  // Function to render step content
 
   const ActionsCellRenderer = (props: any) => {
-    const { value } = props;
+    const { value } = props
     // console.log(value)
     return (
-
       <div>
-        <Delete className='cursor-pointer' onClick={() => {
-          showDialog({
-            id: 'alertErrorToken',
-            component: (
-              <ConfirmAlert
-                id='alertErrorToken'
-                title={'Invailid JWT'}
-                content1={'please login again!'}
-                onClick={() => {
-                  window.location.href = redirectUrl
-                }}
-              />
-            ),
-            size: 'sm'
-          })
+        <Delete
+          className='cursor-pointer'
+          onClick={() => {
+            showDialog({
+              id: 'alertDeleteData',
+              component: (
+                <ConfirmAlert
+                  id='alertDeleteData'
+                  title={dictionary?.confirmDelete}
+                  content1={dictionary?.confirmDeleteItem}
+                  onClick={async () => {
+                    const res = await callDeleteActing({
+                      id: value
+                    })
+                  }}
+                />
+              ),
 
-        }} />
-        <Edit className='cursor-pointer' />
+              size: 'sm'
+            })
+          }}
+        />
+        {/* <Edit className='cursor-pointer' /> */}
         {/*
         {value.map((acting, index) => (
           <div className='h-[25px] flex items-center mb-1' key={acting.pk}>
@@ -255,18 +257,18 @@ const SettingActing = () => {
           </div>
         ))} */}
       </div>
-    );
-  };
+    )
+  }
   const columnActingDefs = useMemo<any[]>(
     () => [
-
       {
         autoHeight: true,
-        headerName: 'ดำเนินการ',
+        headerName: ' ',
         field: 'id',
         filter: false,
         cellRenderer: ActionsCellRenderer,
-        flex: 1
+        // flex: 1
+        width: 50
       },
       { autoHeight: true, headerName: 'ชื่อ', field: 'f_first_name', filter: false, flex: 1 },
       { autoHeight: true, headerName: 'นามสกุล', field: 'f_last_name', filter: false, flex: 1 },
@@ -282,293 +284,221 @@ const SettingActing = () => {
         filter: false,
         flex: 2 // Allow column to grow
       },
-      { autoHeight: true, headerName: 'วันที่ส่งผล', field: 'start_effective_date', filter: false, flex: 1 },
-      { autoHeight: true, headerName: 'วันที่สิ้นสุด', field: 'end_effective_date', filter: false, flex: 1 },
-
+      {
+        autoHeight: true,
+        headerName: 'วันที่ส่งผล',
+        field: 'start_effective_date',
+        filter: false,
+        flex: 1,
+        cellRenderer: ActingDateCellRenderer
+      },
+      {
+        autoHeight: true,
+        headerName: 'วันที่สิ้นสุด',
+        field: 'end_effective_date',
+        filter: false,
+        flex: 1,
+        cellRenderer: ActingDateCellRenderer
+      }
     ],
     []
   )
-
-  const [pageSize, setPageSize] = useState<number>(10)
-  const [filterType, setFilterType] = useState<string>('person')
-  const [searchText, setSearchText] = useState<string>('')
-  const [selectedMoved, setSelectedMoved] = useState<DataItem[]>(
-    Array.isArray(selectedField?.data?.assignees) ? [...selectedField.data.assignees] : []
-  )
-  const [searchTextSelected, setSearchTextSelected] = useState<string>('')
-
-  const filteredSelectedMoved = selectedMoved.filter(item =>
-    item.name.toLowerCase().includes(searchTextSelected.toLowerCase())
-  )
-
-  const { data: person } = useGetPersonExternalQueryOption(page, pageSize, searchText, {
-    enabled: filterType === 'person'
-  })
-  const { data: position } = useGetPositionExternalQueryOption(page, pageSize, '', {
-    enabled: filterType === 'position'
-  })
-
-  const { data: department } = useGetDepartmentExternalQueryOption(page, pageSize, '', {
-    enabled: filterType === 'department'
-  })
-
-
-
-  const { data: acting } = useGetActingListQueryOption({
-    enabled: true
-  })
-
-
-  // Ensure dataField is typed correctly based on its expected structure
-  const { data: dataField } = useFetchGetFormSignaturePermisionFieldsQueryOption(nodeData?.form)
-
-  // Explicitly type the listData object
-  const listData: Record<string, { data: DataItem[]; total: number } | undefined> = {
-    person: person ? { data: person.data.map((p: any) => ({ pk: `person-${p.id}`, id: p.id, name: p.name, type: 'บุคคล', typeId: '1' })), total: person.total } : undefined,
-    position: position ? { data: position.data.map((pos: any) => ({ pk: `position-${pos.id}`, id: pos.id, name: pos.name, type: 'ตำแหน่ง', typeId: '2' })), total: position.total } : undefined,
-    department: department ? { data: department.data.map((dep: any) => ({ pk: `department-${dep.id}`, id: dep.id, name: dep.name, type: 'หน่วยงาน', typeId: '3' })), total: department.total } : undefined,
-    dataField: dataField ? { data: dataField.data.map((field: any) => ({ pk: `dataField-${field.id}`, id: field.id, name: field.name, type: 'ฟิวด์', typeId: '4' })), total: dataField.total } : undefined,
-  }
-
-  const lockRowSelectionByField = (currentSelectedData: DataItem[]) => {
-    const isRowSelectable = (node: any) => {
-      // Ensure node.data is of type DataItem
-      const nodeDataItem = node.data as DataItem;
-      return currentSelectedData.findIndex(item => item.pk === nodeDataItem.pk) === -1;
-    };
-
-    gridRefSelecting?.current?.api?.setGridOption('isRowSelectable', isRowSelectable);
-    gridRefSelecting?.current?.api?.redrawRows(); // Redraw rows to update checkbox states
-  };
-
-
-  const rowSelection = useMemo(
-    () =>
-    ({
-      mode: 'multiRow',
-      hideDisabledCheckboxes: true,
-      isRowSelectable: (node: any) =>
-        node.data ? selectedMoved.map(item => item.pk).indexOf(node.data.pk) === -1 : false
-    } as const), // Apply 'as const' to the entire object
-    [selectedMoved]
-  )
-
-  const rowRemoveSelection = useMemo(
-    () =>
-    ({
-      mode: 'multiRow',
-      hideDisabledCheckboxes: true
-    } as const), // Apply 'as const' to the entire object
-    []
-  )
-
-  const moveSelected = () => {
-    setSearchTextSelected('')
-    const sel = gridRefSelecting.current?.api.getSelectedRows() as DataItem[] // Cast to DataItem[]
-    setSelectedMoved(prev => {
-      // const newItems = [...prev, ...sel]
-      const newItems = [...sel]
-      lockRowSelectionByField(newItems)
-      return newItems
-    })
-  }
-
-  const removeSelected = () => {
-    setSearchTextSelected('')
-    const sel = gridRefSelectingRemove.current?.api.getSelectedRows() as DataItem[] // Cast to DataItem[]
-    setSelectedMoved(prev => {
-      const newItems = prev.filter(item => !sel.some(remove => remove.pk === item.pk))
-      lockRowSelectionByField(newItems)
-      return newItems
-    })
-  }
-
-  const handleUpdateActivity = () => {
-
-
-  }
-
-  // Effect to re-apply row selection logic when selectedMoved changes
-  useEffect(() => {
-    lockRowSelectionByField(selectedMoved);
-  }, [selectedMoved, filterType, page, searchText]); // Add dependencies that might affect row data
 
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
           <CardContent className='min-h-[calc(100vh-160px)] flex flex-col gap-4'>
-
             <Grid container spacing={2} className='flex flex-col'>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ justifyContent: 'space-between', display: 'flex' }}>
                 <Typography variant='h5' className='text-left'>
                   ตั้งค่ารักษาราชการแทน
                 </Typography>
+                <Button
+                  color='primary'
+                  variant='contained'
+                  onClick={() => {
+                    showDialog({
+                      id: 'alertProfileDialog',
+                      component: <TwoStepWizard id='alertProfileDialog' />,
+                      size: 'lg'
+                    })
+                  }}
+                >
+                  + {dictionary?.addPerson}
+                </Button>
               </Grid>
             </Grid>
 
             <Grid item xs={12} className='px-6 space-y-4'>
-              <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[500px]'>
-                <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[400px]'>
-                  <AgGridReact
-                    rowHeight={100}
-                    domLayout='autoHeight'
-
-                    ref={gridRefSelectingMain}
-                    rowData={acting?.data || []} // Ensure rowData is an array, even if undefined
-                    columnDefs={columnActingDefs}
-                    // rowSelection={rowSelection.mode} // Pass only the mode string
-                    // isRowSelectable={rowSelection.isRowSelectable} // Pass the function directly
-                    // rowSelection={rowSelection}
-                    onRowSelected={event => {
-                      console.log('Selected Row:', event.node.data)
-                    }}
-                    onSelectionChanged={event => {
-                      // const selectedRows = event.api.getSelectedRows()
-                      // console.log('All Selected Rows:', selectedRows)
-                    }}
-                    defaultColDef={{ sortable: true, filter: true }}
-                  />
-                </div>
+              <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[700px]'>
+                <AgGridReact
+                  rowHeight={100}
+                  domLayout='autoHeight'
+                  ref={gridRefSelectingMain}
+                  rowData={acting?.data || []} // Ensure rowData is an array, even if undefined
+                  columnDefs={columnActingDefs}
+                  // rowSelection={rowSelection.mode} // Pass only the mode string
+                  // isRowSelectable={rowSelection.isRowSelectable} // Pass the function directly
+                  // rowSelection={rowSelection}
+                  onRowSelected={event => {
+                    console.log('Selected Row:', event.node.data)
+                  }}
+                  onSelectionChanged={event => {
+                    // const selectedRows = event.api.getSelectedRows()
+                    // console.log('All Selected Rows:', selectedRows)
+                  }}
+                  defaultColDef={{ sortable: true, filter: true }}
+                />
               </div>
             </Grid>
-
-            <Grid container spacing={2} className='flex flex-col'>
-              <Grid item xs={12}>
-                <Typography variant='h5' className='text-left'>
-                  ตั้งค่ารักษาราชการแทน
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12} className='px-6 space-y-4 hi'>
-                <FormControl component='fieldset'>
-                  <RadioGroup
-                    row
-                    value={filterType}
-                    onChange={e => {
-                      setFilterType(e.target.value)
-                      setPage(1)
-                      setSearchText('')
-                    }}
-                  >
-                    {filterTypeOption.map(option => (
-                      <FormControlLabel key={option.id} value={option.key} control={<Radio />} label={option.name} />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-
-                <div className='flex'>
-                  {/* Left List */}
-                  <div className='flex flex-col gap-2 w-1/2'>
-                    <Typography variant='h6' className='text-center'>
-                      รายการ
-                    </Typography>
-                    <DebouncedInput
-                      label={dictionary?.search}
-                      placeholder={'....'}
-                      value={searchText}
-                      onChange={newText => {
-                        setSearchText(newText)
-                      }}
-                    />
-                    <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[500px]'>
-                      <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[400px]'>
-                        <AgGridReact
-                          rowHeight={30}
-                          ref={gridRefSelecting}
-                          rowData={listData[filterType]?.data || []} // Ensure rowData is an array, even if undefined
-                          columnDefs={columnDefs}
-                          // rowSelection={rowSelection.mode} // Pass only the mode string
-                          // isRowSelectable={rowSelection.isRowSelectable} // Pass the function directly
-                          rowSelection={rowSelection}
-                          onRowSelected={event => {
-                            console.log('Selected Row:', event.node.data)
-                          }}
-                          onSelectionChanged={event => {
-                            // const selectedRows = event.api.getSelectedRows()
-                            // console.log('All Selected Rows:', selectedRows)
-                          }}
-                          defaultColDef={{ sortable: true, filter: true }}
-                        />
-                      </div>
-
-                      <Pagination
-                        count={Math.ceil((listData[filterType]?.total || 0) / pageSize)}
-                        page={page}
-                        onChange={(_, value) => setPage(value)}
-                        size='small'
-                      />
-                    </div>
-                  </div>
-
-                  {/* Buttons */}
-                  <div className='flex flex-col justify-center items-center gap-4'>
-                    <Button variant='text' onClick={moveSelected} >
-                      <ArrowCircleRight fontSize='large' />
-                    </Button>
-
-                    <Button variant='text' onClick={removeSelected}>
-                      <ArrowCircleLeft fontSize='large' />
-                    </Button>
-                  </div>
-
-                  {/* Right List */}
-                  <div className='flex flex-col gap-2 w-1/2'>
-                    <Typography variant='h6' className='text-center'>
-                      รายการที่เลือก
-                    </Typography>
-                    <DebouncedInput
-                      label={dictionary?.search}
-                      placeholder={'....'}
-                      value={searchTextSelected}
-                      onChange={newText => setSearchTextSelected(newText)}
-                    />
-
-                    <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[400px]'>
-                      <AgGridReact
-                        ref={gridRefSelectingRemove}
-                        rowData={filteredSelectedMoved}
-                        columnDefs={columnDefs}
-                        // rowSelection={'multiple'} // Pass only the mode string
-                        // isRowSelectable={rowSelection} // Pass the function directly
-                        rowSelection={rowRemoveSelection}
-                        onRowSelected={event => {
-                          // console.log('Selected Row:', event.node.data)
-                        }}
-                        onSelectionChanged={event => {
-                          // const selectedRows = event.api.getSelectedRows()
-                          // console.log('All Selected Rows:', selectedRows)
-                        }}
-                        defaultColDef={{ sortable: true, filter: true }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </Grid>
-
-              <Grid item xs={12} className='flex items-center justify-end gap-2 px-6'>
-                <Button
-                  variant='contained'
-                  color='secondary'
-                  autoFocus
-                  onClick={() => {
-
-                  }}
-                >
-                  {dictionary?.cancel}
-                </Button>
-                <Button variant='contained' onClick={handleUpdateActivity}>
-                  {dictionary?.confirm}
-                </Button>
-              </Grid>
-            </Grid>
-
-
           </CardContent>
         </Card>
       </Grid>
-    </Grid >
+    </Grid>
   )
 }
 
 export default SettingActing
+
+function TwoStepWizard({ id }: { id: string }): JSX.Element {
+  // const gridRefSelecting = useRef<AgGridReact>(null)
+  // const gridRefSelectingRemove = useRef<AgGridReact>(null)
+  const { closeDialog } = useDialog()
+
+  const [page, setPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [filterType, setFilterType] = useState<string>('person')
+  const [searchText, setSearchText] = useState<string>('')
+  const [selectedMoved, setSelectedMoved] = useState<DataItem[]>([])
+
+  const [page2, setPage2] = useState<number>(1)
+  const [pageSize2, setPageSize2] = useState<number>(10)
+  const [filterType2, setFilterType2] = useState<string>('person')
+  const [searchText2, setSearchText2] = useState<string>('')
+  const [selectedMoved2, setSelectedMoved2] = useState<DataItem[]>([])
+
+  const [startDatetime, setStartDatetime] = useState<Date | null | undefined>(null)
+  const [endDatetime, setEndDatetime] = useState<Date | null | undefined>(null)
+
+  const getStepContent = (step: number): JSX.Element => {
+    switch (step) {
+      case 0:
+        return (
+          <SelectActing
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            filterType={filterType}
+            setFilterType={setFilterType}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            selectedMoved={selectedMoved}
+            setSelectedMoved={setSelectedMoved}
+            isPersonOnly={true}
+            titleLabel={dictionary?.selectActingPerson}
+          />
+        )
+      case 1:
+        return (
+          <SelectActing
+            isPersonOnly={false}
+            page={page2}
+            setPage={setPage2}
+            pageSize={pageSize2}
+            setPageSize={setPageSize2}
+            filterType={filterType2}
+            setFilterType={setFilterType2}
+            searchText={searchText2}
+            setSearchText={setSearchText2}
+            selectedMoved={selectedMoved2}
+            setSelectedMoved={setSelectedMoved2}
+            titleLabel={dictionary?.SelectThePersonPositionOrganization}
+          />
+        )
+      case 2:
+        return (
+          <DateEffective
+            startDatetime={startDatetime}
+            setStartDatetime={setStartDatetime}
+            endDatetime={endDatetime}
+            setEndDatetime={setEndDatetime}
+          />
+        )
+      default:
+        return <Typography>Unknown step.</Typography>
+    }
+  }
+
+  const { dictionary } = useDictionary()
+  // const { dictionary } = useDictionary()
+  const steps: string[] = [dictionary?.selectPerson, dictionary?.selectActingAssignment, dictionary?.setATimeFrame]
+
+  const [activeStep, setActiveStep] = useState<number>(0)
+  const { mutateAsync: callSaveActing } = useSaveActingQueryOption()
+
+  const handleNext = async () => {
+    setActiveStep(prev => prev + 1)
+
+    if (activeStep == 2) {
+      if (selectedMoved.length == 0) return
+      if (selectedMoved2.length == 0) return
+
+      if (startDatetime != null && endDatetime != null) {
+        // console.log('selectedMoved', selectedMoved)
+        // console.log('selectedMoved2', selectedMoved2)
+        // console.log('startDatetime', formatToUTC(startDatetime))
+
+        const saveActing = await callSaveActing({
+          f_person_id: selectedMoved[0].id,
+          start_effective_date: formatToUTC(startDatetime),
+          end_effective_date: formatToUTC(endDatetime),
+          status: 'active',
+          actings: selectedMoved2
+        })
+        closeDialog(id)
+        setActiveStep(0)
+      }
+    }
+  }
+  const handleBack = () => setActiveStep(prev => prev - 1)
+  const handleFinish = () => setActiveStep(0)
+
+  return (
+    <Grid item xs={12} className='px-6 space-y-4 hi'>
+      <Stepper activeStep={activeStep} alternativeLabel>
+        {steps.map(label => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+
+      <Paper elevation={3} sx={{ mt: 3 }}>
+        {activeStep === steps.length ? (
+          <Box sx={{ p: 3 }}>
+            <Typography sx={{ mb: 2 }}>All steps completed!</Typography>
+            <Button onClick={handleFinish} variant='contained'>
+              {dictionary?.finish}
+            </Button>
+          </Box>
+        ) : (
+          <Box>
+            {getStepContent(activeStep)}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2, borderTop: '1px solid #eee' }}>
+              <Button disabled={activeStep === 0} onClick={handleBack} variant='outlined'>
+                {dictionary?.back}
+              </Button>
+
+              <Button onClick={handleNext} variant='contained'>
+                {activeStep === steps.length - 1 ? dictionary?.finish : dictionary?.next}
+                {/* {dictionary?.next} */}
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </Paper>
+    </Grid>
+  )
+}

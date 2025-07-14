@@ -36,6 +36,8 @@ import {
   getForm,
   getNextFlow,
   getActingList,
+  saveActing,
+  deleteActing,
   getPersonList,
   getPositionList,
   getCertificates,
@@ -105,7 +107,7 @@ export const useUpdateSignatrueFormQueryOption = () => {
     mutationFn: updateSignatrueForm,
     onError: error => {
       console.error('Error update signatrue form:', error)
-    },
+    }
     // onSettled: () => {
     //   queryClient.invalidateQueries({ queryKey: ['signatrue-form'] })
     // }
@@ -118,14 +120,12 @@ export const useReplaceSignatrueFormQueryOption = () => {
     mutationFn: replaceSignatrueForm,
     onError: error => {
       console.error('Error update signatrue form:', error)
-    },
+    }
     // onSettled: () => {
     //   queryClient.invalidateQueries({ queryKey: ['signatrue-form'] })
     // }
   })
 }
-
-
 
 export const useCreateNewVersionFormQueryOption = () => {
   const queryClient = useQueryClient()
@@ -172,8 +172,6 @@ export const useDeleteFormQueryOption = () => {
     }
   })
 }
-
-
 
 export function useFetchVariableQueryOption(page: number, pageSize: number) {
   return useQuery({
@@ -516,18 +514,13 @@ export const useGetFlowQueryOption = () => {
   })
 }
 
-
-
-export function useGetActingListQueryOption(
-  options?: { enabled?: boolean }
-) {
+export function useGetActingListQueryOption(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ['acting'],
     queryFn: () => getActingList(),
     ...options
   })
 }
-
 
 export function useGetPersonExternalQueryOption(
   page: number,
@@ -542,19 +535,13 @@ export function useGetPersonExternalQueryOption(
   })
 }
 
-
-
-export function useGetCertificatesExternalQueryOption(
-  options?: { enabled?: boolean }
-) {
+export function useGetCertificatesExternalQueryOption(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ['certificates'],
     queryFn: () => getCertificates(),
     ...options
   })
 }
-
-
 
 // export const useReadNotification = () => {
 //   const queryClient = useQueryClient()
@@ -579,7 +566,6 @@ export function useVerifyCertificateExternalQueryOption() {
   })
 }
 
-
 export function useVerifyFortitokenExternalQueryOption() {
   return useMutation({
     mutationFn: verifyCertificate,
@@ -588,11 +574,6 @@ export function useVerifyFortitokenExternalQueryOption() {
     }
   })
 }
-
-
-
-
-
 
 export function useGetPositionExternalQueryOption(
   page: number,
@@ -683,6 +664,34 @@ export const useSaveStartFlowQueryOption = () => {
   })
 }
 
+export const useSaveActingQueryOption = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: saveActing,
+    onError: error => {
+      console.error('Error save acting flow:', error)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['acting'] })
+    }
+  })
+}
+
+export const useDeleteActingQueryOption = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: deleteActing,
+    onError: error => {
+      console.error('Error delete acting flow:', error)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['acting'] })
+    }
+  })
+}
+
+//  saveActing,
+//   deleteActing,
 
 export const useDeleteFormDataQueryOption = () => {
   const queryClient = useQueryClient()
@@ -699,9 +708,6 @@ export const useDeleteFormDataQueryOption = () => {
       queryClient.invalidateQueries({ queryKey: ['workEnd'] })
 
       queryClient.invalidateQueries({ queryKey: ['fetchWorkCount'] })
-
-
-
     }
   })
 }
@@ -758,7 +764,6 @@ export function useFetchWorkEndQueryOption(
   })
 }
 
-
 export function useFetchWorkAllSysDocQueryOption(
   page: number,
   pageSize: number,
@@ -771,9 +776,6 @@ export function useFetchWorkAllSysDocQueryOption(
     ...options
   })
 }
-
-
-
 
 export const useNextFlowQueryOption = () => {
   // const queryClient = useQueryClient();

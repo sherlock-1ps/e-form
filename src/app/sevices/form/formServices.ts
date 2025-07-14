@@ -622,23 +622,6 @@ export const getFlow = async (id: number) => {
   }
 }
 
-
-
-export const getActingList = async () => {
-  try {
-
-    const response = await Axios.post('/auth/acting/list', {})
-    const data = response?.data?.result?.data || []
-
-    return { data, total: data.length }
-  } catch (error) {
-    console.error('Error get ฟcting list:', error)
-    const e = axiosErrorHandler(error, '/auth/acting/list')
-    throw e
-  }
-}
-
-
 export const getPersonList = async ({
   page,
   pageSize,
@@ -676,13 +659,13 @@ export const getPersonList = async ({
   }
 }
 
-
-
 export const getCertificates = async () => {
   try {
     const auth = getAuthFromStorage()
-    const response = await AxiosExternal.post('/api/service/core/get-certificate-info', { f_person_id: auth?.state?.profile?.F_PERSON_ID || "" })
-    const data = response?.data?.items;
+    const response = await AxiosExternal.post('/api/service/core/get-certificate-info', {
+      f_person_id: auth?.state?.profile?.F_PERSON_ID || ''
+    })
+    const data = response?.data?.items
     return { data }
   } catch (error) {
     console.error('Error get Certificate list:', error)
@@ -691,22 +674,14 @@ export const getCertificates = async () => {
   }
 }
 
-
-
-
-
-
-
-export const verifyCertificate = async ({
-  password = ''
-}: {
-  password: string
-}) => {
+export const verifyCertificate = async ({ password = '' }: { password: string }) => {
   try {
     const auth = getAuthFromStorage()
-    const response = await AxiosExternal.post('/api/service/core/verify-pass-certificate', { f_person_id: auth?.state?.profile?.F_PERSON_ID || "", password })
-    const data = response?.data;
-
+    const response = await AxiosExternal.post('/api/service/core/verify-pass-certificate', {
+      f_person_id: auth?.state?.profile?.F_PERSON_ID || '',
+      password
+    })
+    const data = response?.data
 
     return { data }
   } catch (error) {
@@ -716,16 +691,14 @@ export const verifyCertificate = async ({
   }
 }
 
-export const verifyFortitoken = async ({
-  password = ''
-}: {
-  password: string
-}) => {
+export const verifyFortitoken = async ({ password = '' }: { password: string }) => {
   try {
     const auth = getAuthFromStorage()
-    const response = await AxiosExternal.post('/api/service/core/verify-fortitoken', { f_person_id: auth?.state?.profile?.F_PERSON_ID || "", fortitoken: password })
-    const data = response?.data;
-
+    const response = await AxiosExternal.post('/api/service/core/verify-fortitoken', {
+      f_person_id: auth?.state?.profile?.F_PERSON_ID || '',
+      fortitoken: password
+    })
+    const data = response?.data
 
     return { data }
   } catch (error) {
@@ -734,9 +707,6 @@ export const verifyFortitoken = async ({
     throw e
   }
 }
-
-
-
 
 export const getPositionList = async ({
   page,
@@ -931,6 +901,41 @@ export const saveStartFlow = async (request: any) => {
   } catch (error) {
     console.error('Error save start flow:', error)
     const e = axiosErrorHandler(error, '/form-datas/save')
+    throw e
+  }
+}
+
+export const getActingList = async () => {
+  try {
+    const response = await Axios.post('/auth/acting/list', {})
+    const data = response?.data?.result?.data || []
+
+    return { data, total: data.length }
+  } catch (error) {
+    console.error('Error get ฟcting list:', error)
+    const e = axiosErrorHandler(error, '/auth/acting/list')
+    throw e
+  }
+}
+
+export const saveActing = async (request: any) => {
+  try {
+    const response = await Axios.post('/auth/acting/save', request)
+    return response.data
+  } catch (error) {
+    console.error('Error save acting flow:', error)
+    const e = axiosErrorHandler(error, '/auth/acting/save')
+    throw e
+  }
+}
+
+export const deleteActing = async (request: any) => {
+  try {
+    const response = await Axios.post('/auth/acting/delete', request)
+    return response.data
+  } catch (error) {
+    console.error('Error del acting flow:', error)
+    const e = axiosErrorHandler(error, '/auth/acting/delete')
     throw e
   }
 }
@@ -1174,14 +1179,15 @@ export const getFormSignaturePermisionFields = async (id: number) => {
 
       console.log('response', response)
 
-      const dataResponse = response?.data?.result?.data?.map((i: any, index: number) => ({
-        pk: `${i.id}`,
-        typeId: '4',
-        // id: i.id,
-        id: (index + 2) * -1,
-        name: `${i.id}`.trim(),
-        type: 'ลายเซ็น'
-      })) || []
+      const dataResponse =
+        response?.data?.result?.data?.map((i: any, index: number) => ({
+          pk: `${i.id}`,
+          typeId: '4',
+          // id: i.id,
+          id: (index + 2) * -1,
+          name: `${i.id}`.trim(),
+          type: 'ลายเซ็น'
+        })) || []
       allItems = [...allItems, ...dataResponse]
       // console.log('dataResponse', dataResponse)
     }
