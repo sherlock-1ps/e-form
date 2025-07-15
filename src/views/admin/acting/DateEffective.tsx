@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 
 import { useDictionary } from '@/contexts/DictionaryContext'
 
-const DateEffective = ({ startDatetime, setStartDatetime, endDatetime, setEndDatetime }): JSX.Element => {
+const DateEffective = ({ startDatetime, setStartDatetime, endDatetime, setEndDatetime }: any) => {
   // const [startDatetime, setStartDatetime] = useState<Date | null | undefined>(null)
   // const [endDatetime, setEndDatetime] = useState<Date | null | undefined>(null)
 

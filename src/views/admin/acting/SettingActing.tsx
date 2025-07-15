@@ -361,7 +361,7 @@ const SettingActing = () => {
 
 export default SettingActing
 
-function TwoStepWizard({ id }: { id: string }): JSX.Element {
+function TwoStepWizard({ id }: { id: string }) {
   // const gridRefSelecting = useRef<AgGridReact>(null)
   // const gridRefSelectingRemove = useRef<AgGridReact>(null)
   const { closeDialog } = useDialog()
@@ -381,7 +381,7 @@ function TwoStepWizard({ id }: { id: string }): JSX.Element {
   const [startDatetime, setStartDatetime] = useState<Date | null | undefined>(null)
   const [endDatetime, setEndDatetime] = useState<Date | null | undefined>(null)
 
-  const getStepContent = (step: number): JSX.Element => {
+  const getStepContent = (step: number) => {
     switch (step) {
       case 0:
         return (

@@ -57,7 +57,7 @@ import FlowDocFullTable from '../../followTask/FlowDocFullTable'
 import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CommentSignDialog from '@/components/dialogs/sign/CommentSignDialog'
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
-
+import { useDictionary } from '@/contexts/DictionaryContext'
 import { getCurrentFormattedDate } from '@/utils/formatDateTime'
 
 const allowedExtensions = [
@@ -104,7 +104,7 @@ const UserStartTaskComponent = ({ data }: any) => {
   const [pageSize, setPageSize] = useState(25)
   const { data: commentData } = useFetchCommentQueryOption(page, pageSize, formDataId)
   const { mutateAsync: callSaveStartflow } = useSaveStartFlowQueryOption()
-
+  const { dictionary } = useDictionary()
   useEffect(() => {
     setWatchFormTrue()
     const findStart = data?.flow?.nodeDataArray?.find((item: any) => item.category == 'start')
@@ -197,10 +197,14 @@ const UserStartTaskComponent = ({ data }: any) => {
     }
   }
 
-  const handleSaveStartflow = async (comment: string, signType: string, signatureBase64?: string) => {
+  const handleSaveStartflow = async (comment: string, signType: string, signatureBase64?: string, linkId?: number) => {
+    console.log('handleSaveStartflow-linkId', linkId)
 
-
-    const valueSignatureBase64 = signType === '7' ? signatureBase64 : ""
+    if (!comment) {
+      toast.error(dictionary?.commentRequired, { autoClose: 3000 })
+      return
+    }
+    const valueSignatureBase64 = signType === '7' ? signatureBase64 : ''
     const isValid = validateForm()
     if (!isValid) {
       toast.error('โปรดกรอกข้อมูลให้ครบถ้วน')
@@ -212,7 +216,7 @@ const UserStartTaskComponent = ({ data }: any) => {
       const request = {
         id: data?.form_data_id, // มี FormData id ตลอดแล้วว
         // "form_data_detail_id": 22, // ตอนมี id
-        flow_activity_link_id: linkIdButton,
+        flow_activity_link_id: linkIdButton || linkId,
         form_version_id: data?.form_detail?.form_version_id, //กรณีตรงนี้ คือ เขาจะส่งform ต่อไปที่เชื่อมมาหรือ
         // is_sign: true,
         // sign_date: getCurrentFormattedDate(),
@@ -429,10 +433,15 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
-
                                   showDialog({
                                     id: 'alertSignDialog',
-                                    component: <NormalSignDialog id='alertSignDialog' onSave={handleSaveStartflow} signType="6" />,
+                                    component: (
+                                      <NormalSignDialog
+                                        id='alertSignDialog'
+                                        onSave={handleSaveStartflow}
+                                        signType='6'
+                                      />
+                                    ),
                                     size: 'sm'
                                   })
                                 }}
@@ -444,14 +453,13 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
-
                                   showDialog({
                                     id: 'alertSignElectonicSignDialog',
                                     component: (
                                       <ElectonicSignDialog
                                         id='alertSignElectonicSignDialog'
                                         onSave={handleSaveStartflow}
-                                        signType="7"
+                                        signType='7'
                                       />
                                     ),
                                     size: 'sm'
@@ -465,11 +473,14 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
-
                                   showDialog({
                                     id: 'alertCertifySignDialog',
                                     component: (
-                                      <CertifySignDialog id='alertCertifySignDialog' onSave={handleSaveStartflow} signType="1" />
+                                      <CertifySignDialog
+                                        id='alertCertifySignDialog'
+                                        onSave={handleSaveStartflow}
+                                        signType='1'
+                                      />
                                     ),
                                     size: 'sm'
                                   })
@@ -482,11 +493,14 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 color='primary'
                                 startIcon={<Draw />}
                                 onClick={() => {
-
                                   showDialog({
                                     id: 'alertSignOtpSignDialog',
                                     component: (
-                                      <OtpSignDialog id='alertSignOtpSignDialog' onSave={handleSaveStartflow} signType="8" />
+                                      <OtpSignDialog
+                                        id='alertSignOtpSignDialog'
+                                        onSave={handleSaveStartflow}
+                                        signType='8'
+                                      />
                                     ),
                                     size: 'sm'
                                   })
@@ -503,15 +517,14 @@ const UserStartTaskComponent = ({ data }: any) => {
                                     key={index}
                                     variant='contained'
                                     onClick={() => {
-
                                       const isValid = validateForm()
                                       if (!isValid) {
                                         toast.error('โปรดกรอกข้อมูลให้ครบถ้วน')
                                         return
                                       }
+                                      setLinkIdButton(item?.link_id)
 
                                       if (item?.signId) {
-                                        setLinkIdButton(item?.link_id)
                                         setIsStartSign(true)
                                       } else {
                                         showDialog({
@@ -520,8 +533,9 @@ const UserStartTaskComponent = ({ data }: any) => {
                                             <CommentSignDialog
                                               id='alertCommentSignDialog'
                                               onSave={handleSaveStartflow}
-                                              flowId={item?.link_id}
+                                              linkId={item?.link_id}
                                               title={item?.text}
+                                              signType='6'
                                             />
                                           ),
                                           size: 'sm'

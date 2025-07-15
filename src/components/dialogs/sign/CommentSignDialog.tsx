@@ -11,12 +11,14 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 
 interface commentSignProps {
   id: string
-  onSave: (comment: string, flowId: any) => Promise<any>
-  flowId: any
+  onSave: (comment: string, signType: string, signatureBase64?: string, linkId?: number) => Promise<any>
+  // comment, signType, undefined, linkId
+  linkId: any
   title: string
+  signType: string
 }
 
-const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
+const CommentSignDialog = ({ id, onSave, linkId, title, signType }: commentSignProps) => {
   const router = useRouter()
   const params = useParams()
   const { lang: locale } = params
@@ -26,6 +28,8 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleConfirm = async () => {
+    // console.log('handleConfirm-linkId', linkId)
+
     if (!comment) {
       toast.error(dictionary?.commentRequired, { autoClose: 3000 })
       return
@@ -35,7 +39,7 @@ const CommentSignDialog = ({ id, onSave, flowId, title }: commentSignProps) => {
     setIsSubmitting(true)
 
     try {
-      const response = await onSave(comment, flowId)
+      const response = await onSave(comment, signType, undefined, linkId)
       if (response?.code === 'SUCCESS') {
         router.push(`/${locale}/user/allTask`)
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })

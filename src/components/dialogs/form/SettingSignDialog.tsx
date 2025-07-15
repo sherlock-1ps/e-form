@@ -35,7 +35,7 @@ import {
   TextFilterModule,
   CustomFilterModule,
   NumberFilterModule,
-  DateFilterModule,
+  DateFilterModule
   // ColDef, // Import ColDef for column definitions
   // IsRowSelectable
 } from 'ag-grid-community'
@@ -64,17 +64,17 @@ const filterTypeOption: FilterOption[] = [
     id: 1,
     key: 'person',
     name: 'บุคคล'
-  },
-  {
-    id: 2,
-    key: 'position',
-    name: 'ตำแหน่ง'
-  },
-  {
-    id: 3,
-    key: 'department',
-    name: 'หน่วยงาน'
-  },
+  }
+  // {
+  //   id: 2,
+  //   key: 'position',
+  //   name: 'ตำแหน่ง'
+  // },
+  // {
+  //   id: 3,
+  //   key: 'department',
+  //   name: 'หน่วยงาน'
+  // },
   // {
   //   id: 4,
   //   key: 'dataField',
@@ -209,41 +209,84 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
 
   // Explicitly type the listData object
   const listData: Record<string, { data: DataItem[]; total: number } | undefined> = {
-    person: person ? { data: person.data.map((p: any) => ({ pk: `person-${p.id}`, id: p.id, name: p.name, type: 'บุคคล', typeId: '1' })), total: person.total } : undefined,
-    position: position ? { data: position.data.map((pos: any) => ({ pk: `position-${pos.id}`, id: pos.id, name: pos.name, type: 'ตำแหน่ง', typeId: '2' })), total: position.total } : undefined,
-    department: department ? { data: department.data.map((dep: any) => ({ pk: `department-${dep.id}`, id: dep.id, name: dep.name, type: 'หน่วยงาน', typeId: '3' })), total: department.total } : undefined,
-    dataField: dataField ? { data: dataField.data.map((field: any) => ({ pk: `dataField-${field.id}`, id: field.id, name: field.name, type: 'ฟิวด์', typeId: '4' })), total: dataField.total } : undefined,
+    person: person
+      ? {
+          data: person.data.map((p: any) => ({
+            pk: `person-${p.id}`,
+            id: p.id,
+            name: p.name,
+            type: 'บุคคล',
+            typeId: '1'
+          })),
+          total: person.total
+        }
+      : undefined,
+    position: position
+      ? {
+          data: position.data.map((pos: any) => ({
+            pk: `position-${pos.id}`,
+            id: pos.id,
+            name: pos.name,
+            type: 'ตำแหน่ง',
+            typeId: '2'
+          })),
+          total: position.total
+        }
+      : undefined,
+    department: department
+      ? {
+          data: department.data.map((dep: any) => ({
+            pk: `department-${dep.id}`,
+            id: dep.id,
+            name: dep.name,
+            type: 'หน่วยงาน',
+            typeId: '3'
+          })),
+          total: department.total
+        }
+      : undefined,
+    dataField: dataField
+      ? {
+          data: dataField.data.map((field: any) => ({
+            pk: `dataField-${field.id}`,
+            id: field.id,
+            name: field.name,
+            type: 'ฟิวด์',
+            typeId: '4'
+          })),
+          total: dataField.total
+        }
+      : undefined
   }
 
   const lockRowSelectionByField = (currentSelectedData: DataItem[]) => {
     const isRowSelectable = (node: any) => {
       // Ensure node.data is of type DataItem
-      const nodeDataItem = node.data as DataItem;
-      return currentSelectedData.findIndex(item => item.pk === nodeDataItem.pk) === -1;
-    };
+      const nodeDataItem = node.data as DataItem
+      return currentSelectedData.findIndex(item => item.pk === nodeDataItem.pk) === -1
+    }
 
-    gridRefSelecting?.current?.api?.setGridOption('isRowSelectable', isRowSelectable);
-    gridRefSelecting?.current?.api?.redrawRows(); // Redraw rows to update checkbox states
-  };
-
+    gridRefSelecting?.current?.api?.setGridOption('isRowSelectable', isRowSelectable)
+    gridRefSelecting?.current?.api?.redrawRows() // Redraw rows to update checkbox states
+  }
 
   const rowSelection = useMemo(
     () =>
-    ({
-      mode: 'singleRow',
-      hideDisabledCheckboxes: true,
-      isRowSelectable: (node: any) =>
-        node.data ? selectedMoved.map(item => item.pk).indexOf(node.data.pk) === -1 : false
-    } as const), // Apply 'as const' to the entire object
+      ({
+        mode: 'singleRow',
+        hideDisabledCheckboxes: true,
+        isRowSelectable: (node: any) =>
+          node.data ? selectedMoved.map(item => item.pk).indexOf(node.data.pk) === -1 : false
+      }) as const, // Apply 'as const' to the entire object
     [selectedMoved]
   )
 
   const rowRemoveSelection = useMemo(
     () =>
-    ({
-      mode: 'singleRow',
-      hideDisabledCheckboxes: true
-    } as const), // Apply 'as const' to the entire object
+      ({
+        mode: 'singleRow',
+        hideDisabledCheckboxes: true
+      }) as const, // Apply 'as const' to the entire object
     []
   )
 
@@ -269,14 +312,13 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
   }
 
   const handleUpdateActivity = () => {
-
     closeDialog(id)
   }
 
   // Effect to re-apply row selection logic when selectedMoved changes
   useEffect(() => {
-    lockRowSelectionByField(selectedMoved);
-  }, [selectedMoved, filterType, page, searchText]); // Add dependencies that might affect row data
+    lockRowSelectionByField(selectedMoved)
+  }, [selectedMoved, filterType, page, searchText]) // Add dependencies that might affect row data
 
   return (
     <Grid container spacing={2} className='flex flex-col'>
@@ -349,7 +391,7 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
 
           {/* Buttons */}
           <div className='flex flex-col justify-center items-center gap-4'>
-            <Button variant='text' onClick={moveSelected} >
+            <Button variant='text' onClick={moveSelected}>
               <ArrowCircleRight fontSize='large' />
             </Button>
 

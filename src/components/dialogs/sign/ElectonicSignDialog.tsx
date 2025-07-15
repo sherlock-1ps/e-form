@@ -19,7 +19,6 @@ interface signProps {
   id: string
   onSave: (comment: string, signType: string, base64Signature: string) => Promise<any>
   signType: string
-
 }
 
 const ElectonicSignDialog = ({ id, onSave, signType }: signProps) => {
@@ -49,24 +48,20 @@ const ElectonicSignDialog = ({ id, onSave, signType }: signProps) => {
     document.body.removeChild(link)
   }
 
-
-
   const getSignature = () => {
-
     if (sigPadRef.current?.isEmpty()) {
-      alert("Please draw something before process!");
-      return { status: false, base64: "" }
+      toast.error(dictionary?.pleaseDrawSignatureFirst, { autoClose: 3000 })
+      return { status: false, base64: '' }
     }
-    const dataURL = sigPadRef.current?.toDataURL('image/png');
+    const dataURL = sigPadRef.current?.toDataURL('image/png')
 
     // setSignatureBase64(dataURL)
     // setBase64Sing(dataURL || "")
 
-    return { status: true, base64: dataURL || "" }
-  };
+    return { status: true, base64: dataURL || '' }
+  }
 
   const handleConfirm = async () => {
-
     // console.log(getSignature())
 
     // return;

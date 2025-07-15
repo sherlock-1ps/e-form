@@ -150,7 +150,7 @@ const SelectActing = ({
   setSelectedMoved,
   isPersonOnly,
   titleLabel
-}): JSX.Element => {
+}: any) => {
   const { dictionary } = useDictionary()
 
   let filterTypeOption: FilterOption[] = [
@@ -195,7 +195,7 @@ const SelectActing = ({
   // )
   const [searchTextSelected, setSearchTextSelected] = useState<string>('')
 
-  const filteredSelectedMoved = selectedMoved.filter(item =>
+  const filteredSelectedMoved = selectedMoved.filter((item: any) =>
     item.name.toLowerCase().includes(searchTextSelected.toLowerCase())
   )
 
@@ -266,7 +266,7 @@ const SelectActing = ({
         mode: isPersonOnly ? 'singleRow' : 'multiRow',
         hideDisabledCheckboxes: true,
         isRowSelectable: (node: any) =>
-          node.data ? selectedMoved.map(item => item.pk).indexOf(node.data.pk) === -1 : false
+          node.data ? selectedMoved.map((item: any) => item.pk).indexOf(node.data.pk) === -1 : false
       }) as const, // Apply 'as const' to the entire object
     [selectedMoved]
   )
@@ -283,7 +283,7 @@ const SelectActing = ({
   const moveSelected = () => {
     setSearchTextSelected('')
     const sel = gridRefSelecting.current?.api.getSelectedRows() as DataItem[] // Cast to DataItem[]
-    setSelectedMoved(prev => {
+    setSelectedMoved((prev: any) => {
       //   //  singleRow isPersonOnly
       const newItems = isPersonOnly ? [...sel] : [...prev, ...sel]
       // const newItems = [...sel]
@@ -295,8 +295,8 @@ const SelectActing = ({
   const removeSelected = () => {
     setSearchTextSelected('')
     const sel = gridRefSelectingRemove.current?.api.getSelectedRows() as DataItem[] // Cast to DataItem[]
-    setSelectedMoved(prev => {
-      const newItems = prev.filter(item => !sel.some(remove => remove.pk === item.pk))
+    setSelectedMoved((prev: any) => {
+      const newItems = prev.filter((item: any) => !sel.some(remove => remove.pk === item.pk))
       lockRowSelectionByField(newItems)
       return newItems
     })
