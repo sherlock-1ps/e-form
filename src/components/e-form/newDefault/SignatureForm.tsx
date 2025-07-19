@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react' // Removed unused 'useRef'
 import { Button, Typography, TextField } from '@mui/material'
 import { useDialog } from '@/hooks/useDialog'
 import SettingSignDialog from '@/components/dialogs/form/SettingSignDialog'
@@ -8,112 +8,203 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import Alert from '@/components/dialogs/alerts/Alert'
 import { useFormStore } from '@/store/useFormStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
-import { useReplaceSignatrueFormQueryOption } from '@/queryOptions/form/formQueryOptions'
+import {
+  useReplaceSignatrueFormQueryOption,
+  useSelectSignatrueFormQueryOption
+} from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
-const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
-  const { mutateAsync } = useReplaceSignatrueFormQueryOption()
 
+const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
+  const { mutateAsync: replaceSignatrueForm } = useReplaceSignatrueFormQueryOption()
+  const { mutateAsync: selectSignatrueForm } = useSelectSignatrueFormQueryOption()
   const { dictionary } = useDictionary()
   const { showDialog } = useDialog()
   const form = useFormStore(state => state.form)
 
+  // 1. Use useState for `currentItem`. Initialize with the passed `item`.
+  const [currentItem, setCurrentItem] = useState(item)
 
-  let currentItem = item
+  // 2. Use useEffect to update `currentItem` based on the cloning logic.
+  // This runs when `item` or `form` changes.
+  useEffect(() => {
+    if (item?.config?.details?.signType?.type === 'clone' && item?.config?.details?.signType?.formId) {
+      const cloned = form?.form_details
+        ?.flatMap(section => section.fields)
+        .flatMap(field => field.data)
+        .find(dataItem => dataItem.id === item.config.details.signType.formId)
 
-  if (item?.config?.details?.signType?.type === 'clone' && item?.config?.details?.signType?.formId) {
-    const cloned = form?.form_details
-      .flatMap(section => section.fields)
-      .flatMap(field => field.data)
-      .find(dataItem => dataItem.id === item.config.details.signType.formId)
-
-    if (cloned) {
-      currentItem = cloned
+      if (cloned) {
+        setCurrentItem(cloned)
+      } else {
+        setCurrentItem(item) // Fallback to original item if clone not found
+      }
+    } else {
+      setCurrentItem(item) // Not a clone, so use the original item
     }
-  }
+  }, [item, form])
 
-  // console.log("form", form)
+  const [isEditing, setIsEditing] = useState(false)
+  const [text, setText] = useState('')
+  const [editedText, setEditedText] = useState('')
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(currentItem?.config?.details?.position?.value || "จะปรากฏเมื่อลงนาม");
-  const [editedText, setEditedText] = useState(currentItem?.config?.details?.position?.value || "จะปรากฏเมื่อลงนาม");
-
-  // console.log("currentItem?.config?.details", currentItem)
-
-
+  // 3. Use useEffect to keep `text` and `editedText` in sync with `currentItem`.
+  useEffect(() => {
+    const positionValue = currentItem?.config?.details?.position?.value || 'จะปรากฏเมื่อลงนาม'
+    setText(positionValue)
+    if (!isEditing) {
+      // Only update editedText if not in editing mode to avoid overwriting user input
+      setEditedText(positionValue)
+    }
+  }, [currentItem, isEditing])
 
   const handleDoubleClick = () => {
     if (currentItem?.config?.details?.signer?.is_current) {
-      setIsEditing(true);
-      setEditedText(text); // Initialize editedText with current text
+      setIsEditing(true)
+      setEditedText(text) // Initialize editor with current text
     }
-
-  };
+  }
 
   const handleChange = (event: any) => {
-    setEditedText(event.target.value);
-  };
+    setEditedText(event.target.value)
+  }
+
+  const handleRemoveSignature = () => {
+    setCurrentItem((prevItem: any) => ({
+      ...prevItem,
+      config: {
+        ...prevItem.config,
+        details: {
+          ...prevItem?.config?.details,
+          position: {
+            ...prevItem?.config?.details?.position,
+            value: ''
+          },
+          signer: {
+            ...prevItem?.config?.details?.signer,
+            value: '',
+            imgValue: ''
+          }
+        }
+      }
+    }))
+  }
 
   const handleSave = async () => {
-    setText(editedText);
-    setIsEditing(false);
-
+    // setText(editedText) // Optimistically update the UI
+    // setIsEditing(false)
+    // console.log('currentItem', currentItem)
     try {
       const request = {
         form_data_id: form.formDataId,
         signature_id: currentItem.id,
         data: {
-          position_name: editedText || ""
+          position_name: editedText || ''
         }
       }
-      const response = await mutateAsync({ request })
+      const response = await replaceSignatrueForm({ request })
       if (response?.code == 'SUCCESS') {
         toast.success(dictionary?.updateSuccessful, { autoClose: 3000 })
+
+        setCurrentItem((prevItem: any) => ({
+          ...prevItem,
+          config: {
+            ...prevItem.config,
+            details: {
+              ...prevItem.config.details,
+              position: {
+                ...prevItem.config.details.position,
+                value: editedText
+              }
+            }
+          }
+        }))
+      }
+    } catch (error) {
+      console.log('error', error)
+      toast.error(dictionary?.updatefailed, { autoClose: 3000 })
+      // Optional: Revert text on failure
+      // setText(currentItem?.config?.details?.position?.value || 'จะปรากฏเมื่อลงนาม')
+    }
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
+    setEditedText(text) // Revert to original text
+  }
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      handleSave()
+    } else if (event.key === 'Escape') {
+      handleCancel()
+    }
+  }
+
+  const onConfirmSelectSignature = async (items: any) => {
+    const data = items[0]
+    try {
+      const request = {
+        form_data_id: form.formDataId,
+        signature_id: currentItem.id,
+        data: {
+          department_name: data.departmentName,
+          is_current: false,
+          person_id: String(data.id),
+          person_name: data.name,
+          position_name: data.personName
+        }
+      }
+      const response = await selectSignatrueForm({ request })
+      if (response?.code == 'SUCCESS') {
+        toast.success(dictionary?.updateSuccessful, { autoClose: 3000 })
+
+        const imgValue = `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${data?.id}`
+        setCurrentItem((prevItem: any) => ({
+          ...prevItem,
+          config: {
+            ...prevItem.config,
+            details: {
+              ...prevItem?.config?.details,
+              position: {
+                ...prevItem?.config?.details?.position,
+                value: data.personName
+              },
+              signer: {
+                ...prevItem?.config?.details?.signer,
+                value: data.name,
+                imgValue
+              }
+            }
+          }
+        }))
       }
     } catch (error) {
       console.log('error', error)
       toast.error(dictionary?.updatefailed, { autoClose: 3000 })
     }
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditedText(text); // Revert to original text
-  };
-
-  const handleKeyDown = (event: any) => {
-    if (event.key === 'Enter') {
-      handleSave();
-    } else if (event.key === 'Escape') {
-      handleCancel();
-    }
-  };
-
-
-  // console.log("currentItem?.config?.details?.endTag?.value", currentItem?.config?.details?.endTag?.value)
+  }
 
   let isCurrenStyle = {}
   let isCurrenStyleImage = {}
 
   if (currentItem?.config?.details?.signer?.is_current) {
-    isCurrenStyleImage = { opacity: .3 }
+    isCurrenStyleImage = { opacity: 0.3 }
     isCurrenStyle = {
       borderColor: 'blue',
       borderWidth: '2px'
     }
   }
 
+  // The rest of the JSX remains the same, as it already reads from `currentItem`.
   return (
     <div
-      className='w-full mx-auto ' style={
-        {
-          opacity: currentItem?.config?.details?.isShow ? 1 : 0,
-          ...isCurrenStyle
-        }
-      }
-
+      className='w-full mx-auto '
+      style={{
+        opacity: currentItem?.config?.details?.isShow ? 1 : 0,
+        ...isCurrenStyle
+      }}
     >
-      {/* bg-gray-100 */}
-      <div className='rounded-sm text-start  p-4 border-b-2 relative border-gray-500 flex items-end justify-center gap-2'>
+      <div className='rounded-sm text-start   p-4 border-b-2 relative border-gray-500 flex items-end justify-center gap-2'>
         {currentItem?.config?.details?.tag?.isShow && (
           <Typography
             variant='h6'
@@ -137,16 +228,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
                       id='alertDialogConfirmToggleTrigger'
                       title='ลบลายเซ็นต์'
                       content1='คุณต้องการลบลายเซ็นต์นี้ ใช่หรือไม่'
-                      onClick={() => {
-                        // updateDetails(
-                        //   String(selectedField?.parentKey ?? ''),
-                        //   selectedField?.boxId ?? '',
-                        //   selectedField?.fieldId?.id ?? '',
-                        //   {
-                        //     value: toolboxDocumentBaseMenu[2]?.config?.details?.value
-                        //   }
-                        // )
-                      }}
+                      onClick={handleRemoveSignature}
                     />
                   ),
                   size: 'sm'
@@ -171,52 +253,66 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
 
         <div className='flex min-w-[200px] relative'>
           <img
-            src={currentItem?.config?.details?.signer?.signature_base64 || currentItem?.config?.details?.signer?.imgValue || '/images/signImg.png'}
+            src={
+              currentItem?.config?.details?.signer?.signature_base64 ||
+              currentItem?.config?.details?.signer?.imgValue ||
+              '/images/signImg.png'
+            }
             alt='ลายเซ็นต์'
             style={{
               opacity: 1,
               width: '100%',
               height: '40px',
-              objectFit: 'contain',
-              // ...isCurrenStyleImage
+              objectFit: 'contain'
             }}
-
           />
 
-          {currentItem?.config?.details?.signer?.signature ?
-            <CheckCircle color='success' className='mt-2 cursor-pointer' titleAccess={currentItem?.config?.details?.signer?.signature} onClick={() => {
-              showDialog({
-                id: 'alertDialogConfirmToggleTrigger',
-                component: (
-                  <Alert
-                    id='alertDialogConfirmToggleTrigger'
-                    title='Signature'
-                    content1={currentItem?.config?.details?.signer?.signature}
-                    onClick={() => {
-                    }}
-                  />
-                ),
-                size: 'sm'
-              })
-            }} />
-            : null}
-
-          {currentItem?.config?.details?.setting?.isUserUse && (
-            <Button
-              variant='contained'
-              fullWidth
-              className=' absolute top-[0px] left-[0px] p-1 text-sm h-full'
+          {currentItem?.config?.details?.signer?.signature ? (
+            <CheckCircle
+              color='success'
+              className='mt-2 cursor-pointer'
+              titleAccess={currentItem?.config?.details?.signer?.signature}
               onClick={() => {
                 showDialog({
-                  id: 'alertSettingSignDialog',
-                  component: <SettingSignDialog id='alertSettingSignDialog' />,
-                  size: 'md'
+                  id: 'alertDialogConfirmToggleTrigger',
+                  component: (
+                    <Alert
+                      id='alertDialogConfirmToggleTrigger'
+                      title='Signature'
+                      content1={currentItem?.config?.details?.signer?.signature}
+                      onClick={() => {}}
+                    />
+                  ),
+                  size: 'sm'
                 })
               }}
-            >
-              เลือก
-            </Button>
-          )}
+            />
+          ) : null}
+
+          {currentItem?.config?.details?.setting?.isUserUse &&
+            !(
+              currentItem?.config?.details?.signer?.signature_base64 || currentItem?.config?.details?.signer?.imgValue
+            ) && (
+              <Button
+                variant='contained'
+                fullWidth
+                className=' absolute top-[0px] left-[0px] p-1 text-sm h-full'
+                onClick={() => {
+                  showDialog({
+                    id: 'alertSettingSignDialog',
+                    component: (
+                      <SettingSignDialog
+                        id='alertSettingSignDialog'
+                        onConfirmSelectSignature={onConfirmSelectSignature}
+                      />
+                    ),
+                    size: 'md'
+                  })
+                }}
+              >
+                เลือก
+              </Button>
+            )}
         </div>
 
         {currentItem?.config?.details?.endTag?.isShow && currentItem?.config?.details?.endTag?.value && (
@@ -248,46 +344,6 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
       )}
 
       <div className='mt-2 space-y-2  flex items-center flex-col'>
-
-
-        {/* {currentItem?.config?.details?.position?.isShow && (
-          <div className='flex gap-4 justify-start'>
-            <Typography
-              variant='h6'
-              style={{
-                fontSize: currentItem?.config?.style?.fontSize ?? 16
-              }}
-            >
-              {dictionary?.position}
-            </Typography>
-            {currentItem?.config?.details?.position?.value ? (
-              <Typography
-                className='text-center'
-                variant='body2'
-                style={{
-                  fontSize: currentItem?.config?.style?.fontSize ?? 16
-                }}
-              >
-                {currentItem?.config?.details?.position?.value}
-              </Typography>
-            ) : (
-              <Typography
-                className='text-center italic text-textDisabled'
-                variant='body2'
-                style={{
-                  fontSize: currentItem?.config?.style?.fontSize ?? 16,
-                }}
-              >
-                จะปรากฏเมื่อลงนาม
-              </Typography>
-            )
-
-            }
-          </div>
-        )} */}
-
-
-
         {currentItem?.config?.details?.position?.isShow && (
           <div className='flex gap-4 justify-start'>
             <Typography
@@ -296,53 +352,42 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
                 fontSize: currentItem?.config?.style?.fontSize ?? 16
               }}
             >
-              {/* {dictionary?.position} */}
               ตำแหน่ง
             </Typography>
-            {
-
-              isEditing ? (
-                <>
-                  <TextField
-                    //  variant='body2'
-                    value={editedText}
-                    onChange={handleChange}
-                    onBlur={handleSave} // Save on blur (optional, you might prefer explicit save)
-                    onKeyDown={handleKeyDown}
-                    variant="standard" // Or "outlined", "filled"
-                    autoFocus // Focus the input when it appears
-                    size="small"
-                    sx={{ flexGrow: 1 }}
-                    style={{
-                      fontSize: currentItem?.config?.style?.fontSize ?? 16,
-                    }}
-                  />
-                  <Button onClick={handleSave} size="small">
-                    <Check />
-                  </Button>
-
-                </>
-              ) : (
-                <Typography
-
-                  // className='text-center'
-                  // className='text-center italic text-textDisabled'
-                  className={`text-center text-textPrimary${(currentItem?.config?.details?.position?.value) ? "" : ' italic text-textDisabled'}`}
-                  variant='body2'
-                  // onDoubleClick={handleDoubleClick}
-                  onClick={handleDoubleClick}
-                  sx={{ cursor: 'pointer', flexGrow: 1 }}
+            {isEditing ? (
+              <>
+                <TextField
+                  value={editedText}
+                  onChange={handleChange}
+                  onBlur={handleSave}
+                  onKeyDown={handleKeyDown}
+                  variant='standard'
+                  autoFocus
+                  size='small'
+                  sx={{ flexGrow: 1 }}
                   style={{
-                    fontSize: currentItem?.config?.style?.fontSize ?? 16,
+                    fontSize: currentItem?.config?.style?.fontSize ?? 16
                   }}
-                >
-                  {text}
-                </Typography>
-              )
-            }
+                />
+                <Button onClick={handleSave} size='small'>
+                  <Check />
+                </Button>
+              </>
+            ) : (
+              <Typography
+                className={`text-center text-textPrimary${currentItem?.config?.details?.position?.value ? '' : ' italic text-textDisabled'}`}
+                variant='body2'
+                onClick={handleDoubleClick}
+                sx={{ cursor: 'pointer', flexGrow: 1 }}
+                style={{
+                  fontSize: currentItem?.config?.style?.fontSize ?? 16
+                }}
+              >
+                {text}
+              </Typography>
+            )}
           </div>
         )}
-
 
         {currentItem?.config?.details?.date?.isShow && (
           <div className='flex gap-4 justify-start'>

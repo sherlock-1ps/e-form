@@ -355,6 +355,7 @@ const SelectActing = ({
               value={searchText}
               onChange={newText => {
                 setSearchText(newText)
+                setPage(1)
               }}
             />
             <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[500px]'>

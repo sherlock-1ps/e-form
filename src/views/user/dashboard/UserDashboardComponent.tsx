@@ -111,7 +111,7 @@ const UserDashboardComponent = () => {
           versionId: response?.result?.data?.form_detail?.form_version_id,
           layout: layoutValue as 'vertical' | 'horizontal',
           form_details: updateForm,
-          formDataId: response?.result?.data?.form_data_id,
+          formDataId: response?.result?.data?.form_data_id
         }
 
         setFlowDiagramData(resultFlow)
@@ -166,38 +166,6 @@ const UserDashboardComponent = () => {
   return shouldSkip ? null : (
     <TabContext value={value}>
       <div className='flex flex-col gap-6'>
-        {/* <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <CardCount
-              title={dictionary?.cardOwnWork}
-              count={countList?.result?.data[0]?.Total || 0}
-              baseColor='rgba(116, 198, 250, 0.25)'
-              textColor='rgb(116, 198, 250)'
-              icon={Task}
-              path='user/dashboard'
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardCount
-              title={dictionary?.cardAllWork}
-              count={countList?.result?.data[1]?.Total || 0}
-              baseColor='rgba(30, 107, 175, 0.25)'
-              textColor='rgb(30, 107, 175)'
-              icon={ViewList}
-              path='user/allTask'
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <CardCount
-              title={dictionary?.cardDoneWork}
-              count={countList?.result?.data[2]?.Total || 0}
-              baseColor='rgba(23, 87, 155, 0.25)'
-              textColor='rgb(23, 87, 155)'
-              icon={AssignmentTurnedIn}
-              path='user/doneTask'
-            />
-          </Grid>
-        </Grid> */}
         <WorkLabel countList={countList} />
         <Card className='min-h-[581px]'>
           <CardContent>

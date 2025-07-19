@@ -122,37 +122,6 @@ export const applyKeyValueToForm = (formDetails: any[], values: Record<string, a
   }))
 }
 
-// export const updateSignature = (formDetails: any[], valuesToUpdate: Record<string, string>) => {
-//   return formDetails.map(section => ({
-//     ...section,
-//     fields: section.fields.map((field: any) => ({
-//       ...field,
-//       data: field.data.map((item: any) => {
-//         const id = item.id
-//         const newValue = valuesToUpdate[id]
-
-//         if (id && newValue !== undefined) {
-//           return {
-//             ...item,
-//             config: {
-//               ...item.config,
-//               details: {
-//                 ...item.config?.details,
-//                 signer: {
-//                   ...item.config?.details?.signer,
-//                   imgValue: `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${newValue}`
-//                 }
-//               }
-//             }
-//           }
-//         }
-
-//         return item
-//       })
-//     }))
-//   }))
-// }
-
 export const updateSignature = (
   formDetails: any[],
   valuesToUpdate: Record<

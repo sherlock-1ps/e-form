@@ -40,6 +40,7 @@ import {
   // IsRowSelectable
 } from 'ag-grid-community'
 import { useDictionary } from '@/contexts/DictionaryContext'
+import { hide } from '@floating-ui/react'
 
 ModuleRegistry.registerModules([
   RowSelectionModule,
@@ -89,6 +90,8 @@ interface DataItem {
   name: string
   type: string
   typeId: string | number
+  departmentName: string
+  personName: string
 }
 
 // Define the props for DebouncedInput
@@ -156,27 +159,30 @@ const DebouncedInput = ({
 
 interface settingSignDialogProps {
   id: string
+  onConfirmSelectSignature: (data: any) => void
   // onClick?: () => void
 }
 
-const SettingSignDialog = ({ id }: settingSignDialogProps) => {
+const SettingSignDialog = ({ id, onConfirmSelectSignature }: settingSignDialogProps) => {
   const { dictionary } = useDictionary()
 
   const { closeDialog } = useDialog() // Assuming useDialog provides a closeDialog function
-  const myDiagram = useFlowStore(state => state.myDiagram)
-  const selectedField = useFlowStore(state => state.selectedField)
+  // const myDiagram = useFlowStore(state => state.myDiagram)
+  // const selectedField = useFlowStore(state => state.selectedField)
   const gridRefSelecting = useRef<AgGridReact>(null)
   const gridRefSelectingRemove = useRef<AgGridReact>(null)
   const [page, setPage] = useState<number>(1)
 
   // Use optional chaining for nodeData to prevent errors if selectedField or its data is null/undefined
-  const nodeData = myDiagram?.model?.findNodeDataForKey(selectedField?.data?.key)
+  // const nodeData = myDiagram?.model?.findNodeDataForKey(selectedField?.data?.key)
 
   const columnDefs = useMemo<any[]>(
     () => [
       { headerName: 'ชื่อ', field: 'name', filter: false, flex: 1 },
-      { headerName: 'ประเภท', field: 'type', filter: false, width: 100 },
-      { headerName: 'รหัส', field: 'id', width: 70, filter: false }
+      { headerName: 'ตำแหน่ง', field: 'personName', filter: false, flex: 1 },
+      { headerName: 'รหัส', field: 'id', filter: false, flex: 0.1, hide: true },
+      { headerName: 'ประเภท', field: 'type', filter: false, flex: 0.1, hide: true },
+      { headerName: 'หน่วยงาน', field: 'departmentName', filter: false, flex: 0.1, hide: true }
     ],
     []
   )
@@ -184,9 +190,7 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
   const [pageSize, setPageSize] = useState<number>(10)
   const [filterType, setFilterType] = useState<string>('person')
   const [searchText, setSearchText] = useState<string>('')
-  const [selectedMoved, setSelectedMoved] = useState<DataItem[]>(
-    Array.isArray(selectedField?.data?.assignees) ? [...selectedField.data.assignees] : []
-  )
+  const [selectedMoved, setSelectedMoved] = useState<DataItem[]>([])
   const [searchTextSelected, setSearchTextSelected] = useState<string>('')
 
   const filteredSelectedMoved = selectedMoved.filter(item =>
@@ -196,16 +200,17 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
   const { data: person } = useGetPersonExternalQueryOption(page, pageSize, searchText, {
     enabled: filterType === 'person'
   })
-  const { data: position } = useGetPositionExternalQueryOption(page, pageSize, '', {
-    enabled: filterType === 'position'
-  })
 
-  const { data: department } = useGetDepartmentExternalQueryOption(page, pageSize, '', {
-    enabled: filterType === 'department'
-  })
+  // const { data: position } = useGetPositionExternalQueryOption(page, pageSize, '', {
+  //   enabled: filterType === 'position'
+  // })
+
+  // const { data: department } = useGetDepartmentExternalQueryOption(page, pageSize, '', {
+  //   enabled: filterType === 'department'
+  // })
 
   // Ensure dataField is typed correctly based on its expected structure
-  const { data: dataField } = useFetchGetFormSignaturePermisionFieldsQueryOption(nodeData?.form)
+  // const { data: dataField } = useFetchGetFormSignaturePermisionFieldsQueryOption(nodeData?.form)
 
   // Explicitly type the listData object
   const listData: Record<string, { data: DataItem[]; total: number } | undefined> = {
@@ -216,47 +221,49 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
             id: p.id,
             name: p.name,
             type: 'บุคคล',
-            typeId: '1'
+            typeId: '1',
+            departmentName: p.departmentName,
+            personName: p.personName
           })),
           total: person.total
         }
-      : undefined,
-    position: position
-      ? {
-          data: position.data.map((pos: any) => ({
-            pk: `position-${pos.id}`,
-            id: pos.id,
-            name: pos.name,
-            type: 'ตำแหน่ง',
-            typeId: '2'
-          })),
-          total: position.total
-        }
-      : undefined,
-    department: department
-      ? {
-          data: department.data.map((dep: any) => ({
-            pk: `department-${dep.id}`,
-            id: dep.id,
-            name: dep.name,
-            type: 'หน่วยงาน',
-            typeId: '3'
-          })),
-          total: department.total
-        }
-      : undefined,
-    dataField: dataField
-      ? {
-          data: dataField.data.map((field: any) => ({
-            pk: `dataField-${field.id}`,
-            id: field.id,
-            name: field.name,
-            type: 'ฟิวด์',
-            typeId: '4'
-          })),
-          total: dataField.total
-        }
       : undefined
+    // position: position
+    //   ? {
+    //       data: position.data.map((pos: any) => ({
+    //         pk: `position-${pos.id}`,
+    //         id: pos.id,
+    //         name: pos.name,
+    //         type: 'ตำแหน่ง',
+    //         typeId: '2'
+    //       })),
+    //       total: position.total
+    //     }
+    //   : undefined,
+    // department: department
+    //   ? {
+    //       data: department.data.map((dep: any) => ({
+    //         pk: `department-${dep.id}`,
+    //         id: dep.id,
+    //         name: dep.name,
+    //         type: 'หน่วยงาน',
+    //         typeId: '3'
+    //       })),
+    //       total: department.total
+    //     }
+    //   : undefined,
+    // dataField: dataField
+    //   ? {
+    //       data: dataField.data.map((field: any) => ({
+    //         pk: `dataField-${field.id}`,
+    //         id: field.id,
+    //         name: field.name,
+    //         type: 'ฟิวด์',
+    //         typeId: '4'
+    //       })),
+    //       total: dataField.total
+    //     }
+    //   : undefined
   }
 
   const lockRowSelectionByField = (currentSelectedData: DataItem[]) => {
@@ -312,6 +319,8 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
   }
 
   const handleUpdateActivity = () => {
+    onConfirmSelectSignature(selectedMoved)
+
     closeDialog(id)
   }
 
@@ -357,6 +366,7 @@ const SettingSignDialog = ({ id }: settingSignDialogProps) => {
               value={searchText}
               onChange={newText => {
                 setSearchText(newText)
+                setPage(1)
               }}
             />
             <div className='w-full border border-gray-300 rounded overflow-y-auto space-y-2 p-2 h-[500px]'>

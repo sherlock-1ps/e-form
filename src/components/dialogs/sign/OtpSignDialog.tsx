@@ -10,9 +10,7 @@ import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useParams, useRouter } from 'next/navigation'
 import { useDictionary } from '@/contexts/DictionaryContext'
-import {
-  useVerifyFortitokenExternalQueryOption
-} from '@/queryOptions/form/formQueryOptions'
+import { useVerifyFortitokenExternalQueryOption } from '@/queryOptions/form/formQueryOptions'
 interface signProps {
   id: string
   onSave: (comment: string, signType: string) => Promise<any>
@@ -32,8 +30,6 @@ const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { mutateAsync: VerifyFortitoken } = useVerifyFortitokenExternalQueryOption()
-
-
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return
@@ -56,7 +52,6 @@ const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
   }
 
   const handleConfirm = async () => {
-
     if (otp.join('').length < 6) {
       toast.error(dictionary?.pleaseEnterTheOTPCompletely, { autoClose: 3000 })
       return
@@ -129,14 +124,12 @@ const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
         ))}
       </Grid>
 
-
-
       <Grid item xs={12} className='flex items-center justify-end gap-2'>
         <Button variant='contained' color='secondary' onClick={() => closeDialog(id)} disabled={isSubmitting}>
           {dictionary?.cancel}
         </Button>
-        <Button variant='contained' onClick={handleConfirm} disabled={isSubmitting}>
-          {isSubmitting ? dictionary?.saving : dictionary?.confirm}
+        <Button variant='contained' onClick={handleConfirm} disabled={otp.join('').length < 6}>
+          {dictionary?.confirm}
         </Button>
       </Grid>
     </Grid>

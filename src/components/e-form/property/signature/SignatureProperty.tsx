@@ -100,8 +100,7 @@ const SignatureProperty = () => {
     }
   }, [selectedField]) // isDuplicateId ไม่จำเป็นต้องเป็น dependency ที่นี่ เพราะเราต้องการให้รันเมื่อ selectedField เปลี่ยนเท่านั้น
 
-
-  console.log("selectedField", selectedField)
+  // console.log("selectedField", selectedField)
 
   return (
     <div>

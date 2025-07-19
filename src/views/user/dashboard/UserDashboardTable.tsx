@@ -12,14 +12,21 @@ import CardHeader from '@mui/material/CardHeader'
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
-
+import { type ColumnFiltersState, type VisibilityState } from '@tanstack/react-table'
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
 
-import { Directions, Preview, Pageview, PlayCircleOutline, Article, FindInPage, DeviceHub, Delete } from '@mui/icons-material'
-
 import {
-  useDeleteFormDataQueryOption
-} from '@/queryOptions/form/formQueryOptions'
+  Directions,
+  Preview,
+  Pageview,
+  PlayCircleOutline,
+  Article,
+  FindInPage,
+  DeviceHub,
+  Delete
+} from '@mui/icons-material'
+
+import { useDeleteFormDataQueryOption } from '@/queryOptions/form/formQueryOptions'
 // Third-party Imports
 import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -63,18 +70,85 @@ declare module '@tanstack/table-core' {
   }
 }
 
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value)
+// const flexibleFilter: FilterFn<any> = (row, columnId, filterValue) => {
+//   const value = row.getValue(columnId)
+//   const filter = String(filterValue).toLowerCase()
 
-  // Store the itemRank info
-  addMeta({
-    itemRank
-  })
+//   // 1. If the value is an array, check if any element includes the filter text
+//   if (Array.isArray(value)) {
+//     return value.some(item => String(item).toLowerCase().includes(filter))
+//   }
 
-  // Return if the item should be filtered in/out
-  return itemRank.passed
+//   // 2. If the value is a string, check if it includes the filter text
+//   if (typeof value === 'string') {
+//     return value.toLowerCase().includes(filter)
+//   }
+
+//   // 3. If it's neither, don't include it in the results
+//   return false
+// }
+
+// const fuzzyFilter: FilterFn<any> = (row, columnId, filterValue) => {
+//   console.log('array row, columnId, filterValue')
+//   const rowValue = row.getValue(columnId) as string[]
+
+//   const query = String(filterValue).toLowerCase()
+
+//   // Return false if the row value isn't an array
+//   if (!Array.isArray(rowValue)) {
+//     return false
+//   }
+
+//   // Check if any item in the array includes the filter query
+//   return rowValue.some(item => String(item).toLowerCase().includes(query))
+// }
+
+// const fuzzyFilter: FilterFn<any> = (row, columnId, value) => {
+//   const cellValue = row.getValue(columnId)
+//   const filterValue = value
+
+//   // console.log(row, columnId, value, cellValue)
+
+//   if (Array.isArray(cellValue)) {
+//     return cellValue.some(item => rankItem(String(item), filterValue).passed)
+//   }
+
+//   return rankItem(String(cellValue), filterValue).passed
+// }
+
+const fuzzyFilter: FilterFn<any> = (row, columnId, filterValue) => {
+  const cellValue = row.getValue(columnId)
+  const query = String(filterValue).toLowerCase()
+
+  // 1. ตรวจสอบว่าเป็น Array หรือไม่
+  if (Array.isArray(cellValue)) {
+    // ถ้าเป็น Array, ให้ค้นหาในแต่ละ item
+    // .some จะคืนค่า true ทันทีถ้าเจอตัวแรกที่ตรงเงื่อนไข
+    return cellValue.some(item => String(item).toLowerCase().includes(query))
+  }
+
+  // 2. ถ้าไม่ใช่ Array, ตรวจสอบว่าเป็น String หรือไม่
+  if (typeof cellValue === 'string') {
+    // ถ้าเป็น String, ให้ค้นหาโดยตรง
+    return cellValue.toLowerCase().includes(query)
+  }
+
+  // 3. ถ้าไม่ใช่ทั้งสองอย่าง (เช่น null หรือ number) ให้ข้ามไป
+  return false
 }
+
+// const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+
+//   const itemRank = rankItem(row.getValue(columnId), value)
+
+//   // Store the itemRank info
+//   addMeta({
+//     itemRank
+//   })
+
+//   // Return if the item should be filtered in/out
+//   return itemRank.passed
+// }
 
 const DebouncedInput = ({
   value: initialValue,
@@ -172,7 +246,10 @@ const UserDashboardTable = ({
   const { showDialog } = useDialog()
   const profile = useAuthStore(state => state.profile)
   const { mutateAsync: deleteFormData } = useDeleteFormDataQueryOption()
-
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    f_first_name: false,
+    f_last_name: false
+  })
   const isAdmin = profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id))
 
   // alert('')
@@ -183,6 +260,7 @@ const UserDashboardTable = ({
   const [globalFilter, setGlobalFilter] = useState('')
 
   const { dictionary } = useDictionary()
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([{ id: 'name', value: 'ทด' }])
 
   const viewClick = (row: any) => {
     {
@@ -215,7 +293,6 @@ const UserDashboardTable = ({
 
         cell: ({ row }) => {
           const status = row.original.status
-
 
           return (
             <div className='flex gap-2 justify-between'>
@@ -250,9 +327,7 @@ const UserDashboardTable = ({
                 />
               )}
 
-
-
-              {status == "draft" || isAdmin ? (
+              {status == 'draft' || isAdmin ? (
                 <Delete
                   color='secondary'
                   fontSize='large'
@@ -274,16 +349,14 @@ const UserDashboardTable = ({
                   }}
                 />
               ) : null}
-
             </div>
-
-
-
-
           )
         },
         enableSorting: false
       }),
+
+      columnHelper.accessor('f_first_name', {}),
+      columnHelper.accessor('f_last_name', {}),
 
       columnHelper.accessor('name', {
         header: dictionary?.docutmentName,
@@ -293,8 +366,15 @@ const UserDashboardTable = ({
           </Typography>
         )
       }),
+      // columnHelper.accessor('current_activity_names', {
+      //   header: dictionary?.latestDocumentProcess,
+      //   filterFn: filterInArray,
+
+      //   cell: ({ getValue }) => (getValue() || (['ยังไม่มีการเดินหนังสือ'] as string[])).join(', ')
+      // }),
       columnHelper.accessor('current_activity_names', {
         header: dictionary?.latestDocumentProcess,
+        // filterFn: filterInArray,
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Typography variant='body2'>
@@ -307,6 +387,8 @@ const UserDashboardTable = ({
           </div>
         )
       }),
+
+      // columnHelper.accessor('current_activity_names', { header: 'xxxxxx' }),
       columnHelper.accessor('status', {
         header: dictionary?.latestStatus,
         cell: ({ row }) => {
@@ -319,7 +401,13 @@ const UserDashboardTable = ({
               <Chip
                 className='capitalize'
                 // label={chipConfig.label}
-                label={chipConfig.label == 'Draft' ? dictionary?.draft : chipConfig.label == 'Active' ? dictionary?.inProgress : dictionary?.finished}
+                label={
+                  chipConfig.label == 'Draft'
+                    ? dictionary?.draft
+                    : chipConfig.label == 'Active'
+                      ? dictionary?.inProgress
+                      : dictionary?.finished
+                }
                 size='small'
                 variant='tonal'
                 color={chipConfig.color}
@@ -391,6 +479,8 @@ const UserDashboardTable = ({
       fuzzy: fuzzyFilter
     },
     state: {
+      columnVisibility,
+      // columnFilters,
       rowSelection,
       globalFilter
     },

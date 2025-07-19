@@ -275,7 +275,7 @@ const SettingActing = () => {
       { autoHeight: true, headerName: 'ตำแหน่ง', field: 'f_position_name', filter: false, flex: 2 },
       { autoHeight: true, headerName: 'หน่วยงาน', field: 'department_name', filter: false, flex: 2 },
       {
-        headerName: 'รักษาราชการแทน',
+        headerName: 'รักษาการแทน',
         field: 'actings', // Point the field directly to the array data
         cellRenderer: ActingsCellRenderer, // Use your custom renderer component
         autoHeight: true, // Tell this column to participate in auto-height
@@ -312,7 +312,7 @@ const SettingActing = () => {
             <Grid container spacing={2} className='flex flex-col'>
               <Grid item xs={12} sx={{ justifyContent: 'space-between', display: 'flex' }}>
                 <Typography variant='h5' className='text-left'>
-                  ตั้งค่ารักษาราชการแทน
+                  ตั้งค่ารักษาการแทน
                 </Typography>
                 <Button
                   color='primary'

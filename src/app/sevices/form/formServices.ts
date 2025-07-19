@@ -101,6 +101,19 @@ export const replaceSignatrueForm = async ({ request }: { request: any }) => {
   }
 }
 
+export const selectSignatrueForm = async ({ request }: { request: any }) => {
+  try {
+    const response = await Axios.post('/form-datas/signature/select', request)
+
+    return response.data
+  } catch (error) {
+    console.error('Error replace signatrue form:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/signature/select')
+    throw e
+  }
+}
+
 export const createForm = async ({ request }: { request: any }) => {
   try {
     const response = await Axios.post('/forms/create', request)
@@ -649,7 +662,9 @@ export const getPersonList = async ({
       typeId: '1',
       id: i.F_PERSON_ID,
       name: `${i.F_FIRST_NAME} ${i.F_LAST_NAME}`.trim(),
-      type: 'บุคคล'
+      type: 'บุคคล',
+      departmentName: `${i.DEPARTMENT_NAME}`.trim(),
+      personName: `${i.F_POSITION_NAME}`.trim()
     }))
     return { data, total: response?.data?.items.total }
   } catch (error) {
