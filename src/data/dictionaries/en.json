@@ -1,4 +1,6 @@
 {
+  "cannotSave": "Cannot save.",
+  "SELECT_USER_ERROR": "Please select a user first.",
   "pleaseChooseElectronicCertificate": "Please choose an electronic certificate.",
   "pleaseDrawSignatureFirst": "Please draw a signature first.",
   "setATimeFrame": "Set a time frame",

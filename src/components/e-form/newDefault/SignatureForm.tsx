@@ -55,6 +55,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
       // Only update editedText if not in editing mode to avoid overwriting user input
       setEditedText(positionValue)
     }
+
+    console.log('currentItem', currentItem)
   }, [currentItem, isEditing])
 
   const handleDoubleClick = () => {
@@ -82,7 +84,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
           signer: {
             ...prevItem?.config?.details?.signer,
             value: '',
-            imgValue: ''
+            imgValue: '',
+            selectMode: true
           }
         }
       }
@@ -172,7 +175,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
               signer: {
                 ...prevItem?.config?.details?.signer,
                 value: data.name,
-                imgValue
+                imgValue,
+                selectMode: true
               }
             }
           }
@@ -218,7 +222,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
 
         {currentItem?.config?.details?.setting?.isUserUse &&
           currentItem?.config?.details?.signer?.value &&
-          currentItem?.config?.details?.signer?.isShow && (
+          currentItem?.config?.details?.signer?.isShow &&
+          currentItem?.config?.details?.signer?.selectMode && (
             <div
               onClick={() =>
                 showDialog({

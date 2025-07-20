@@ -231,8 +231,11 @@ const UserStartTaskComponent = ({ data }: any) => {
       const response = await callSaveStartflow(request)
 
       return response
-    } catch (error) {
-      toast.error('ไม่สามารถบันทึกได้', { autoClose: 3000 })
+    } catch (error: any) {
+      toast.error(`${dictionary?.cannotSave} \n ${dictionary[error.code]}`, {
+        autoClose: 3000,
+        style: { whiteSpace: 'pre-line' }
+      })
     }
   }
 

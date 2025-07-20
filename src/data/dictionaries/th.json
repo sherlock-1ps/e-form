@@ -1,4 +1,6 @@
 {
+  "cannotSave": "ไม่สามารถบันทึกได้",
+  "SELECT_USER_ERROR": "กรุณาเลือกผู้ใช้งานก่อน",
   "pleaseChooseElectronicCertificate": "โปรดเลือกใบรับรองอิเล็กทรอนิกส์",
   "pleaseDrawSignatureFirst": "กรุณาวาดลายเซ็นก่อน",
   "setATimeFrame": "กำหนดระยะเวลา",
