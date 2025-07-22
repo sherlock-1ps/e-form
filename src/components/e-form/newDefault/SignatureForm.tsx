@@ -14,6 +14,9 @@ import {
 } from '@/queryOptions/form/formQueryOptions'
 import { toast } from 'react-toastify'
 
+// import { formatThaiDate } from './formatDateTime'
+import { formatThaiDate } from '@/utils/formatDateTime'
+
 const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
   const { mutateAsync: replaceSignatrueForm } = useReplaceSignatrueFormQueryOption()
   const { mutateAsync: selectSignatrueForm } = useSelectSignatrueFormQueryOption()
@@ -41,7 +44,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
     } else {
       setCurrentItem(item) // Not a clone, so use the original item
     }
-  }, [item, form])
+  }, [item])
 
   const [isEditing, setIsEditing] = useState(false)
   const [text, setText] = useState('')
@@ -257,6 +260,23 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
           )}
 
         <div className='flex min-w-[200px] relative'>
+          {!currentItem?.config?.details?.signer?.signature ? (
+            <img
+              src={'/images/signImg.png'} // <-- ❗️ แก้เป็น path รูปภาพลายน้ำของคุณ
+              alt='ลายน้ำ'
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain', // หรือ 'cover' ตามความเหมาะสม
+                opacity: 0.2, // ✨ ปรับความโปร่งใสที่นี่ (ค่าระหว่าง 0.0 ถึง 1.0)
+                pointerEvents: 'none' // เพื่อให้คลิกทะลุลายน้ำไปได้
+              }}
+            />
+          ) : null}
+
           <img
             src={
               currentItem?.config?.details?.signer?.signature_base64 ||
@@ -284,7 +304,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
                     <Alert
                       id='alertDialogConfirmToggleTrigger'
                       title='Signature'
-                      content1={currentItem?.config?.details?.signer?.signature}
+                      content1={'วันที่ ' + formatThaiDate(currentItem?.config?.details?.signer?.signed_date)}
+                      content2={currentItem?.config?.details?.signer?.signature}
                       onClick={() => {}}
                     />
                   ),

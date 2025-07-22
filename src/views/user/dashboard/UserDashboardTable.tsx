@@ -12,7 +12,7 @@ import CardHeader from '@mui/material/CardHeader'
 import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
-import { type ColumnFiltersState, type VisibilityState } from '@tanstack/react-table'
+// import { type ColumnFiltersState, type VisibilityState } from '@tanstack/react-table'
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
 
 import {
@@ -40,9 +40,13 @@ import {
   getFacetedUniqueValues,
   getFacetedMinMaxValues,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
+  type ColumnDef,
+  type FilterFn,
+  type ColumnFiltersState,
+  type VisibilityState
 } from '@tanstack/react-table'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
+
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports

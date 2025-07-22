@@ -188,7 +188,7 @@ const SignatureProperty = () => {
         />
       </section>
       <section
-        className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
+        className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5 hidden'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
         <Typography className='' variant='h6'>
