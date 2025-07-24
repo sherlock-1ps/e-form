@@ -1,14 +1,15 @@
 'use client'
 
 // React Imports
-import { forwardRef } from 'react'
+import { forwardRef, useState, useEffect } from 'react'
 
 // MUI Imports
 import { styled } from '@mui/material/styles'
 import type { TextFieldProps } from '@mui/material/TextField'
 import TextField from '@mui/material/TextField'
-
+import { numberToThaiText } from '@/utils/numberFormat'
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
+  // ... All existing styles remain unchanged ...
   '& .MuiInputLabel-root': {
     transform: 'none',
     width: 'fit-content',
@@ -176,7 +177,6 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
     }
   },
   '& .MuiSelect-select': {
-    // lineHeight: 1.5,
     minHeight: 'unset !important',
     lineHeight: '1.4375em',
     '&.MuiInputBase-input': {
@@ -250,8 +250,136 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
   }
 }))
 
-const CustomTextField = forwardRef((props: TextFieldProps, ref) => {
-  const { size = 'small', InputLabelProps, InputProps, ...rest } = props
+// Define the props for the component, including the new decimalPlaces prop
+type CustomTextFieldProps = TextFieldProps & {
+  isNumber?: boolean
+  decimalPlaces?: number
+  linkField?: string
+  changeNumberToText?: boolean
+}
+
+const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
+  // Destructure props, setting a default value of 2 for decimalPlaces
+  const {
+    size = 'small',
+    InputLabelProps,
+    linkField,
+    InputProps,
+    isNumber,
+    changeNumberToText = false,
+    decimalPlaces = 0,
+    value,
+    onBlur,
+    onChange,
+    onFocus,
+    ...rest
+  } = props
+
+  // State to hold the value displayed in the input
+  const [internalValue, setInternalValue] = useState(value)
+  // State to track if the input is focused, to prevent unwanted formatting
+  const [isFocused, setIsFocused] = useState(false)
+
+  // Helper to format a value into a number string with commas and specified decimal places
+  const formatValue = (val: any) => {
+    if (val === null || val === undefined || val === '' || isNaN(parseFloat(String(val).replace(/,/g, '')))) {
+      return ''
+    }
+    const num = parseFloat(String(val).replace(/,/g, ''))
+    // Use the decimalPlaces prop to format the number
+    return num.toLocaleString('en-US', {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces
+    })
+  }
+
+  // Helper to remove formatting for editing
+  const unformatValue = (val: any) => {
+    if (val === null || val === undefined) return ''
+    return String(val).replace(/,/g, '')
+  }
+
+  // Effect to sync with the parent component's `value` prop.
+  useEffect(() => {
+    if (!isFocused) {
+      const initialValue = isNumber ? formatValue(value) : value
+      setInternalValue(initialValue)
+    }
+  }, [value, isNumber, isFocused, decimalPlaces])
+
+  // When the input gains focus, set the focused state and show the raw number.
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setIsFocused(true)
+    if (isNumber) {
+      setInternalValue(unformatValue(internalValue))
+    }
+    if (onFocus) {
+      onFocus(e)
+    }
+  }
+
+  // When the input loses focus, unset the focused state and apply formatting.
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setIsFocused(false)
+    if (isNumber) {
+      const rawValue = unformatValue(e.target.value)
+      const formattedValue = formatValue(rawValue)
+      setInternalValue(formattedValue)
+
+      const eventForParent = {
+        ...e,
+        target: { ...e.target, value: rawValue }
+      }
+
+      if (onBlur) {
+        onBlur(eventForParent)
+      }
+    } else {
+      if (onBlur) {
+        onBlur(e)
+      }
+    }
+  }
+
+  // As the user types, update the internal state directly with their input.
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const currentValue = e.target.value
+
+    // if (changeNumberToText) {
+    //   if (currentValue === '' || /^\d*\.?\d*$/.test(currentValue)) {
+    //     setInternalValue(currentValue)
+
+    //     if (onChange) {
+    //       const thaiText = numberToThaiText(currentValue)
+
+    //       const eventForParent = {
+    //         ...e,
+    //         target: { ...e.target, value: thaiText }
+    //       }
+    //       onChange(eventForParent)
+    //     }
+    //   }
+    // } else
+
+    if (isNumber) {
+      if (currentValue === '' || /^\d*\.?\d*$/.test(currentValue)) {
+        setInternalValue(currentValue)
+
+        if (onChange) {
+          const eventForParent = {
+            ...e,
+            target: { ...e.target, value: currentValue }
+          }
+          onChange(eventForParent)
+        }
+      }
+    } else {
+      setInternalValue(currentValue)
+      if (onChange) {
+        onChange(e)
+      }
+    }
+  }
 
   return (
     <TextFieldStyled
@@ -259,11 +387,14 @@ const CustomTextField = forwardRef((props: TextFieldProps, ref) => {
       inputRef={ref}
       {...rest}
       variant='filled'
+      value={internalValue ?? ''}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onChange={handleChange}
       InputLabelProps={{ ...InputLabelProps, shrink: true }}
-      // Add the readOnly prop to the InputProps
       InputProps={{
         ...InputProps,
-        // readOnly: props.readOnly // Pass the readOnly prop here
+        ...(isNumber && { inputMode: 'decimal' })
       }}
     />
   )

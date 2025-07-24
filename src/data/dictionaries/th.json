@@ -1,4 +1,7 @@
 {
+  "changeNumberToText": "เปลี่ยนตัวเลขเป็นตัวหนังสือ",
+  "linkField": "เชื่อมโยงฟิลด์",
+  "decimalNumber": "จำนวนทศนิยม",
   "readOnly": "อ่านอย่างเดียว",
   "isNumber": "ตัวเลขเท่านั้น",
   "cannotSave": "ไม่สามารถบันทึกได้",

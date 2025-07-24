@@ -244,8 +244,12 @@ export const toolboxCreateformMenu = [
         isUse: true,
         isShow: true,
         isNumber: false,
+        changeNumberToText: false,
         readOnly: false,
         isRequired: true,
+
+        decimalPlaces: 0,
+        linkField: '',
         trigger: {
           isTrigger: false
         }
@@ -415,9 +419,9 @@ export const toolboxCreateformMenu = [
           signature_base64: null
         },
         workers: {
-          persons: [{ id: 1, text: "001" }],
-          positions: [{ id: 1, text: "001" }],
-          departments: [{ id: 1, text: "001" }]
+          persons: [{ id: 1, text: '001' }],
+          positions: [{ id: 1, text: '001' }],
+          departments: [{ id: 1, text: '001' }]
         },
         tag: {
           isShow: true,

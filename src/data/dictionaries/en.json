@@ -1,4 +1,7 @@
 {
+  "changeNumberToText": "change number to text",
+  "linkField": "link to field",
+  "decimalNumber": "decimal number",
   "readOnly": "Read Only",
   "isNumber": "Is Number",
   "cannotSave": "Cannot save.",

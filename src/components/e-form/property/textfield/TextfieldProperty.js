@@ -119,9 +119,6 @@ const TextfieldProperty = () => {
 
   return (
     <div>
-
-
-
       <BaseTitleProperty
         title='กล่องข้อความ'
         icon={<TextFieldsOutlined sx={{ width: '32px', height: '32px' }} />}
@@ -441,7 +438,6 @@ const TextfieldProperty = () => {
           }
         />
 
-
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.isNumber} />}
           label={dictionary?.isNumber}
@@ -452,6 +448,60 @@ const TextfieldProperty = () => {
               selectedField?.fieldId?.id ?? '',
               {
                 isNumber: e.target.checked
+              }
+            )
+          }
+        />
+        {result?.config?.details?.isNumber ? (
+          <CustomTextField
+            label={dictionary?.decimalNumber}
+            placeholder='2'
+            type='number'
+            value={result?.config?.details?.decimalPlaces ?? '0'}
+            // maxLength={1}
+            onChange={e =>
+              updateDetails(
+                String(selectedField?.parentKey ?? ''),
+                selectedField?.boxId ?? '',
+                selectedField?.fieldId?.id ?? '',
+                {
+                  ...result?.config?.details,
+                  decimalPlaces: e.target.value
+                }
+              )
+            }
+          />
+        ) : null}
+
+        <FormControlLabel
+          control={<Switch checked={result?.config?.details?.changeNumberToText} />}
+          label={dictionary?.changeNumberToText}
+          onChange={e =>
+            updateDetails(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              {
+                ...result?.config?.details,
+                changeNumberToText: e.target.checked
+              }
+            )
+          }
+        />
+
+        <CustomTextField
+          label={dictionary?.linkField}
+          placeholder='Other Component ID'
+          value={result?.config?.details?.linkField ?? ''}
+          // maxLength={1}
+          onChange={e =>
+            updateDetails(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              {
+                ...result?.config?.details,
+                linkField: e.target.value
               }
             )
           }

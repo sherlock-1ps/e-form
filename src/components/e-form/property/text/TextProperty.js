@@ -80,6 +80,7 @@ const TextProperty = ({ item }) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const updateId = useFormStore(state => state.updateId)
   const [isDuplicateId, setIsDuplicatedId] = useState(false)
+  // const [isDuplicateId, setIsDuplicatedId] = useState(false)
   const { data: variableData } = useFetchVariableQueryOption(1, 999)
 
   const result = form?.form_details
@@ -97,15 +98,15 @@ const TextProperty = ({ item }) => {
     }
   }, [selectedField])
 
+  // console.log(555)
+
   return (
     <div>
-
       <BaseTitleProperty title='ข้อความ' icon={<Title sx={{ width: '32px', height: '32px' }} />} item={selectedField} />
       <section
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
-
         <div className='w-full flex justify-around'>
           <FormControlLabel
             label={dictionary?.enable}
