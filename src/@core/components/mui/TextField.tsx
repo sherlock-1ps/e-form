@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { forwardRef, useState, useEffect } from 'react'
+import { forwardRef, useState, useEffect, FocusEvent, ChangeEvent } from 'react'
 
 // MUI Imports
 import { styled } from '@mui/material/styles'
@@ -308,7 +308,7 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
   }, [value, isNumber, isFocused, decimalPlaces])
 
   // When the input gains focus, set the focused state and show the raw number.
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFocus = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(true)
     if (isNumber) {
       setInternalValue(unformatValue(internalValue))
@@ -319,7 +319,7 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
   }
 
   // When the input loses focus, unset the focused state and apply formatting.
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(false)
     if (isNumber) {
       const rawValue = unformatValue(e.target.value)
@@ -342,7 +342,7 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
   }
 
   // As the user types, update the internal state directly with their input.
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const currentValue = e.target.value
 
     // if (changeNumberToText) {

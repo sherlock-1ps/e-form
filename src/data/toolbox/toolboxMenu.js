@@ -181,6 +181,7 @@ export const toolboxDocumentBaseMenu = [
 
 export const toolboxCreateformMenu = [
   {
+    hiden: true,
     id: 1,
     icon: <AddBoxOutlined />,
     config: {
@@ -246,7 +247,7 @@ export const toolboxCreateformMenu = [
         isNumber: false,
         changeNumberToText: false,
         readOnly: false,
-        isRequired: true,
+        isRequired: false,
 
         decimalPlaces: 0,
         linkField: '',
@@ -284,7 +285,7 @@ export const toolboxCreateformMenu = [
         isUse: true,
         isShow: true,
         isShowTime: true,
-        isRequired: true,
+        isRequired: false,
         trigger: {
           isTrigger: false
         }
@@ -319,7 +320,7 @@ export const toolboxCreateformMenu = [
         isUse: true,
         isShow: true,
         isShowTime: true,
-        isRequired: true,
+        isRequired: false,
         trigger: {
           isTrigger: false
         }
@@ -327,6 +328,7 @@ export const toolboxCreateformMenu = [
     }
   },
   {
+    hiden: true,
     id: 5,
     icon: <UploadFileOutlined />,
     config: {
@@ -391,7 +393,7 @@ export const toolboxCreateformMenu = [
         isUse: true,
         isShow: true,
         isCutLink: false,
-        isRequired: true,
+        isRequired: false,
         trigger: {
           isTrigger: false
         }
@@ -439,7 +441,7 @@ export const toolboxCreateformMenu = [
         placeholder: 'พิมพ์ข้อความของคุณที่นี่',
         isUse: true,
         isShow: true,
-        isRequired: true
+        isRequired: false
       }
     }
   }
@@ -455,7 +457,7 @@ export const toolboxCreateformMenu = [
   //       label: 'Data Grid',
   //       isUse: true,
   //       isShow: true,
-  //       isRequired: true
+  //       isRequired: false
   //     }
   //   }
   // }
@@ -516,7 +518,7 @@ export const toolboxOptionMenu = [
         row: false,
         isUse: true,
         isShow: true,
-        isRequired: true,
+        isRequired: false,
         keyValue: {
           keyValueType: 'string',
           value: ''
@@ -542,7 +544,7 @@ export const toolboxOptionMenu = [
         row: false,
         isUse: true,
         isShow: true,
-        isRequired: true,
+        isRequired: false,
         selectedValue: '',
         keyValue: {
           keyValueType: 'string',

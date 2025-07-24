@@ -30,7 +30,7 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
       return
     }
     setDate(newDate)
-    setOpen(false)
+    setOpen(false) // onClose handles this, but it's good practice here too
 
     if (newDate) {
       const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
@@ -39,14 +39,8 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   }
 
   return (
-    <div
-      onDoubleClick={() => {
-        if (!item?.config?.details?.isUse) return
-        setOpen(true)
-      }}
-      className='w-[170px]'
-      style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}
-    >
+    // 👉 Step 2: Removed onDoubleClick from this div
+    <div className='w-[170px]' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
         {item?.config?.details?.tag?.isShow && (
           <Typography variant='body2'>{item?.config?.details?.tag?.value ?? 'เลือกวันที่'}</Typography>
@@ -54,13 +48,18 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
         <MobileDatePicker
           disabled={!item?.config?.details?.isUse}
           open={open}
+          onOpen={() => setOpen(true)} // Good practice to handle programmatic opening
           onClose={() => setOpen(false)}
           value={date}
           onChange={handleChange}
           format='DD/MM/YYYY'
-          // label={date ? '' : item?.config?.details?.placeholder?.value}
           slotProps={{
             textField: {
+              // 👉 Step 1: Added onClick to open the picker
+              onClick: () => {
+                if (!item?.config?.details?.isUse) return
+                setOpen(true)
+              },
               size: 'small',
               fullWidth: true,
               inputRef,
@@ -78,13 +77,6 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
               },
               InputLabelProps: {
                 shrink: isFocus || (open && true)
-              },
-              InputProps: {
-                sx: {
-                  '& .MuiInputAdornment-root': {
-                    display: 'none'
-                  }
-                }
               }
             }
           }}

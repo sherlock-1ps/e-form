@@ -41,11 +41,15 @@ const ToolboxButtonContainer = ({ menu, title }) => {
 
       <Grid item xs={12} className='py-4' sx={{ borderBottom: '1px solid #11151A1F' }}>
         <Grid container spacing={4} justifyContent='flex-start'>
-          {menu.map((item, index) => (
-            <Grid item xs={4} key={index}>
-              <DraggableToolboxItem item={item} />
-            </Grid>
-          ))}
+          {menu.map((item, index) => {
+            if (item.hiden !== true) {
+              return (
+                <Grid item xs={4} key={index}>
+                  <DraggableToolboxItem item={item} />
+                </Grid>
+              )
+            }
+          })}
         </Grid>
       </Grid>
     </Grid>

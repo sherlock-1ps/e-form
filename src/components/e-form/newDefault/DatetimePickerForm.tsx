@@ -11,7 +11,6 @@ import { useFormStore } from '@/store/useFormStore'
 const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const selectedField = useFormStore(state => state.selectedField)
-  // const [date, setDate] = useState<Dayjs | null>(null)
   const [date, setDate] = useState<Dayjs | null>(() => {
     const val = item?.config?.details?.value?.value
 
@@ -34,14 +33,8 @@ const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   }
 
   return (
-    <div
-      onDoubleClick={() => {
-        if (!item?.config?.details?.isUse) return
-        setOpen(true)
-      }}
-      className='w-[170px]'
-      style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}
-    >
+    // 👉 2. ลบ onDoubleClick ออกจาก div นี้
+    <div className='w-[170px]' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
         {item?.config?.details?.tag?.isShow && (
           <Typography variant='body2'>{item?.config?.details?.tag?.value ?? 'เลือกวันที่'}</Typography>
@@ -49,13 +42,18 @@ const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
         <MobileDateTimePicker
           disabled={!item?.config?.details?.isUse}
           open={open}
+          onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
           value={date}
           onChange={handleChange}
           format='DD/MM/YYYY HH:mm'
-          // label={date ? '' : item?.config?.details?.placeholder?.value}
           slotProps={{
             textField: {
+              // 👉 3. เพิ่ม onClick เพื่อเปิดปฏิทินในคลิกเดียว
+              onClick: () => {
+                if (!item?.config?.details?.isUse) return
+                setOpen(true)
+              },
               size: 'small',
               fullWidth: true,
               inputRef,
@@ -73,14 +71,8 @@ const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
               },
               InputLabelProps: {
                 shrink: isFocus || (open && true)
-              },
-              InputProps: {
-                sx: {
-                  '& .MuiInputAdornment-root': {
-                    display: 'none'
-                  }
-                }
               }
+              // 👉 1. ลบ InputProps ที่ซ่อนไอคอนออกไปแล้ว
             }
           }}
         />
