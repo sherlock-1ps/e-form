@@ -119,6 +119,9 @@ const TextfieldProperty = () => {
 
   return (
     <div>
+
+
+
       <BaseTitleProperty
         title='กล่องข้อความ'
         icon={<TextFieldsOutlined sx={{ width: '32px', height: '32px' }} />}
@@ -407,6 +410,7 @@ const TextfieldProperty = () => {
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
         <Typography>{dictionary?.rendering} </Typography>
+
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.isRequired} />}
           label={dictionary?.required}
@@ -417,6 +421,37 @@ const TextfieldProperty = () => {
               selectedField?.fieldId?.id ?? '',
               {
                 isRequired: e.target.checked
+              }
+            )
+          }
+        />
+
+        <FormControlLabel
+          control={<Switch checked={result?.config?.details?.readOnly} />}
+          label={dictionary?.readOnly}
+          onChange={e =>
+            updateDetails(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              {
+                readOnly: e.target.checked
+              }
+            )
+          }
+        />
+
+
+        <FormControlLabel
+          control={<Switch checked={result?.config?.details?.isNumber} />}
+          label={dictionary?.isNumber}
+          onChange={e =>
+            updateDetails(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              {
+                isNumber: e.target.checked
               }
             )
           }

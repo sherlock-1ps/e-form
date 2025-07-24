@@ -21,6 +21,7 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
 
   return (
     <form style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
+
       <CustomTextField
         fullWidth
         multiline
@@ -39,6 +40,7 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
         helperText={item?.config?.details?.helperText?.isShow && item?.config?.details?.helperText?.value}
         placeholder={item?.config?.details?.placeholder?.isShow && item?.config?.details?.placeholder?.value}
         inputProps={{
+          readOnly: true,
           maxLength: item?.config?.details?.limit?.isLimit
             ? Number(item?.config?.details?.limit?.maxCharacter)
             : undefined

@@ -240,8 +240,11 @@ export const toolboxCreateformMenu = [
           isLimit: false,
           maxCharacter: ''
         },
+
         isUse: true,
         isShow: true,
+        isNumber: false,
+        readOnly: false,
         isRequired: true,
         trigger: {
           isTrigger: false

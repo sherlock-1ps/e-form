@@ -54,6 +54,7 @@ const Element = props => {
     switch (config?.details?.type) {
       case 'text':
         return (
+
           <TextLabel
             {...props}
             readOnly={preview}
@@ -62,9 +63,12 @@ const Element = props => {
             isTriggerResize={isTriggerResize}
             handleTriggerResize={handleTriggerResize}
           />
+
+
         )
       case 'textarea':
         return (
+
           <TextareaElement
             {...props}
             readOnly={preview}
@@ -73,6 +77,8 @@ const Element = props => {
             isTriggerResize={isTriggerResize}
             handleTriggerResize={handleTriggerResize}
           />
+
+
         )
       case 'image':
         return <ImageForm {...props} />

@@ -59,6 +59,7 @@ const TextareaElement = props => {
           whiteSpace: 'nowrap'
         }}
       />
+
       <CustomTextField
         ref={divRef}
         style={{

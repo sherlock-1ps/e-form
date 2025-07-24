@@ -251,7 +251,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
 }))
 
 const CustomTextField = forwardRef((props: TextFieldProps, ref) => {
-  const { size = 'small', InputLabelProps, ...rest } = props
+  const { size = 'small', InputLabelProps, InputProps, ...rest } = props
 
   return (
     <TextFieldStyled
@@ -260,6 +260,11 @@ const CustomTextField = forwardRef((props: TextFieldProps, ref) => {
       {...rest}
       variant='filled'
       InputLabelProps={{ ...InputLabelProps, shrink: true }}
+      // Add the readOnly prop to the InputProps
+      InputProps={{
+        ...InputProps,
+        // readOnly: props.readOnly // Pass the readOnly prop here
+      }}
     />
   )
 })
