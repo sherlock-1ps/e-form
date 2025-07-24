@@ -1,4 +1,6 @@
 {
+  "documentsInProcess": "เอกสารอยู่ระหว่างดำเนินการ",
+  "pendingDocuments": "เอกสารรอดำเนินการ",
   "changeNumberToText": "เปลี่ยนตัวเลขเป็นตัวหนังสือ",
   "linkField": "เชื่อมโยงฟิลด์",
   "decimalNumber": "จำนวนทศนิยม",

@@ -1,4 +1,6 @@
 {
+  "documentsInProcess": "Documents in process",
+  "pendingDocuments": "Pending documents",
   "changeNumberToText": "change number to text",
   "linkField": "link to field",
   "decimalNumber": "decimal number",

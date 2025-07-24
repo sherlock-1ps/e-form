@@ -29,6 +29,7 @@ import {
   fetchVariable,
   fetchWorkAll,
   fetchWorkEnd,
+  fetchWorkOwner,
   fetchWorkInProgress,
   fetchWorkMy,
   getDepartmentList,
@@ -721,6 +722,7 @@ export const useDeleteFormDataQueryOption = () => {
       queryClient.invalidateQueries({ queryKey: ['workAllSysDoc'] })
       queryClient.invalidateQueries({ queryKey: ['workAll'] })
       queryClient.invalidateQueries({ queryKey: ['workEnd'] })
+      queryClient.invalidateQueries({ queryKey: ['workOwner'] })
 
       queryClient.invalidateQueries({ queryKey: ['fetchWorkCount'] })
     }
@@ -775,6 +777,19 @@ export function useFetchWorkEndQueryOption(
   return useQuery({
     queryKey: ['workEnd', page, pageSize, flow_id],
     queryFn: () => fetchWorkEnd({ page, pageSize, flow_id }),
+    ...options
+  })
+}
+
+export function useFetchWorkOwnerQueryOption(
+  page: number,
+  pageSize: number,
+  flow_id: number,
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ['workOwner', page, pageSize, flow_id],
+    queryFn: () => fetchWorkOwner({ page, pageSize, flow_id }),
     ...options
   })
 }

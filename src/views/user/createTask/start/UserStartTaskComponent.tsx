@@ -24,7 +24,8 @@ import {
   History,
   Check,
   AccountTree,
-  FileOpen
+  FileOpen,
+  CloudDownload
 } from '@mui/icons-material'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -631,8 +632,12 @@ const UserStartTaskComponent = ({ data }: any) => {
                               Edit PDF
                             </Button>
                           )}
-                          <div className='w-full'>
+
+                          <div className='w-full flex justify-between items-center'>
                             <Typography className='text-xs break-words leading-snug'>{item?.name}</Typography>
+                            <a href={item?.url_file_download} target='_blank' rel='noopener noreferrer'>
+                              <CloudDownload fontSize='large' className='cursor-pointer' />
+                            </a>
                           </div>
                         </div>
                       ))}
@@ -668,11 +673,11 @@ const UserStartTaskComponent = ({ data }: any) => {
                     <input
                       type='file'
                       hidden
-                      accept={`
-      .jpg,.jpeg,.png,.gif,.webp,.bmp,
-      .avi,.mp4,.mov,
-      .pdf,.doc,.docx,.xlsx,.ppt,.pptx,.csv
-    `}
+                      //                   accept={`
+                      //   .jpg,.jpeg,.png,.gif,.webp,.bmp,
+                      //   .avi,.mp4,.mov,
+                      //   .pdf,.doc,.docx,.xlsx,.ppt,.pptx,.csv
+                      // `}
                       onChange={handleAddImage}
                     />
                   </Button>
