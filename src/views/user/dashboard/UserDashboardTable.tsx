@@ -310,15 +310,17 @@ const UserDashboardTable = ({
                 }}
               />
               {isView ? (
-                <FindInPage
-                  color='info'
-                  titleAccess={dictionary?.viewDetail}
-                  fontSize='large'
-                  sx={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    viewClick(row)
-                  }}
-                />
+                status !== 'draft' ? (
+                  <FindInPage
+                    color='info'
+                    titleAccess={dictionary?.viewDetail}
+                    fontSize='large'
+                    sx={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      viewClick(row)
+                    }}
+                  />
+                ) : null
               ) : (
                 <PlayCircleOutline
                   color='primary'

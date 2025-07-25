@@ -177,3 +177,70 @@ export const updateSignature = (
     }))
   }))
 }
+
+interface Details {
+  type: string
+  label: string
+  // Add any other properties that exist in 'details'
+  [key: string]: any
+}
+
+// Defines the structure for the 'config' object
+interface Config {
+  details: Details
+  // Add other properties if they exist
+}
+
+// Defines the structure for items inside the 'data' array
+interface DataItem {
+  id: string
+  config: Config
+}
+
+// Defines the structure for objects inside the 'fields' array
+interface Field {
+  i: string
+  data: DataItem[]
+}
+
+// Defines the structure for objects inside the 'form_details' array
+interface FormDetail {
+  parentKey: string
+  fields: Field[]
+}
+
+// Defines the main data object structure
+interface DataObject {
+  form_details: FormDetail[]
+}
+
+// Defines the structure of the successful return value
+interface FoundFieldDetails {
+  i: string
+  parentKey: string
+  details: Details
+}
+
+export function findFieldDetailsById(dataObject: DataObject, targetId: string): FoundFieldDetails | null {
+  // Loop through each object in the 'form_details' array
+  for (const detail of dataObject.form_details) {
+    // Loop through each field in the 'fields' array of the current detail
+    for (const field of detail.fields) {
+      // Use .find() to find the data item with the matching id
+      const foundDataItem = field.data.find(item => item.id === targetId)
+
+      // If a match is found...
+      if (foundDataItem) {
+        // ...return an object with the required information.
+        return {
+          i: field.i,
+          parentKey: detail.parentKey,
+          details: foundDataItem.config.details
+        }
+      }
+    }
+  }
+
+  // If no match is found after checking everything, return null.
+  return null
+}

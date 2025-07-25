@@ -27,6 +27,8 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
   // 1. Use useState for `currentItem`. Initialize with the passed `item`.
   const [currentItem, setCurrentItem] = useState(item)
 
+  // const [isDisplayCurrent, setIsDisplayCurrent] = useState(true)
+
   // 2. Use useEffect to update `currentItem` based on the cloning logic.
   // This runs when `item` or `form` changes.
   useEffect(() => {
@@ -42,8 +44,34 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
         setCurrentItem(item) // Fallback to original item if clone not found
       }
     } else {
-      setCurrentItem(item) // Not a clone, so use the original item
+      if (item?.config?.details?.signer?.is_current && !window.location.pathname.includes('user/dashboard')) {
+        setCurrentItem({
+          ...item,
+          config: {
+            ...item.config,
+            details: {
+              ...item?.config?.details,
+              position: {
+                ...item?.config?.details?.position,
+                value: ''
+              },
+              signer: {
+                ...item?.config?.details?.signer,
+                value: '',
+                imgValue: '',
+                selectMode: true
+              }
+            }
+          }
+        })
+      } else {
+        setCurrentItem(item)
+      }
     }
+
+    // setIsDisplayCurrent(
+    //   item?.config?.details?.signer?.is_current && window.location.pathname.includes('user/dashboard')
+    // )
   }, [item])
 
   const [isEditing, setIsEditing] = useState(false)
@@ -59,7 +87,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
       setEditedText(positionValue)
     }
 
-    console.log('currentItem', currentItem)
+    // console.log('currentItem', currentItem)
   }, [currentItem, isEditing])
 
   const handleDoubleClick = () => {

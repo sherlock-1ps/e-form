@@ -41,7 +41,7 @@ const CommentSignDialog = ({ id, onSave, linkId, title, signType }: commentSignP
     try {
       const response = await onSave(comment, signType, undefined, linkId)
       if (response?.code === 'SUCCESS') {
-        router.push(`/${locale}/user/allTask`)
+        router.push(`/${locale}/user/dashboard`)
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
       }

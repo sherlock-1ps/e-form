@@ -265,7 +265,7 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
     InputLabelProps,
     linkField,
     InputProps,
-    isNumber,
+    isNumber = false,
     changeNumberToText = false,
     decimalPlaces = 0,
     value,

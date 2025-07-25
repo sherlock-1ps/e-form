@@ -30,6 +30,21 @@ const monthKey = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep',
 const fiscalMonths = ['ต.ค.', 'พ.ย.', 'ธ.ค.', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.']
 const fiscalMonthKeys = ['oct', 'nov', 'dec', 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep']
 
+const fiscalFullMonths = [
+  'มกราคม',
+  'กุมภาพันธ์',
+  'มีนาคม',
+  'เมษายน',
+  'พฤษภาคม',
+  'มิถุนายน',
+  'กรกฎาคม',
+  'สิงหาคม',
+  'กันยายน',
+  'ตุลาคม',
+  'พฤศจิกายน',
+  'ธันวาคม'
+]
+
 const cellStyle = { padding: '4px', border: '1px solid #ccc' }
 
 const MockupReportComponent = ({ onBack }: any) => {
@@ -63,7 +78,16 @@ const MockupReportComponent = ({ onBack }: any) => {
     ...person,
     data: person.data.map((detail: any) => {
       const createdDate = new Date(detail.created_at)
-      const month = monthKey[createdDate.getMonth()] // Still maps using original keys
+      // fiscalFullMonths
+
+      // const month = monthKey[createdDate.getMonth()] // Still maps using original keys
+
+      const monthIndex = fiscalFullMonths.indexOf(detail.month)
+
+      const month = monthKey[monthIndex]
+
+      console.log('{ ...detail, month }', { ...detail, month })
+
       return { ...detail, month }
     })
   }))

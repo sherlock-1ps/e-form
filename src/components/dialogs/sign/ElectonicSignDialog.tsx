@@ -76,7 +76,7 @@ const ElectonicSignDialog = ({ id, onSave, signType }: signProps) => {
       if (response?.code === 'SUCCESS') {
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
-        router.push(`/${locale}/user/allTask`)
+        router.push(`/${locale}/user/dashboard`)
       }
     } catch (err) {
       console.error('save failed', err)

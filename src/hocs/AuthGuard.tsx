@@ -118,7 +118,7 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
       const code = error?.response?.data?.code ?? 'UNKNOWN'
       const message = error?.response?.data?.message ?? 'Internal Server Error'
       const url = error?.response?.data?.result?.data?.url_redirect
-
+      localStorage.removeItem('auth-storage')
       return {
         success: false,
         status,

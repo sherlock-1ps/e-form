@@ -26,10 +26,9 @@ import { useFetchVariableQueryOption } from '@/queryOptions/form/formQueryOption
 import { useDictionary } from '@/contexts/DictionaryContext'
 
 const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce = 550, maxLength, ...props }) => {
-  const { dictionary } = useDictionary() // dictionary ถูกใช้ใน JSX ไม่ได้ใช้ใน effect นี้
+  const { dictionary } = useDictionary()
   const [value, setValue] = useState(initialValue)
 
-  // Effect สำหรับอัปเดต internal state 'value' เมื่อ 'initialValue' เปลี่ยน
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
@@ -58,7 +57,8 @@ const DebouncedInput = ({ value: initialValue, onChange, isEng = false, debounce
           setValue(input)
           return
         }
-        const isValid = /^[a-zA-Z0-9]*$/.test(input)
+        const isValid = /^[a-zA-Z0-9_-]*$/.test(input)
+
         if (isValid) {
           setValue(input)
         }
@@ -417,6 +417,7 @@ const TextfieldProperty = () => {
               selectedField?.boxId ?? '',
               selectedField?.fieldId?.id ?? '',
               {
+                // ...result?.config?.details,
                 isRequired: e.target.checked
               }
             )
@@ -432,6 +433,7 @@ const TextfieldProperty = () => {
               selectedField?.boxId ?? '',
               selectedField?.fieldId?.id ?? '',
               {
+                // ...result?.config?.details,
                 readOnly: e.target.checked
               }
             )
@@ -447,6 +449,7 @@ const TextfieldProperty = () => {
               selectedField?.boxId ?? '',
               selectedField?.fieldId?.id ?? '',
               {
+                // ...result?.config?.details,
                 isNumber: e.target.checked
               }
             )
@@ -465,7 +468,7 @@ const TextfieldProperty = () => {
                 selectedField?.boxId ?? '',
                 selectedField?.fieldId?.id ?? '',
                 {
-                  ...result?.config?.details,
+                  // ...result?.config?.details,
                   decimalPlaces: e.target.value
                 }
               )
@@ -482,7 +485,7 @@ const TextfieldProperty = () => {
               selectedField?.boxId ?? '',
               selectedField?.fieldId?.id ?? '',
               {
-                ...result?.config?.details,
+                // ...result?.config?.details,
                 changeNumberToText: e.target.checked
               }
             )
@@ -574,7 +577,7 @@ const TextfieldProperty = () => {
                               selectedField?.fieldId?.id ?? '',
                               {
                                 trigger: {
-                                  // ...result?.config?.details?.trigger,
+                                  ...result?.config?.details?.trigger,
                                   isTrigger: !result?.config?.details?.trigger?.isTrigger
                                 }
                               }
