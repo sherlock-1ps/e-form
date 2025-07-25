@@ -97,7 +97,7 @@ const ToolboxTab = ({ tabContentList }) => {
             }
             value='appState'
           />
-          <Tab
+          {/* <Tab
             disableRipple
             disableTouchRipple
             sx={{
@@ -116,7 +116,7 @@ const ToolboxTab = ({ tabContentList }) => {
               </div>
             }
             value='apiCall'
-          />
+          /> */}
 
           <Tab
             disableRipple
