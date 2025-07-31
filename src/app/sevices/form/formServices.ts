@@ -1165,7 +1165,7 @@ export const reportScore = async ({
   }
 }
 
-export const reportMedical = async ({
+export const reportHouseRent = async ({
   form_version_id,
   start_date,
   end_date
@@ -1175,8 +1175,58 @@ export const reportMedical = async ({
   end_date: string
 }) => {
   try {
-    const response = await Axios.post('/form-datas/report/medical', {
+    const response = await Axios.post('/form-datas/report/house-rent-claims', {
       form_version_id,
+      start_date,
+      end_date
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error report house-rent-claims:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/report/house-rent-claims')
+    throw e
+  }
+}
+
+export const reportEducation = async ({
+  // form_version_id,
+  start_date,
+  end_date
+}: {
+  // form_version_id: number
+  start_date: string
+  end_date: string
+}) => {
+  try {
+    const response = await Axios.post('/form-datas/report/education', {
+      // form_version_id,
+      start_date,
+      end_date
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error report education:', error)
+
+    const e = axiosErrorHandler(error, '/form-datas/report/education')
+    throw e
+  }
+}
+
+export const reportMedical = async ({
+  // form_version_id,
+  start_date,
+  end_date
+}: {
+  // form_version_id: number
+  start_date: string
+  end_date: string
+}) => {
+  try {
+    const response = await Axios.post('/form-datas/report/medical', {
+      // form_version_id,
       start_date,
       end_date
     })

@@ -53,6 +53,7 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
               disabled={!item?.config?.details?.isUse}
               control={<Radio />}
               label={data.name}
+              sx={{ mt: 0.3, mb: 0.4 }}
             />
           ))}
         </RadioGroup>

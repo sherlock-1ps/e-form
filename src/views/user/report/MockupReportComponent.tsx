@@ -14,7 +14,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import DownloadIcon from '@mui/icons-material/Download'
 import { useEffect, useState } from 'react'
-import { useFetchReportMedicalQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useFetchReportHouseRentQueryOption } from '@/queryOptions/form/formQueryOptions'
 import { format } from 'date-fns'
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 import { MobileDatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -59,7 +59,7 @@ const MockupReportComponent = ({ onBack }: any) => {
   const start_date = format(new Date(selectedYear - 1, 9, 1), "yyyy-MM-dd'T'HH:mm:ss'Z'") // Start from October of previous year
   const end_date = format(new Date(selectedYear, 8, 30, 23, 59, 59), "yyyy-MM-dd'T'HH:mm:ss'Z'") // End on September of selected year
 
-  const { data: reportData, isPending: pendingReport } = useFetchReportMedicalQueryOption({
+  const { data: reportData, isPending: pendingReport } = useFetchReportHouseRentQueryOption({
     form_version_id: 47,
     start_date,
     end_date

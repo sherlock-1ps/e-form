@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Typography } from '@mui/material'
 import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
@@ -10,69 +10,74 @@ import { useFormStore } from '@/store/useFormStore'
 
 const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
-  const selectedField = useFormStore(state => state.selectedField)
-  const [date, setDate] = useState<Dayjs | null>(() => {
-    const val = item?.config?.details?.value?.value
+  const valueFromProp = item?.config?.details?.value?.value
+  const displayDate = valueFromProp ? dayjs(valueFromProp) : null
 
-    if (item?.config?.details?.value?.valueType === 'variable') {
-      return dayjs(val?.value) ?? null
-    }
+  // State ชั่วคราวสำหรับจัดการค่าในปฏิทิน
+  const [tempValue, setTempValue] = useState<Dayjs | null>(displayDate)
 
-    return val ? dayjs(val) : null
-  })
   const [open, setOpen] = useState(false)
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<any>(null)
 
-  const handleChange = (newDate: Dayjs | null) => {
-    setDate(newDate)
-    if (newDate) {
-      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
-      updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', formattedDate)
-    }
+  // ฟังก์ชันสำหรับซิงค์ค่าล่าสุดจาก props และเปิดปฏิทิน
+  const handleOpen = () => {
+    setTempValue(displayDate) // ซิงค์ค่าล่าสุดเสมอเมื่อเปิด
+    setOpen(true)
+  }
+
+  // ฟังก์ชันสำหรับจัดการเมื่อกด "OK"
+  const handleAccept = (newDate: Dayjs | null) => {
+    const formattedDate = newDate ? newDate.format('YYYY-MM-DDTHH:mm:ss') : ''
+    updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', formattedDate)
+    setOpen(false) // ปิดปฏิทิน
+  }
+
+  // ฟังก์ชันสำหรับจัดการเมื่อกด "Cancel" หรือปิดไป
+  const handleClose = () => {
+    setOpen(false)
   }
 
   return (
-    // 👉 2. ลบ onDoubleClick ออกจาก div นี้
     <div className='w-[170px]' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
         {item?.config?.details?.tag?.isShow && (
           <Typography variant='body2'>{item?.config?.details?.tag?.value ?? 'เลือกวันที่'}</Typography>
         )}
+
         <MobileDateTimePicker
           disabled={!item?.config?.details?.isUse}
           open={open}
-          onOpen={() => setOpen(true)}
-          onClose={() => setOpen(false)}
-          value={date}
-          onChange={handleChange}
+          // ปรับ Props ทั้งหมดเพื่อใช้ State ชั่วคราว
+          onOpen={handleOpen}
+          onClose={handleClose}
+          value={tempValue} // ใช้ state ชั่วคราว
+          onChange={newDate => setTempValue(newDate)} // อัปเดตแค่ state ชั่วคราว
+          onAccept={handleAccept} // ใช้ onAccept เมื่อกดยืนยัน
           format='DD/MM/YYYY HH:mm'
           slotProps={{
             textField: {
-              // 👉 3. เพิ่ม onClick เพื่อเปิดปฏิทินในคลิกเดียว
-              onClick: () => {
-                if (!item?.config?.details?.isUse) return
-                setOpen(true)
+              // ทำให้ text field อ่านได้อย่างเดียว
+              inputProps: {
+                readOnly: true
               },
+              onClick: handleOpen,
               size: 'small',
               fullWidth: true,
               inputRef,
               placeholder: 'กรุณาเลือกวันที่',
-              label: date
+              label: displayDate
                 ? ''
                 : item?.config?.details?.placeholder?.isShow
                   ? item?.config?.details?.placeholder?.value
                   : '',
-              onFocus: () => {
-                setIsFocus(true)
-              },
+              onFocus: () => setIsFocus(true),
               onBlur: () => {
                 if (isFocus) setIsFocus(false)
               },
               InputLabelProps: {
                 shrink: isFocus || (open && true)
               }
-              // 👉 1. ลบ InputProps ที่ซ่อนไอคอนออกไปแล้ว
             }
           }}
         />

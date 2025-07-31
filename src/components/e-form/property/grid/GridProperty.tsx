@@ -94,7 +94,7 @@ const GridProperty = ({ parentKey }: any) => {
             )
           })}
 
-        <Button variant='contained' fullWidth onClick={addFieldToForm} disabled={currentForm?.fields?.length == 12}>
+        <Button variant='contained' fullWidth onClick={addFieldToForm}>
           เพิ่มคอลัมน์
         </Button>
       </section>

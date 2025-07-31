@@ -13,12 +13,11 @@ import {
 } from '@mui/material'
 import { useDictionary } from '@/contexts/DictionaryContext'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
-import { forwardRef, useState } from 'react'
-import { format, formatDate, addDays, subDays, setHours, setMinutes } from 'date-fns'
+import DownloadIcon from '@mui/icons-material/Download'
+import { useState } from 'react'
+import { format } from 'date-fns'
+import * as XLSX from 'xlsx'
 
-import CustomTextField from '@/@core/components/mui/TextField'
-import type { TextFieldProps } from '@mui/material/TextField'
 import { useFetchReportScoreQueryOption } from '@/queryOptions/form/formQueryOptions'
 import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
@@ -101,22 +100,56 @@ const MockupSummaryConponent = ({ onBack }: any) => {
 
   const handleChangeStart = (newDate: Dayjs | null) => {
     setDateStart(newDate)
-    if (newDate) {
-      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
-    }
   }
 
   const handleChangeEnd = (newDate: Dayjs | null) => {
     setDateEnd(newDate)
-    if (newDate) {
-      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
+  }
+
+  // Function to handle the Excel export
+  const handleExportToExcel = () => {
+    if (!reportData?.result?.data) {
+      alert('ไม่มีข้อมูลสำหรับส่งออก')
+      return
     }
+
+    const wb = XLSX.utils.book_new()
+
+    // 1. Department Count Sheet
+    const departmentData = reportData.result.data.department_count || []
+    if (departmentData.length > 0) {
+      const wsDept = XLSX.utils.json_to_sheet(
+        departmentData.map((item: any) => ({
+          หน่วยงาน: item.department_name,
+          จำนวน: item.count
+        }))
+      )
+      XLSX.utils.book_append_sheet(wb, wsDept, 'จำนวนตามหน่วยงาน')
+    }
+
+    // 2. Score Summary Sheet
+    if (mockupDataWithScores.length > 0) {
+      const headers = ['หัวข้อการประเมิน', ...mockupDataWithScores.map(p => p.title)]
+      const dataRows = rows.map((topicName, rowIndex) => {
+        const scores = mockupDataWithScores.map(person => person.rows[rowIndex]?.score || 0)
+        return [topicName, ...scores]
+      })
+      const totals = mockupDataWithScores.map(person => person.rows.reduce((sum: any, row: any) => sum + row.score, 0))
+      const totalRow = ['รวม', ...totals]
+
+      const excelData = [headers, ...dataRows, totalRow]
+      const wsScores = XLSX.utils.aoa_to_sheet(excelData)
+      XLSX.utils.book_append_sheet(wb, wsScores, 'สรุปผลคะแนน')
+    }
+
+    // Write the workbook and trigger the download
+    XLSX.writeFile(wb, `สรุปผลการประเมิน_${format(new Date(), 'yyyy-MM-dd')}.xlsx`)
   }
 
   return (
     <div className=' w-full min-h-screen relative'>
       <div className=' absolute left-0 top-0 z-10'>
-        <div className='bg-primaryLight  rounded-lg'>
+        <div className='bg-primaryLight  rounded-lg'>
           <Button
             color='primary'
             variant='contained'
@@ -142,72 +175,51 @@ const MockupSummaryConponent = ({ onBack }: any) => {
             padding: '64px'
           }}
         >
-          <Grid container spacing={4}>
-            <Grid item xs={6}>
-              <div className='w-full'>
-                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
-                  <MobileDateTimePicker
-                    open={openStartTime}
-                    onClose={() => setOpenStartTime(false)}
-                    value={dateStart}
-                    onChange={handleChangeStart}
-                    format='DD/MM/YYYY HH:mm'
-                    // label={date ? '' : item?.config?.details?.placeholder?.value}
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                        fullWidth: true,
-                        placeholder: 'วันเวลาเริ่มต้น',
-                        label: 'วันเวลาเริ่มต้น',
-                        onClick: () => setOpenStartTime(true),
-                        onFocus: () => {},
-                        onBlur: () => {},
-                        InputLabelProps: {},
-                        InputProps: {
-                          sx: {
-                            '& .MuiInputAdornment-root': {
-                              display: 'none'
-                            }
-                          }
-                        }
-                      }
-                    }}
-                  />
-                </LocalizationProvider>
-              </div>
+          <Grid container spacing={4} alignItems='center'>
+            <Grid item xs={12} sm={4}>
+              <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                <MobileDateTimePicker
+                  open={openStartTime}
+                  onClose={() => setOpenStartTime(false)}
+                  value={dateStart}
+                  onChange={handleChangeStart}
+                  format='DD/MM/YYYY HH:mm'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                      fullWidth: true,
+                      placeholder: 'วันเวลาเริ่มต้น',
+                      label: 'วันเวลาเริ่มต้น',
+                      onClick: () => setOpenStartTime(true)
+                    }
+                  }}
+                />
+              </LocalizationProvider>
             </Grid>
-            <Grid item xs={6}>
-              <div className='w-full'>
-                <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
-                  <MobileDateTimePicker
-                    open={openEndTime}
-                    onClose={() => setOpenEndTime(false)}
-                    value={dateEnd}
-                    onChange={handleChangeEnd}
-                    format='DD/MM/YYYY HH:mm'
-                    // label={date ? '' : item?.config?.details?.placeholder?.value}
-                    slotProps={{
-                      textField: {
-                        size: 'small',
-                        fullWidth: true,
-                        placeholder: 'วันเวลาสิ้นสุด',
-                        label: 'วันเวลาสิ้นสุด',
-                        onClick: () => setOpenEndTime(true),
-                        onFocus: () => {},
-                        onBlur: () => {},
-                        InputLabelProps: {},
-                        InputProps: {
-                          sx: {
-                            '& .MuiInputAdornment-root': {
-                              display: 'none'
-                            }
-                          }
-                        }
-                      }
-                    }}
-                  />
-                </LocalizationProvider>
-              </div>
+            <Grid item xs={12} sm={4}>
+              <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+                <MobileDateTimePicker
+                  open={openEndTime}
+                  onClose={() => setOpenEndTime(false)}
+                  value={dateEnd}
+                  onChange={handleChangeEnd}
+                  format='DD/MM/YYYY HH:mm'
+                  slotProps={{
+                    textField: {
+                      size: 'small',
+                      fullWidth: true,
+                      placeholder: 'วันเวลาสิ้นสุด',
+                      label: 'วันเวลาสิ้นสุด',
+                      onClick: () => setOpenEndTime(true)
+                    }
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} sm={4} className='hidden'>
+              <Button variant='contained' color='success' onClick={handleExportToExcel} startIcon={<DownloadIcon />}>
+                Download Excel
+              </Button>
             </Grid>
 
             {reportData?.result?.data?.score_by_group ? (

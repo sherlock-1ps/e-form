@@ -88,7 +88,8 @@ const ProfileLayout = () => {
         </div>
 
         <NotificationsDropdown />
-        <IconButton
+
+        {/* <IconButton
           onClick={() =>
             showDialog({
               id: 'alertProfileDialog',
@@ -98,7 +99,7 @@ const ProfileLayout = () => {
           }
         >
           <img src='/images/iconProfile.png' alt='profile' className='w-[48px] rounded-full' />
-        </IconButton>
+        </IconButton> */}
       </div>
     </div>
   )

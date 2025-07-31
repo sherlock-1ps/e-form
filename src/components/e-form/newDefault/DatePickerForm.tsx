@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Typography } from '@mui/material'
 import { MobileDatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
@@ -10,68 +10,69 @@ import { useFormStore } from '@/store/useFormStore'
 
 const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
-  const selectedField = useFormStore(state => state.selectedField)
+  const valueFromProp = item?.config?.details?.value?.value
+  const displayDate = valueFromProp ? dayjs(valueFromProp) : null
 
-  const [date, setDate] = useState<Dayjs | null>(() => {
-    const val = item?.config?.details?.value?.value
-
-    if (item?.config?.details?.value?.valueType === 'variable') {
-      return dayjs(val?.value) ?? null
-    }
-
-    return val ? dayjs(val) : null
-  })
+  const [tempValue, setTempValue] = useState<Dayjs | null>(displayDate)
   const [open, setOpen] = useState(false)
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<any>(null)
 
-  const handleChange = (newDate: Dayjs | null) => {
-    if (draft) {
-      return
-    }
-    setDate(newDate)
-    setOpen(false) // onClose handles this, but it's good practice here too
+  // 👉 Step 1: ลบ useEffect ออก
+  // useEffect(() => {
+  //   setTempValue(displayDate)
+  // }, [displayDate])
 
-    if (newDate) {
-      const formattedDate = newDate.format('YYYY-MM-DDTHH:mm:ss')
-      updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', formattedDate)
-    }
+  // 👉 Step 2: สร้างฟังก์ชัน handleOpen เพื่อซิงค์ข้อมูลก่อนเปิด
+  const handleOpen = () => {
+    setTempValue(displayDate) // ซิงค์ค่าล่าสุดจาก props มาใส่ใน state ชั่วคราว
+    setOpen(true)
+  }
+
+  const handleAccept = (newDate: Dayjs | null) => {
+    const formattedDate = newDate ? newDate.format('YYYY-MM-DDTHH:mm:ss') : ''
+    updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', formattedDate)
+    setOpen(false)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    // ไม่จำเป็นต้อง setTempValue ที่นี่แล้ว เพราะ handleOpen จะจัดการให้ในครั้งถัดไป
   }
 
   return (
-    // 👉 Step 2: Removed onDoubleClick from this div
     <div className='w-[170px]' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
         {item?.config?.details?.tag?.isShow && (
           <Typography variant='body2'>{item?.config?.details?.tag?.value ?? 'เลือกวันที่'}</Typography>
         )}
+
         <MobileDatePicker
           disabled={!item?.config?.details?.isUse}
           open={open}
-          onOpen={() => setOpen(true)} // Good practice to handle programmatic opening
-          onClose={() => setOpen(false)}
-          value={date}
-          onChange={handleChange}
+          // 👉 Step 3: เปลี่ยนมาใช้ handleOpen
+          onOpen={handleOpen}
+          onClose={handleClose}
+          value={tempValue}
+          onChange={newDate => setTempValue(newDate)}
+          onAccept={handleAccept}
           format='DD/MM/YYYY'
           slotProps={{
             textField: {
-              // 👉 Step 1: Added onClick to open the picker
-              onClick: () => {
-                if (!item?.config?.details?.isUse) return
-                setOpen(true)
+              inputProps: {
+                readOnly: true
               },
+              onClick: handleOpen, // ใช้ handleOpen ที่นี่ด้วยก็ได้
               size: 'small',
               fullWidth: true,
               inputRef,
               placeholder: 'กรุณาเลือกวันที่',
-              label: date
+              label: displayDate
                 ? ''
                 : item?.config?.details?.placeholder?.isShow
                   ? item?.config?.details?.placeholder?.value
                   : '',
-              onFocus: () => {
-                setIsFocus(true)
-              },
+              onFocus: () => setIsFocus(true),
               onBlur: () => {
                 if (isFocus) setIsFocus(false)
               },

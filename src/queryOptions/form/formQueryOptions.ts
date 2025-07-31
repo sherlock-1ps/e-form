@@ -47,6 +47,8 @@ import {
   getStartFlow,
   getUploadFile,
   readNotificationRead,
+  reportHouseRent,
+  reportEducation,
   reportMedical,
   reportScore,
   saveStartFlow,
@@ -871,7 +873,24 @@ export function useFetchReportScoreQueryOption({
   })
 }
 
-export function useFetchReportMedicalQueryOption({
+// reportEducation,
+// reportMedical,
+
+export function useFetchReportEducationQueryOption({ start_date, end_date }: { start_date: string; end_date: string }) {
+  return useQuery({
+    queryKey: ['reportEducation', start_date, end_date],
+    queryFn: () => reportEducation({ start_date, end_date })
+  })
+}
+
+export function useFetchReportMedicalQueryOption({ start_date, end_date }: { start_date: string; end_date: string }) {
+  return useQuery({
+    queryKey: ['reportMedical', start_date, end_date],
+    queryFn: () => reportMedical({ start_date, end_date })
+  })
+}
+
+export function useFetchReportHouseRentQueryOption({
   form_version_id,
   start_date,
   end_date
@@ -881,8 +900,8 @@ export function useFetchReportMedicalQueryOption({
   end_date: string
 }) {
   return useQuery({
-    queryKey: ['reportMedical', start_date, end_date],
-    queryFn: () => reportMedical({ form_version_id, start_date, end_date })
+    queryKey: ['reportHouseRent', start_date, end_date],
+    queryFn: () => reportHouseRent({ form_version_id, start_date, end_date })
   })
 }
 

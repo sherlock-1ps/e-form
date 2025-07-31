@@ -72,3 +72,10 @@ export function numberToThaiText(input: string | number): string {
 
   return bahtText + satangText
 }
+
+export function formatNumber(num: string | number, minimumFractionDigits = 2, maximumFractionDigits = 2) {
+  return Number(num).toLocaleString('en-US', {
+    minimumFractionDigits,
+    maximumFractionDigits
+  })
+}

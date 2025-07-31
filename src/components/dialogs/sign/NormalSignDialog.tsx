@@ -35,7 +35,7 @@ const NormalSignDialog = ({ id, onSave, signType }: signProps) => {
     try {
       const response = await onSave(comment, signType)
       if (response?.code === 'SUCCESS') {
-        router.push(`/${locale}/user/dashboard`)
+        router.push(`/${locale}/user/allTask`)
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
       }

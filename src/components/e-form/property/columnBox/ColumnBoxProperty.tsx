@@ -47,14 +47,14 @@ const ColumnBoxProperty = () => {
   }
 
   const handlePaddingChange = (side: 'top' | 'bottom' | 'left' | 'right', value: string) => {
-    const cleaned = value.replace(/^0+(?=\d)/, '')
+    const cleaned = value.replace(/^(-?)0+(?=\d)/, '$1')
     const parsed = Number(cleaned)
     const parentKey = String(selectedField?.parentKey ?? '')
     const boxId = selectedField?.boxId ?? ''
 
-    if (!isNaN(parsed) && parsed >= 0 && parsed <= 99) {
-      updatePadding(parentKey, boxId, { [side]: parsed })
-    }
+    // if (!isNaN(parsed) && parsed >= 0 && parsed <= 99) {
+    updatePadding(parentKey, boxId, { [side]: parsed })
+    // }
   }
 
   return (
@@ -116,17 +116,17 @@ const ColumnBoxProperty = () => {
               const cleaned = raw.replace(/^0+(?=\d)/, '')
               const parsed = Number(cleaned)
 
-              if (!isNaN(parsed) && parsed >= 0 && parsed <= 99) {
-                handlePaddingChange('top', cleaned)
-              }
+              // if (!isNaN(parsed) && parsed >= 0 && parsed <= 99) {
+              handlePaddingChange('top', cleaned)
+              // }
             }}
             InputProps={{
               endAdornment: <p>px</p>,
               inputProps: {
-                inputMode: 'numeric',
-                pattern: '[0-9]*',
-                min: 0,
-                max: 99
+                inputMode: 'numeric'
+                // pattern: '[0-9]*',
+                // min: 0,
+                // max: 99
               }
             }}
           />

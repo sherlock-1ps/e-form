@@ -7,7 +7,9 @@ import { forwardRef, useState, useEffect, FocusEvent, ChangeEvent } from 'react'
 import { styled } from '@mui/material/styles'
 import type { TextFieldProps } from '@mui/material/TextField'
 import TextField from '@mui/material/TextField'
-import { numberToThaiText } from '@/utils/numberFormat'
+// import { numberToThaiText } from '@/utils/numberFormat' // หากต้องการใช้งาน ให้เอา comment ออก
+
+// Styled component for the TextField
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
   // ... All existing styles remain unchanged ...
   '& .MuiInputLabel-root': {
@@ -250,7 +252,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
   }
 }))
 
-// Define the props for the component, including the new decimalPlaces prop
+// Define the props for the component
 type CustomTextFieldProps = TextFieldProps & {
   isNumber?: boolean
   decimalPlaces?: number
@@ -259,7 +261,7 @@ type CustomTextFieldProps = TextFieldProps & {
 }
 
 const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
-  // Destructure props, setting a default value of 2 for decimalPlaces
+  // Destructure props
   const {
     size = 'small',
     InputLabelProps,
@@ -277,16 +279,15 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
 
   // State to hold the value displayed in the input
   const [internalValue, setInternalValue] = useState(value)
-  // State to track if the input is focused, to prevent unwanted formatting
+  // State to track if the input is focused
   const [isFocused, setIsFocused] = useState(false)
 
-  // Helper to format a value into a number string with commas and specified decimal places
+  // Helper to format a value into a number string with commas
   const formatValue = (val: any) => {
     if (val === null || val === undefined || val === '' || isNaN(parseFloat(String(val).replace(/,/g, '')))) {
       return ''
     }
     const num = parseFloat(String(val).replace(/,/g, ''))
-    // Use the decimalPlaces prop to format the number
     return num.toLocaleString('en-US', {
       minimumFractionDigits: decimalPlaces,
       maximumFractionDigits: decimalPlaces
@@ -301,11 +302,22 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
 
   // Effect to sync with the parent component's `value` prop.
   useEffect(() => {
+    // Only update if the input is not focused, to allow the user to type freely.
     if (!isFocused) {
-      const initialValue = isNumber ? formatValue(value) : value
-      setInternalValue(initialValue)
+      const formattedParentValue = isNumber ? formatValue(value) : value
+
+      // ====================================================================
+      // CRITICAL FIX:
+      // Only call setInternalValue if the incoming, formatted value from the parent
+      // is different from the value currently displayed in the input.
+      // This breaks the infinite loop if the parent component causes a re-render
+      // without actually changing the underlying value.
+      // ====================================================================
+      if (formattedParentValue !== internalValue) {
+        setInternalValue(formattedParentValue)
+      }
     }
-  }, [value, isNumber, isFocused, decimalPlaces])
+  }, [value, isNumber, isFocused, decimalPlaces, internalValue]) // Added internalValue to dependency array
 
   // When the input gains focus, set the focused state and show the raw number.
   const handleFocus = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -341,30 +353,24 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
     }
   }
 
-  // As the user types, update the internal state directly with their input.
+  // As the user types, update the internal state directly.
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const currentValue = e.target.value
 
     // if (changeNumberToText) {
     //   if (currentValue === '' || /^\d*\.?\d*$/.test(currentValue)) {
     //     setInternalValue(currentValue)
-
     //     if (onChange) {
-    //       const thaiText = numberToThaiText(currentValue)
-
-    //       const eventForParent = {
-    //         ...e,
-    //         target: { ...e.target, value: thaiText }
-    //       }
+    //       const thaiText = numberToThaiText(currentValue) // Assuming numberToThaiText exists
+    //       const eventForParent = { ...e, target: { ...e.target, value: thaiText } }
     //       onChange(eventForParent)
     //     }
     //   }
     // } else
-
     if (isNumber) {
+      // Allow only numbers and a single decimal point
       if (currentValue === '' || /^\d*\.?\d*$/.test(currentValue)) {
         setInternalValue(currentValue)
-
         if (onChange) {
           const eventForParent = {
             ...e,
