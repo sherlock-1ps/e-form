@@ -214,7 +214,7 @@ const WorkflowComponent = () => {
                 onClick: () =>
                   showDialog({
                     id: 'alertEditVersionFlowDialog',
-                    component: <EditVersionFlowDialog id='alertEditVersionFlowDialog' data={data} onClick={() => { }} />,
+                    component: <EditVersionFlowDialog id='alertEditVersionFlowDialog' data={data} onClick={() => {}} />,
                     size: 'sm'
                   })
               }
@@ -324,12 +324,12 @@ const WorkflowComponent = () => {
       if (response?.code == 'SUCCESS') {
         const contentCopy = isCopy
           ? {
-            flowId: undefined,
-            versionId: undefined,
-            version: '1.0.0',
-            name: `สำเนา_${data?.name}`,
-            isContinue: false
-          }
+              flowId: undefined,
+              versionId: undefined,
+              version: '1.0.0',
+              name: `สำเนา_${data?.name}`,
+              isContinue: false
+            }
           : {}
 
         const result = {
@@ -399,15 +399,16 @@ const WorkflowComponent = () => {
               </Button> */}
 
               <Button
-                className={`rounded-md flex items-center justify-center transition-all duration-300 ${viewMode === 'grid'
+                className={`rounded-md flex items-center justify-center transition-all duration-300 ${
+                  viewMode === 'grid'
                     ? 'w-[200px] min-h-[262px] flex-col' // grid: square-like
                     : 'w-full min-h-[80px] flex-row gap-2 px-4' // list: full width, shorter height
-                  }`}
+                }`}
                 style={{ backgroundColor: '#0463EA14' }}
                 onClick={() => {
                   showDialog({
                     id: 'alertCreateFlowDialog',
-                    component: <CreateFlowDialog id='alertCreateFlowDialog' onClick={() => { }} />,
+                    component: <CreateFlowDialog id='alertCreateFlowDialog' onClick={() => {}} />,
                     size: 'sm'
                   })
                 }}
@@ -420,7 +421,7 @@ const WorkflowComponent = () => {
               {isPending && <Typography>{dictionary?.loading}</Typography>}
               {data?.code == 'SUCCESS' &&
                 !isPending &&
-                data?.result?.data.length > 0 &&
+                data?.result?.data?.length > 0 &&
                 data?.result?.data.map((item: any, index: number) => {
                   return (
                     <ImageCard

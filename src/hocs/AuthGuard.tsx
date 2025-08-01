@@ -17,6 +17,23 @@ interface AuthGuardProps extends PropsWithChildren {
   session: string | null
 }
 
+const incrementLocalStorage = (key: string = 'redirectCounter'): number => {
+  try {
+    const value = parseInt(localStorage.getItem(key) || '0', 10)
+    const count = value + 1
+    localStorage.setItem(key, count.toString())
+    return count
+  } catch (error) {
+    return 0
+  }
+}
+
+const removeLocalStorage = (key: string = 'redirectCounter') => {
+  try {
+    localStorage.removeItem(key)
+  } catch (error) {}
+}
+
 const getAuthFromStorage = () => {
   const storedData = localStorage.getItem('auth-storage')
   if (!storedData) {
@@ -31,7 +48,13 @@ const getAuthFromStorage = () => {
 }
 
 const redirectToEndPoint = () => {
-  window.location.href = `${String(process.env.NEXT_PUBLIC_DTN_BASE_URL)}/login?redirectUrl=${encodeURIComponent(window.location.href)}`
+  const redirectCounter = incrementLocalStorage()
+  if (redirectCounter < 3) {
+    window.location.href = `${String(process.env.NEXT_PUBLIC_DTN_BASE_URL)}/login?redirectUrl=${encodeURIComponent(window.location.href)}`
+  } else {
+    removeLocalStorage()
+    window.location.href = `${String(process.env.NEXT_PUBLIC_DTN_BASE_URL)}`
+  }
 }
 
 const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
