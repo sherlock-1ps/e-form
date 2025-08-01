@@ -30,6 +30,7 @@ import {
 import { useAuthStore } from '@/store/useAuthStore'
 import { Typography } from '@mui/material'
 import { useDictionary } from '@/contexts/DictionaryContext'
+import { adminGroupId } from '@/utils/viewPermissionRoutes'
 
 const FormFlowLayout = () => {
   const { showDialog } = useDialog()
@@ -39,7 +40,7 @@ const FormFlowLayout = () => {
 
   return (
     <>
-      {profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
+      {profile && adminGroupId.some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
         <>
           {' '}
           <Link href={`/${locale}/admin/dashboard`} className='flex gap-2'>

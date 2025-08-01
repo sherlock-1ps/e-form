@@ -65,6 +65,7 @@ import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
 import { viewFlow } from '@/app/sevices/form/formServices'
+import { adminGroupId } from '@/utils/viewPermissionRoutes'
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>
@@ -254,7 +255,7 @@ const UserDashboardTable = ({
     f_first_name: false,
     f_last_name: false
   })
-  const isAdmin = profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id))
+  const isAdmin = profile && adminGroupId.some(id => profile.USER_GROUP_LISTS_ID.includes(id))
 
   // alert('')
 

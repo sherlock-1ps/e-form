@@ -14,11 +14,12 @@ import {
   Folder
 } from '@mui/icons-material'
 import { useAuthStore } from '@/store/useAuthStore'
-
+import { adminGroupId } from '@/utils/viewPermissionRoutes'
 const WorkLabel = ({ countList }: any) => {
   const { dictionary } = useDictionary()
   const profile = useAuthStore(state => state.profile)
-  const isAdmin = profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id))
+
+  const isAdmin = profile && adminGroupId.some(id => profile.USER_GROUP_LISTS_ID.includes(id))
   const workCountSpece = isAdmin ? 2.4 : 3
 
   return (

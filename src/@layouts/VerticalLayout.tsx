@@ -36,7 +36,7 @@ import StyledContentWrapper from './styles/vertical/StyledContentWrapper'
 import { IconButton, Typography } from '@mui/material'
 import NotificationsDropdown from '@/components/layout/shared/NotificationsDropdown'
 import Link from 'next/link'
-
+import { adminGroupId } from '@/utils/viewPermissionRoutes'
 import FormFlowLayout from './FormFlowLayout'
 import ProfileLayout from './ProfileLayout'
 import { useDialog } from '@/hooks/useDialog'
@@ -120,7 +120,7 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
             </Typography>
           </Link>
 
-          {profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
+          {profile && adminGroupId.some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
             <Link href={`/${locale}/user/report`} className='flex gap-2'>
               <Assessment style={{ width: '20px', height: '20px' }} className=' text-primary' />
               <Typography variant='h6' className='font-normal  hover:text-primary '>

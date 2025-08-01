@@ -173,7 +173,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </MenuItem>
         </SubMenu>
 
-        {profile && ['1006', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
+        {profile && ['1005', '1026'].some(id => profile.USER_GROUP_LISTS_ID.includes(id)) ? (
           <SubMenu label={'การจัดการ'} className='mt-4 p-4 rounded-lg bg-white shadow-lg'>
             <MenuItem
               href={`/${locale}/admin/dashboard`}
