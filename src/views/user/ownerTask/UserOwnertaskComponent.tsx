@@ -136,7 +136,7 @@ const UserOwneraskComponent = () => {
         <CardContent>
           <Grid container spacing={4}>
             <Grid item xs={12}>
-              <Typography variant='h5'>{dictionary?.cardDoneWork}</Typography>
+              <Typography variant='h5'>{dictionary?.cardOwnWork}</Typography>
             </Grid>
             <Grid item xs={12} sm={4}>
               <CustomTextField

@@ -97,7 +97,7 @@ const UserAllTaskComponent = () => {
           versionId: response?.result?.data?.form_detail?.form_version_id,
           layout: layoutValue as 'vertical' | 'horizontal',
           form_details: updateForm,
-          formDataId: response?.result?.data?.form_data_id,
+          formDataId: response?.result?.data?.form_data_id
         }
 
         setFlowDiagramData(resultFlow)
@@ -169,7 +169,7 @@ const UserAllTaskComponent = () => {
         <CardContent>
           <Grid container spacing={4}>
             <Grid item xs={12}>
-              <Typography variant='h5'>{dictionary?.cardAllWork}</Typography>
+              <Typography variant='h5'>{dictionary?.pendingDocuments}</Typography>
             </Grid>
             <Grid item xs={12} sm={4}>
               <CustomTextField

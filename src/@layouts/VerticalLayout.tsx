@@ -77,7 +77,7 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
       <div
         className='w-full h-[80px] px-8 md:px-16  flex items-center justify-center'
         style={{
-          background: 'linear-gradient(to right, #1e69cb 10%, #2d78db 70%, #47b0ff 100%)'
+          background: 'linear-gradient(to left, #1e69cb 10%, #2d78db 70%, #47b0ff 100%)'
         }}
       >
         <ProfileLayout />

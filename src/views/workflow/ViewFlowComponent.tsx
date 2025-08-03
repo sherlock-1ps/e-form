@@ -34,10 +34,15 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
 
     try {
       const response = await callViewFlow({ form_data_id })
+
+      console.log('response', response)
+
       window.myDiagram.model = window.go.Model.fromJson(response.result.data.flow)
 
       function changeNodeColorByKey(key: any, newColor: string) {
         const node = window.myDiagram.findNodeForKey(key)
+        console.log('key', key, newColor)
+
         if (node) {
           window.myDiagram.model.startTransaction('change node color')
           window.myDiagram.model.setDataProperty(node.data, 'fill', newColor)
@@ -49,24 +54,33 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
       const blue = '#2c9afc'
       let nodeColor = '#fff'
       const formDataDetails = response?.result?.data?.form_data_detail ?? []
-      console.log('formDataDetails', formDataDetails)
+      // console.log('formDataDetails', formDataDetails)
       let lastId = 0
-      window.myDiagram.links.each(function (link: any) {
-        if (link?.fromNode?.data?.key === -1) {
-          lastId = link.data.to
-          window.myDiagram.model.setDataProperty(link.data, 'color', green)
-        }
 
-        for (const element of formDataDetails) {
-          lastId = element.link_to
-          console.log('link?.toNode?.data?.key', link?.toNode?.data?.key)
+      // window.myDiagram.links.each(function (link: any) {
+      //   if (link?.fromNode?.data?.key === -1) {
+      //     lastId = link.data.to
+      //     window.myDiagram.model.setDataProperty(link.data, 'color', green)
+      //   }
 
-          if (link?.toNode?.data?.key === element?.link_to) {
-            changeNodeColorByKey(link.fromNode.data.key, green)
-            window.myDiagram.model.setDataProperty(link?.data, 'color', green)
-          }
-        }
-      })
+      //   for (const element of formDataDetails) {
+      //     // console.log('link?.toNode?.data?.key', link?.toNode?.data?.key)
+      //     lastId = element.link_to
+
+      //     if (link?.toNode?.data?.key === element?.link_to) {
+      //       console.log('link?.toNode?.data?.key === element?.link_to)', link?.toNode?.data?.key, element?.link_to)
+      //       changeNodeColorByKey(link.fromNode.data.key, green)
+      //       window.myDiagram.model.setDataProperty(link?.data, 'color', green)
+      //     }
+      //   }
+      // })
+
+      for (const element of formDataDetails) {
+        lastId = element.link_to
+
+        changeNodeColorByKey(element.link_from, green)
+        // window.myDiagram.model.setDataProperty(link?.data, 'color', green)
+      }
 
       function getNode(key: any) {
         return window.myDiagram.findNodeForKey(key)

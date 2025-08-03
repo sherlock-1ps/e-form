@@ -172,7 +172,7 @@ const UserDashboardComponent = () => {
             <TabPanel value='1'>
               <Grid container spacing={4}>
                 <Grid item xs={12} className='flex items-center justify-between'>
-                  <Typography variant='h5'>{dictionary?.cardOwnWork}</Typography>
+                  <Typography variant='h5'>{dictionary?.documentsInProcess}</Typography>
                   <Button
                     variant='contained'
                     startIcon={<Add style={{ width: '20px', height: '20px' }} />}
