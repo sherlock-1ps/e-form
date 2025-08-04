@@ -107,6 +107,8 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
   const { data: commentData } = useFetchCommentQueryOption(page, pageSize, formDataId)
   const { mutateAsync: callSaveStartflow } = useSaveStartFlowQueryOption()
   const { dictionary } = useDictionary()
+
+  // console.log('attactmentData', (attactmentData?.result?.data?.attachments || []).length)
   useEffect(() => {
     const completedFlow = data?.form_data_detail ?? []
     const currentFlow = data?.flow_activity_link ?? []
@@ -382,7 +384,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                             setIsAttacth(!isAttacth)
                           }}
                         >
-                          จัดการไฟล์แนบ
+                          ไฟล์แนบ ({(attactmentData?.result?.data?.attachments || []).length})
                         </Button>
                         <Button
                           variant='outlined'

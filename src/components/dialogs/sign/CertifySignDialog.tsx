@@ -56,7 +56,7 @@ const CertifySignDialog = ({ id, onSave, signType }: signProps) => {
       return
     }
 
-    const response: any = await VerifyCertificate({ password })
+    const response: any = await VerifyCertificate({ password, f_digital_certificate_id: selectCertificate })
     if (!response?.data?.result) {
       toast.error(dictionary?.invalidPassword, { autoClose: 3000 })
       return

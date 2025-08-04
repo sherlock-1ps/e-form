@@ -5,10 +5,17 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
+import { findFieldDetailsById } from '@/utils/mapKeyValueForm'
 
 const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
+  const updateValueOnly = useFormStore(state => state.updateValueOnly)
+  const updateValueDropdown = useFormStore(state => state.updateValueDropdown)
   const updateDetails = useFormStore(state => state.updateDetails)
   const selectedField = useFormStore(state => state.selectedField)
+  const errors = useFormStore(state => state.errors)
+  const key = `${parentKey}-${boxId}-${item?.id}`
+  const errorInput = errors[key]
+  const form = useFormStore(state => state.form)
 
   const handleChange = (event: any) => {
     if (!draft) return
@@ -20,7 +27,24 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
     updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
       selectedValue: selectedValue
     })
+
+    const linkFieldText = String(item?.config?.details?.linkField).trim()
+    if (linkFieldText != '') {
+      const linkFields = linkFieldText.split(',')
+      for (const element of linkFields) {
+        const selectItem = findFieldDetailsById(form, element.trim())
+        // console.log('selectItem?.details?.type', selectItem?.details?.type)
+
+        if (selectItem?.details?.type == 'dropdown') {
+          updateValueDropdown(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', selectedValue)
+        } else {
+          updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', selectedValue)
+        }
+      }
+    }
   }
+
+  // linkField
 
   const options =
     item?.config?.details?.value?.options?.length > 0
@@ -36,7 +60,17 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
 
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
-      <FormControl className='flex-wrap flex-row  w-full '>
+      <FormControl
+        className='flex-wrap flex-row w-full'
+        // error={errorInput}
+        sx={{
+          ...(errorInput && {
+            border: '1px solid',
+            borderColor: 'error.main',
+            borderRadius: 1
+          })
+        }}
+      >
         <RadioGroup
           row={item?.config?.details?.row}
           defaultValue={''}

@@ -248,6 +248,7 @@ export const toolboxCreateformMenu = [
         changeNumberToText: false,
         readOnly: false,
         isRequired: false,
+        defaultFieldValue: '',
 
         decimalPlaces: 0,
         linkField: '',
@@ -546,6 +547,7 @@ export const toolboxOptionMenu = [
         isShow: true,
         isRequired: false,
         selectedValue: '',
+        linkField: '',
         keyValue: {
           keyValueType: 'string',
           value: ''

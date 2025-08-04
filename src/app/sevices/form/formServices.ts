@@ -2,6 +2,7 @@ import Axios from '@/libs/axios/axios'
 import AxiosExternal from '@/libs/axios/axiosExternal'
 import { useAuthStore } from '@/store/useAuthStore'
 import { axiosErrorHandler } from '@/utils/axiosErrorHandler'
+import { getAuthFromStorage } from '@/utils/viewPermissionRoutes'
 
 type VariableValue = {
   value: any
@@ -20,18 +21,18 @@ type CreateVariablePayload = {
   value: VariableValue
 }
 
-const getAuthFromStorage = () => {
-  const storedData = localStorage.getItem('auth-storage')
-  if (!storedData) {
-    return null
-  }
-  try {
-    return JSON.parse(storedData)
-  } catch (error) {
-    console.error("Error parsing 'auth-storage' from localStorage:", error)
-    return null
-  }
-}
+// const getAuthFromStorage = () => {
+//   const storedData = localStorage.getItem('auth-storage')
+//   if (!storedData) {
+//     return null
+//   }
+//   try {
+//     return JSON.parse(storedData)
+//   } catch (error) {
+//     console.error("Error parsing 'auth-storage' from localStorage:", error)
+//     return null
+//   }
+// }
 
 export const fetchForm = async ({ page, pageSize }: { page: number; pageSize: number }) => {
   try {
@@ -689,12 +690,19 @@ export const getCertificates = async () => {
   }
 }
 
-export const verifyCertificate = async ({ password = '' }: { password: string }) => {
+export const verifyCertificate = async ({
+  password = '',
+  f_digital_certificate_id = ''
+}: {
+  password: string
+  f_digital_certificate_id: string
+}) => {
   try {
     const auth = getAuthFromStorage()
     const response = await AxiosExternal.post('/api/service/core/verify-pass-certificate', {
       f_person_id: auth?.state?.profile?.F_PERSON_ID || '',
-      password
+      password,
+      f_digital_certificate_id
     })
     const data = response?.data
 

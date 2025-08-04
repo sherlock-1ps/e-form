@@ -294,6 +294,23 @@ const RadioProperty = () => {
         className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'
         style={{ borderBottom: '1.5px solid #11151A1F' }}
       >
+        <CustomTextField
+          label={dictionary?.linkField}
+          placeholder='Other Component ID'
+          value={result?.config?.details?.linkField ?? ''}
+          // maxLength={1}
+          onChange={e =>
+            updateDetails(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              {
+                ...result?.config?.details,
+                linkField: e.target.value
+              }
+            )
+          }
+        />
         <div className='w-full flex items-center justify-between'>
           <Typography color='text.primary'>{dictionary?.optionOrdering} </Typography>
           <div className='flex items-center justify-center gap-2'>
@@ -390,6 +407,7 @@ const RadioProperty = () => {
           }}
         />
       </section>
+
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5 hidden'>
         <div>
           <FormControlLabel
@@ -427,6 +445,7 @@ const RadioProperty = () => {
             label='Trigger Event'
           />
         </div>
+
         {result?.config?.details?.trigger?.isTrigger && (
           <Button
             variant='contained'

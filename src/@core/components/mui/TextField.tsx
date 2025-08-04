@@ -7,6 +7,7 @@ import { forwardRef, useState, useEffect, FocusEvent, ChangeEvent } from 'react'
 import { styled } from '@mui/material/styles'
 import type { TextFieldProps } from '@mui/material/TextField'
 import TextField from '@mui/material/TextField'
+import { renderProfileTemplate } from '@/utils/viewPermissionRoutes'
 // import { numberToThaiText } from '@/utils/numberFormat' // หากต้องการใช้งาน ให้เอา comment ออก
 
 // Styled component for the TextField
@@ -257,6 +258,7 @@ type CustomTextFieldProps = TextFieldProps & {
   isNumber?: boolean
   decimalPlaces?: number
   linkField?: string
+  defaultFieldValue?: string
   changeNumberToText?: boolean
 }
 
@@ -271,6 +273,7 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
     changeNumberToText = false,
     decimalPlaces = 0,
     value,
+    defaultFieldValue,
     onBlur,
     onChange,
     onFocus,
@@ -304,17 +307,13 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
   useEffect(() => {
     // Only update if the input is not focused, to allow the user to type freely.
     if (!isFocused) {
-      const formattedParentValue = isNumber ? formatValue(value) : value
-
-      // ====================================================================
-      // CRITICAL FIX:
-      // Only call setInternalValue if the incoming, formatted value from the parent
-      // is different from the value currently displayed in the input.
-      // This breaks the infinite loop if the parent component causes a re-render
-      // without actually changing the underlying value.
-      // ====================================================================
-      if (formattedParentValue !== internalValue) {
-        setInternalValue(formattedParentValue)
+      if (defaultFieldValue != '' && value == '' && defaultFieldValue) {
+        setInternalValue(renderProfileTemplate(defaultFieldValue))
+      } else {
+        const formattedParentValue = isNumber ? formatValue(value) : value
+        if (formattedParentValue !== internalValue) {
+          setInternalValue(formattedParentValue)
+        }
       }
     }
   }, [value, isNumber, isFocused, decimalPlaces, internalValue]) // Added internalValue to dependency array
@@ -333,6 +332,7 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
   // When the input loses focus, unset the focused state and apply formatting.
   const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(false)
+
     if (isNumber) {
       const rawValue = unformatValue(e.target.value)
       const formattedValue = formatValue(rawValue)

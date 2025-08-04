@@ -11,6 +11,7 @@ import { findFieldDetailsById } from '@/utils/mapKeyValueForm'
 
 const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
+  const updateValueDropdown = useFormStore(state => state.updateValueDropdown)
   const form = useFormStore(state => state.form)
   const errors = useFormStore(state => state.errors)
 
@@ -33,10 +34,12 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
       for (const element of linkFields) {
         const selectItem = findFieldDetailsById(form, element.trim())
 
-        // console.log('selectItem', selectItem)
-        const changeValue = selectItem?.details?.changeNumberToText ? numberToThaiText(newValue) : newValue
-
-        updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', changeValue)
+        if (selectItem?.details?.type == 'dropdown') {
+          updateValueDropdown(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', newValue)
+        } else {
+          const changeValue = selectItem?.details?.changeNumberToText ? numberToThaiText(newValue) : newValue
+          updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', changeValue)
+        }
       }
     }
   }
@@ -64,6 +67,7 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
         decimalPlaces={item?.config?.details?.decimalPlaces}
         linkField={item?.config?.details?.linkField}
         changeNumberToText={item?.config?.details?.changeNumberToText}
+        defaultFieldValue={item?.config?.details?.defaultFieldValue}
         inputProps={{
           readOnly: item?.config?.details?.readOnly,
 

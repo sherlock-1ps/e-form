@@ -24,7 +24,7 @@ import { Home, NotificationAddOutlined, HomeOutlined } from '@mui/icons-material
 import NotificationsDropdown, { NotificationsType } from '../shared/NotificationsDropdown'
 import ProfileDialog from '@/components/dialogs/profile/ProfileDialog'
 
-interface NavbarContentProps { }
+interface NavbarContentProps {}
 
 const NavbarContent: React.FC<NavbarContentProps> = () => {
   const { showDialog } = useDialog()
@@ -47,7 +47,7 @@ const NavbarContent: React.FC<NavbarContentProps> = () => {
 
           <Link href='/'>
             <img
-              src={'https://dtn.igenco.dev/media/logos/dtn/DTN_logo_blue.gif'}
+              src={'/images/DTN_logo_blue.gif'}
               alt={`logo_sarabun`}
               // width={100}
               height={40}

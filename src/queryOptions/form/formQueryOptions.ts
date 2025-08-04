@@ -586,7 +586,7 @@ export function useVerifyCertificateExternalQueryOption() {
 
 export function useVerifyFortitokenExternalQueryOption() {
   return useMutation({
-    mutationFn: verifyCertificate,
+    mutationFn: verifyFortitoken,
     onError: error => {
       console.error('Error Verify Fortitoken:', error)
     }

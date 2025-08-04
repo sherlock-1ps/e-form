@@ -123,6 +123,8 @@ const UserStartTaskComponent = ({ data }: any) => {
     }
   }, [])
 
+  // console.log('attactmentData', attactmentData)
+
   function traverseNextNodesFromCurrentStepSkipCondition(nodes: any[], links: any[], currentStep: any): any[] {
     const result: any[] = []
 
@@ -390,7 +392,7 @@ const UserStartTaskComponent = ({ data }: any) => {
                             setIsAttacth(!isAttacth)
                           }}
                         >
-                          จัดการไฟล์แนบ
+                          ไฟล์แนบ ({(attactmentData?.result?.data?.attachments || []).length})
                         </Button>
                         <Button
                           variant='outlined'

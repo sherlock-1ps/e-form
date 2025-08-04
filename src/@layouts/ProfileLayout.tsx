@@ -10,7 +10,7 @@ import NotificationsDropdown from '@/components/layout/shared/NotificationsDropd
 import useVerticalNav from '@/@menu/hooks/useVerticalNav'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
-
+import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 const ProfileLayout = () => {
   const { showDialog } = useDialog()
   const profile = useAuthStore(state => state.profile)
@@ -21,6 +21,7 @@ const ProfileLayout = () => {
   const { dictionary } = useDictionary()
   const [showLangCard, setShowLangCard] = useState(false)
   const langRef = useRef<HTMLDivElement>(null)
+  const urlBase = useAuthStore(state => state.urlBase)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,12 +43,27 @@ const ProfileLayout = () => {
   return (
     <div className='flex items-center justify-between max-w-[1440px] w-full'>
       <div className='flex items-center gap-4 justify-center'>
-        <Link href={'/'}>
-          <img
-            src='https://dtn.igenco.dev/media/logos/dtn/DTN_logo_blue.gif'
-            alt='dtn-header'
-            className='w-[94px] h-auto cursor-pointer'
-          />
+        <Link
+          href={'#'}
+          onClick={e => {
+            showDialog({
+              id: 'alertErrorToken',
+              component: (
+                <ConfirmAlert
+                  id='alertErrorToken'
+                  title={dictionary?.backToHome}
+                  content1={dictionary?.confirmContinue}
+                  onClick={() => {
+                    window.location.href = urlBase
+                    // router.push(`/${locale}${notification?.data?.link}`)
+                  }}
+                />
+              ),
+              size: 'sm'
+            })
+          }}
+        >
+          <img src='/images/DTN_logo_blue.gif' alt='dtn-header' className='w-[94px] h-auto cursor-pointer' />
         </Link>
         <Typography
           className='leading-tight text-white font-normal hidden sm:block'

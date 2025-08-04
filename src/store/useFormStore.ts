@@ -117,12 +117,20 @@ export const useFormStore = create<FormState>()(
           section.fields.forEach(field => {
             field.data?.forEach((item: any) => {
               const isTextField = item?.config?.details?.type === 'textfield'
+              const isRadio = item?.config?.details?.type === 'radio'
+              const isCheckbox = item?.config?.details?.type === 'checkbox'
               const isRequired = item?.config?.details?.isRequired
               const value = item?.config?.details?.value?.value
               const key = `${section.parentKey}-${field.i}-${item.id}`
 
               if (isTextField && isRequired && !value) {
                 errors[key] = 'กรุณากรอกข้อมูล'
+              } else if (isRadio && isRequired && String(item?.config?.details?.selectedValue || '').trim() == '') {
+                errors[key] = 'กรุณากรอกข้อมูล'
+              } else if (isCheckbox && isRequired) {
+                const newCheckedList = item?.config?.details?.value?.checkedList || []
+                const filteredList = newCheckedList.filter((value: any) => value !== '')
+                if (filteredList.length <= 0) errors[key] = 'กรุณากรอกข้อมูล'
               }
             })
           })

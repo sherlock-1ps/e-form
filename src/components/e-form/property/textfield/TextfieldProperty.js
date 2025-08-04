@@ -295,6 +295,24 @@ const TextfieldProperty = () => {
           />
         )}
 
+        <CustomTextField
+          label={dictionary?.defaultFieldValue}
+          placeholder=''
+          value={result?.config?.details?.defaultFieldValue ?? ''}
+          // maxLength={1}
+          onChange={e =>
+            updateDetails(
+              String(selectedField?.parentKey ?? ''),
+              selectedField?.boxId ?? '',
+              selectedField?.fieldId?.id ?? '',
+              {
+                ...result?.config?.details,
+                defaultFieldValue: e.target.value
+              }
+            )
+          }
+        />
+
         <FormControlLabel
           control={<Switch checked={result?.config?.details?.tag?.isShow} />}
           label={dictionary?.label}
@@ -312,6 +330,7 @@ const TextfieldProperty = () => {
             )
           }
         />
+
         <CustomTextField
           label={dictionary?.displayedText}
           placeholder='Placeholder'
