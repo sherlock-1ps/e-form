@@ -13,9 +13,10 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const updateValueDropdown = useFormStore(state => state.updateValueDropdown)
   const form = useFormStore(state => state.form)
-  const errors = useFormStore(state => state.errors)
 
   const key = `${parentKey}-${boxId}-${item?.id}`
+
+  const errors = useFormStore(state => state.errors)
   const errorInput = errors[key]
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

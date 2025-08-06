@@ -24,6 +24,7 @@ type FormVersion = {
   isContinue: boolean
   formId?: string | number
   versionId?: string | number
+  attachment_require_count?: number
   layout: 'vertical' | 'horizontal'
   form_details: FormObject[]
 }
@@ -49,7 +50,7 @@ type FormState = {
     boxId: string,
     newPadding: Partial<{ top: number; bottom: number; left: number; right: number; allPadding: string }>
   ) => void
-  updateFormMeta: (meta: Partial<{ name: string; version: string }>) => void
+  updateFormMeta: (meta: Partial<{ name: string; version: string; attachment_require_count: number }>) => void
   updateId: (parentKey: string, fieldId: string, oldId: string, newId: string) => void
   createForm: (name: string, version: string) => void
   toggleLayout: () => void
@@ -116,21 +117,33 @@ export const useFormStore = create<FormState>()(
         form.form_details.forEach(section => {
           section.fields.forEach(field => {
             field.data?.forEach((item: any) => {
-              const isTextField = item?.config?.details?.type === 'textfield'
-              const isRadio = item?.config?.details?.type === 'radio'
-              const isCheckbox = item?.config?.details?.type === 'checkbox'
+              const eleType = item?.config?.details?.type
               const isRequired = item?.config?.details?.isRequired
               const value = item?.config?.details?.value?.value
               const key = `${section.parentKey}-${field.i}-${item.id}`
 
-              if (isTextField && isRequired && !value) {
-                errors[key] = 'กรุณากรอกข้อมูล'
-              } else if (isRadio && isRequired && String(item?.config?.details?.selectedValue || '').trim() == '') {
-                errors[key] = 'กรุณากรอกข้อมูล'
-              } else if (isCheckbox && isRequired) {
-                const newCheckedList = item?.config?.details?.value?.checkedList || []
-                const filteredList = newCheckedList.filter((value: any) => value !== '')
-                if (filteredList.length <= 0) errors[key] = 'กรุณากรอกข้อมูล'
+              // console.log('eleType', eleType)
+
+              if (isRequired) {
+                if (eleType === 'textfield' && !value) {
+                  errors[key] = 'กรุณากรอกข้อมูล'
+                } else if (eleType === 'radio' && String(item?.config?.details?.selectedValue || '').trim() == '') {
+                  errors[key] = 'กรุณากรอกข้อมูล'
+                } else if (eleType === 'checkbox') {
+                  const newCheckedList = item?.config?.details?.value?.checkedList || []
+                  const filteredList = newCheckedList.filter((value: any) => value !== '')
+                  if (filteredList.length <= 0) errors[key] = 'กรุณากรอกข้อมูล'
+                } else if (
+                  eleType === 'dropdown' &&
+                  String(item?.config?.details?.keyValue?.realValue || '').trim() == ''
+                ) {
+                  errors[key] = 'กรุณากรอกข้อมูล'
+                } else if (
+                  (eleType === 'date' || eleType === 'datetime') &&
+                  String(item?.config?.details?.value?.value || '').trim() == ''
+                ) {
+                  errors[key] = 'กรุณากรอกข้อมูล'
+                }
               }
             })
           })

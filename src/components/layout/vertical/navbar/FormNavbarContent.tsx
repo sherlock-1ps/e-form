@@ -39,6 +39,7 @@ const FormNavbarContent = () => {
   const clearForm = useFormStore(state => state.clearForm)
   const [title, setTitle] = useState(form?.name)
   const [versionText, setVersionText] = useState(form?.version)
+  const [attachmentRequireCount, setAttachmentRequireCount] = useState(form?.attachment_require_count || 0)
 
   const { mutateAsync, isPending } = useCreateFormQueryOption()
   const { mutateAsync: updateForm, isPending: pendingUpdate } = useUpdateFormQueryOption()
@@ -55,6 +56,15 @@ const FormNavbarContent = () => {
     updateFormMeta({ version: e.target.value })
   }
 
+  const handleInputAttachmentRequireCount = (e: any) => {
+    let value = parseInt(e.target.value, 10)
+    if (isNaN(value) || value < 0) {
+      value = 0
+    }
+    setAttachmentRequireCount(value)
+    updateFormMeta({ attachment_require_count: value })
+  }
+
   const handleShowPreview = () => {
     window.open(`/draftform`, '_blank')
   }
@@ -63,10 +73,12 @@ const FormNavbarContent = () => {
     try {
       const request = {
         name: form?.name,
+        attachment_require_count: form?.attachment_require_count,
         versions: [
           {
             version: form?.version,
             form_details: [{ detail: { data: form?.form_details, layout: form?.layout } }]
+
             // form_details:
             //   Array.isArray(form?.form_details) && form.form_details.length === 0
             //     ? []
@@ -91,6 +103,7 @@ const FormNavbarContent = () => {
       const request = {
         id: form?.formId,
         name: form?.name,
+        attachment_require_count: form?.attachment_require_count,
         versions: [
           {
             id: form?.versionId,
@@ -163,8 +176,18 @@ const FormNavbarContent = () => {
           </IconButton>
         </div>
         <div className='flex gap-2 items-center'>
-          <Typography className='text-nowrap'>version :</Typography>
+          <Typography className='text-nowrap'>Version :</Typography>
           <TextField value={versionText} onChange={handleInputVersion} variant='standard' />
+        </div>
+        <div className='flex gap-2 items-center'>
+          <Typography className='text-nowrap'>Number of Required Attachments:</Typography>
+          <TextField
+            type='number'
+            value={attachmentRequireCount}
+            onChange={handleInputAttachmentRequireCount}
+            onClick={e => e.currentTarget.querySelector('input')?.select()}
+            variant='standard'
+          />
         </div>
       </div>
       <div className='flex items-center gap-2'>

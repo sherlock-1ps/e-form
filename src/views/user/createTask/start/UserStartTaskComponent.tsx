@@ -201,7 +201,15 @@ const UserStartTaskComponent = ({ data }: any) => {
   }
 
   const handleSaveStartflow = async (comment: string, signType: string, signatureBase64?: string, linkId?: number) => {
-    console.log('handleSaveStartflow-linkId', linkId)
+    const fileAttachmentsCount = (attactmentData?.result?.data?.attachments || []).length
+
+    if ((data?.attachment_require_count || 0) > fileAttachmentsCount) {
+      toast.error(`${dictionary?.cannotSave} \n ${dictionary?.pleaseAttachAllRequiredDocuments}`, {
+        autoClose: 3000,
+        style: { whiteSpace: 'pre-line' }
+      })
+      return
+    }
 
     if (!comment) {
       toast.error(dictionary?.commentRequired, { autoClose: 3000 })

@@ -85,7 +85,7 @@ const AdminDashboardComponent = () => {
               onClick: () => {
                 showDialog({
                   id: 'alertEditVersionFormDialog',
-                  component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => { }} />,
+                  component: <EditVersionFormDialog id='alertEditVersionFormDialog' data={data} onClick={() => {}} />,
                   size: 'sm'
                 })
               }
@@ -203,11 +203,11 @@ const AdminDashboardComponent = () => {
 
         const contentCopy = isCopy
           ? {
-            formId: undefined,
-            versionId: undefined,
-            version: '1.0.0',
-            name: `สำเนา_${data?.name}`
-          }
+              formId: undefined,
+              versionId: undefined,
+              version: '1.0.0',
+              name: `สำเนา_${data?.name}`
+            }
           : {}
 
         const formFromApi = {
@@ -216,6 +216,7 @@ const AdminDashboardComponent = () => {
           formId: data?.id,
           versionId: data?.version[0]?.id,
           name: data?.name,
+          attachment_require_count: data?.attachment_require_count,
           version: response?.result?.data?.version,
           newVersion: response?.result?.data?.version,
           layout: layoutValue as 'vertical' | 'horizontal',
@@ -261,15 +262,16 @@ const AdminDashboardComponent = () => {
 
             <div className='flex gap-4 flex-wrap'>
               <Button
-                className={`rounded-md flex items-center justify-center transition-all duration-300 ${viewMode === 'grid'
-                  ? 'w-[200px] min-h-[262px] flex-col' // grid: square-like
-                  : 'w-full min-h-[80px] flex-row gap-2 px-4' // list: full width, shorter height
-                  }`}
+                className={`rounded-md flex items-center justify-center transition-all duration-300 ${
+                  viewMode === 'grid'
+                    ? 'w-[200px] min-h-[262px] flex-col' // grid: square-like
+                    : 'w-full min-h-[80px] flex-row gap-2 px-4' // list: full width, shorter height
+                }`}
                 style={{ backgroundColor: '#0463EA14' }}
                 onClick={() => {
                   showDialog({
                     id: 'alertCreateFormDialog',
-                    component: <CreateFormDialog id='alertCreateFormDialog' onClick={() => { }} />,
+                    component: <CreateFormDialog id='alertCreateFormDialog' onClick={() => {}} />,
                     size: 'sm'
                   })
                 }}

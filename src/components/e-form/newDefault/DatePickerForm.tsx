@@ -7,7 +7,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/th'
 import newAdapter from '@/libs/newAdapter'
 import { useFormStore } from '@/store/useFormStore'
-
+import FormControl from '@mui/material/FormControl'
 const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const valueFromProp = item?.config?.details?.value?.value
@@ -17,6 +17,10 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const [open, setOpen] = useState(false)
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<any>(null)
+
+  const errors = useFormStore(state => state.errors)
+  const key = `${parentKey}-${boxId}-${item?.id}`
+  const errorInput = errors[key]
 
   // 👉 Step 1: ลบ useEffect ออก
   // useEffect(() => {
@@ -42,50 +46,62 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
 
   return (
     <div className='w-[170px]' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
-      <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
-        {item?.config?.details?.tag?.isShow && (
-          <Typography variant='body2'>{item?.config?.details?.tag?.value ?? 'เลือกวันที่'}</Typography>
-        )}
+      <FormControl
+        className='flex-wrap flex-row w-full'
+        // error={errorInput}
+        sx={{
+          ...(errorInput && {
+            border: '1px solid',
+            borderColor: 'error.main',
+            borderRadius: 1
+          })
+        }}
+      >
+        <LocalizationProvider dateAdapter={newAdapter} adapterLocale='th'>
+          {item?.config?.details?.tag?.isShow && (
+            <Typography variant='body2'>{item?.config?.details?.tag?.value ?? 'เลือกวันที่'}</Typography>
+          )}
 
-        <MobileDatePicker
-          disabled={!item?.config?.details?.isUse}
-          open={open}
-          // 👉 Step 3: เปลี่ยนมาใช้ handleOpen
-          onOpen={handleOpen}
-          onClose={handleClose}
-          value={tempValue}
-          onChange={newDate => setTempValue(newDate)}
-          onAccept={handleAccept}
-          format='DD/MM/YYYY'
-          slotProps={{
-            textField: {
-              inputProps: {
-                readOnly: true
-              },
-              onClick: handleOpen, // ใช้ handleOpen ที่นี่ด้วยก็ได้
-              size: 'small',
-              fullWidth: true,
-              inputRef,
-              placeholder: 'กรุณาเลือกวันที่',
-              label: displayDate
-                ? ''
-                : item?.config?.details?.placeholder?.isShow
-                  ? item?.config?.details?.placeholder?.value
-                  : '',
-              onFocus: () => setIsFocus(true),
-              onBlur: () => {
-                if (isFocus) setIsFocus(false)
-              },
-              InputLabelProps: {
-                shrink: isFocus || (open && true)
+          <MobileDatePicker
+            disabled={!item?.config?.details?.isUse}
+            open={open}
+            // 👉 Step 3: เปลี่ยนมาใช้ handleOpen
+            onOpen={handleOpen}
+            onClose={handleClose}
+            value={tempValue}
+            onChange={newDate => setTempValue(newDate)}
+            onAccept={handleAccept}
+            format='DD/MM/YYYY'
+            slotProps={{
+              textField: {
+                inputProps: {
+                  readOnly: true
+                },
+                onClick: handleOpen, // ใช้ handleOpen ที่นี่ด้วยก็ได้
+                size: 'small',
+                fullWidth: true,
+                inputRef,
+                placeholder: 'กรุณาเลือกวันที่',
+                label: displayDate
+                  ? ''
+                  : item?.config?.details?.placeholder?.isShow
+                    ? item?.config?.details?.placeholder?.value
+                    : '',
+                onFocus: () => setIsFocus(true),
+                onBlur: () => {
+                  if (isFocus) setIsFocus(false)
+                },
+                InputLabelProps: {
+                  shrink: isFocus || (open && true)
+                }
               }
-            }
-          }}
-        />
-        {item?.config?.details?.helperText?.isShow && (
-          <Typography variant='body2'>{item?.config?.details?.helperText?.value ?? 'คำแนะนำ'}</Typography>
-        )}
-      </LocalizationProvider>
+            }}
+          />
+          {item?.config?.details?.helperText?.isShow && (
+            <Typography variant='body2'>{item?.config?.details?.helperText?.value ?? 'คำแนะนำ'}</Typography>
+          )}
+        </LocalizationProvider>
+      </FormControl>
     </div>
   )
 }

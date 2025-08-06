@@ -15,7 +15,9 @@ const DropdownForm = ({ item, parentKey, boxId, draft }: any) => {
     item?.config?.details?.value?.value?.value?.value?.defaultValue ??
     item?.config?.details?.value?.value?.defaultValue ??
     ''
-
+  const key = `${parentKey}-${boxId}-${item?.id}`
+  const errors = useFormStore(state => state.errors)
+  const errorInput = errors[key]
   const options =
     item?.config?.details?.value?.value?.value?.value?.options ?? item?.config?.details?.value?.value?.options ?? []
 
@@ -37,6 +39,7 @@ const DropdownForm = ({ item, parentKey, boxId, draft }: any) => {
   return (
     <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <CustomTextField
+        error={!!errorInput}
         select
         fullWidth
         disabled={!item?.config?.details?.isUse}
