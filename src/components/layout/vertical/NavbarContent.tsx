@@ -74,7 +74,7 @@ const NavbarContent: React.FC<NavbarContentProps> = () => {
               })
             }}
           >
-            <AccountCircleIcon fontSize='medium' className=' text-backgroundDefault' />
+            {/* <AccountCircleIcon fontSize='medium' className=' text-backgroundDefault' /> */}
           </IconButton>
         </div>
       </div>

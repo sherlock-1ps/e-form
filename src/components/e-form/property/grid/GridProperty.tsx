@@ -79,7 +79,7 @@ const GridProperty = ({ parentKey }: any) => {
           currentForm?.fields.map((item, index) => {
             return (
               <div className='w-full flex justify-between items-center' key={item?.i}>
-                <Typography variant='h6'>คอมลัมน์ที่ {index + 1}</Typography>
+                <Typography variant='h6'>คอลัมน์ที่ {index + 1}</Typography>
                 <Button
                   startIcon={<Delete />}
                   variant='outlined'

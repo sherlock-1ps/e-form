@@ -192,6 +192,7 @@ const NotificationDropdown = ({ iconColor = false }: any) => {
           badgeContent={notificationCount}
           invisible={notificationCount === 0}
           sx={{
+            zIndex: 0,
             '& .MuiBadge-badge': {
               top: 6,
               right: 5,
