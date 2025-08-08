@@ -1,6 +1,6 @@
 import { formatThaiDate } from './formatDateTime'
 import { FormatShowDate } from './formatShowDate'
-
+import { renderProfileTemplate } from '@/utils/viewPermissionRoutes'
 export const mapKeyValueForm = (formDetails: any[]): Record<string, string> => {
   const result: Record<string, string> = {}
   const excludedTypes = new Set(['text', 'editor', 'image', 'video', 'button', 'upload', 'link', 'signature'])
@@ -26,18 +26,23 @@ export const mapKeyValueForm = (formDetails: any[]): Record<string, string> => {
             result[id] = ''
           }
           continue
-        }
-        if (type === 'checkbox') {
+        } else if (type === 'checkbox') {
           result[id] = config?.details?.value?.checkedList
           continue
-        }
-
-        if (type === 'radio') {
+        } else if (type === 'radio') {
           result[id] = config?.details?.selectedValue
           continue
-        }
+        } else if (type === 'textfield') {
+          const defaultFieldValue = (config?.details?.defaultFieldValue || '').trim()
+          const checkValue = (value || '').trim()
+          if (defaultFieldValue != '' && checkValue == '') {
+            result[id] = renderProfileTemplate(defaultFieldValue)
+          } else {
+            result[id] = value
+          }
 
-        if (!excludedTypes.has(type)) {
+          continue
+        } else if (!excludedTypes.has(type)) {
           result[id] = value
         }
       }
