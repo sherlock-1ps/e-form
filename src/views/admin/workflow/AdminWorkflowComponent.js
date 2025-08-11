@@ -106,7 +106,7 @@ export default function AdminWorkflowComponent() {
       }
     } catch (error) {
       console.error('save error', error)
-      toast.error('บันทึกโฟลว์ล้มเหลว!', { autoClose: 3000 })
+      toast.error('บันทึกโฟลว์ล้มเหลว!' + error?.result?.error, { autoClose: 3000 })
     }
   }
 
@@ -147,7 +147,7 @@ export default function AdminWorkflowComponent() {
       }
     } catch (error) {
       console.error('save error', error)
-      toast.error('บันทึกเวอร์ชั่นใหม่โฟลว์ล้มเหลว!', { autoClose: 3000 })
+      toast.error('บันทึกเวอร์ชั่นใหม่โฟลว์ล้มเหลว!' + error?.result?.error, { autoClose: 3000 })
     }
   }
 
@@ -186,7 +186,8 @@ export default function AdminWorkflowComponent() {
       }
     } catch (error) {
       console.error('save error', error)
-      toast.error('บันทึกโฟลว์ล้มเหลว!', { autoClose: 3000 })
+
+      toast.error('บันทึกโฟลว์ล้มเหลว! ' + error?.result?.error, { autoClose: 3000 })
     }
   }
 

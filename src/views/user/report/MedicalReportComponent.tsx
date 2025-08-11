@@ -107,7 +107,7 @@ const MockupReportComponent = ({ onBack }: any) => {
     enrichedData.forEach((item: any) => {
       const diagnosisDate = item.diagnosis_start_date ? formatThaiDate(item.diagnosis_start_date, false) : '-'
       const hospital = item.hospital || '-'
-      const patientName = `${item.f_first_name || ''} ${item.f_last_name || ''}`.trim()
+      const patientName = `${item.f_full_name_th || ''}`.trim()
       const bills = []
 
       for (let i = 1; i <= 20; i++) {
@@ -282,9 +282,7 @@ const MockupReportComponent = ({ onBack }: any) => {
                               {formatThaiDate(item.diagnosis_start_date, false)}
                             </TableCell>
                             <TableCell sx={{ textAlign: 'center' }}>{item.hospital}</TableCell>
-                            <TableCell sx={{ textAlign: 'center' }}>
-                              {item.f_first_name} {item.f_last_name}
-                            </TableCell>
+                            <TableCell sx={{ textAlign: 'center' }}>{item.f_full_name_th}</TableCell>
                             <TableCell sx={{ textAlign: 'center' }}>
                               {Array.from({ length: 20 }).map((_, indexItem) =>
                                 item['bill_no' + padZero(indexItem + 1)] != '' ? (

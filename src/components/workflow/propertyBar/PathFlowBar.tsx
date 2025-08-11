@@ -8,6 +8,12 @@ import CustomTextField from '@/@core/components/mui/TextField'
 import { useDialog } from '@/hooks/useDialog'
 import AddConditionFlowDialog from '@/components/dialogs/flow/AddConditionFlowDialog'
 import AddSettingPermissionFlowDialog from '@/components/dialogs/flow/AddSettingPermissionFlowDialog'
+import { getFormSignatureFields } from '@/app/sevices/form/formServices'
+
+import OutlinedInput from '@mui/material/OutlinedInput'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 
 type Condition = {
   source1: string
@@ -27,6 +33,15 @@ const PathFlowBar = () => {
   const clearSelectedField = useFlowStore(state => state.clearSelectedField)
   const [inputValue, setInputValue] = useState('')
   const [linkRule, setLinkRule] = useState({ conditions: [], logicOperator: '' })
+  const [linkResultSelect, setLinkResultSelect] = useState<any>({})
+  const [activityFrom, setActivityFrom] = useState<any>({})
+  const [signatureList, setSignatureList] = useState<any>([])
+  const [signatureRemoveList, setSignatureRemoveList] = useState<string[]>([])
+
+  const fnGetSignatureList = async (form: number) => {
+    const signatureList = await getFormSignatureFields(form)
+    setSignatureList(signatureList?.result?.data || [])
+  }
 
   useEffect(() => {
     if (!selectedField || !myDiagram || !flow) return
@@ -37,11 +52,17 @@ const PathFlowBar = () => {
       const linkResult = flow?.flow?.linkDataArray.find(
         item => item.from === selectedField.from && item.to === selectedField.to
       )
+      setLinkResultSelect(linkResult)
+      setSignatureRemoveList(linkResult.signatureRemove || [])
+      for (const activity of flow?.flow?.nodeDataArray) {
+        if (activity.key == linkResult.from) {
+          fnGetSignatureList(activity.form)
+        }
+      }
 
       setInputValue(linkResult?.text || '')
-
       setLinkRule(linkResult?.rule || { conditions: [], logicOperator: '' })
-      console.log(linkResult?.rule)
+      // console.log(linkResult?.rule)
     } else {
       const nodeResult = flow?.flow?.nodeDataArray.find(item => item.key === selectedField.key)
       setInputValue(nodeResult?.text || '')
@@ -70,13 +91,35 @@ const PathFlowBar = () => {
     clearSelectedField()
   }
 
+  const handleTextChangeSignId = (signId: string) => {
+    setLinkResultSelect((previousState: any) => ({
+      ...previousState,
+      signId
+    }))
+
+    myDiagram.model.startTransaction('update link signId')
+    myDiagram.model.setDataProperty(selectedField, 'signId', signId)
+    myDiagram.model.commitTransaction('update link signId')
+  }
+
+  const handleChangeSignatureRemoveList = (event: any) => {
+    const {
+      target: { value }
+    } = event
+    const newValue = typeof value === 'string' ? value.split(',') : value
+
+    myDiagram.model.startTransaction('update link signatureRemove')
+    myDiagram.model.setDataProperty(selectedField, 'signatureRemove', newValue)
+    myDiagram.model.commitTransaction('update link signatureRemove')
+
+    setSignatureRemoveList(newValue)
+  }
+
   const handleTextChange = (e: any) => {
     const newText = e.target.value
     setInputValue(newText)
 
     if (!myDiagram || !selectedField) return
-
-    // 🟡 หาว่า selectedField เป็น Link หรือ Node
     const isLink = 'from' in selectedField && 'to' in selectedField
 
     if (isLink) {
@@ -118,14 +161,12 @@ const PathFlowBar = () => {
           </Button>
         </div>
       </section>
-
       <div className='w-full flex flex-col p-6 gap-4'>
         <div className='w-full flex flex-col pb-4 border-b'>
           <CustomTextField label='ข้อความกำกับ' value={inputValue} onChange={handleTextChange} />
         </div>
       </div>
-
-      <div className='w-full flex flex-col p-6 gap-4'>
+      <div className='w-full flex-col p-6 gap-4 hidden'>
         <div className='w-full flex flex-col pb-4 border-b'>
           <CustomTextField
             label='การดำเนินการขั้นต่ำ'
@@ -134,7 +175,63 @@ const PathFlowBar = () => {
           />
         </div>
       </div>
-      {/* { conditions: [], logicOperator: '' } */}
+      {/* xxxx:{linkResultSelect?.signId} */}
+
+      <div className='w-full flex-col gap-2 flex pb-0 pr-6 pl-6'>
+        {/* <div className='w-full flex flex-col pb-4 border-b'> */}
+        {/* <CustomTextField label='จุดลงนาม' value={linkResultSelect?.signId} /> */}
+
+        <Autocomplete
+          fullWidth
+          options={signatureList}
+          getOptionLabel={(option: any) => option.id}
+          // value={(formFieldList?.result?.data || []).find((opt: any) => opt.id === selectedField?.data?.form) || null}
+          value={signatureList.find((opt: any) => opt.id === linkResultSelect?.signId) || null}
+          // isOptionEqualToValue={(option, value) => option?.id === (typeof value === 'object' ? value?.id : value)}
+          onChange={(event, newValue) => {
+            handleTextChangeSignId(newValue?.id ?? null)
+          }}
+          renderInput={params => <CustomTextField {...params} label='ระบุจุดที่ลงนาม' placeholder='เลือก...' />}
+        />
+      </div>
+      {/* </div> */}
+
+      <div className='w-full flex-col p-6 gap-4 flex'>
+        {/* <div className='w-full flex flex-col pb-4 border-b'> */}
+        {/* <CustomTextField label='จุดลงนาม' value={linkResultSelect?.signId} /> */}
+        <Typography>ยกเลิกจุดลงนาม</Typography>
+        <FormControl>
+          <Select
+            fullWidth
+            multiple
+            size='small'
+            displayEmpty
+            value={signatureRemoveList}
+            onChange={handleChangeSignatureRemoveList}
+            input={<OutlinedInput />}
+            renderValue={selected => {
+              if (selected?.length === 0) {
+                return <em>เลือกรายการยกเลิกจุดลงนาม</em>
+              }
+
+              return selected?.join(', ')
+            }}
+            // MenuProps={MenuProps}
+            inputProps={{ 'aria-label': 'Without label' }}
+          >
+            <MenuItem disabled value=''>
+              <em>เลือกรายการยกเลิกจุดลงนาม</em>
+            </MenuItem>
+            {signatureList.map((name: any) => (
+              <MenuItem key={name.id} value={name.id}>
+                {name.id}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        {/* </div> */}
+      </div>
+
       {linkRule?.logicOperator !== '' ? (
         <div className='w-full flex flex-col p-6 gap-4'>
           <div className='w-full flex flex-col pb-4 border-b'>

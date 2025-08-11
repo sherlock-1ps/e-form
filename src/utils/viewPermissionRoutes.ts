@@ -36,6 +36,7 @@ export const getAuthFromStorage = () => {
 
 interface UserInformation {
   F_PERSON_ID: number
+  F_FULL_NAME_TH: string
   F_FIRST_NAME: string
   F_LAST_NAME: string
   F_ENG_FIRST_NAME: string
@@ -62,14 +63,6 @@ interface Profile {
   userInformation: UserInformation
 }
 
-/**
- * แทนที่ placeholders ในสตริงด้วยข้อมูลจากอ็อบเจกต์ (TypeScript version)
- * @param templateString - สตริงที่มี placeholders เช่น "สวัสดี {F_FIRST_NAME}"
- * @param profile - อ็อบเจกต์ข้อมูลที่ตรงกับ Interface 'Profile'
- * @returns สตริงใหม่ที่ถูกแทนที่ข้อมูลแล้ว
- *
- * "ชื่อ: {F_FIRST_NAME} {F_LAST_NAME} ({F_ENG_FIRST_NAME}) ตำแหน่ง: {F_POSITION_NAME}"
- */
 export const renderProfileTemplate = (templateString: string | undefined): string => {
   try {
     const session = getAuthFromStorage()

@@ -662,7 +662,7 @@ export const getPersonList = async ({
       pk: `${i.F_PERSON_ID}-1`,
       typeId: '1',
       id: i.F_PERSON_ID,
-      name: `${i.F_FIRST_NAME} ${i.F_LAST_NAME}`.trim(),
+      name: `${i.F_FULL_NAME_TH}`.trim(),
       type: 'บุคคล',
       departmentName: `${i.DEPARTMENT_NAME}`.trim(),
       personName: `${i.F_POSITION_NAME}`.trim()

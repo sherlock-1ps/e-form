@@ -221,6 +221,7 @@ interface TableRowData {
   FormDataDetailMerge: any | null
   f_first_name: any
   f_last_name: any
+  f_full_name_th: string
   f_position_name: any
   department_name: any
   flow_id: number
@@ -431,7 +432,7 @@ const UserDashboardTable = ({
           <div className='flex items-center gap-3'>
             {row.original.status === 'draft' ? (
               <Typography className='font-medium' variant='body2'>
-                {profile?.userInformation?.F_FIRST_NAME || ''} {profile?.userInformation?.F_LAST_NAME || ''}
+                {profile?.userInformation?.F_FULL_NAME_TH || ''}
               </Typography>
             ) : (
               <>
@@ -469,7 +470,7 @@ const UserDashboardTable = ({
               <Typography className='font-medium' color='text.primary'>
                 {row.original.created_by}
               </Typography>
-              <Typography variant='body2'>{`${row.original.f_first_name} ${row.original.f_last_name}`}</Typography>
+              <Typography variant='body2'>{`${row.original.f_full_name_th}`}</Typography>
             </div>
           </div>
         )

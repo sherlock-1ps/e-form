@@ -82,7 +82,7 @@ const MockupReportComponent = ({ onBack }: any) => {
     // Flatten the data so each child has its own row
     const flattenedData: any[] = []
     enrichedData.forEach((item: any) => {
-      const parentName = `${item.f_first_name} ${item.f_last_name}`
+      const parentName = `${item.f_full_name_th}`
 
       if (item.child1_name) {
         flattenedData.push({
@@ -239,9 +239,7 @@ const MockupReportComponent = ({ onBack }: any) => {
                           <TableRow key={index}>
                             <TableCell sx={cellStyleLeft}>
                               <Box sx={{ height: 25 }}>
-                                <b>
-                                  {item.f_first_name} {item.f_last_name}
-                                </b>
+                                <b>{item.f_full_name_th}</b>
                               </Box>
 
                               {String(item.child1_name) != '' ? (

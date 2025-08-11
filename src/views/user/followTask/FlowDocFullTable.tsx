@@ -53,6 +53,7 @@ type flowType = {
   create_by: string
   created_at: string
   comment: string
+  f_full_name_th: string
   f_first_name: string
   f_last_name: string
   department_name: string
@@ -93,16 +94,9 @@ const FlowDocFullTable = ({ data = [], page, pageSize, setPage, setPageSize }: a
 
   const columns = useMemo<ColumnDef<flowType, any>[]>(
     () => [
-      columnHelper.accessor('f_first_name', {
+      columnHelper.accessor('f_full_name_th', {
         header: dictionary?.operator,
-        cell: ({ row }) => (
-          <div className=' flex flex-col items-center'>
-            <Typography variant='body1'>
-              {row.original.f_first_name} {row.original.f_last_name}
-            </Typography>
-            <Typography variant='body1'>{row.original.f_position_name}</Typography>
-          </div>
-        )
+        cell: ({ row }) => <Typography variant='body1'>{row.original.f_full_name_th}</Typography>
       }),
       columnHelper.accessor('department_name', {
         header: dictionary?.departmentOrAffiliation,

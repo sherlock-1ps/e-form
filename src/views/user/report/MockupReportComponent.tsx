@@ -129,7 +129,7 @@ const MockupReportComponent = ({ onBack }: any) => {
 
       return [
         index + 1,
-        `${item.f_first_name} ${item.f_last_name}`,
+        `${item.f_full_name_th}`,
         item.f_position_name,
         item?.department_name,
         totalRent > 0 ? totalRent : '-',
@@ -297,9 +297,7 @@ const MockupReportComponent = ({ onBack }: any) => {
                             <TableCell align='center' sx={cellStyle}>
                               {index + 1}
                             </TableCell>
-                            <TableCell sx={cellStyle}>
-                              {item.f_first_name} {item.f_last_name}
-                            </TableCell>
+                            <TableCell sx={cellStyle}>{item.f_full_name_th}</TableCell>
                             <TableCell sx={cellStyle}>{item.f_position_name}</TableCell>
                             <TableCell sx={cellStyle}>{item?.department_name}</TableCell>
                             <TableCell align='center' sx={cellStyle}>

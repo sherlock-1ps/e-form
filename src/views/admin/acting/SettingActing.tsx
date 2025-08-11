@@ -270,8 +270,7 @@ const SettingActing = () => {
         // flex: 1
         width: 50
       },
-      { autoHeight: true, headerName: 'ชื่อ', field: 'f_first_name', filter: false, flex: 1 },
-      { autoHeight: true, headerName: 'นามสกุล', field: 'f_last_name', filter: false, flex: 1 },
+      { autoHeight: true, headerName: 'ชื่อ', field: 'f_full_name_th', filter: false, flex: 1.5 },
       { autoHeight: true, headerName: 'ตำแหน่ง', field: 'f_position_name', filter: false, flex: 2 },
       { autoHeight: true, headerName: 'หน่วยงาน', field: 'department_name', filter: false, flex: 2 },
       {

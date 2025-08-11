@@ -159,7 +159,7 @@ const AddPathFlowDialog = ({ id, onClose }: AddPathFlowDialogProps) => {
             value={(formFieldList?.result?.data || []).find((opt: any) => opt.id === signId) || null}
             // isOptionEqualToValue={(option, value) => option?.id === (typeof value === 'object' ? value?.id : value)}
             onChange={(event, newValue) => {
-              console.log('newValue', newValue)
+              // console.log('newValue', newValue)
               // handleUpdateForm(newValue?.id ?? null)
               setSignId(newValue?.id ?? null)
             }}
@@ -168,7 +168,7 @@ const AddPathFlowDialog = ({ id, onClose }: AddPathFlowDialogProps) => {
         </Grid>
       )}
       <Grid item xs={12}>
-        <div className='flex items-center gap-3'>
+        <div className='items-center gap-3 hidden'>
           <Switch checked={enabled} onChange={e => setEnabled(e.target.checked)} color='primary' />
           <Typography className={enabled ? 'text-gray-800' : 'text-gray-400'}>
             กำหนดให้มีจำนวนขั้นต่ำของการดำเนินการเพื่อทำงานต่อ

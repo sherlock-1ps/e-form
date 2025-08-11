@@ -34,9 +34,7 @@ const ProfileDialog = ({ id }: profileProps) => {
 
       <Grid item xs={12} className='flex flex-col items-center gap-2'>
         <Avatar src={mockProfile.avatarUrl} sx={{ width: 80, height: 80 }} />
-        <Typography variant='h6'>
-          {profile?.userInformation?.F_FIRST_NAME} {profile?.userInformation?.F_LAST_NAME}{' '}
-        </Typography>
+        <Typography variant='h6'>{profile?.userInformation?.F_FULL_NAME_TH}</Typography>
         <Typography variant='body2' color='textSecondary'>
           {profile?.userInformation?.F_POSITION_NAME}
         </Typography>
