@@ -60,7 +60,7 @@ import CommentSignDialog from '@/components/dialogs/sign/CommentSignDialog'
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
 import { getCurrentFormattedDate } from '@/utils/formatDateTime'
-
+import ActionButton from '@/views/user/createTask/@components/ActionButtons'
 const allowedExtensions = [
   '.jpg',
   '.jpeg',
@@ -211,10 +211,6 @@ const UserStartTaskComponent = ({ data }: any) => {
       return
     }
 
-    if (!comment) {
-      toast.error(dictionary?.commentRequired, { autoClose: 3000 })
-      return
-    }
     const valueSignatureBase64 = signType === '7' ? signatureBase64 : ''
     const isValid = validateForm()
     if (!isValid) {
@@ -235,7 +231,7 @@ const UserStartTaskComponent = ({ data }: any) => {
         //   sign_type: signType,
         // },
         data_detail: resultMapValue,
-        comment: comment ?? '',
+        comment: comment ?? ' ',
         sign_type: signType,
         signature_base64: valueSignatureBase64
       }
@@ -428,7 +424,9 @@ const UserStartTaskComponent = ({ data }: any) => {
                       <Grid item xs={12}>
                         <FlowDocTable data={(commentData?.result?.data || []).slice(0, 3)} />
                       </Grid>
-                      <Grid item xs={12} className='flex items-center justify-end gap-2 '>
+
+                      <ActionButton data={data} handleSaveStartflow={handleSaveStartflow} isView={false} />
+                      {/* <Grid item xs={12} className='flex items-center justify-end gap-2 '>
                         <div className='flex gap-2 items-center overflow-auto flex-nowrap min-w-0 pb-2'>
                           {isStartSign ? (
                             <div className='flex gap-2 items-center min-w-max'>
@@ -440,7 +438,7 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 }}
                                 className=' self-start'
                               >
-                                กลับ
+                                กลับx
                               </Button>
                               <Button
                                 variant='contained'
@@ -564,7 +562,7 @@ const UserStartTaskComponent = ({ data }: any) => {
                             </div>
                           )}
                         </div>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </CardContent>
                 </Card>

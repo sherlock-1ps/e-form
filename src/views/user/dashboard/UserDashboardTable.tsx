@@ -339,7 +339,7 @@ const UserDashboardTable = ({
                 <Delete
                   color='secondary'
                   fontSize='large'
-                  titleAccess={dictionary?.viewFlow}
+                  titleAccess={dictionary?.delete}
                   sx={{ cursor: 'pointer' }}
                   onClick={() => {
                     showDialog({
@@ -389,9 +389,9 @@ const UserDashboardTable = ({
               {row.original.current_activity_names ? row.original.current_activity_names[0] : 'ยังไม่มีการเดินหนังสือ'}
             </Typography>
 
-            <Tooltip title={(row.original.current_activity_names || []).join(', ')}>
+            {/* <Tooltip title={(row.original.current_activity_names || []).join(', ')}>
               <ForwardToInboxIcon className='text-primary cursor-help' fontSize='small' />
-            </Tooltip>
+            </Tooltip> */}
           </div>
         )
       }),
@@ -436,7 +436,17 @@ const UserDashboardTable = ({
               </Typography>
             ) : (
               <>
-                <Typography className='font-medium truncate max-w-[220px] cursor-help' variant='body2'>
+                <Typography
+                  className='font-medium truncate max-w-[220px]'
+                  variant='body2'
+                  title={
+                    [
+                      ...(row.original.current_assignees_user_names || []),
+                      ...(row.original.current_assignees_position_names || []),
+                      ...(row.original.current_assignees_department_names || [])
+                    ].join(', ') || '-'
+                  }
+                >
                   {[
                     ...(row.original.current_assignees_user_names || []),
                     ...(row.original.current_assignees_position_names || []),
@@ -444,7 +454,7 @@ const UserDashboardTable = ({
                   ].join(', ') || '-'}
                 </Typography>
 
-                <Tooltip
+                {/* <Tooltip
                   title={
                     [
                       ...(row.original.current_assignees_user_names || []),
@@ -454,7 +464,7 @@ const UserDashboardTable = ({
                   }
                 >
                   <PeopleOutlineIcon className='text-primary cursor-help' fontSize='small' />
-                </Tooltip>
+                </Tooltip> */}
               </>
             )}
           </div>

@@ -59,6 +59,9 @@ import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CommentSignDialog from '@/components/dialogs/sign/CommentSignDialog'
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
+
+import ActionButton from '@/views/user/createTask/@components/ActionButtons'
+
 const allowedExtensions = [
   '.jpg',
   '.jpeg',
@@ -204,10 +207,6 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
       })
       return
     }
-    if (!comment) {
-      toast.error(dictionary?.commentRequired, { autoClose: 3000 })
-      return
-    }
 
     const isValid = validateForm()
     if (!isValid) {
@@ -218,7 +217,6 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
     try {
       const resultMapValue = mapKeyValueForm(form?.form_details)
       const valueSignatureBase64 = signType === '7' ? signatureBase64 : ''
-
       const request = {
         id: data?.form_data_id, // มี FormData id ตลอดแล้วว
         // "form_data_detail_id": 22, // ตอนมี id
@@ -230,7 +228,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
         //     "data": "xxx"
         // },
         data_detail: resultMapValue,
-        comment: comment ?? '',
+        comment: comment ?? ' ',
         sign_type: signType,
         signature_base64: valueSignatureBase64
       }
@@ -350,8 +348,6 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
 
       {isShowWorkflow ? (
         <div className='flex flex-1 w-full h-full  md:absolute md:top-0 md:left-0'>
-          {/* <ViewWorkflowComponent onBack={false} /> */}
-
           <ViewFlowComponent formDataId={formDataId} onBack={handleBackShowFlow} noBack={true} />
         </div>
       ) : (
@@ -420,7 +416,9 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                       <Grid item xs={12}>
                         <FlowDocTable data={(commentData?.result?.data || []).slice(0, 3)} />
                       </Grid>
-                      <Grid item xs={12} className='flex items-center justify-end gap-2 '>
+
+                      <ActionButton data={data} handleSaveStartflow={handleSaveStartflow} isView={isView} />
+                      {/* <Grid item xs={12} className='flex items-center justify-end gap-2 '>
                         <div className='flex gap-2 items-center overflow-auto flex-nowrap min-w-0 pb-2'>
                           {!isView ? (
                             isStartSign ? (
@@ -433,7 +431,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                                   }}
                                   className=' self-start'
                                 >
-                                  กลับ
+                                  กลับa
                                 </Button>
                                 <Button
                                   variant='contained'
@@ -557,7 +555,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                             )
                           ) : null}
                         </div>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </CardContent>
                 </Card>
@@ -643,29 +641,6 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                           </div>
                         </div>
                       ))}
-                    {/* {images.map((img, index) => (
-                      <div
-                        key={index}
-                        className='relative w-[240px] h-[140px] flex flex-col items-center border rounded-md overflow-hidden'
-                      >
-                        <div className='relative w-full h-[120px]'>
-                          <img src={URL.createObjectURL(img)} className='w-full h-full object-cover' alt='preview' />
-                          <IconButton
-                            size='small'
-                            className='absolute top-0 right-0 bg-white'
-                            onClick={() => handleRemoveImage(index)}
-                          >
-                            <i className='tabler-x text-sm text-red-500' />
-                          </IconButton>
-                          <div className='absolute top-0 left-0 bg-white w-5 flex items-center justify-center'>
-                            <Typography variant='h6'>{index + 1}</Typography>
-                          </div>
-                        </div>
-                        <div className='w-full'>
-                          <Typography className='text-xs break-words leading-snug'>{img.name}</Typography>
-                        </div>
-                      </div>
-                    ))} */}
                   </div>
                 </div>
 

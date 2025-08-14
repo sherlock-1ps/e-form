@@ -53,9 +53,9 @@ const PathFlowBar = () => {
         item => item.from === selectedField.from && item.to === selectedField.to
       )
       setLinkResultSelect(linkResult)
-      setSignatureRemoveList(linkResult.signatureRemove || [])
+      setSignatureRemoveList(linkResult?.signatureRemove || [])
       for (const activity of flow?.flow?.nodeDataArray) {
-        if (activity.key == linkResult.from) {
+        if (activity.key == linkResult?.from) {
           fnGetSignatureList(activity.form)
         }
       }
