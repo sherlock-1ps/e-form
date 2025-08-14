@@ -259,7 +259,7 @@ export const useFormStore = create<FormState>()(
                   config: {
                     ...dataItem.config,
                     details: {
-                      ...dataItem.config.details,
+                      ...dataItem?.config?.details,
                       value: newValue
                     }
                   }
@@ -300,9 +300,9 @@ export const useFormStore = create<FormState>()(
                 return {
                   ...dataItem,
                   config: {
-                    ...dataItem.config,
+                    ...dataItem?.config,
                     details: {
-                      ...dataItem.config.details,
+                      ...dataItem?.config?.details,
                       // valueSelected: newValue
                       keyValue: {
                         realValue: newValue
@@ -352,11 +352,11 @@ export const useFormStore = create<FormState>()(
                 return {
                   ...dataItem,
                   config: {
-                    ...dataItem.config,
+                    ...dataItem?.config,
                     details: {
-                      ...dataItem.config.details,
+                      ...dataItem?.config?.details,
                       value: {
-                        ...dataItem.config.details.value,
+                        ...dataItem?.config?.details?.value,
                         value: newValue
                       }
                     }
@@ -390,43 +390,7 @@ export const useFormStore = create<FormState>()(
           }
         }), //         if (field.i !== fieldId) return field
 
-      //         const updatedData = field.data.map((dataItem: any) => {
-      //           if (dataItem.id !== dataId) return dataItem
 
-      //           return {
-      //             ...dataItem,
-      //             config: {
-      //               ...dataItem.config,
-      //               details: {
-      //                 ...dataItem.config.details,
-      //                 value: {
-      //                   ...dataItem.config.details.value,
-      //                   value: newValue
-      //                 }
-      //               }
-      //             }
-      //           }
-      //         })
-
-      //         return {
-      //           ...field,
-      //           data: updatedData
-      //         }
-      //       })
-
-      //       return {
-      //         ...formItem,
-      //         fields: updatedFields
-      //       }
-      //     })
-
-      //     return {
-      //       form: {
-      //         ...state.form,
-      //         form_details: updatedFormDetails
-      //       }
-      //     }
-      //   }),
       updateStyle: (parentKey, fieldId, dataId, newStyle) =>
         set(state => {
           const updatedFormDetails = state.form.form_details.map(formItem => {
@@ -485,7 +449,7 @@ export const useFormStore = create<FormState>()(
                   config: {
                     ...dataItem.config,
                     details: {
-                      ...dataItem.config.details,
+                      ...dataItem?.config?.details,
                       ...newDetails
                     }
                   }

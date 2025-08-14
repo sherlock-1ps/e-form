@@ -20,19 +20,7 @@ const TextField = props => {
 
   return (
     <div>
-      {/* <CustomTextFieldForm
-        width={config?.style?.minWidth}
-        label={config?.details?.tag?.isShow ? config?.details?.tag?.value : ''}
-        placeholder={config?.details?.placeholder?.isShow ? config?.details?.placeholder.value : ''}
-        helperText={config?.details?.helperText?.isShow ? config?.details?.helperText.value : ''}
-        InputLabelProps={{
-          style: {
-            fontSize: '15px'
-          }
-        }}
-        value={config?.details?.value?.isShow ? config.details.value.value : ''}
-        onChange={handleChangeInput}
-      /> */}
+
     </div>
   )
 }

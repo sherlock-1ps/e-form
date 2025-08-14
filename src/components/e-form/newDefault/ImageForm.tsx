@@ -53,7 +53,7 @@ const ImageForm = ({ item, parentKey, boxId, draft }: any) => {
       {item?.config?.details?.value?.value ? (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <img
-            src={item.config.details.value.value}
+            src={item?.config?.details?.value?.value}
             onLoad={handleLoad}
             alt='Uploaded Preview'
             style={{

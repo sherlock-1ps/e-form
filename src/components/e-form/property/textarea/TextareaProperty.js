@@ -80,19 +80,19 @@ const TextareaProperty = ({ item }) => {
         </RadioGroup>
         <CustomTextField
           label={dictionary?.text}
-          placeholder={item.config.details.placeholder}
-          value={item.config.details.value || ''}
+          placeholder={item?.config?.details?.placeholder}
+          value={item?.config?.details?.value || ''}
           onChange={handleChangeInput}
         />
         <div className='flex gap-1'>
-          <BaseFontSize placeholder={item.config.style.fontSize} value={item.config.style.fontSize} id={item.id} />
-          <BaseColorPicker label={dictionary?.color} defaultColor={item.config.style.color} id={item.id} />
+          <BaseFontSize placeholder={item?.config?.style?.fontSize} value={item?.config?.style?.fontSize} id={item?.id} />
+          <BaseColorPicker label={dictionary?.color} defaultColor={item?.config?.style?.color} id={item?.id} />
         </div>
         <div>
-          <FormatText item={item.config.style} id={item.id} />
+          <FormatText item={item?.config?.style} id={item?.id} />
         </div>
         <div>
-          <FormatTextPosition item={item.config.style} id={item.id} />
+          <FormatTextPosition item={item?.config?.style} id={item?.id} />
         </div>
       </section>
       <section className='flex-1 flex flex-col my-4 mx-6 gap-2 pb-3.5'>

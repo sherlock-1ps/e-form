@@ -18,7 +18,7 @@ const DraggableToolboxItem = ({ item }) => {
 
   return (
     <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <BaseButtonToolbox icon={item.icon} label={item.config.details.label} />
+      <BaseButtonToolbox icon={item.icon} label={item?.config?.details?.label} />
     </div>
   )
 }

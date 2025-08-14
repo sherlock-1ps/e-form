@@ -64,11 +64,11 @@ export const updateFormValueByKey = (formDetails: any[], dataDetail: any) => {
           return {
             ...item,
             config: {
-              ...item.config,
+              ...item?.config,
               details: {
-                ...item.config.details,
+                ...item?.config?.details,
                 value: {
-                  ...item.config.details.value,
+                  ...item?.config?.details?.value,
                   value: updateValue
                 }
               }
@@ -92,9 +92,9 @@ export const applyKeyValueToForm = (formDetails: any[], values: Record<string, a
         if (!id || !(id in values)) return item
 
         const newValue = values[id]
-        const type = item.config?.details?.type
+        const type = item?.config?.details?.type
 
-        const newDetails = { ...item.config?.details }
+        const newDetails = { ...item?.config?.details }
 
         if (type === 'dropdown') {
           newDetails.keyValue = {
@@ -118,7 +118,7 @@ export const applyKeyValueToForm = (formDetails: any[], values: Record<string, a
         return {
           ...item,
           config: {
-            ...item.config,
+            ...item?.config,
             details: newDetails
           }
         }
@@ -155,20 +155,20 @@ export const updateSignature = (
           return {
             ...item,
             config: {
-              ...item.config,
+              ...item?.config,
               details: {
-                ...item.config?.details,
+                ...item?.config?.details,
                 date: {
-                  ...item.config?.details?.date,
+                  ...item?.config?.details?.date,
                   value: formatThaiDate(signerInfo?.signed_date, false) ?? ''
                 },
                 position: {
-                  ...item.config?.details?.position,
+                  ...item?.config?.details?.position,
                   value: signerInfo?.position_name ?? ''
                 },
                 signer: {
                   ...signerInfo,
-                  ...item.config?.details?.signer,
+                  ...item?.config?.details?.signer,
                   value: signerInfo?.person_name ?? '',
                   imgValue: `${process.env.NEXT_PUBLIC_SIGNER_IMAGE_URL}/${signerInfo?.person_id}`
                 }
@@ -240,7 +240,7 @@ export function findFieldDetailsById(dataObject: DataObject, targetId: string): 
         return {
           i: field.i,
           parentKey: detail.parentKey,
-          details: foundDataItem.config.details
+          details: foundDataItem?.config?.details
         }
       }
     }

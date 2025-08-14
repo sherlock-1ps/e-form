@@ -16,7 +16,7 @@ const CheckboxForm = ({ item, parentKey, boxId, draft }: any) => {
 
   const options =
     item?.config?.details?.value?.options?.length > 0
-      ? item.config.details.value.options
+      ? item?.config?.details?.value?.options
       : item?.config?.details?.value?.value?.value?.value?.options?.length > 0
         ? item?.config?.details?.value?.value?.value?.value?.options
         : [
@@ -54,7 +54,7 @@ const CheckboxForm = ({ item, parentKey, boxId, draft }: any) => {
                   <Checkbox
                     checked={
                       Array.isArray(item?.config?.details?.value?.checkedList)
-                        ? item.config.details.value.checkedList.includes(data.value)
+                        ? item?.config?.details?.value?.checkedList?.includes(data.value)
                         : false
                     }
                     name={data.name}

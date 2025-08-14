@@ -33,8 +33,8 @@ const DropdownElement = props => {
           </MenuItem>
         )}
 
-        {config.details.itemList &&
-          config.details.itemList.map((item, idx) => {
+        {config?.details?.itemList &&
+          config?.details?.itemList.map((item, idx) => {
             return (
               <MenuItem value={item.value} key={idx}>
                 {item.name}

@@ -25,33 +25,27 @@ const TextareaElement = props => {
 
   const updateInputWidth = text => {
     if (textMeasureRef.current) {
-      textMeasureRef.current.textContent = text || config.details.placeholder || ''
+      textMeasureRef.current.textContent = text || config?.details?.placeholder || ''
       setInputWidth(`${textMeasureRef.current.offsetWidth + 4}px`) // Add some padding pixels
       onSizeChange(textMeasureRef.current.offsetWidth, textMeasureRef.current.offsetHeight)
       onSetMinElement(textMeasureRef.current.offsetWidth, textMeasureRef.current.offsetHeight)
     }
   }
 
-  // const updateInitial = text => {
-  //   if (textMeasureRef.current) {
-  //     textMeasureRef.current.textContent = text || config.details.placeholder || ''
-  //     onSetMinElement(textMeasureRef.current.offsetWidth, textMeasureRef.current.offsetHeight)
-  //   }
-  // }
 
   useEffect(() => {
     if (divRef.current) {
       console.log('divRef.current.offsetWidth', divRef.current.offsetWidth)
     }
-    updateInputWidth(config.details.value)
-  }, [config.style.fontWeight, config.style.fontSize])
+    updateInputWidth(config?.details?.value)
+  }, [config?.style?.fontWeight, config?.style?.fontSize])
 
   return (
     <div>
       <span
         ref={textMeasureRef}
         style={{
-          ...config.style,
+          ...config?.style,
           position: 'absolute',
           visibility: 'hidden',
           height: 'auto',
@@ -73,9 +67,9 @@ const TextareaElement = props => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: `${config.style.fontSize}px`,
+            fontSize: `${config?.style?.fontSize}px`,
             width: isTriggerResize ? '100%' : 'auto',
-            minHeight: `${config.style.minHeight}px`,
+            minHeight: `${config?.style?.minHeight}px`,
             whiteSpace: 'nowrap',
             ...config.style
           }
@@ -90,7 +84,7 @@ const TextareaElement = props => {
         id='textarea-outlined'
         placeholder='Placeholder'
         label=''
-        value={config.details.value || config.details.placeholder}
+        value={config?.details?.value || config?.details?.placeholder}
         onChange={handleChangeInput}
       />
     </div>

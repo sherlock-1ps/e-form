@@ -45,10 +45,10 @@ const LinkElement = props => {
 
   useEffect(() => {
     if (divRef.current) {
-      divRef.current.textContent = config.details.value || config.details.placeholder || ''
+      divRef.current.textContent = config?.details?.value || config?.details?.placeholder || ''
       moveCaretToEnd()
     }
-  }, [config.details.value, config.details.placeholder])
+  }, [config?.details?.value, config?.details?.placeholder])
 
   return (
     <div>
@@ -62,8 +62,8 @@ const LinkElement = props => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: `${config.style.fontSize}px`,
-          minHeight: config.style.minHeight,
+          fontSize: `${config?.style?.fontSize}px`,
+          minHeight: config?.style?.minHeight,
           width: 'auto',
           whiteSpace: 'nowrap',
           ...config.style
@@ -71,9 +71,9 @@ const LinkElement = props => {
         onInput={handleChangeInput}
         onClick={handleSelectText}
         role='textbox'
-        aria-placeholder={config.details.placeholder}
+        aria-placeholder={config?.details?.placeholder}
       >
-        {config.details.value || ' '}
+        {config?.details?.value || ' '}
       </Typography>
     </div>
   )

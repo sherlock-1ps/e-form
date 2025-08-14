@@ -280,6 +280,10 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
     ...rest
   } = props
 
+
+    // console.log("props.placeholder",props.placeholder)
+
+
   // State to hold the value displayed in the input
   const [internalValue, setInternalValue] = useState(value)
   // State to track if the input is focused

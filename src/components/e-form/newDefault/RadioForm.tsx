@@ -48,7 +48,7 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
 
   const options =
     item?.config?.details?.value?.options?.length > 0
-      ? item.config.details.value.options
+      ? item?.config?.details?.value?.options
       : item?.config?.details?.value?.value?.value?.value?.options?.length > 0
         ? item?.config?.details?.value?.value?.value?.value?.options
         : [

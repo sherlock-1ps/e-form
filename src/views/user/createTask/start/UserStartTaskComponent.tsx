@@ -254,7 +254,28 @@ const UserStartTaskComponent = ({ data }: any) => {
     const innerUrl = `${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`
     const encodedUrl = encodeURIComponent(innerUrl)
 
-    window.open(`/${locale}/user/viewPdf?url=${encodedUrl}`, '_blank')
+    setIsAttacth(false)
+    showDialog({
+      id: 'alertDeleteApiCall',
+      component: (
+        <div className='relative w-full bg-white h-[calc(100vh-120px)] overflow-hidden'>
+          <div className='absolute bottom-0 left-0 w-full z-10'>
+            <ActionButton data={data} handleSaveStartflow={handleSaveStartflow} isView={false} />
+          </div>
+          <iframe
+            src={innerUrl || ''}
+            className='w-full h-full'
+            style={{
+              border: 'none',
+              overflow: 'hidden'
+            }}
+            allowFullScreen
+          />
+        </div>
+      ),
+      size: 'xl',
+      closeOnBackdropClick: false
+    })
   }
 
   return (
@@ -382,7 +403,7 @@ const UserStartTaskComponent = ({ data }: any) => {
                   </div>
                 </div>
               ) : (
-                <Card className='h-full shadow-xl relative '>
+                <Card className='h-full shadow-xl relative'>
                   <CardContent>
                     <Grid container spacing={2}>
                       <Grid item xs={4}>
@@ -637,7 +658,7 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 handleEditPdf(item)
                               }}
                             >
-                              Edit PDF
+                              Edit PDF2
                             </Button>
                           )}
 

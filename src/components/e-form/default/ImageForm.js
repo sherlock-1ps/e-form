@@ -37,7 +37,7 @@ const ImageForm = item => {
     >
       {item?.config?.details?.value ? (
         <img
-          src={URL.createObjectURL(item?.config.details.value)}
+          src={URL.createObjectURL(item?.config?.details?.value)}
           alt='Uploaded Preview'
           style={{
             width: '100%',

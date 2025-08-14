@@ -60,14 +60,14 @@ const TextLabel = props => {
     if (divRef.current) {
       const { offsetWidth, offsetHeight } = divRef.current
 
-      divRef.current.textContent = config.details.value || config.details.placeholder || ''
+      divRef.current.textContent = config?.details.value || config?.details?.placeholder || ''
       onSizeChange(offsetWidth, offsetHeight)
       onSetMinElement(offsetWidth, offsetHeight)
       setMinWidthText(offsetWidth)
 
       // moveCaretToEnd()
     }
-  }, [config.details.value, config.style.fontSize, config.style.fontWeight])
+  }, [config?.details.value, config?.style?.fontSize, config?.style?.fontWeight])
 
   return (
     <div>
@@ -83,19 +83,19 @@ const TextLabel = props => {
           alignItems: 'center',
           justifyContent: 'center',
           lineHeight: `auto`,
-          fontSize: `${config.style.fontSize}px`,
+          fontSize: `${config?.style?.fontSize}px`,
           minWidth: `${minWidthText}px`,
-          minHeight: `${config.style.minHeight}px`,
+          minHeight: `${config?.style?.minHeight}px`,
           width: isTriggerResize ? '100%' : 'auto',
           whiteSpace: 'nowrap',
-          ...config.style
+          ...config?.style
         }}
         onInput={handleChangeInput}
         onClick={handleSelectText}
         role='textbox'
-        aria-placeholder={config.details.placeholder}
+        aria-placeholder={config?.details?.placeholder}
       >
-        {config.details.value || config.details.placeholder}
+        {config?.details?.value || config?.details?.placeholder}
       </Typography>
     </div>
   )

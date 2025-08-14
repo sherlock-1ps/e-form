@@ -36,7 +36,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
       const cloned = form?.form_details
         ?.flatMap(section => section.fields)
         .flatMap(field => field.data)
-        .find(dataItem => dataItem.id === item.config.details.signType.formId)
+        .find(dataItem => dataItem.id === item?.config?.details?.signType?.formId)
 
       if (cloned) {
         setCurrentItem(cloned)
@@ -48,7 +48,7 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
         setCurrentItem({
           ...item,
           config: {
-            ...item.config,
+            ...item?.config,
             details: {
               ...item?.config?.details,
               position: {
@@ -144,9 +144,9 @@ const SignatureForm = ({ item, parentKey, boxId, draft }: any) => {
           config: {
             ...prevItem.config,
             details: {
-              ...prevItem.config.details,
+              ...prevItem.config?.details,
               position: {
-                ...prevItem.config.details.position,
+                ...prevItem.config?.details?.position,
                 value: editedText
               }
             }

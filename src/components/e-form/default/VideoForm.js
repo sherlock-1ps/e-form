@@ -46,9 +46,9 @@ const VideoForm = props => {
       }}
       onClick={handleDivClick}
     >
-      {config.details?.value ? (
+      {config?.details?.value ? (
         <video
-          src={URL.createObjectURL(config.details?.value)}
+          src={URL.createObjectURL(config?.details?.value)}
           autoPlay
           loop
           controls

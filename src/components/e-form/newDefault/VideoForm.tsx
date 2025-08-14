@@ -50,10 +50,10 @@ const VideoForm = ({ item, parentKey, boxId, draft }: any) => {
       }}
       onDoubleClick={item?.config?.details?.isUse ? handleDivClick : undefined}
     >
-      {item?.config.details?.value?.value ? (
+      {item?.config?.details?.value?.value ? (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <video
-            src={item?.config.details?.value?.value}
+            src={item?.config?.details?.value?.value}
             autoPlay={item?.config?.style?.autoPlay}
             loop={item?.config?.style?.loop}
             controls

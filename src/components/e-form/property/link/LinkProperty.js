@@ -133,8 +133,8 @@ const LinkProperty = () => {
 
         <DebouncedInput
           label='URL'
-          placeholder={result.config.details.placeholder}
-          value={result.config.details.value || ''}
+          placeholder={result?.config?.details?.placeholder}
+          value={result?.config?.details?.value || ''}
           onChange={newText =>
             updateDetails(
               String(selectedField?.parentKey ?? ''),
@@ -147,11 +147,11 @@ const LinkProperty = () => {
           }
         />
         <div className='flex gap-1'>
-          <BaseFontSize placeholder={result.config.style.fontSize} value={result.config.style.fontSize} />
-          <BaseColorPicker label={dictionary?.color} defaultColor={result.config.style.color} />
+          <BaseFontSize placeholder={result?.config?.style?.fontSize} value={result?.config?.style?.fontSize} />
+          <BaseColorPicker label={dictionary?.color} defaultColor={result?.config?.style?.color} />
         </div>
-        <FormatText item={result.config.style} />
-        <FormatTextPosition item={result.config.style} />
+        <FormatText item={result?.config?.style} />
+        <FormatTextPosition item={result?.config?.style} />
         <RadioGroup
           row={false}
           value={result?.config?.details?.isCutLink ?? false}

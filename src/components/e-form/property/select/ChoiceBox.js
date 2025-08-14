@@ -46,7 +46,7 @@ const CustomOption = ({ label, onEdit, onDelete }) => {
 const EnhancedOption = ({ label, index, item, selectedField, updateDetails, onBack, onDelete }) => {
   const { dictionary } = useDictionary()
   const handleLabelChange = e => {
-    const updatedList = [...item.config.details.itemList]
+    const updatedList = [...item?.config?.details?.itemList]
     updatedList[index].name = e.target.value
 
     updateDetails(
@@ -130,7 +130,7 @@ const ChoiceBox = ({ item }) => {
   const updateDetails = useFormStore(state => state.updateDetails)
 
   const handleEdit = index => {
-    const newList = [...item.config.details.itemList]
+    const newList = [...item?.config?.details?.itemList]
     newList[index].enhanced = true
     updateDetails(
       String(selectedField?.parentKey ?? ''),
@@ -141,7 +141,7 @@ const ChoiceBox = ({ item }) => {
   }
 
   const handleBack = index => {
-    const newList = [...item.config.details.itemList]
+    const newList = [...item?.config?.details?.itemList]
     newList[index].enhanced = false
     updateDetails(
       String(selectedField?.parentKey ?? ''),
@@ -152,7 +152,7 @@ const ChoiceBox = ({ item }) => {
   }
 
   const handleAddOption = () => {
-    const newList = [...item.config.details.itemList, { name: 'ตัวเลือกใหม่', value: '', enhanced: true }]
+    const newList = [...item?.config?.details?.itemList, { name: 'ตัวเลือกใหม่', value: '', enhanced: true }]
     updateDetails(
       String(selectedField?.parentKey ?? ''),
       selectedField?.boxId ?? '',
@@ -162,7 +162,7 @@ const ChoiceBox = ({ item }) => {
   }
 
   const handleDelete = index => {
-    const newList = item.config.details.itemList.filter((_, i) => i !== index)
+    const newList = item?.config?.details?.itemList.filter((_, i) => i !== index)
     updateDetails(
       String(selectedField?.parentKey ?? ''),
       selectedField?.boxId ?? '',
