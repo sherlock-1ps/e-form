@@ -147,7 +147,7 @@ const LinkProperty = () => {
           }
         />
         <div className='flex gap-1'>
-          <BaseFontSize placeholder={result?.config?.style?.fontSize} value={result?.config?.style?.fontSize} />
+          <BaseFontSize placeholder={result?.config?.style?.fontSize || ''} value={result?.config?.style?.fontSize} />
           <BaseColorPicker label={dictionary?.color} defaultColor={result?.config?.style?.color} />
         </div>
         <FormatText item={result?.config?.style} />

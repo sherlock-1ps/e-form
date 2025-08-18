@@ -331,7 +331,7 @@ const SignatureProperty = () => {
         />
         <DebouncedInput
           label={dictionary?.position}
-          placeholder={result?.config?.details?.position?.placeholder}
+          placeholder={result?.config?.details?.position?.placeholder || ''}
           value={result?.config?.details?.position?.value || ''}
           onChange={(newText: any) =>
             updateDetails(
@@ -370,7 +370,7 @@ const SignatureProperty = () => {
           label={dictionary?.signerFullName}
         />
         <div className='flex gap-1'>
-          <BaseFontSize placeholder={result?.config?.style?.fontSize} value={result?.config?.style?.fontSize} />
+          <BaseFontSize placeholder={result?.config?.style?.fontSize || ''} value={result?.config?.style?.fontSize} />
         </div>
 
         <FormControlLabel

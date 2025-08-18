@@ -234,7 +234,7 @@ const DatetimeProperty = () => {
         ) : (
           <CustomTextField
             label={dictionary?.text}
-            placeholder={result?.config?.details?.placeholder?.value}
+            placeholder={result?.config?.details?.placeholder?.value|| ''}
             value={
               result?.config?.details?.value?.value ? dayjs(result?.config?.details?.value?.value).format('DD/MM/YYYY') : ''
             }

@@ -155,7 +155,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
               </Grid>
             ))}
           <Grid item xs={12}>
-            <form>
+
               <Grid container spacing={2}>
                 <Grid item xs>
                   <CustomTextField
@@ -187,7 +187,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
                   </Button>
                 </Grid>
               </Grid>
-            </form>
+
           </Grid>
         </>
       ) : (
@@ -217,7 +217,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
                     <CustomTextField
                       fullWidth
                       label='value'
-                      placeholder={dictionary?.enterText}
+                      placeholder={dictionary?.enterText || ''}
                       value={item?.value}
                       disabled
                     />

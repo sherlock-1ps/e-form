@@ -46,7 +46,7 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
   }
 
   return (
-    <form style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
+    <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <CustomTextField
         fullWidth
         multiline
@@ -63,7 +63,7 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
         label={item?.config?.details?.tag?.isShow && item?.config?.details?.tag?.value}
         disabled={!item?.config?.details?.isUse}
         helperText={item?.config?.details?.helperText?.isShow && item?.config?.details?.helperText?.value}
-        placeholder={item?.config?.details?.placeholder?.isShow && item?.config?.details?.placeholder?.value}
+        placeholder={item?.config?.details?.placeholder?.isShow ? item?.config?.details?.placeholder?.value : ''}
         isNumber={item?.config?.details?.isNumber}
         decimalPlaces={item?.config?.details?.decimalPlaces}
         linkField={item?.config?.details?.linkField}
@@ -87,7 +87,7 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
           }
         }}
       />
-    </form>
+    </div>
   )
 }
 

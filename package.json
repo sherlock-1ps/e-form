@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 9090",
+    "uat": "next dev -p 9090",
     "build": "next build",
+    "build:uat": "dotenv -e .env.uat next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -95,6 +97,7 @@
     "server-only": "0.0.1",
     "uuid": "^11.1.0",
     "valibot": "0.36.0",
+    "xlsx": "^0.18.5",
     "zod": "^3.23.8",
     "zustand": "^5.0.3"
   },

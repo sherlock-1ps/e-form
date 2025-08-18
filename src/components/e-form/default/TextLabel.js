@@ -93,7 +93,7 @@ const TextLabel = props => {
         onInput={handleChangeInput}
         onClick={handleSelectText}
         role='textbox'
-        aria-placeholder={config?.details?.placeholder}
+        aria-placeholder={config?.details?.placeholder || ''}
       >
         {config?.details?.value || config?.details?.placeholder}
       </Typography>

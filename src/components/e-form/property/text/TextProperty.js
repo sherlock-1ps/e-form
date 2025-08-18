@@ -226,7 +226,7 @@ const TextProperty = ({ item }) => {
         ) : (
           <DebouncedInput
             label={dictionary?.text}
-            placeholder={result?.config?.details?.placeholder}
+            placeholder={result?.config?.details?.placeholder || ''}
             value={result?.config?.details?.value?.value || ''}
             onChange={newText =>
               // updateDetails(
@@ -249,7 +249,7 @@ const TextProperty = ({ item }) => {
 
         <div className='flex gap-1'>
           <BaseFontSize
-            placeholder={result?.config?.style?.fontSize}
+            placeholder={result?.config?.style?.fontSize || ''}
             value={result?.config?.style?.fontSize}
             id={item?.id}
           />

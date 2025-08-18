@@ -155,7 +155,7 @@ const AddOptionCheckboxDialog = ({ id }: AddOptionDropdownProps) => {
               </Grid>
             ))}
           <Grid item xs={12}>
-            <form>
+
               <Grid container spacing={2}>
                 <Grid item xs>
                   <CustomTextField
@@ -187,7 +187,7 @@ const AddOptionCheckboxDialog = ({ id }: AddOptionDropdownProps) => {
                   </Button>
                 </Grid>
               </Grid>
-            </form>
+
           </Grid>
         </>
       ) : (

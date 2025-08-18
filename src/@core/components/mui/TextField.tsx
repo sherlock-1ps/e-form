@@ -281,7 +281,7 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
   } = props
 
 
-    // console.log("props.placeholder",props.placeholder)
+
 
 
   // State to hold the value displayed in the input
@@ -309,6 +309,8 @@ const CustomTextField = forwardRef((props: CustomTextFieldProps, ref) => {
 
   // Effect to sync with the parent component's `value` prop.
   useEffect(() => {
+    // alert()
+      //  console.log("props.placeholder",props.placeholder,props)
     // Only update if the input is not focused, to allow the user to type freely.
     if (!isFocused) {
       if (defaultFieldValue != '' && value == '' && defaultFieldValue) {

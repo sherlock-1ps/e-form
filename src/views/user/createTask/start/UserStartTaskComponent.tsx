@@ -287,8 +287,7 @@ const UserStartTaskComponent = ({ data }: any) => {
           <div className='flex items-center justify-center p-2 rounded-sm'>
             <div className='flex  items-center gap-2  bg-primary rounded-lg'>
               <IconButton className='w-[60px]' onClick={() => setCollapsed(!collapsed)}>
-                {/* <ChevronRight /> */}
-                <Typography variant='body2' className=' text-white'>
+                <Typography variant='body2' className='text-white'>
                   ดูโฟล์ว
                 </Typography>
               </IconButton>
@@ -329,17 +328,15 @@ const UserStartTaskComponent = ({ data }: any) => {
                           <div className='step-label'>
                             <div>
                               <Typography className='step-title'>{step?.text ?? ''}</Typography>
-                              {/* <Typography className='step-subtitle'>{step.subtitle}</Typography> */}
                             </div>
                           </div>
                         </StepLabel>
                       </Step>
                     ))}
-
-                  {!startStep.find(item => item.category == 'end') && (
-                    <Typography variant='body2'>ยังมี Flow ต่อ.......</Typography>
-                  )}
                 </Stepper>
+                {/* {!startStep.find(item => item.category == 'end') && (
+                  <Typography variant='body2'>ยังมี Flow ต่อ.......</Typography>
+                )} */}
               </StepperWrapper>
               {isShowWorkflow ? (
                 <Button
@@ -447,143 +444,6 @@ const UserStartTaskComponent = ({ data }: any) => {
                       </Grid>
 
                       <ActionButton data={data} handleSaveStartflow={handleSaveStartflow} isView={false} />
-                      {/* <Grid item xs={12} className='flex items-center justify-end gap-2 '>
-                        <div className='flex gap-2 items-center overflow-auto flex-nowrap min-w-0 pb-2'>
-                          {isStartSign ? (
-                            <div className='flex gap-2 items-center min-w-max'>
-                              <Button
-                                variant='contained'
-                                color='inherit'
-                                onClick={() => {
-                                  setIsStartSign(false)
-                                }}
-                                className=' self-start'
-                              >
-                                กลับx
-                              </Button>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                startIcon={<Draw />}
-                                onClick={() => {
-                                  showDialog({
-                                    id: 'alertSignDialog',
-                                    component: (
-                                      <NormalSignDialog
-                                        id='alertSignDialog'
-                                        onSave={handleSaveStartflow}
-                                        signType='6'
-                                      />
-                                    ),
-                                    size: 'sm'
-                                  })
-                                }}
-                              >
-                                ลงนาม
-                              </Button>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                startIcon={<Draw />}
-                                onClick={() => {
-                                  showDialog({
-                                    id: 'alertSignElectonicSignDialog',
-                                    component: (
-                                      <ElectonicSignDialog
-                                        id='alertSignElectonicSignDialog'
-                                        onSave={handleSaveStartflow}
-                                        signType='7'
-                                      />
-                                    ),
-                                    size: 'sm'
-                                  })
-                                }}
-                              >
-                                ลงนาม - ลายมือชื่ออิเล็กทรอนิกส์ (ม.9)
-                              </Button>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                startIcon={<Draw />}
-                                onClick={() => {
-                                  showDialog({
-                                    id: 'alertCertifySignDialog',
-                                    component: (
-                                      <CertifySignDialog
-                                        id='alertCertifySignDialog'
-                                        onSave={handleSaveStartflow}
-                                        signType='1'
-                                      />
-                                    ),
-                                    size: 'sm'
-                                  })
-                                }}
-                              >
-                                ลงนาม (ใบรับรองอิเล็กทรอนิกส์)
-                              </Button>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                startIcon={<Draw />}
-                                onClick={() => {
-                                  showDialog({
-                                    id: 'alertSignOtpSignDialog',
-                                    component: (
-                                      <OtpSignDialog
-                                        id='alertSignOtpSignDialog'
-                                        onSave={handleSaveStartflow}
-                                        signType='8'
-                                      />
-                                    ),
-                                    size: 'sm'
-                                  })
-                                }}
-                              >
-                                ลงนาม OTP
-                              </Button>
-                            </div>
-                          ) : (
-                            <div className='flex justify-end flex-nowrap min-w-max gap-2'>
-                              {data?.flow_activity_link?.map((item: any, index: number) => {
-                                return (
-                                  <Button
-                                    key={index}
-                                    variant='contained'
-                                    onClick={() => {
-                                      const isValid = validateForm()
-                                      if (!isValid) {
-                                        toast.error('โปรดกรอกข้อมูลให้ครบถ้วน')
-                                        return
-                                      }
-                                      setLinkIdButton(item?.link_id)
-
-                                      if (item?.signId) {
-                                        setIsStartSign(true)
-                                      } else {
-                                        showDialog({
-                                          id: 'alertCommentSignDialog',
-                                          component: (
-                                            <CommentSignDialog
-                                              id='alertCommentSignDialog'
-                                              onSave={handleSaveStartflow}
-                                              linkId={item?.link_id}
-                                              title={item?.text}
-                                              signType='6'
-                                            />
-                                          ),
-                                          size: 'sm'
-                                        })
-                                      }
-                                    }}
-                                  >
-                                    {item?.text}
-                                  </Button>
-                                )
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      </Grid> */}
                     </Grid>
                   </CardContent>
                 </Card>
@@ -658,7 +518,7 @@ const UserStartTaskComponent = ({ data }: any) => {
                                 handleEditPdf(item)
                               }}
                             >
-                              Edit PDF2
+                              Edit PDF
                             </Button>
                           )}
 
@@ -722,9 +582,6 @@ const UserStartTaskComponent = ({ data }: any) => {
                   <div className='flex items-center justify-between p-6 bg-white'>
                     <div className='flex flex-col gap-2'>
                       <Typography variant='h5'>ประวัติการดำเนินการทั้งหมด</Typography>
-                      {/* <Typography variant='body2' className=' text-primary'>
-                        {form?.name}
-                      </Typography> */}
                     </div>
 
                     <IconButton
