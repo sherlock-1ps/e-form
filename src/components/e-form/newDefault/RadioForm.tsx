@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { useFormStore } from '@/store/useFormStore'
 import { findFieldDetailsById } from '@/utils/mapKeyValueForm'
-
+import { numberToThaiText } from '@/utils/numberFormat'
 const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const updateValueDropdown = useFormStore(state => state.updateValueDropdown)
@@ -21,7 +21,6 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
     if (!draft) return
     const selectedValue = event.target.value
 
-    // ❌ ถ้าเป็น default (value ว่าง) ไม่อัปเดต
     if (selectedValue === '') return
 
     updateDetails(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', {
@@ -37,8 +36,22 @@ const RadioForm = ({ item, parentKey, boxId, draft }: any) => {
 
         if (selectItem?.details?.type == 'dropdown') {
           updateValueDropdown(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', selectedValue)
+        } else if (selectItem?.details?.type == 'radio') {
+          updateDetails(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', {
+            selectedValue: selectedValue
+          })
+        } else if (selectItem?.details?.type == 'checkbox') {
+          updateDetails(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', {
+            value: {
+              ...selectItem?.details?.value,
+              checkedList: [selectedValue]
+            }
+          })
         } else {
-          updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', selectedValue)
+          const changeValue = selectItem?.details?.changeNumberToText
+            ? numberToThaiText(event.target.value)
+            : event.target.value
+          updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', changeValue)
         }
       }
     }

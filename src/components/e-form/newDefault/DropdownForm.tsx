@@ -4,11 +4,13 @@ import { MenuItem } from '@mui/material'
 import CustomTextField from '@core/components/mui/TextField'
 import { useFormStore } from '@/store/useFormStore'
 import React from 'react' // 👈 เพิ่มการ import React
-
+import { numberToThaiText } from '@/utils/numberFormat'
 import { findFieldDetailsById } from '@/utils/mapKeyValueForm'
 
 const DropdownForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueDropdown = useFormStore(state => state.updateValueDropdown)
+  const updateValueOnly = useFormStore(state => state.updateValueOnly)
+  const updateDetails = useFormStore(state => state.updateDetails)
   // const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const form = useFormStore(state => state.form)
   const defaultValue =
@@ -23,7 +25,7 @@ const DropdownForm = ({ item, parentKey, boxId, draft }: any) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateValueDropdown(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', event.target.value)
-
+    // selectItem?.details?.type == 'checkbox'
     const linkFieldText = String(item?.config?.details?.linkField).trim()
     if (linkFieldText != '') {
       const linkFields = linkFieldText.split(',')
@@ -31,7 +33,33 @@ const DropdownForm = ({ item, parentKey, boxId, draft }: any) => {
       for (const element of linkFields) {
         const selectItem = findFieldDetailsById(form, element.trim())
 
-        updateValueDropdown(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', event.target.value)
+        // console.log(selectItem?.details?.type)
+
+        if (selectItem?.details?.type == 'dropdown') {
+          updateValueDropdown(
+            String(selectItem?.parentKey ?? ''),
+            selectItem?.i ?? '',
+            element ?? '',
+            event.target.value
+          )
+        } else if (selectItem?.details?.type == 'radio') {
+          updateDetails(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', {
+            selectedValue: event.target.value
+          })
+        } else if (selectItem?.details?.type == 'checkbox') {
+          updateDetails(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', {
+            value: {
+              ...selectItem?.details?.value,
+              checkedList: [event.target.value]
+            }
+          })
+        } else {
+          const changeValue = selectItem?.details?.changeNumberToText
+            ? numberToThaiText(event.target.value)
+            : event.target.value
+          updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', changeValue)
+          // updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', event.target.value)
+        }
       }
     }
   }

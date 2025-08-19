@@ -249,3 +249,6 @@ export function findFieldDetailsById(dataObject: DataObject, targetId: string): 
   // If no match is found after checking everything, return null.
   return null
 }
+
+
+// ...item?.config?.details?.value,

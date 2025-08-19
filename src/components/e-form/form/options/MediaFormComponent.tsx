@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useRef, useState } from 'react'
-import { Breadcrumbs, Typography, Button, Grid, Card, CardMedia, CardContent, IconButton } from '@mui/material'
+import { Breadcrumbs, Typography, Button, Grid, Card, CardMedia, CardContent, IconButton,Box } from '@mui/material'
 import FolderIcon from '@mui/icons-material/Folder'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { PermMediaOutlined, PlayCircleOutline, Upload, Delete, Edit, DownloadOutlined } from '@mui/icons-material'
@@ -125,6 +125,42 @@ const MediaFormComponent = () => {
       console.log('error', error)
       toast.error('ลบล้มเหลว', { autoClose: 3000 })
     }
+  }
+
+  function CardMediaOrExt({ media }: { media: any }) {
+    // หานามสกุลไฟล์จาก media.name
+    const extension = media?.url_file_download?.split('.').pop()?.toUpperCase()
+
+    if (media?.url_thumbnail_download) {
+      return (
+        <CardMedia
+          component='img'
+          height='208'
+          image={media.url_thumbnail_download}
+          title={media.name}
+          alt={media.name}
+          className='object-fit p-2'
+        />
+      )
+    }
+
+    return (
+      <Box
+        height={208}
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        className='p-2'
+        sx={{
+          bgcolor: '#f5f5f5',
+          fontWeight: 'bold',
+          fontSize: '1.2rem',
+          color: '#555'
+        }}
+      >
+        {extension ? `${extension}` : 'NO FILE'}
+      </Box>
+    )
   }
 
   return (
@@ -357,13 +393,16 @@ const MediaFormComponent = () => {
                         />
                       </div>
                     </CardContent>
-                    <CardMedia
+
+                    <CardMediaOrExt media={media} />
+                    {/* <CardMedia
                       component='img'
                       height='208'
-                      image={media.url_thumbnail_download}
+                      image={media?.url_thumbnail_download || '/images/pages/auth-reg-multi-mask-light.png'}
+                      title=''
                       alt={media.name}
                       className='object-fit p-2'
-                    />
+                    /> */}
                     {/* <CardContent className='flex justify-end items-center p-3 '>
                   <Typography variant='body2' noWrap>
                     ใช้งานอยู่

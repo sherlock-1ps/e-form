@@ -12,6 +12,7 @@ import { findFieldDetailsById } from '@/utils/mapKeyValueForm'
 const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const updateValueDropdown = useFormStore(state => state.updateValueDropdown)
+  const updateDetails = useFormStore(state => state.updateDetails)
   const form = useFormStore(state => state.form)
 
   const key = `${parentKey}-${boxId}-${item?.id}`
@@ -37,6 +38,17 @@ const TextFieldForm = ({ item, parentKey, boxId, draft }: any) => {
 
         if (selectItem?.details?.type == 'dropdown') {
           updateValueDropdown(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', newValue)
+        } else if (selectItem?.details?.type == 'radio') {
+          updateDetails(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', {
+            selectedValue: newValue
+          })
+        } else if (selectItem?.details?.type == 'checkbox') {
+          updateDetails(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', {
+            value: {
+              ...selectItem?.details?.value,
+              checkedList: [newValue]
+            }
+          })
         } else {
           const changeValue = selectItem?.details?.changeNumberToText ? numberToThaiText(newValue) : newValue
           updateValueOnly(String(selectItem?.parentKey ?? ''), selectItem?.i ?? '', element ?? '', changeValue)

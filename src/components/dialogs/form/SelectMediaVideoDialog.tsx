@@ -2,7 +2,7 @@
 
 // MUI Imports
 import Button from '@mui/material/Button'
-import { Card, CardContent, CardMedia, Grid, Typography } from '@mui/material'
+import { Card, CardContent, CardMedia, Grid, Typography, Box } from '@mui/material'
 
 import { useDialog } from '@/hooks/useDialog'
 import { useFetchMediaQueryOption } from '@/queryOptions/form/formQueryOptions'
@@ -45,6 +45,42 @@ const SelectMediaVideoDialog = ({ id }: selectMediaProps) => {
       }
     )
     closeDialog(id)
+  }
+
+  function CardMediaOrExt({ media }: { media: any }) {
+    // หานามสกุลไฟล์จาก media.name
+    const extension = media?.name?.split('.').pop()?.toUpperCase()
+
+    if (media?.url_thumbnail_download) {
+      return (
+        <CardMedia
+          component='img'
+          height='208'
+          image={media.url_thumbnail_download}
+          title={media.name}
+          alt={media.name}
+          className='object-fit p-2'
+        />
+      )
+    }
+
+    return (
+      <Box
+        height={208}
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        className='p-2'
+        sx={{
+          bgcolor: '#f5f5f5',
+          fontWeight: 'bold',
+          fontSize: '1.2rem',
+          color: '#555'
+        }}
+      >
+        {extension ? `.${extension}` : 'NO FILE'}
+      </Box>
+    )
   }
 
   return (
@@ -145,13 +181,14 @@ const SelectMediaVideoDialog = ({ id }: selectMediaProps) => {
                     />
                   </CardContent>
 
-                  <CardMedia
+                  <CardMediaOrExt media={media} />
+                  {/* <CardMedia
                     component='img'
                     height='208'
                     image={media.url_thumbnail_download || media.url_file_download}
                     alt={media.name}
                     className='object-fit p-2'
-                  />
+                  /> */}
                 </CardContent>
               </Card>
             </Grid>
