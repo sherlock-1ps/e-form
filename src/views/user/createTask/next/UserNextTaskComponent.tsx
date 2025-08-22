@@ -59,6 +59,7 @@ import ViewFlowComponent from '@/views/workflow/ViewFlowComponent'
 import CommentSignDialog from '@/components/dialogs/sign/CommentSignDialog'
 import { useWatchFormStore } from '@/store/useFormScreenEndUserStore'
 import { useDictionary } from '@/contexts/DictionaryContext'
+import { useAuthStore } from '@/store/useAuthStore'
 
 import ActionButton from '@/views/user/createTask/@components/ActionButtons'
 
@@ -110,7 +111,8 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
   const { data: commentData } = useFetchCommentQueryOption(page, pageSize, formDataId)
   const { mutateAsync: callSaveStartflow } = useSaveStartFlowQueryOption()
   const { dictionary } = useDictionary()
-
+  const profile = useAuthStore(state => state.profile)
+  // console.log('profile', profile.F_PERSON_ID)
   // console.log('attactmentData', (attactmentData?.result?.data?.attachments || []).length)
   useEffect(() => {
     const completedFlow = data?.form_data_detail ?? []
@@ -245,7 +247,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
   }
 
   const handleEditPdf = async (item: any) => {
-    const innerUrl = `${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`
+    const innerUrl = `${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?f_person_id=${profile.F_PERSON_ID}&form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`
     const encodedUrl = encodeURIComponent(innerUrl)
 
     // window.open(`/${locale}/user/viewPdf?url=${encodedUrl}`, '_blank')
@@ -656,10 +658,17 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                               Edit PDF
                             </Button>
                           )}
-                          <div className='w-full flex justify-between items-center'>
-                            <Typography className='text-xs break-words leading-snug'>{item?.name}</Typography>
+                          <div className='w-full flex items-center'>
+                            <Typography className='flex-grow text-xs leading-snug truncate pr-2' title={item?.name}>
+                              {(() => {
+                                if (!item?.name) return ''
+                                const [name, ext] = item.name.split(/\.(?=[^\.]+$)/) // แยกชื่อ + นามสกุล
+                                return (name.length > 25 ? name.slice(0, 25) + '...' : name) + (ext ? '.' + ext : '')
+                              })()}
+                            </Typography>
+
                             <a href={item?.url_file_download} target='_blank' rel='noopener noreferrer'>
-                              <CloudDownload fontSize='large' className='cursor-pointer' />
+                              <CloudDownload fontSize='large' className='cursor-pointer flex-shrink-0' />
                             </a>
                           </div>
                         </div>

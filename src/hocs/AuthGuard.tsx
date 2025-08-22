@@ -71,12 +71,18 @@ const AuthGuard = ({ children, locale, session }: AuthGuardProps) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const init = async () => {
+
         if (!token) {
           const authToken = getAuthFromStorage()
           token = authToken?.state?.accessToken
         }
 
         if (token) {
+          const url = new URL(window.location.href)
+          const params = url.searchParams
+          params.delete('token')
+          history.replaceState({}, document.title, url)
+
           await handleCallCheckAuth(token)
         } else {
           redirectToEndPoint()
