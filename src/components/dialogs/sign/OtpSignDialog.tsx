@@ -72,6 +72,7 @@ const OtpSignDialog = ({ id, onSave, signType }: signProps) => {
       if (response?.code === 'SUCCESS') {
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
+           closeDialog('iframeDialog')
         router.push(`/${locale}/user/allTask`)
       }
     } catch (err) {

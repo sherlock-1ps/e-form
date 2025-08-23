@@ -88,7 +88,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
   const validateForm = useFormStore(state => state.validateForm)
   const form = useFormStore(state => state.form)
   const router = useRouter()
-  const { showDialog } = useDialog()
+  const { showDialog, closeDialog } = useDialog()
   const params = useParams()
   const { lang: locale } = params
   const [collapsed, setCollapsed] = useState(false)
@@ -236,7 +236,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
       }
 
       const response = await callSaveStartflow(request)
-
+      closeDialog('iframeDialog')
       return response
     } catch (error: any) {
       toast.error(`${dictionary?.cannotSave} \n ${dictionary[error.code]}`, {
@@ -254,7 +254,7 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
 
     setIsAttacth(false)
     showDialog({
-      id: 'alertDeleteApiCall',
+      id: 'iframeDialog',
       component: (
         <div className='relative w-full bg-white h-[calc(100vh-120px)] overflow-hidden'>
           <div className='absolute bottom-0 left-0 w-full z-10'>

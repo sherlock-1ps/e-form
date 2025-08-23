@@ -82,6 +82,7 @@ const AddPathFlowDialog = ({ id, onClose }: AddPathFlowDialogProps) => {
         location: location.join(' '),
         form: nodeData.form,
         assignees_requestor: false,
+        can_not_save: false,
         assignees_user: [],
         assignees_department: [],
         assignees_position: []

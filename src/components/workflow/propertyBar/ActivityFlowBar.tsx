@@ -1,7 +1,16 @@
 // Modified ActivityFlowBar to use local state instead of useDialog
 'use client'
 
-import { Typography, Button, Autocomplete, IconButton, Dialog, DialogContent } from '@mui/material'
+import {
+  Typography,
+  Button,
+  Autocomplete,
+  IconButton,
+  Dialog,
+  DialogContent,
+  Checkbox,
+  FormControlLabel
+} from '@mui/material'
 import { Delete, Add, RouteOutlined } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { useFlowStore } from '@/store/useFlowStore'
@@ -20,10 +29,13 @@ const ActivityFlowBar = () => {
   const [inputValue, setInputValue] = useState('')
   const [openPathDialog, setOpenPathDialog] = useState(false)
   const [openPermissionDialog, setOpenPermissionDialog] = useState(false)
+  const [nodeSelected, setNodeSelected] = useState({ can_not_save: false })
 
   const [page] = useState(1)
   const [pageSize] = useState(999)
   const { data: formList } = useFetchFormQueryOption(page, pageSize)
+
+  const [checkedSaveForm, setCheckedSaveForm] = useState(true)
 
   function generateUniqueKey() {
     return Date.now() + Math.floor(Math.random() * 1000)
@@ -32,7 +44,11 @@ const ActivityFlowBar = () => {
   useEffect(() => {
     if (selectedField?.key && myDiagram && flow) {
       const result = flow?.flow?.nodeDataArray.find(item => item.key == selectedField.key)
+      // console.log('result', result)
       setInputValue(result?.text || '')
+      const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
+      // console.log('nodeData', nodeData)
+      setNodeSelected(nodeData)
     }
   }, [selectedField, myDiagram, flow])
 
@@ -79,6 +95,22 @@ const ActivityFlowBar = () => {
     myDiagram.commitTransaction('delete selected')
   }
 
+  const handleIndeterminateChange = (event: any) => {
+    const nodeData = myDiagram.model.findNodeDataForKey(selectedField?.data?.key)
+    if (!nodeData) return
+
+    // console.log(event.target.checked, selectedField?.data)
+
+    myDiagram.model.startTransaction('update can_not_save')
+    myDiagram.model.setDataProperty(nodeData, 'can_not_save', event.target.checked)
+    myDiagram.model.commitTransaction('update can_not_save')
+
+    setNodeSelected(p => {
+      return { ...p, can_not_save: event.target.checked }
+    })
+    // setCheckedSaveForm(prevStage => event.target.checked)
+  }
+
   return (
     <>
       <div className='w-[280px] min-w-[280px] bg-white flex flex-col transition-all border'>
@@ -113,13 +145,33 @@ const ActivityFlowBar = () => {
             />
           </div>
 
-          <div className='w-full flex items-center pb-4 border-b gap-4 justify-between'>
+          <div className='w-full flex items-center pb-1 gap-4 justify-between'>
             <Typography variant='body2' className=' text-nowrap'>
               กำหนดผู้ใช้สิทธิ
             </Typography>
             <Button variant='contained' onClick={() => setOpenPermissionDialog(true)}>
               ตั้งค่าสิทธิ์
             </Button>
+          </div>
+          <div className='w-full flex items-center pb-4 gap-4 justify-between'>
+            {/* <Typography variant='body2' className=' text-nowrap'>
+              อนุญาติให้บันทึกฟอร์ม
+            </Typography> */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={nodeSelected?.can_not_save || false}
+                  value={nodeSelected?.can_not_save || false}
+                  onChange={handleIndeterminateChange}
+                />
+              }
+              label={
+                <Typography variant='body2' className=' text-nowrap'>
+                  ไม่อนุญาติให้เปลี่ยนแปลงในฟอร์ม
+                </Typography>
+              }
+              // labelPlacement='start'
+            />
           </div>
 
           <div className='w-full flex flex-col pb-4 border-b gap-2'>

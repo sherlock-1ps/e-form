@@ -38,6 +38,7 @@ const NormalSignDialog = ({ id, onSave, signType }: signProps) => {
         router.push(`/${locale}/user/allTask`)
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
+        closeDialog('iframeDialog')
       }
     } catch (err) {
       console.error('save failed', err)

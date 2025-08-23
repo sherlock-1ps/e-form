@@ -30,10 +30,10 @@ const CommentSignDialog = ({ id, onSave, linkId, title, signType }: commentSignP
   const handleConfirm = async () => {
     // console.log('handleConfirm-linkId', linkId)
 
-    if (!comment) {
-      toast.error(dictionary?.commentRequired, { autoClose: 3000 })
-      return
-    }
+    // if (!comment) {
+    //   toast.error(dictionary?.commentRequired, { autoClose: 3000 })
+    //   return
+    // }
 
     if (isSubmitting) return
     setIsSubmitting(true)
@@ -44,6 +44,7 @@ const CommentSignDialog = ({ id, onSave, linkId, title, signType }: commentSignP
         router.push(`/${locale}/user/allTask`)
         toast.success(dictionary?.saveSuccessful, { autoClose: 3000 })
         closeDialog(id)
+        closeDialog('iframeDialog')
       }
     } catch (err) {
       console.error('save failed', err)

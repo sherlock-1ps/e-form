@@ -106,7 +106,12 @@ const PathFlowBar = () => {
     const {
       target: { value }
     } = event
-    const newValue = typeof value === 'string' ? value.split(',') : value
+    let newValue = typeof value === 'string' ? value.split(',') : value || []
+
+    // "ไม่ลงนามในเอกสาร"
+    if (newValue.indexOf('ไม่ลงนามในเอกสาร') > -1) {
+      newValue = ['ไม่ลงนามในเอกสาร']
+    }
 
     myDiagram.model.startTransaction('update link signatureRemove')
     myDiagram.model.setDataProperty(selectedField, 'signatureRemove', newValue)
@@ -222,6 +227,10 @@ const PathFlowBar = () => {
             <MenuItem disabled value=''>
               <em>เลือกรายการยกเลิกจุดลงนาม</em>
             </MenuItem>
+            <MenuItem value='ไม่ลงนามในเอกสาร'>
+              <em>ไม่ลงนามในเอกสาร</em>
+            </MenuItem>
+
             {signatureList.map((name: any) => (
               <MenuItem key={name.id} value={name.id}>
                 {name.id}

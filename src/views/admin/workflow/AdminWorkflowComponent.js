@@ -910,6 +910,7 @@ export default function AdminWorkflowComponent() {
           // components: JSON.stringify(['1', '2']),
           form: null,
           assignees_requestor: false,
+          can_not_save:false,
           assignees_user: [],
           assignees_department: [],
           assignees_position: []
