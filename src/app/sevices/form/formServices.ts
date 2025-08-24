@@ -1327,3 +1327,36 @@ export const fetchWorkCount = async () => {
     throw e
   }
 }
+
+export const getFlowById = async (id: number) => {
+  try {
+    const response = await Axios.post('/flows/get-by-id', {id:id})
+    return response.data
+  } catch (error) {
+    console.error('Error create flow:', error)
+    const e = axiosErrorHandler(error, '/flows/get-by-id')
+    throw e
+  }
+}
+
+export const webhookTest = async (request: any) => {
+  try {
+    const response = await Axios.post('/apis/webhook/test', request)
+    return response.data
+  } catch (error) {
+    console.error('Error create flow:', error)
+    const e = axiosErrorHandler(error, '/apis/webhook/test')
+    throw e
+  }
+}
+
+export const webhookUpdate = async (request: any) => {
+  try {
+    const response = await Axios.post('/apis/webhook/update', request)
+    return response.data
+  } catch (error) {
+    console.error('Error create flow:', error)
+    const e = axiosErrorHandler(error, '/apis/webhook/update')
+    throw e
+  }
+}

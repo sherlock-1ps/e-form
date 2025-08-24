@@ -68,6 +68,7 @@ import {
   getFormFields,
   logout,
   fetchWorkCount,
+  getFlowById,
   getFormSignaturePermisionFields,
   fetchWorkAllSysDoc,
   replaceSignatrueForm,
@@ -918,6 +919,16 @@ export function useFetchGetFormFieldsQueryOption(id: number) {
     queryFn: () => getFormFields(id)
   })
 }
+
+export function useFetchGetFlowByIdQueryOption(id: number) {
+  return useQuery({
+    queryKey: ['getFlowById', id],
+    queryFn: () => getFlowById(id)
+  })
+}
+
+
+
 export function useFetchGetFormSignaturePermisionFieldsQueryOption(id: number) {
   return useQuery({
     queryKey: ['getFormFields', id],

@@ -22,6 +22,7 @@ import {
 } from '@mui/icons-material'
 import ConfirmAlert from '@/components/dialogs/alerts/ConfirmAlert'
 import EditVersionFlowDialog from '@/components/dialogs/flow/EditVersionFlowDialog'
+import WebhookApiDialog from '@/components/dialogs/flow/WebhookApiDialog'
 import DateUseFlowDialog from '@/components/dialogs/flow/DateUseFlowDialog'
 import {
   useDeleteFlowQueryOption,
@@ -50,134 +51,6 @@ const WorkflowComponent = () => {
   const { mutateAsync: deleteFlow } = useDeleteFlowQueryOption()
 
   const { mutateAsync: getFlow, isPending: pendingGetFlow } = useGetFlowQueryOption()
-  // const ImageCard = ({ title, image, date, status, version, onDelete, data, onGetForm, viewMode, dateUpdate }: any) => {
-  //   const isGrid = viewMode === 'grid'
-  //   const OptionMenuCustom = () => {
-  //     return (
-  //       <OptionMenu
-  //         iconButtonProps={{ size: 'small' }}
-  //         iconClassName='text-gray-500'
-  //         options={[
-  //           {
-  //             text: 'แก้ไข',
-  //             icon: pendingGetFlow ? <CircularProgress size={20} /> : <Edit />,
-  //             menuItemProps: {
-  //               disabled: pendingGetFlow,
-  //               className: 'text-secondary',
-  //               onClick: () => onGetForm(data)
-  //             }
-  //           },
-  //           {
-  //             text: 'สำเนา',
-  //             icon: <ContentCopy />,
-  //             menuItemProps: {
-  //               className: 'text-secondary',
-  //               onClick: () => onGetForm(data, true)
-  //             }
-  //           },
-  //           {
-  //             text: 'เวอร์ชั่นใหม่',
-  //             icon: <CreateNewFolder />,
-  //             menuItemProps: {
-  //               className: 'text-secondary',
-  //               onClick: () =>
-  //                 showDialog({
-  //                   id: 'alertEditVersionFlowDialog',
-  //                   component: <EditVersionFlowDialog id='alertEditVersionFlowDialog' data={data} onClick={() => {}} />,
-  //                   size: 'sm'
-  //                 })
-  //             }
-  //           },
-  //           {
-  //             text: 'กำหนดวันใช้งาน',
-  //             icon: <EditCalendar />,
-  //             menuItemProps: {
-  //               className: 'text-secondary',
-  //               onClick: () =>
-  //                 showDialog({
-  //                   id: 'alertDateUseFlowDialog',
-  //                   component: <DateUseFlowDialog id='alertDateUseFlowDialog' data={data} />,
-  //                   size: 'sm'
-  //                 })
-  //             }
-  //           },
-  //           {
-  //             text: 'ลบ',
-  //             icon: <Delete />,
-  //             menuItemProps: {
-  //               className: 'text-error',
-  //               onClick: () =>
-  //                 showDialog({
-  //                   id: 'alertDeleteForm',
-  //                   component: (
-  //                     <ConfirmAlert
-  //                       id='alertDeleteForm'
-  //                       title='ลบโฟลว์'
-  //                       content1='คุณต้องการลบโฟลว์นี้ใช่หรือไม่'
-  //                       onClick={() => onDelete(data?.id)}
-  //                     />
-  //                   ),
-  //                   size: 'sm'
-  //                 })
-  //             }
-  //           }
-  //         ]}
-  //       />
-  //     )
-  //   }
-  //   return (
-  //     <div
-  //       className={
-  //         isGrid
-  //           ? 'flex flex-col p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-[220px] min-h-[275px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300'
-  //           : 'flex flex-row items-start p-4 bg-gradient-to-br from-white to-slate-50 rounded-xl w-full min-h-[70px] border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300 gap-4'
-  //       }
-  //     >
-  //       {/* Left section (title and version) */}
-  //       <div className={isGrid ? 'flex flex-col w-full' : 'flex flex-col flex-grow'}>
-  //         {/* Header: title and OptionMenu */}
-  //         <div className={isGrid ? 'flex items-start justify-between' : 'flex items-start w-full'}>
-  //           <Typography
-  //             variant='h6'
-  //             className={`font-semibold leading-snug break-words ${
-  //               isGrid ? 'text-start max-w-[150px]' : 'flex-grow text-start'
-  //             }`}
-  //           >
-  //             {title}
-  //           </Typography>
-
-  //           <div className={isGrid ? '' : 'ml-auto'}>
-  //             <OptionMenuCustom />
-  //           </div>
-  //         </div>
-
-  //         {/* Version */}
-  //         <div className='text-xs text-gray-500 flex justify-between  mt-1'>
-  //           <span>เวอร์ชั่น {version}</span>
-  //         </div>
-
-  //         {isGrid ? (
-  //           <div
-  //             className={
-  //               'min-h-[100px]  flex-1 my-2 bg-slate-100 rounded-md flex items-center justify-center text-center px-2 py-2 text-sm text-gray-600 '
-  //             }
-  //           >
-  //             <span className='line-clamp-3'>{title}</span>
-  //           </div>
-  //         ) : null}
-  //         {/* Date */}
-  //         {/* <Typography variant='caption' className='text-xs text-gray-500 flex justify-between w-full mt-1'>
-  //           <span> {date}</span>
-  //           <span> {dateUpdate}</span>
-  //         </Typography> */}
-  //         <Typography variant='caption' className='text-xs text-gray-500 w-full mt-1'>
-  //           <span className='block'>{date}</span>
-  //           <span className='block'>{dateUpdate}</span>
-  //         </Typography>
-  //       </div>
-  //     </div>
-  //   )
-  // }
 
   const ImageCard = ({ title, image, date, dateUpdate, status, version, onDelete, data, onGetForm, viewMode }: any) => {
     const isGrid = viewMode === 'grid'
@@ -229,6 +102,19 @@ const WorkflowComponent = () => {
                     id: 'alertDateUseFlowDialog',
                     component: <DateUseFlowDialog id='alertDateUseFlowDialog' data={data} />,
                     size: 'sm'
+                  })
+              }
+            },
+            {
+              text: 'API Webhook',
+              icon: <CreateNewFolder />,
+              menuItemProps: {
+                className: 'text-secondary',
+                onClick: () =>
+                  showDialog({
+                    id: 'alertWebhookApiDialog',
+                    component: <WebhookApiDialog id='alertWebhookApiDialog' data={data} onClick={() => {}} />,
+                    size: 'lg'
                   })
               }
             },
