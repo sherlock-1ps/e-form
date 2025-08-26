@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   Start,
   AttachFile,
+  InsertDriveFile,
   EditNote,
   Draw,
   History,
@@ -62,6 +63,9 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 import { useAuthStore } from '@/store/useAuthStore'
 
 import ActionButton from '@/views/user/createTask/@components/ActionButtons'
+
+import JsonToXmlConverter from '@/components/dialogs/JsonToXmlConverter'
+// src\components\dialogs\JsonToXmlConverter.tsx
 
 const allowedExtensions = [
   '.jpg',
@@ -433,6 +437,20 @@ const UserNextTaskComponent = ({ data, isView = true }: any) => {
                           }}
                         >
                           ซ่อน
+                        </Button>
+
+                        <Button
+                          variant='outlined'
+                          startIcon={<InsertDriveFile />}
+                          onClick={() => {
+                            showDialog({
+                              size: 'lg',
+                              id: 'iframeDialog',
+                              component: <JsonToXmlConverter data={data} />
+                            })
+                          }}
+                        >
+                          XML
                         </Button>
                       </Grid>
                       <Grid item xs={12}>

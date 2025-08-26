@@ -65,6 +65,7 @@
     "dayjs": "^1.11.13",
     "emoji-mart": "5.6.0",
     "input-otp": "1.2.4",
+    "js2xmlparser": "^5.0.0",
     "keen-slider": "6.8.6",
     "lexical": "^0.31.1",
     "mapbox-gl": "3.5.2",

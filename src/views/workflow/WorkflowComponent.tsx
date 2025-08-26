@@ -11,6 +11,7 @@ import DashboardNavbarContent from '@/components/layout/vertical/navbar/Dashboar
 import { useDialog } from '@/hooks/useDialog'
 import CreateFormDialog from '@/components/dialogs/form/CreateFormDialog'
 import OptionMenu from '@/@core/components/option-menu'
+import Webhook from '@mui/icons-material/Webhook'
 import {
   Edit,
   FileCopy,
@@ -107,13 +108,13 @@ const WorkflowComponent = () => {
             },
             {
               text: 'API Webhook',
-              icon: <CreateNewFolder />,
+              icon: <Webhook />,
               menuItemProps: {
                 className: 'text-secondary',
                 onClick: () =>
                   showDialog({
                     id: 'alertWebhookApiDialog',
-                    component: <WebhookApiDialog id='alertWebhookApiDialog' data={data} onClick={() => {}} />,
+                    component: <WebhookApiDialog id='alertWebhookApiDialog' data={data} />,
                     size: 'lg'
                   })
               }

@@ -21,6 +21,7 @@ import {
   AttachFile,
   EditNote,
   Draw,
+  InsertDriveFile,
   History,
   Check,
   AccountTree,
@@ -62,6 +63,7 @@ import { useDictionary } from '@/contexts/DictionaryContext'
 import { getCurrentFormattedDate } from '@/utils/formatDateTime'
 import ActionButton from '@/views/user/createTask/@components/ActionButtons'
 import { useAuthStore } from '@/store/useAuthStore'
+import JsonToXmlConverter from '@/components/dialogs/JsonToXmlConverter'
 const allowedExtensions = [
   '.jpg',
   '.jpeg',
@@ -437,6 +439,19 @@ const UserStartTaskComponent = ({ data }: any) => {
                           }}
                         >
                           ซ่อน
+                        </Button>
+                        <Button
+                          variant='outlined'
+                          startIcon={<InsertDriveFile />}
+                          onClick={() => {
+                            showDialog({
+                              size: 'lg',
+                              id: 'iframeDialog',
+                              component: <JsonToXmlConverter data={data} />
+                            })
+                          }}
+                        >
+                          XML
                         </Button>
                       </Grid>
                       <Grid item xs={12}>

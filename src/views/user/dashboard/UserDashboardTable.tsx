@@ -15,6 +15,7 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 // import { type ColumnFiltersState, type VisibilityState } from '@tanstack/react-table'
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
 
+
 import {
   Directions,
   Preview,
@@ -428,47 +429,61 @@ const UserDashboardTable = ({
 
       columnHelper.accessor('current_assignees_user_names', {
         header: dictionary?.currentResponsible,
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            {row.original.status === 'draft' ? (
-              <Typography className='font-medium' variant='body2'>
-                {profile?.userInformation?.F_FULL_NAME_TH || ''}
-              </Typography>
+        cell: ({ row }) => {
+          const personItem = [
+            ...(row.original.current_assignees_user_names || []),
+            ...(row.original.current_assignees_position_names || []),
+            ...(row.original.current_assignees_department_names || [])
+          ] || ['-']
+          const DisplayButtion =
+            personItem.length <= 1 ? (
+              personItem[0] || '-'
             ) : (
-              <>
-                <Typography
-                  className='font-medium truncate max-w-[220px]'
-                  variant='body2'
-                  title={
-                    [
-                      ...(row.original.current_assignees_user_names || []),
-                      ...(row.original.current_assignees_position_names || []),
-                      ...(row.original.current_assignees_department_names || [])
-                    ].join(', ') || '-'
-                  }
-                >
-                  {[
-                    ...(row.original.current_assignees_user_names || []),
-                    ...(row.original.current_assignees_position_names || []),
-                    ...(row.original.current_assignees_department_names || [])
-                  ].join(', ') || '-'}
+              <Button
+                onClick={() => {
+                  showDialog({
+                    id: 'alertDialogShowperson',
+                    component: (
+                      <>
+                        <Typography className='font-medium' variant='h5' mb={2}>
+                          {`รายชื่อผู้รับผิดชอบ "${row.original?.name}"`}
+                        </Typography>
+                        {personItem.map((item, index) => {
+                          return (
+                            <Typography key={`person-${index}`} className='font-medium' variant='body2'>
+                              {index + 1}. {item}
+                            </Typography>
+                          )
+                        })}
+                      </>
+                    ),
+                    size: 'sm'
+                  })
+                }}
+              >
+                {`แสดงรายชื่อ (${personItem.length} รายการ)`}
+              </Button>
+            )
+          return (
+            <div className='flex items-center gap-3'>
+              {row.original.status === 'draft' ? (
+                <Typography className='font-medium' variant='body2'>
+                  {profile?.userInformation?.F_FULL_NAME_TH || ''}
                 </Typography>
-
-                {/* <Tooltip
-                  title={
-                    [
-                      ...(row.original.current_assignees_user_names || []),
-                      ...(row.original.current_assignees_position_names || []),
-                      ...(row.original.current_assignees_department_names || [])
-                    ].join(', ') || '-'
-                  }
-                >
-                  <PeopleOutlineIcon className='text-primary cursor-help' fontSize='small' />
-                </Tooltip> */}
-              </>
-            )}
-          </div>
-        )
+              ) : (
+                <>
+                  <Typography
+                    className='font-medium truncate max-w-[220px]'
+                    variant='body2'
+                    title={`จำนวนทั้งหมด ${personItem.length} รายการ`}
+                  >
+                    {DisplayButtion}
+                  </Typography>
+                </>
+              )}
+            </div>
+          )
+        }
       }),
       columnHelper.accessor('created_by', {
         header: dictionary?.startedBy,
