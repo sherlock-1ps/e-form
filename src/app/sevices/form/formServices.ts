@@ -1268,7 +1268,10 @@ export const getFormSignatureFields = async (id: number) => {
 export const getFormSignaturePermisionFields = async (id: number) => {
   try {
     // console.log('id: ', id)
-    let allItems = [{ pk: '1-4', id: 1, name: 'เจ้าของเรื่อง', type: 'ฟิวด์', typeId: '4' }]
+    let allItems = [
+      { pk: '1-4', id: 1, name: 'เจ้าของเรื่อง', type: 'ฟิวด์', typeId: '4' },
+      { pk: '2-4', id: 2, name: 'ลายเซ็นในเอกสารแนบ', type: 'ฟิวด์', typeId: '4' }
+    ]
     if (id != 0 && id != null) {
       const response = await Axios.post('/forms/get-fields', {
         id,

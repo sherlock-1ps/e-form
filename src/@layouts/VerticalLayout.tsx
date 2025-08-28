@@ -89,21 +89,22 @@ const VerticalLayout = (props: VerticalLayoutProps) => {
             // href={urlBase}
             className='flex gap-2'
             onClick={e => {
-              showDialog({
-                id: 'alertErrorToken',
-                component: (
-                  <ConfirmAlert
-                    id='alertErrorToken'
-                    title={dictionary?.backToHome}
-                    content1={dictionary?.confirmContinue}
-                    onClick={() => {
-                      window.location.href = urlBase
-                      // router.push(`/${locale}${notification?.data?.link}`)
-                    }}
-                  />
-                ),
-                size: 'sm'
-              })
+              window.location.href = urlBase
+              // showDialog({
+              //   id: 'alertErrorToken',
+              //   component: (
+              //     <ConfirmAlert
+              //       id='alertErrorToken'
+              //       title={dictionary?.backToHome}
+              //       content1={dictionary?.confirmContinue}
+              //       onClick={() => {
+              //         window.location.href = urlBase
+              //         // router.push(`/${locale}${notification?.data?.link}`)
+              //       }}
+              //     />
+              //   ),
+              //   size: 'sm'
+              // })
             }}
           >
             <Home style={{ width: '20px', height: '20px' }} className=' text-primary' />

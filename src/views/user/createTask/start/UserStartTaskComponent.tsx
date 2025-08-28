@@ -256,7 +256,7 @@ const UserStartTaskComponent = ({ data }: any) => {
   }
 
   const handleEditPdf = async (item: any) => {
-    const innerUrl = `${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?f_person_id=${profile.F_PERSON_ID}&form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`
+    const innerUrl = `${process.env.NEXT_PUBLIC_VIEW_PDF_URL}?current_activity_id=${data.current_activity_id}&f_person_id=${profile.F_PERSON_ID}&form_data_id=${item?.form_data_id}&attachment_id=${item?.id}&file=${item?.url_file_download}`
     const encodedUrl = encodeURIComponent(innerUrl)
 
     setIsAttacth(false)

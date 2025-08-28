@@ -46,21 +46,22 @@ const ProfileLayout = () => {
         <Link
           href={'#'}
           onClick={e => {
-            showDialog({
-              id: 'alertErrorToken',
-              component: (
-                <ConfirmAlert
-                  id='alertErrorToken'
-                  title={dictionary?.backToHome}
-                  content1={dictionary?.confirmContinue}
-                  onClick={() => {
-                    window.location.href = urlBase
-                    // router.push(`/${locale}${notification?.data?.link}`)
-                  }}
-                />
-              ),
-              size: 'sm'
-            })
+            window.location.href = urlBase
+            // showDialog({
+            //   id: 'alertErrorToken',
+            //   component: (
+            //     <ConfirmAlert
+            //       id='alertErrorToken'
+            //       title={dictionary?.backToHome}
+            //       content1={dictionary?.confirmContinue}
+            //       onClick={() => {
+            //         window.location.href = urlBase
+            //         // router.push(`/${locale}${notification?.data?.link}`)
+            //       }}
+            //     />
+            //   ),
+            //   size: 'sm'
+            // })
           }}
         >
           <img src='/images/DTN_logo_blue.gif' alt='dtn-header' className='w-[94px] h-auto cursor-pointer' />
