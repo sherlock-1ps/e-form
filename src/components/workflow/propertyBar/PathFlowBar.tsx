@@ -34,9 +34,11 @@ const PathFlowBar = () => {
   const [inputValue, setInputValue] = useState('')
   const [linkRule, setLinkRule] = useState({ conditions: [], logicOperator: '' })
   const [linkResultSelect, setLinkResultSelect] = useState<any>({})
+  const [activityFromAll, setActivityFromAll] = useState<any>({})
   const [activityFrom, setActivityFrom] = useState<any>({})
   const [signatureList, setSignatureList] = useState<any>([])
   const [signatureRemoveList, setSignatureRemoveList] = useState<string[]>([])
+  const [userActiongList, setUserActiongList] = useState<string[]>([])
 
   const fnGetSignatureList = async (form: number) => {
     const signatureList = await getFormSignatureFields(form)
@@ -52,11 +54,16 @@ const PathFlowBar = () => {
       const linkResult = flow?.flow?.linkDataArray.find(
         item => item.from === selectedField.from && item.to === selectedField.to
       )
+      // console.log("flow?.flow",flow?.flow?.nodeDataArray)
+
       setLinkResultSelect(linkResult)
       setSignatureRemoveList(linkResult?.signatureRemove || [])
+      setUserActiongList(linkResult?.userActionList || [])
       for (const activity of flow?.flow?.nodeDataArray) {
         if (activity.key == linkResult?.from) {
           fnGetSignatureList(activity.form)
+          setActivityFromAll(activity)
+          // console.log('activity', activity)
         }
       }
 
@@ -118,6 +125,19 @@ const PathFlowBar = () => {
     myDiagram.model.commitTransaction('update link signatureRemove')
 
     setSignatureRemoveList(newValue)
+  }
+
+  const handleChangeUserActionList = (event: any) => {
+    const {
+      target: { value }
+    } = event
+    const newValue = typeof value === 'string' ? value.split(',') : value || []
+
+    myDiagram.model.startTransaction('update link userActionList')
+    myDiagram.model.setDataProperty(selectedField, 'userActionList', newValue)
+    myDiagram.model.commitTransaction('update link userActionList')
+
+    setUserActiongList(newValue)
   }
 
   const handleTextChange = (e: any) => {
@@ -238,7 +258,48 @@ const PathFlowBar = () => {
             ))}
           </Select>
         </FormControl>
-        {/* </div> */}
+
+        <Typography>ผู้ที่มีสิทธิ์เห็นเส้นทาง</Typography>
+        <Select
+          fullWidth
+          multiple
+          size='small'
+          displayEmpty
+          value={userActiongList}
+          onChange={handleChangeUserActionList}
+          input={<OutlinedInput />}
+          renderValue={selected => {
+            if (selected?.length === 0) {
+              return <em>เลือกผู้ที่มีสิทธิ์เห็นเส้นทาง</em>
+            }
+
+            // Filter out any selected pk that doesn't have a corresponding assignee
+            const validSelected = selected.filter(pk => activityFromAll?.assignees?.some((v: any) => v.pk === pk))
+
+            // Update the state if the list of selected values has changed
+            // This is important to ensure the UI and state are in sync
+            if (validSelected.length !== selected.length) {
+              handleChangeUserActionList({ target: { value: validSelected } })
+            }
+
+            const selectedNames = validSelected.map(pk => {
+              const assignee = activityFromAll?.assignees?.find((v: any) => v.pk === pk)
+              return assignee ? assignee.name : ''
+            })
+
+            return selectedNames.join(', ')
+          }}
+          inputProps={{ 'aria-label': 'Without label' }}
+        >
+          <MenuItem disabled value=''>
+            <em>เลือกผู้ที่มีสิทธิ์เห็นเส้นทาง</em>
+          </MenuItem>
+          {activityFromAll?.assignees?.map((v: any) => (
+            <MenuItem key={v.pk} value={v.pk}>
+              {v.name}
+            </MenuItem>
+          ))}
+        </Select>
       </div>
 
       {linkRule?.logicOperator !== '' ? (

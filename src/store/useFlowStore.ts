@@ -32,8 +32,9 @@ type FlowState = {
   setMyDiagram: (diagram: any) => void
 
   updateFlowNodeText: (key: string, newText: string) => void
-  updateFlowLinkText: (linkKey: string, newText: string) => void
+  updateFlowNodeObject: (key: string, objectJson: any) => void
 
+  updateFlowLinkText: (linkKey: string, newText: string) => void
   setNodeDataArray: (nodes: any[]) => void
   setLinkDataArray: (links: any[]) => void
   pushLinkData: (link: any) => void
@@ -164,6 +165,20 @@ export const useFlowStore = create<FlowState>()(
             }
           }
         })),
+      updateFlowNodeObject: (key, objectJson) =>
+        set(state => ({
+          flow: {
+            ...state.flow,
+            flow: {
+              ...state.flow.flow,
+              nodeDataArray: state.flow.flow.nodeDataArray.map(node =>
+                node.key === key ? { ...node,  ...objectJson } : node
+              )
+            }
+          }
+        })),
+
+       //   updateFlowNodeObject: (key: string, objectJson: any) => void
 
       updateFlowLinkText: (key, newText) =>
         set(state => ({

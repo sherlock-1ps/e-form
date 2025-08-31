@@ -148,7 +148,7 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
     ],
     []
   )
-
+  const updateFlowNodeObject = useFlowStore(state => state.updateFlowNodeObject)
   const [pageSize, setPageSize] = useState(10)
   const [filterType, setFilterType] = useState('person')
   const [searchText, setSearchText] = useState('')
@@ -251,16 +251,22 @@ const AddSettingPermissionFlowDialog = ({ onClose }) => {
       }
     }
     myDiagram.model.startTransaction('update activity')
-
     myDiagram.model.setDataProperty(nodeData, 'assignees_user', assigneesUser)
     myDiagram.model.setDataProperty(nodeData, 'assignees_position', assigneesPosition)
     myDiagram.model.setDataProperty(nodeData, 'assignees_department', assigneesDepartment)
     myDiagram.model.setDataProperty(nodeData, 'assignees_requestor', assigneesRequestor)
     myDiagram.model.setDataProperty(nodeData, 'assignees', selectedMoved)
-
     myDiagram.model.commitTransaction('update activity')
-    console.log('selectedMoved', selectedMoved)
+    // console.log('selectedMoved', selectedMoved)
     // closeDialog(id)
+
+    updateFlowNodeObject(selectedField.key, {
+      assignees_user: assigneesUser,
+      assignees_position: assigneesPosition,
+      assignees_department: assigneesDepartment,
+      assignees_requestor: assigneesRequestor,
+      assignees: selectedMoved
+    })
     onClose()
   }
 
