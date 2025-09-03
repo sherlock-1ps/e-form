@@ -1,13 +1,15 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Typography } from '@mui/material'
+import { Typography, InputAdornment, IconButton } from '@mui/material' // 👈 เพิ่ม InputAdornment และ IconButton
 import { MobileDatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/th'
 import newAdapter from '@/libs/newAdapter'
 import { useFormStore } from '@/store/useFormStore'
 import FormControl from '@mui/material/FormControl'
+import ClearIcon from '@mui/icons-material/Clear' // 👈 เพิ่ม ClearIcon
+
 const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const valueFromProp = item?.config?.details?.value?.value
@@ -22,14 +24,8 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const key = `${parentKey}-${boxId}-${item?.id}`
   const errorInput = errors[key]
 
-  // 👉 Step 1: ลบ useEffect ออก
-  // useEffect(() => {
-  //   setTempValue(displayDate)
-  // }, [displayDate])
-
-  // 👉 Step 2: สร้างฟังก์ชัน handleOpen เพื่อซิงค์ข้อมูลก่อนเปิด
   const handleOpen = () => {
-    setTempValue(displayDate) // ซิงค์ค่าล่าสุดจาก props มาใส่ใน state ชั่วคราว
+    setTempValue(displayDate)
     setOpen(true)
   }
 
@@ -41,14 +37,20 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
 
   const handleClose = () => {
     setOpen(false)
-    // ไม่จำเป็นต้อง setTempValue ที่นี่แล้ว เพราะ handleOpen จะจัดการให้ในครั้งถัดไป
+  }
+
+  const handleClear = (e: any) => {
+    // 👈 เพิ่มฟังก์ชัน handleClear
+    e.stopPropagation()
+    updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', '')
+    setTempValue(null)
   }
 
   return (
-    <div className='w-[170px]' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
+    <div  style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <FormControl
+        fullWidth
         className='flex-wrap flex-row w-full'
-        // error={errorInput}
         sx={{
           ...(errorInput && {
             border: '1px solid',
@@ -65,7 +67,6 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
           <MobileDatePicker
             disabled={!item?.config?.details?.isUse}
             open={open}
-            // 👉 Step 3: เปลี่ยนมาใช้ handleOpen
             onOpen={handleOpen}
             onClose={handleClose}
             value={tempValue}
@@ -77,7 +78,7 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
                 inputProps: {
                   readOnly: true
                 },
-                onClick: handleOpen, // ใช้ handleOpen ที่นี่ด้วยก็ได้
+                onClick: handleOpen,
                 size: 'small',
                 fullWidth: true,
                 inputRef,
@@ -93,10 +94,21 @@ const DatePickerForm = ({ item, parentKey, boxId, draft }: any) => {
                 },
                 InputLabelProps: {
                   shrink: isFocus || (open && true)
+                },
+                InputProps: {
+                  // 👈 เพิ่ม InputProps
+                  endAdornment: displayDate && (
+                    <InputAdornment position='end'>
+                      <IconButton aria-label='clear date' onClick={handleClear} edge='end' size='small'>
+                        <ClearIcon fontSize='small' />
+                      </IconButton>
+                    </InputAdornment>
+                  )
                 }
               }
             }}
           />
+
           {item?.config?.details?.helperText?.isShow && (
             <Typography variant='body2'>{item?.config?.details?.helperText?.value ?? 'คำแนะนำ'}</Typography>
           )}

@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Typography } from '@mui/material'
+import { Typography, InputAdornment, IconButton } from '@mui/material'
 import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/th'
 import newAdapter from '@/libs/newAdapter'
 import { useFormStore } from '@/store/useFormStore'
 import FormControl from '@mui/material/FormControl'
-
+import ClearIcon from '@mui/icons-material/Clear' // 👈 เพิ่ม ClearIcon
 const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
   const updateValueOnly = useFormStore(state => state.updateValueOnly)
   const valueFromProp = item?.config?.details?.value?.value
@@ -43,11 +43,19 @@ const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
     setOpen(false)
   }
 
+  const handleClear = (e: any) => {
+    // 👈 เพิ่มฟังก์ชัน handleClear
+    e.stopPropagation()
+    updateValueOnly(String(parentKey ?? ''), boxId ?? '', item?.id ?? '', '')
+    setTempValue(null)
+  }
+
   return (
-    <div className='w-[170px]' style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
+    <div style={{ opacity: item?.config?.details?.isShow ? 1 : 0 }}>
       <FormControl
         className='flex-wrap flex-row w-full'
         // error={errorInput}
+        fullWidth
         sx={{
           ...(errorInput && {
             border: '1px solid',
@@ -93,6 +101,16 @@ const DatetimePickerForm = ({ item, parentKey, boxId, draft }: any) => {
                 },
                 InputLabelProps: {
                   shrink: isFocus || (open && true)
+                },
+                InputProps: {
+                  // 👈 เพิ่ม InputProps
+                  endAdornment: displayDate && (
+                    <InputAdornment position='end'>
+                      <IconButton aria-label='clear date' onClick={handleClear} edge='end' size='small'>
+                        <ClearIcon fontSize='small' />
+                      </IconButton>
+                    </InputAdornment>
+                  )
                 }
               }
             }}
