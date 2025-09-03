@@ -3,7 +3,7 @@
 // MUI Imports
 import Button from '@mui/material/Button'
 import { Autocomplete, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import { Add, Delete } from '@mui/icons-material'
 import { useDialog } from '@/hooks/useDialog'
 import { useFormStore } from '@/store/useFormStore'
 import CustomTextField from '@/@core/components/mui/TextField'
@@ -91,8 +91,8 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
   useEffect(() => {
     setName('')
     setValue('')
-    setItems([])
-    setDefaultValue('')
+    setItems(result?.config?.details?.value?.value?.options || [])
+    setDefaultValue(result?.config?.details?.value?.value?.defaultValue || '')
     setSelectedVariable({})
   }, [result])
 
@@ -122,7 +122,7 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
           }
         >
           <FormControlLabel value='custom' control={<Radio />} label='Custom' />
-          <FormControlLabel value='variable' control={<Radio />} label='Variable' />
+          {/* <FormControlLabel value='variable' control={<Radio />} label='Variable' /> */}
         </RadioGroup>
       </Grid>
       {result?.config?.details?.value?.valueType == 'custom' ? (
@@ -167,6 +167,15 @@ const AddOptionDropdownDialog = ({ id }: AddOptionDropdownProps) => {
                   onChange={e => {
                     const newItems = [...items]
                     newItems[index].value = e.target.value
+                    setItems(newItems)
+                  }}
+                />
+
+                <Delete
+                  sx={{ mt: 5, cursor: 'pointer' }}
+                  color='error'
+                  onClick={() => {
+                    const newItems = items.filter((_, i) => i !== index)
                     setItems(newItems)
                   }}
                 />

@@ -3,7 +3,7 @@
 // MUI Imports
 import Button from '@mui/material/Button'
 import { Autocomplete, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import { Add, Delete } from '@mui/icons-material'
 import { useDialog } from '@/hooks/useDialog'
 import { useFormStore } from '@/store/useFormStore'
 import CustomTextField from '@/@core/components/mui/TextField'
@@ -87,7 +87,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
   useEffect(() => {
     setName('')
     setValue('')
-    setItems([])
+    setItems(result?.config?.details?.value?.options || [])
     setSelectedVariable({})
   }, [result])
 
@@ -117,7 +117,7 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
           }
         >
           <FormControlLabel value='custom' control={<Radio />} label='Custom' />
-          <FormControlLabel value='variable' control={<Radio />} label='Variable' />
+          {/* <FormControlLabel value='variable' control={<Radio />} label='Variable' /> */}
         </RadioGroup>
       </Grid>
       {result?.config?.details?.value?.valueType == 'custom' ? (
@@ -152,42 +152,48 @@ const AddOptionRadioDialog = ({ id }: AddOptionDropdownProps) => {
                     setItems(newItems)
                   }}
                 />
+                <Delete
+                  sx={{ mt: 5, cursor: 'pointer' }}
+                  color='error'
+                  onClick={() => {
+                    const newItems = items.filter((_, i) => i !== index)
+                    setItems(newItems)
+                  }}
+                />
               </Grid>
             ))}
           <Grid item xs={12}>
-
-              <Grid container spacing={2}>
-                <Grid item xs>
-                  <CustomTextField
-                    fullWidth
-                    label='name'
-                    placeholder='กรอกชื่อ'
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs>
-                  <CustomTextField
-                    fullWidth
-                    label='value'
-                    placeholder={dictionary?.enterText}
-                    value={value}
-                    onChange={e => setValue(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={1.2} className='self-end'>
-                  <Button
-                    fullWidth
-                    variant='contained'
-                    startIcon={<Add />}
-                    onClick={handleAdd}
-                    disabled={!name || !value || result?.config?.details?.maxCheckbox == items?.length}
-                  >
-                    เพิ่ม
-                  </Button>
-                </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <CustomTextField
+                  fullWidth
+                  label='name'
+                  placeholder='กรอกชื่อ'
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
               </Grid>
-
+              <Grid item xs>
+                <CustomTextField
+                  fullWidth
+                  label='value'
+                  placeholder={dictionary?.enterText}
+                  value={value}
+                  onChange={e => setValue(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={1.2} className='self-end'>
+                <Button
+                  fullWidth
+                  variant='contained'
+                  startIcon={<Add />}
+                  onClick={handleAdd}
+                  disabled={!name || !value || result?.config?.details?.maxCheckbox == items?.length}
+                >
+                  เพิ่ม
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
         </>
       ) : (
