@@ -71,7 +71,7 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
 
   return (
     <div className='flex items-center  justify-between'>
-      <img src={'/images/DTN_logo_blue.gif'} alt={`logo_sarabun`} height={40} />
+      <img src={process.env.NEXT_PUBLIC_URL_LOGO} alt={`logo_sarabun`} height={40} />
       {/* <VuexyLogo className='text-2xl text-primary' /> */}
       <LogoText
         color={color}

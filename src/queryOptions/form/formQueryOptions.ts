@@ -874,6 +874,23 @@ export function useFetchReportScoreQueryOption({
   })
 }
 
+
+// export const useFetchGetFormQueryOption = () => {
+//   return useMutation({
+//     mutationFn: getForm,
+//     onError: error => {
+//       console.error('Error get form:', error)
+//     }
+//   })
+
+export function useFetchGetFormQueryOption({id}: {id: number}) {
+  return useQuery({
+    queryKey: ['getFormDetail',id],
+    queryFn: () => getForm({id})
+  })
+}
+
+
 // reportEducation,
 // reportMedical,
 

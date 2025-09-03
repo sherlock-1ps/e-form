@@ -47,7 +47,7 @@ const NavbarContent: React.FC<NavbarContentProps> = () => {
 
           <Link href='/'>
             <img
-              src={'/images/DTN_logo_blue.gif'}
+              src={process.env.NEXT_PUBLIC_URL_LOGO}
               alt={`logo_sarabun`}
               // width={100}
               height={40}

@@ -64,7 +64,7 @@ const ProfileLayout = () => {
             // })
           }}
         >
-          <img src='/images/DTN_logo_blue.gif' alt='dtn-header' className='w-[94px] h-auto cursor-pointer' />
+          <img src={process.env.NEXT_PUBLIC_URL_LOGO} alt='dtn-header' className='w-[94px] h-auto cursor-pointer' />
         </Link>
         <Typography
           className='leading-tight text-white font-normal hidden sm:block'

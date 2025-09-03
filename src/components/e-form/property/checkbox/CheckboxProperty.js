@@ -84,6 +84,9 @@ const CheckboxProperty = () => {
   const options =
     result?.config?.details?.value?.options ?? result?.config?.details?.value?.value?.value?.value?.options ?? []
 
+
+
+
   const allIds = useMemo(() => {
     return form.form_details.flatMap(section => section.fields.flatMap(field => field.data.map(item => item.id)))
   }, [form])

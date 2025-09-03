@@ -51,16 +51,16 @@ export default function AdminWorkflowComponent() {
 
   // const load = () => {
   //   if (!window.go || !diagramRef.current) return
-  //   const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+  //   const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
   //   diagram.model = window.go.Model.fromJson(JSON.stringify(flow.flow))
   //   diagram.model.linkFromPortIdProperty = 'fromPort'
   //   diagram.model.linkToPortIdProperty = 'toPort'
   // }
 
   const load = () => {
-    // if (!window.go || !diagramRef.current || !window.go.Diagram.fromDiv(diagramRef.current)) return
+    // if (!window.go || !diagramRef.current || !window?.go?.Diagram?.fromDiv(diagramRef.current)) return
 
-    const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+    const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
     // if (!diagram || !flow?.flow) return
 
     try {
@@ -75,7 +75,7 @@ export default function AdminWorkflowComponent() {
   const createFlow = async () => {
     if (!window.go || !diagramRef.current) return
 
-    const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+    const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
 
     const nodeDataArray = diagram.model.nodeDataArray.map(n => ({ ...n }))
 
@@ -113,7 +113,7 @@ export default function AdminWorkflowComponent() {
   const updateVersionFlow = async () => {
     if (!window.go || !diagramRef.current) return
 
-    const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+    const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
 
     const nodeDataArray = diagram.model.nodeDataArray.map(n => ({ ...n }))
 
@@ -154,7 +154,7 @@ export default function AdminWorkflowComponent() {
   const updateFlow = async () => {
     if (!window.go || !diagramRef.current) return
 
-    const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+    const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
 
     const nodeDataArray = diagram.model.nodeDataArray.map(n => ({ ...n }))
 
@@ -194,7 +194,7 @@ export default function AdminWorkflowComponent() {
   const handleSaveLinkLocal = () => {
     if (!window.go || !diagramRef.current) return
 
-    const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+    const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
 
     const nodeDataArray = diagram.model.nodeDataArray.map(n => ({ ...n }))
 
@@ -212,14 +212,14 @@ export default function AdminWorkflowComponent() {
   const handleSaveNodeLocal = () => {
     if (!window.go || !diagramRef.current) return
 
-    const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+    const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
     const nodeDataArray = diagram.model.nodeDataArray.map(n => ({ ...n }))
 
     setNodeDataArray(nodeDataArray)
   }
 
   useEffect(() => {
-    if (!window.go || !diagramRef.current || window.go.Diagram.fromDiv(diagramRef.current)) return
+    if (!window.go || !diagramRef.current || window?.go?.Diagram?.fromDiv(diagramRef.current)) return
     const go = window.go
     const $ = go.GraphObject.make
 
@@ -953,7 +953,7 @@ export default function AdminWorkflowComponent() {
     const deleteSelectedNode = () => {
       if (!window.go || !diagramRef.current) return
 
-      const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+      const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
       const selectedNode = diagram.selection.first()
 
       if (selectedNode instanceof window.go.Node) {
@@ -1057,49 +1057,7 @@ export default function AdminWorkflowComponent() {
       <div className='flex w-full h-full'>
         {/* Sidebar */}
         <div className='w-[280px] min-w-[280px] bg-[#F1F0F2] flex flex-col transition-all duration-300 border-r'>
-          {/* <div className='flex items-center justify-between py-4 px-6 bg-gradient-to-r from-[#47B0FF] via-[#2D78DB] to-[#1E69CB]'>
-            <div
-              onClick={() => {
-                router.push(`/${locale}/workflow/dashboard`)
-              }}
-              className=' cursor-pointer'
-            >
-              <img src='https://dtn.igenco.dev/media/logos/dtn/DTN_logo_blue.gif' alt='logo' className='h-[48px]' />
-            </div>
-            <Typography className='text-white' variant='h5'>
-              E-flow
-            </Typography>
-          </div> */}
-          {/* <section
-            className='w-full h-[54px] px-3 flex items-center justify-between bg-white'
-            style={{ borderBottom: '1px solid #11151A1F' }}
-          >
-            <Link href='/'>
-              <IconButton edge='end' onMouseDown={e => e.preventDefault()} className='flex items-center justify-center'>
 
-                <HomeOutlined sx={{ width: '24px', height: '24px' }} />
-              </IconButton>
-            </Link>
-            <div className='flex '>
-
-              <NotificationsDropdown iconColor={true} />
-              <IconButton
-                edge='end'
-                onMouseDown={e => e.preventDefault()}
-                className='flex items-center justify-center'
-                onClick={() => {
-                  showDialog({
-                    id: 'alertProfileDialog',
-                    component: <ProfileDialog id='alertProfileDialog' />,
-                    size: 'sm'
-                  })
-                }}
-              >
-                <AccountCircleIcon fontSize='medium' />
-
-              </IconButton>
-            </div>
-          </section> */}
 
           <div className='w-full flex-1 overflow-y-auto py-6 flex flex-col gap-4 bg-white px-4'>
             <Typography variant='h5' className='text-center'>

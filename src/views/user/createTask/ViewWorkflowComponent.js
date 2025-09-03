@@ -22,7 +22,7 @@ export default function ViewWorkflowComponent({ onBack, name }) {
 
   const load = () => {
     if (!window.go || !diagramRef.current) return
-    const diagram = window.go.Diagram.fromDiv(diagramRef.current)
+    const diagram = window?.go?.Diagram?.fromDiv(diagramRef.current)
     diagram.model = window.go.Model.fromJson(JSON.stringify(flow.flow))
     diagram.model.linkFromPortIdProperty = 'fromPort'
     diagram.model.linkToPortIdProperty = 'toPort'

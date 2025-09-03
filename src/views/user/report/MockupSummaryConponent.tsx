@@ -14,11 +14,14 @@ import {
 import { useDictionary } from '@/contexts/DictionaryContext'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import DownloadIcon from '@mui/icons-material/Download'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import * as XLSX from 'xlsx'
 
-import { useFetchReportScoreQueryOption } from '@/queryOptions/form/formQueryOptions'
+import { useFetchReportScoreQueryOption, useFetchGetFormQueryOption } from '@/queryOptions/form/formQueryOptions'
+
+// import { getForm } from '@/app/sevices/form/formServices'
+
 import { MobileDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/th'
@@ -27,6 +30,39 @@ import newAdapter from '@/libs/newAdapter'
 const layout = 'vertical'
 
 const MockupSummaryConponent = ({ onBack }: any) => {
+  const [usersSelected, setUsersSelected] = useState<any[]>([])
+
+  // async function loadFormDetail() {
+  //   const res = await getForm({ id: 54 })
+  //   const formDetail = res?.result?.data || {}
+  //   function getValuesByIds(ids) {
+  //     const result = []
+  //     formDetail.FormDetails.forEach(form => {
+  //       form.detail.data.forEach(dataGroup => {
+  //         dataGroup.fields.forEach(field => {
+  //           if (field.data && field.data.length > 0) {
+  //             field.data.forEach(dataItem => {
+  //               if (ids.includes(dataItem.id)) {
+  //                 if (dataItem.config && dataItem.config.details && dataItem.config.details.value) {
+  //                   result.push({ title: dataItem.config.details.value.value, subTitle: '' })
+  //                 }
+  //               }
+  //             })
+  //           }
+  //         })
+  //       })
+  //     })
+  //     return result
+  //   }
+
+  //   const paramIds = ['name1', 'name2', 'name3', 'name4', 'name5', 'name6']
+  //   const values = getValuesByIds(paramIds)
+  //   setUsersSelected(values || [])
+  // }
+  // useEffect(() => {
+  //   loadFormDetail()
+  // }, [])
+
   const [dateStart, setDateStart] = useState<Dayjs | null>(() => dayjs().subtract(10, 'day'))
   const [dateEnd, setDateEnd] = useState<Dayjs | null>(() => dayjs())
   const [openStartTime, setOpenStartTime] = useState(false)
@@ -46,49 +82,104 @@ const MockupSummaryConponent = ({ onBack }: any) => {
     end_date
   })
 
-  const rows = [
-    '1.1 การรับส่งเอกสาร ถูกต้องและรวดเร็ว',
-    '1.2 ความรอบรู้ในการติดต่อประสานงาน',
-    '1.3 การนัดหมายการประชุมให้ผู้บริหาร/หน่วยงานภายในกรม',
-    '1.4 การอำนวยความสะดวกให้กับหน่วยงานภายในกรม',
-    '1.5 มารยาทในการติดต่อประสานงาน',
-    '1.6 การแก้ไขปัญหาเฉพาะหน้าในเรื่องต่างๆ',
-    '1.7 ภาพรวมการให้บริการ'
-  ]
+  const { data: getForm, isPending: pendingform } = useFetchGetFormQueryOption({ id: 54 })
 
-  const mockupData = [
-    {
-      title: '1. นางสาววทันยา สัตยวณิช (แวว)',
-      subTitle: '(หน้าห้องอธิบดีฯ โชติมา)'
-    },
-    {
-      title: '2. นางสาวผุสรัตน์ ขวัญกุล (เพลง)',
-      subTitle: '(หน้าห้องอธิบดีฯ โชติมา)'
-    },
-    {
-      title: '3. นางสาววิรมน จันทร์เจริญ (วุ้น)',
-      subTitle: '(หน้าห้องรองฯ รัชวิชญ์)'
-    },
-    {
-      title: '4. นายพุฒิพงศ์ อินทร์ปรางค์ (ฟ้า)',
-      subTitle: '(หน้าห้องรองฯ บุณิกา)'
-    },
-    {
-      title: '5. นางสาวธารีรัตน์ ผดุงธรรม (บุ๋ม)',
-      subTitle: '(หน้าห้องรองฯ บุณิกา)'
-    },
-    {
-      title: '6. นางสาวเอื้อการย์ ตะสอน (ปลา)',
-      subTitle: '(หน้าห้องรองฯ ธัชชญาน์พล)'
-    }
-  ]
-  const mockupDataWithScores = mockupData.map((person, index) => {
+  const formDetail = getForm?.result?.data || {}
+
+  function getValuesByIds(ids: any) {
+    const result: any = []
+    formDetail?.FormDetails?.forEach((form: any) => {
+      form?.detail?.data.forEach((dataGroup: any) => {
+        dataGroup?.fields.forEach((field: any) => {
+          if (field?.data && field.data.length > 0) {
+            field?.data.forEach((dataItem: any) => {
+              if (ids.includes(dataItem.id)) {
+                if (dataItem.config && dataItem?.config?.details && dataItem?.config?.details?.value) {
+                  result.push({ title: dataItem.config.details.value.value, subTitle: '' })
+                }
+              }
+            })
+          }
+        })
+      })
+    })
+    return result
+  }
+
+  const mockupData: any = getValuesByIds([
+    'name1',
+    'name2',
+    'name3',
+    'name4',
+    'name5',
+    'name6',
+    'name7',
+    'name8',
+    'name9',
+    'name10'
+  ])
+
+  const rows: any = getValuesByIds([
+    'subtitle1',
+    'subtitle2',
+    'subtitle3',
+    'subtitle4',
+    'subtitle5',
+    'subtitle6',
+    'subtitle7',
+    'subtitle8',
+    'subtitle9',
+    'subtitle10',
+    'subtitle11',
+    'subtitle12',
+    'subtitle13',
+    'subtitle14',
+    'subtitle15',
+    'subtitle16'
+  ])
+
+  // const rows = [
+  //   '1.1 การรับส่งเอกสาร ถูกต้องและรวดเร็ว',
+  //   '1.2 ความรอบรู้ในการติดต่อประสานงาน',
+  //   '1.3 การนัดหมายการประชุมให้ผู้บริหาร/หน่วยงานภายในกรม',
+  //   '1.4 การอำนวยความสะดวกให้กับหน่วยงานภายในกรม',
+  //   '1.5 มารยาทในการติดต่อประสานงาน',
+  //   '1.6 การแก้ไขปัญหาเฉพาะหน้าในเรื่องต่างๆ',
+  //   '1.7 ภาพรวมการให้บริการ'
+  // ]
+  // const mockupData = [
+  //   {
+  //     title: '1. นางสาววทันยา สัตยวณิช (แวว)',
+  //     subTitle: '(หน้าห้องอธิบดีฯ โชติมา)'
+  //   },
+  //   {
+  //     title: '2. นางสาวผุสรัตน์ ขวัญกุล (เพลง)',
+  //     subTitle: '(หน้าห้องอธิบดีฯ โชติมา)'
+  //   },
+  //   {
+  //     title: '3. นางสาววิรมน จันทร์เจริญ (วุ้น)',
+  //     subTitle: '(หน้าห้องรองฯ รัชวิชญ์)'
+  //   },
+  //   {
+  //     title: '4. นายพุฒิพงศ์ อินทร์ปรางค์ (ฟ้า)',
+  //     subTitle: '(หน้าห้องรองฯ บุณิกา)'
+  //   },
+  //   {
+  //     title: '5. นางสาวธารีรัตน์ ผดุงธรรม (บุ๋ม)',
+  //     subTitle: '(หน้าห้องรองฯ บุณิกา)'
+  //   },
+  //   {
+  //     title: '6. นางสาวเอื้อการย์ ตะสอน (ปลา)',
+  //     subTitle: '(หน้าห้องรองฯ ธัชชญาน์พล)'
+  //   }
+  // ]
+  const mockupDataWithScores = mockupData.map((person: any, index: any) => {
     const groupKey = `p${index + 1}`
     const groupScores = reportData?.result?.data?.score_by_group?.[groupKey] || {}
     const scores = Object.values(groupScores)
 
-    const rowScores = rows.map((name, i) => ({
-      name,
+    const rowScores = rows.map((name: any, i: any) => ({
+      name: name?.title || '',
       score: scores[i] ?? 0
     }))
 
@@ -129,12 +220,14 @@ const MockupSummaryConponent = ({ onBack }: any) => {
 
     // 2. Score Summary Sheet
     if (mockupDataWithScores.length > 0) {
-      const headers = ['หัวข้อการประเมิน', ...mockupDataWithScores.map(p => p.title)]
-      const dataRows = rows.map((topicName, rowIndex) => {
-        const scores = mockupDataWithScores.map(person => person.rows[rowIndex]?.score || 0)
+      const headers = ['หัวข้อการประเมิน', ...mockupDataWithScores.map((p: any) => p.title)]
+      const dataRows = rows.map((topicName: any, rowIndex: any) => {
+        const scores = mockupDataWithScores.map((person: any) => person.rows[rowIndex]?.score || 0)
         return [topicName, ...scores]
       })
-      const totals = mockupDataWithScores.map(person => person.rows.reduce((sum: any, row: any) => sum + row.score, 0))
+      const totals = mockupDataWithScores.map((person: any) =>
+        person.rows.reduce((sum: any, row: any) => sum + row.score, 0)
+      )
       const totalRow = ['รวม', ...totals]
 
       const excelData = [headers, ...dataRows, totalRow]

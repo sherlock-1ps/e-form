@@ -116,7 +116,7 @@ const ViewFlowComponent = ({ formDataId, onBack, noBack = false }: any) => {
   useEffect(() => {
     if (!goLoaded || !window.go || !diagramRef.current) return
     // ตรวจสอบว่า myDiagram ถูกสร้างแล้วหรือยัง เพื่อป้องกันการสร้างซ้ำ
-    if (window.go.Diagram.fromDiv(diagramRef.current)) {
+    if (window?.go?.Diagram?.fromDiv(diagramRef.current)) {
       // หาก myDiagram มีอยู่แล้ว ให้เรียก fetchData ใหม่เท่านั้น
       // เพื่ออัปเดตข้อมูลบน Diagram ที่มีอยู่แล้ว
       fetchData()

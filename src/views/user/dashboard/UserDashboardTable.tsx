@@ -15,7 +15,6 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 // import { type ColumnFiltersState, type VisibilityState } from '@tanstack/react-table'
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox'
 
-
 import {
   Directions,
   Preview,
@@ -468,7 +467,9 @@ const UserDashboardTable = ({
             <div className='flex items-center gap-3'>
               {row.original.status === 'draft' ? (
                 <Typography className='font-medium' variant='body2'>
-                  {profile?.userInformation?.F_FULL_NAME_TH || ''}
+                  {/* {profile?.userInformation?.F_FULL_NAME_TH || ''}
+                   */}
+                  {row.original.f_full_name_th}
                 </Typography>
               ) : (
                 <>
